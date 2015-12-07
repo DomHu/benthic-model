@@ -13,7 +13,7 @@ classdef benthic_main < handle
         wdepth=600;                            % water depth (m)
         w;                                      % burial velocity  (cm/yr)
         z0  = 0;                                % surface
-        zbio=15;                                % bioturbation depth (cm)       
+        zbio=5;                                % bioturbation depth (cm)       
         
         zinf=100;                               %Inifinity (cm)
         %zinf = 1000;
