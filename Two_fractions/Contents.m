@@ -1,5 +1,4 @@
 % BENTHIC-MODEL-2308-SD20150406
-% Dominik: 03.12.2015
 %
 % Examples:
 %

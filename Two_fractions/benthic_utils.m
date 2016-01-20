@@ -79,13 +79,14 @@ classdef benthic_utils
             %         | B_l |         | B_r|    
             %         | C_l |   =  C  | C_r|  +  D  
             %         | D_l |         | D_r|               
-            
+            %    
             C = X\Y;
             D = X\Z;
             
             if(case_flag==2)            % add line and column of zero for missing Q
                 C = [C;0,0,0];          % add line
-                C = [C [0;0;0;1]];     % add column OR JUST ZEROS ?????
+                %C = [C [0;0;0;1]];     % add column OR JUST ZEROS ?????
+                C = [C [0;0;0;0]];      % SD - just zeros
                 D = [D;0];
             end
             
@@ -141,7 +142,7 @@ classdef benthic_utils
             A = Z(1);
             B = Z(2);
             C = Z(3);
-            D = Z(4);                        
+            %D = Z(4);                        
         end
         
        

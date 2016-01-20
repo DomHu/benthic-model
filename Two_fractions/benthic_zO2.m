@@ -119,10 +119,10 @@ classdef benthic_zO2
             % adsporption!
            %tmpreac1=1*bsd.SO4C+2*bsd.gamma*bsd.NC1;
            %tmpreac2=1*bsd.SO4C+2*bsd.gamma*bsd.NC2;
-%            tmpreac1=0.2;
-%            tmpreac2=0.2;
-           tmpreac1=bsd.OC+2*bsd.gamma*bsd.NC1;
-           tmpreac2=bsd.OC+2*bsd.gamma*bsd.NC2;
+            tmpreac1=0.2;
+            tmpreac2=0.2;
+           %tmpreac1=bsd.OC+2*bsd.gamma*bsd.NC1;
+           %tmpreac2=bsd.OC+2*bsd.gamma*bsd.NC2;
             %FLUX of NH4 and Reduced species from ZOX to ZINF
             
             

@@ -524,17 +524,18 @@ classdef benthic_zTOC < handle
                             = obj.calcfg_l2_PO4(bsd.zbio, bsd, swi, res, reac1, reac2, ls.D2P, ktempP, QtempP, a2_M, alphaP);
                     
                     end
-                    
+                                       
                     % match solutions at zbio - continuous concentration and flux
                     % organize the data in matrices and let matlab do the calculation
                     %  |x1        |   | A_l |      | y1        | | A_r|    |z1|    always PO4 continuity  
                     %  |    .     |   | B_l |      |    .      | | B_r|    |z2|    always PO4 flux  
                     %  |      .   |   | C_l |   =  |      .    | | C_r|  + |z3|    always M continuity  
-                    %  |       x16|   | D_l |      |        y16| | D_r|    |z4|    always M flux  
+                    %  |       x16|   | D_l |      |        y16| | D_r|    |z4|    SD always M _diffusive_ flux  = 0 (cf org C)
                     
                     % discontinuity constants
                     Vb = 0;
                     Fb = 0;
+                                      
                     
                     X = [e_zbio_l1_P, f_zbio_l1_P, p_zbio_l1_P, q_zbio_l1_P; ...
                          ls.D1P*dedz_zbio_l1_P, ls.D1P*dfdz_zbio_l1_P, ls.D1P*dpdz_zbio_l1_P, ls.D1P*dqdz_zbio_l1_P; ...
@@ -578,7 +579,9 @@ classdef benthic_zTOC < handle
             
             r = res.rTOC;            
 
+            % SD this does work for oxic case, as ktemp == 0 (and Qtemp == 0) ?
             c1=(bsd.w-sqrt(bsd.w.^2+4.*Dtemp.*ktemp))/(2.*Dtemp);
+            % p = const as c1==0 for oxic case
             p=exp(z.*c1);           % was e = ones(1,bsd.ncl);
             dpdz = c1.*exp(z.*c1);       % was zeros(1,bsd.ncl);
 
@@ -594,10 +597,10 @@ classdef benthic_zTOC < handle
                   
                 c1=0;
                 d1=0;
-                
-                e = alpha/(Dtemp.*a1_P.^2-bsd.w.*a1_P-ktemp).*exp(z.*a1_P);
+                % Dominik Dec 2015: Change 2
+                e = -alpha/(Dtemp.*a1_P.^2-bsd.w.*a1_P-ktemp).*exp(z.*a1_P);
                 dedz = a1_P.*e;
-                f = alpha/(Dtemp.*b1_P.^2-bsd.w.*b1_P-ktemp).*exp(z.*b1_P);
+                f = -alpha/(Dtemp.*b1_P.^2-bsd.w.*b1_P-ktemp).*exp(z.*b1_P);
                 dfdz = b1_P.*f;
 
        % this is when M is dependent!
@@ -606,14 +609,18 @@ classdef benthic_zTOC < handle
                 ea12z = exp(r.a12.*z);
                 eb12z = exp(r.b12.*z);
 
-                g = Phi1_P.PhiI1/(Dtemp.*ea11z.^2-bsd.w.*ea11z-ktemp).*exp(z.*ea11z) + Phi1_P.PhiII1/(Dtemp.*eb11z.^2-bsd.w.*eb11z-ktemp).*exp(z.*eb11z) + ...
+                % SD - suspect this is missing a scaling with ksPO4  ?
+                % (I'd expect \propto ksPO4 ?)
+                % also looks wrong in the doc ....
+                % Dominik 18.12.2015: Change 1 added -alpha here
+                g = -alpha*(Phi1_P.PhiI1/(Dtemp.*ea11z.^2-bsd.w.*ea11z-ktemp).*exp(z.*ea11z) + Phi1_P.PhiII1/(Dtemp.*eb11z.^2-bsd.w.*eb11z-ktemp).*exp(z.*eb11z) + ...
                     Phi1_P.PhiIII1/(Dtemp.*eb11z.^2-bsd.w.*eb11z-ktemp).*exp(z.*eb11z) + ... 
                     Phi1_P.PhiI2/(Dtemp.*ea12z.^2-bsd.w.*ea12z-ktemp).*exp(z.*ea12z) + Phi1_P.PhiII2/(Dtemp.*eb12z.^2-bsd.w.*eb12z-ktemp).*exp(z.*eb12z) + ...
-                    Phi1_P.PhiIII2/(Dtemp.*eb12z.^2-bsd.w.*eb12z-ktemp).*exp(z.*eb12z);
-                dgdz = Phi1_P.PhiI1/(Dtemp.*ea11z.^2-bsd.w.*ea11z-ktemp).*exp(z.*ea11z).*ea11z + Phi1_P.PhiII1/(Dtemp.*eb11z.^2-bsd.w.*eb11z-ktemp).*exp(z.*eb11z).*eb11z + ...
+                    Phi1_P.PhiIII2/(Dtemp.*eb12z.^2-bsd.w.*eb12z-ktemp).*exp(z.*eb12z));
+                dgdz = -alpha*(Phi1_P.PhiI1/(Dtemp.*ea11z.^2-bsd.w.*ea11z-ktemp).*exp(z.*ea11z).*ea11z + Phi1_P.PhiII1/(Dtemp.*eb11z.^2-bsd.w.*eb11z-ktemp).*exp(z.*eb11z).*eb11z + ...
                     Phi1_P.PhiIII1/(Dtemp.*eb11z.^2-bsd.w.*eb11z-ktemp).*exp(z.*eb11z).*eb11z + ... 
                     Phi1_P.PhiI2/(Dtemp.*ea12z.^2-bsd.w.*ea12z-ktemp).*exp(z.*ea12z).*ea12z + Phi1_P.PhiII2/(Dtemp.*eb12z.^2-bsd.w.*eb12z-ktemp).*exp(z.*eb12z).*eb12z + ...
-                    Phi1_P.PhiIII2/(Dtemp.*eb12z.^2-bsd.w.*eb12z-ktemp).*exp(z.*eb12z).*eb12z;                
+                    Phi1_P.PhiIII2/(Dtemp.*eb12z.^2-bsd.w.*eb12z-ktemp).*exp(z.*eb12z).*eb12z);                
                 
             else        %anoxic layer: M is independent of PO4 (no value in alpha!)
                 g = Qtemp/ktemp;
@@ -639,11 +646,12 @@ classdef benthic_zTOC < handle
             c2=0;
             
             if(alpha ~= 0)  % was z<=res.zox M is dependent of PO4
-
-                e=alpha./(bsd.w.*a2_P).*exp(z.*a2_P);         
+                
+                % Dominik Dec 2015: Change 2
+                e=-alpha./(bsd.w.*a2_P).*exp(z.*a2_P);         
                 dedz = a2_P.*e;       
                             
-                f=alpha./(bsd.w.*b2_P).*exp(z.*b2_P);
+                f=-alpha./(bsd.w.*b2_P).*exp(z.*b2_P);
                 dfdz = b2_P.*f;
                 
                 p = 1;  % CHECK/TODO: integration constant just C
@@ -654,10 +662,10 @@ classdef benthic_zTOC < handle
                 %pfac=1./bsd.por;   % assume org matter already .*(1-bsd.por)
 %                pfac = 1;          % in fact, already has (1-por)/por
 
-
-             	g = alpha./(bsd.w).*(Phi2_P.PhiI1./(r.a21).*exp(r.a21.*z) + ...
+                % Dominik 18.12.2015: Change 1: added the minus here to the already existing alpha
+             	g = -alpha./(bsd.w).*(Phi2_P.PhiI1./(r.a21).*exp(r.a21.*z) + ...
                     Phi2_P.PhiI2./(r.a22).*exp(r.a22.*z));
-                dgdz = alpha./(bsd.w).*(Phi2_P.PhiI1.*exp(r.a21.*z) + ...
+                dgdz = -alpha./(bsd.w).*(Phi2_P.PhiI1.*exp(r.a21.*z) + ...
                     Phi2_P.PhiI2.*exp(r.a22.*z));
 
             else    % M is independent of PO4
@@ -741,10 +749,11 @@ classdef benthic_zTOC < handle
 % % % %                 dpdz = dedz;
 % % % %                 q = f;
 % % % %                 dqdz = dfdz;
-                
-                p = alpha/(Dtemp.*a1_M.^2-bsd.w.*a1_M-ktemp).*exp(z.*a1_M);
+                % Dominik 21.12.2015: Change 3: added *-1 here for p qnd q (as sign
+                % changes for exponential part)
+                p = -alpha/(Dtemp.*a1_M.^2-bsd.w.*a1_M-ktemp).*exp(z.*a1_M);
                 dpdz = a1_M.*p;
-                q = alpha/(Dtemp.*b1_M.^2-bsd.w.*b1_M-ktemp).*exp(z.*b1_M);
+                q = -alpha/(Dtemp.*b1_M.^2-bsd.w.*b1_M-ktemp).*exp(z.*b1_M);
                 dqdz = b1_M.*q;
                
             end             
@@ -797,8 +806,9 @@ classdef benthic_zTOC < handle
 % % % %                 dpdz = dedz;
 % % % %                 q = f;
 % % % %                 dqdz = dfdz;
-                
-                p = alpha/(Dtemp.*a2_M.^2-bsd.w.*a2_M-ktemp).*exp(a2_M.*z);    % DOMINIK: changed sign for a2_M (as it is now positiv, see calcfg_l2_M)
+                % Dominik 21.12.2015: Change 3: added *-1 here (as sign
+                % changes for exponential part)
+                p = -alpha/(Dtemp.*a2_M.^2-bsd.w.*a2_M-ktemp).*exp(a2_M.*z);    
                 dpdz = a2_M.*p;
                 % subcase zox&zbio < z: here just one term in M
                 q=0;

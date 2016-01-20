@@ -13,7 +13,7 @@ classdef benthic_main < handle
         wdepth=600;                            % water depth (m)
         w;                                      % burial velocity  (cm/yr)
         z0  = 0;                                % surface
-        zbio=5;                                % bioturbation depth (cm)       
+        zbio=5;            % Sandra played with 0.0                    % bioturbation depth (cm)       
         
         zinf=100;                               %Inifinity (cm)
         %zinf = 1000;
@@ -72,13 +72,13 @@ classdef benthic_main < handle
             
             obj.w=benthic_main.sedrate(obj.wdepth); 
             obj.dispFactor=obj.por.^(obj.tort-1.0).*obj.irrigationFactor;                 %dispersion factor (-)
-            obj.SD=(1-obj.por)./obj.por;   
+            obj.SD=(1-obj.por)./obj.por;   % Sandra played with 1.0
             
             obj.OC=1.0*obj.SD;                                                  %O2/C (mol/mol)
             obj.NC1=0.1509*obj.SD;                                              %N/C first TOC fraction (mol/mol)
             obj.NC2=0.13333*obj.SD;                                             %N/C second TOC fraction (mol/mol)            
-            obj.PC1=0.0094*obj.SD;                                              %P/C first TOC fraction (mol/mol)
-            obj.PC2=0.0094*obj.SD;                                              %P/C second TOC fraction (mol/mol)
+            obj.PC1=0.0094*obj.SD;  % Sandra played with 1e-20;                                            %P/C first TOC fraction (mol/mol)
+            obj.PC2=0.0094*obj.SD;  % Sandra played with  1e-20;                                         %P/C second TOC fraction (mol/mol)
             obj.SO4C=0.5*obj.SD;                                                %SO4/C (mol/mol)
             obj.DICC1=1.0*obj.SD;                                               %DIC/C until zSO4 (mol/mol)
             obj.DICC2=0.5*obj.SD;                                               %DIC/C below zSO$ (mol/mol)

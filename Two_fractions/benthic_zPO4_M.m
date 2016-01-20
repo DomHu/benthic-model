@@ -10,11 +10,15 @@ classdef benthic_zPO4_M
         KPO41=10.0;         %Adsorption coefficient in oxic layer (-)
         KPO42=1.3;          %Adsorption coefficient in anoxic layer (-)
         ksPO4=0.26*365;      %Rate constant for kinetic PO4 sorption (1/yr)   0.12 fits 1.CASE; 2.2 fits 2. CASE DOM: was 0.5*365 from Nicolas; Slomp ea 1996 0.26
+        %ksPO4=1e-15;
+        %kmPO4= 1e-20;
         kmPO4=0.00053*365;	%Rate constant for Fe-bound P release upon Fe oxide reduction   DOM: was 1.8e-6 Slomp ea 1996 0.00053*365 
-        kaPO4=0.001*365;	%Rate constant for authigenic P formation (1/yr)    DOM: was 0.004*365 from Nicolas; Slomp ea 1996 0.001
+        kaPO4 = 0;
+        %kaPO4=0.001*365;	%Rate constant for authigenic P formation (1/yr)    DOM: was 0.004*365 from Nicolas; Slomp ea 1996 0.001
         PO4s=1.0e-9;        %Equilibrium concentration for P sorption (mol/cm3)       was 1.5e-9; ; Slomp ea 1996
-        PO4a=3.7e-9;        %Equilibrium concentration for authigenic P formation (mol/cm3) was 0.7e-9
-        Minf=1.99e-6;       % asymptotic concentration for Fe-bound P (mol/cm3)      TODO/CHECK: good value? is from Slomp et al. 1996 Dom was 1.99e-6
+        PO4a= 0.0; %3.7e-9;        %Equilibrium concentration for authigenic P formation (mol/cm3) was 0.7e-9
+        Minf = 0;
+        %Minf=1.99e-6;       % asymptotic concentration for Fe-bound P (mol/cm3)      TODO/CHECK: good value? is from Slomp et al. 1996 Dom was 1.99e-6
 
    % OLD FROM NICOLAS     
 %        FePFlux=0.01/1000;                                          %mol/m2/hr     Flux to the surface
@@ -89,13 +93,14 @@ classdef benthic_zPO4_M
             %  |x1        |   | A_l |      | y1        | | A_r|    |z1|    always PO4 continuity  
             %  |    .     |   | B_l |      |    .      | | B_r|    |z2|    always PO4 flux  
             %  |      .   |   | C_l |   =  |      .    | | C_r|  + |z3|    always M continuity  
-            %  |       x16|   | D_l |      |        y16| | D_r|    |z4|    always M flux  
+            %  |       x16|   | D_l |      |        y16| | D_r|    |z4|    SD M flux  only in bioturbated case, otherwise not an  independent constraint
 
             % discontinuity constants
             Vb = 0;
             Fb = 0;
             
             if(r.zox <= bsd.zbio)   % 1. CASE: 4 int const. in each layer
+                % SD zox is bioturbated
                 X = [e1_zox_P, f1_zox_P, p1_zox_P, q1_zox_P; ...
                      dedz1_zox_P, dfdz1_zox_P, dpdz1_zox_P, dqdz1_zox_P; ...
                      e1_zox_M, f1_zox_M, p1_zox_M, q1_zox_M; ...
@@ -110,18 +115,31 @@ classdef benthic_zPO4_M
                      dgdz2_zox_M - dgdz1_zox_M + Fb - bsd.w.*Vb];      
                  case_flag=1; 
             else    % 2. CASE: 3 int const. in each layer
+                % SD zox non-bioturbated
+                % SD this should generate 3x3 matrices as no M flux bc (and then 4x4 C with zeros)
                 X = [e1_zox_P, f1_zox_P, p1_zox_P; ...
                      dedz1_zox_P, dfdz1_zox_P, dpdz1_zox_P; ...
-                     e1_zox_M, f1_zox_M, p1_zox_M; ...
-                     dedz1_zox_M, dfdz1_zox_M, dpdz1_zox_M];
+                     e1_zox_M, f1_zox_M, p1_zox_M];
                 Y = [e2_zox_P, f2_zox_P, p2_zox_P; ...
                      dedz2_zox_P, dfdz2_zox_P, dpdz2_zox_P; ...
-                     e2_zox_M, f2_zox_M, p2_zox_M; ...
-                     dedz2_zox_M, dfdz2_zox_M, dpdz2_zox_M];
+                     e2_zox_M, f2_zox_M, p2_zox_M];
                 Z = [g2_zox_P-g1_zox_P + Vb; ... 
                      dgdz2_zox_P - dgdz1_zox_P + Fb - bsd.w.*Vb; ...
-                     g2_zox_M-g1_zox_M + Vb; ... 
-                     dgdz2_zox_M - dgdz1_zox_M + Fb - bsd.w.*Vb];  
+                     g2_zox_M-g1_zox_M + Vb];  
+                 % SD old code - this _might_ work, but only because the two
+                 % M bc are degenerate anyway...
+%                 X = [e1_zox_P, f1_zox_P, p1_zox_P; ...
+%                      dedz1_zox_P, dfdz1_zox_P, dpdz1_zox_P; ...
+%                      e1_zox_M, f1_zox_M, p1_zox_M; ...
+%                      dedz1_zox_M, dfdz1_zox_M, dpdz1_zox_M];
+%                 Y = [e2_zox_P, f2_zox_P, p2_zox_P; ...
+%                      dedz2_zox_P, dfdz2_zox_P, dpdz2_zox_P; ...
+%                      e2_zox_M, f2_zox_M, p2_zox_M; ...
+%                      dedz2_zox_M, dfdz2_zox_M, dpdz2_zox_M];
+%                 Z = [g2_zox_P-g1_zox_P + Vb; ... 
+%                      dgdz2_zox_P - dgdz1_zox_P + Fb - bsd.w.*Vb; ...
+%                      g2_zox_M-g1_zox_M + Vb; ... 
+%                      dgdz2_zox_M - dgdz1_zox_M + Fb - bsd.w.*Vb];  
                  case_flag=2; 
             end
                     
@@ -148,10 +166,49 @@ classdef benthic_zPO4_M
 % % % %             [e1_0_P, f1_0_P, p1_0_P, q1_0_P, g1_0_P, dedz1_0_P, dfdz1_0_P, dpdz1_0_P, dqdz1_0_P, dgdz1_0_P, e1_0_M, f1_0_M, p1_0_M, q1_0_M, g1_0_M, dedz1_0_M, dfdz1_0_M, dpdz1_0_M, dqdz1_0_M, dgdz1_0_M] ...
 % % % %             = benthic_utils.xformsoln_PO4_M(e1_0_P, f1_0_P, p1_0_P, q1_0_P, e1_0_M, f1_0_M, p1_0_M, q1_0_M, dedz1_0_P, dfdz1_0_P, dpdz1_0_P, dqdz1_0_P, dedz1_0_M, dfdz1_0_M, dpdz1_0_M, dqdz1_0_M, g1_0_P, g1_0_M,dgdz1_0_P, dgdz1_0_M, zox.C, zox.D);
             
-            % Solve for APO4M, BPO4M, CPO4M, DPO4M given boundary conditions (expressed in terms of transformed basis fns, layer 2 A, B, C, D)
-            % BC for PO4: zero flux at z=oo AND concentration equal at z=0
-            % BC for M: Known flux at z=0 AND concentration = Minf at z=oo
-            
+            % SD We solve for 3 unknowns (given DPO4M == 0) with 3 bc
+            % Solve for APO4M, BPO4M, CPO4M given boundary conditions (expressed in terms of transformed basis fns, layer 2 A, B, C, D)
+            % BC(i) for PO4: zero flux at z=oo 
+            % BC(ii) PO4 concentration equal at z=0
+            % BC(iii) for M: Known flux at z=0  NB: advective flux is what is needed here (bioturbation flux == 0)
+            % and NOT a BC for concentration = Minf at z=oo
+                                    
+            % SD TODO include porosity factors for advective fluxes eg bsd.w*(1-bsd.por) ?
+            % APO4M*dedz2_zinf_P   +  BPO4M*dfdz2_zinf_P  + CPO4M*dpdz2_zinf_P   + dgdz2_zinf_P = 0;
+            % APO4M*e1_0_P         +  BPO4M*f1_0_P        + CPO4M*p1_0_P         + g1_0_P       = swi.PO40;           
+            % bsd.w*(APO4M*e1_0_M      +  BPO4M*f1_0_M     + CPO4M*p1_0_M      + g1_0_M )       = swi.Mflux0;          
+                        
+            % | dedz2_zinf_P dfdz2_zinf_P dpdz2_zinf_P |  |APO4M|     | - dgdz2_zinf_P       |
+            % |    e1_0_P      f1_0_P        p1_0_P    |  |BPO4M|     | swi.PO40 - g1_0_P    |          
+            % | bsd.w*e1_0_M   bsd.w*f1_0_M  bsd.w*p1_0_M||CPO4M|     |swi.Mflux0 - bsd.w*g1_0_M|
+            % and set DPO4M = 0
+ 
+           % SD assume D2 == 0 (as q, dqdz2_zinf = 0 ) and solve for 3 unknowns
+            X = [dedz2_zinf_P, dfdz2_zinf_P, dpdz2_zinf_P; ...
+                 EFPQ_P(1), EFPQ_P(2), EFPQ_P(3); ...                 
+                 bsd.w*EFPQ_M(1), bsd.w*EFPQ_M(2), bsd.w*EFPQ_M(3)];
+            Y = [-dgdz2_zinf_P; ...
+                 swi.PO40 - g1_0_P; ...              
+                 swi.Mflux0 - bsd.w*g1_0_M]; 
+             
+       
+            [ rPO4_M.A2, rPO4_M.B2, rPO4_M.C2]  = benthic_utils.solve2eqn_PO4_M(X,Y);
+            rPO4_M.D2 = 0;
+
+                
+            % SD remove old code
+%             if(case_flag==2)    % DEAL WITH VARIABLES SHORT FROM LAYER BELOW IN 2. CASE 
+%                 EFPQ_P(3)=p1_0_P;
+%                 dEFPQdz_P(3)=dpdz1_0_P;
+%                 EFPQ_P(4)=q1_0_P;
+%                 dEFPQdz_P(4)=dqdz1_0_P;
+% 
+%                 EFPQ_M(4)=q1_0_M;
+%                 dEFPQdz_M(4)=dqdz1_0_M;
+%             end           
+        
+
+            % SD old code - fails to match bc
             % APO4M*dedz2_zinf_P   +  BPO4M*dfdz2_zinf_P  + CPO4M*dpdz2_zinf_P   +  DPO4M*dqdz2_zinf_P + dgdz2_zinf_P = 0;
             % APO4M*e1_0_P         +  BPO4M*f1_0_P        + CPO4M*e1_0_P         +  DPO4M*f1_0_P       + g1_0_P       = swi.PO40;
             % APO4M*e2_zinf_M      +  BPO4M*f2_zinf_M     + CPO4M*p2_zinf_M      +  DPO4M*q2_zinf_M    + g2_zinf_M    = obj.Minf;
@@ -160,30 +217,16 @@ classdef benthic_zPO4_M
             % | dedz2_zinf_P dfdz2_zinf_P dpdz2_zinf_P dqdz2_zinf_P|  |APO4M|     | - dgdz2_zinf_P       |
             % |    e1_0_P      f1_0_P        p1_0_P      q1_0_P    |  |BPO4M|     | swi.PO40 - g1_0_P    |
             % | e2_zinf_M    f2_zinf_M     p2_zinf_M    q2_zinf_M  |  |CPO4M|   = | obj.Minf - g2_zinf_M |
-            % | dedz1_0_M    dfdz1_0_M     dpdz1_0_M    dqdz1_0_M  |  |DPO4M|     |swi.Mflux0 - dgdz1_0_M|
-            
-            if(case_flag==2)    % DEAL WITH VARIABLES SHORT FROM LAYER BELOW IN 2. CASE 
-                EFPQ_P(3)=p1_0_P;
-                dEFPQdz_P(3)=dpdz1_0_P;
-                EFPQ_P(4)=q1_0_P;
-                dEFPQdz_P(4)=dqdz1_0_P;
+            % | dedz1_0_M    dfdz1_0_M     dpdz1_0_M    dqdz1_0_M  |  |DPO4M|     |swi.Mflux0 - dgdz1_0_M|            
+            %             X = [dedz2_zinf_P, dfdz2_zinf_P, dpdz2_zinf_P, dqdz2_zinf_P; ...
+            %                  EFPQ_P(1), EFPQ_P(2), EFPQ_P(3), EFPQ_P(4); ...
+            %                  e2_zinf_M, f2_zinf_M, p2_zinf_M, q2_zinf_M; ...
+            %                  dEFPQdz_M(1), dEFPQdz_M(2), dEFPQdz_M(3), dEFPQdz_M(4)];
+            %             Y = [-dgdz2_zinf_P; ...
+            %                  swi.PO40 - g1_0_P; ...
+            %                  obj.Minf - g2_zinf_M; ...
+            %                  swi.Mflux0 - dgdz1_0_M];
 
-                EFPQ_M(4)=q1_0_M;
-                dEFPQdz_M(4)=dqdz1_0_M;
-            end           
-        
-            X = [dedz2_zinf_P, dfdz2_zinf_P, dpdz2_zinf_P, dqdz2_zinf_P; ...
-                 EFPQ_P(1), EFPQ_P(2), EFPQ_P(3), EFPQ_P(4); ...
-                 e2_zinf_M, f2_zinf_M, p2_zinf_M, q2_zinf_M; ...
-                 dEFPQdz_M(1), dEFPQdz_M(2), dEFPQdz_M(3), dEFPQdz_M(4)];
-            Y = [-dgdz2_zinf_P; ...
-                 swi.PO40 - g1_0_P; ...
-                 obj.Minf - g2_zinf_M; ...
-                 swi.Mflux0 - dgdz1_0_M];
-             
-            [ rPO4_M.A2, rPO4_M.B2, rPO4_M.C2, rPO4_M.D2]  = benthic_utils.solve2eqn_PO4_M(X,Y);
-            
-            
 % % % %      % calculate PO4 conc and flux at zinf (flux is ZERO anyway)
 % % % %             % CHECK/TODO: Why not calculate concentration at zinf?
 % % % %             conczPO4 = rPO4_M.A2.*e2_zinf_P + rPO4_M.B2.*f2_zinf_P + rPO4_M.C2.*p2_zinf_P + rPO4_M.D2.*q2_zinf_P + g2_zinf_P;

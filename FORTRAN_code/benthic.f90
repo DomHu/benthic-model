@@ -2,7 +2,7 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 !!!     Sediment model - to be named (not called SEDGEM ;-) )
-!!!     Authors: Sandra Arndt, Dominik Hülse, Stuart Danes
+!!!     Authors: Sandra Arndt, Dominik Hülse, Stuart Daines
 !!!     Date: June 2015
 
 !!!     modelled stuff: (labile, refractory) TOC, O2, Sulfate (SO4), Hydrogen sulfide (H2S),
