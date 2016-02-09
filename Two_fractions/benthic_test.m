@@ -10,16 +10,16 @@ classdef benthic_test
             %bottom water concentrations
             swi.T=20.0;                         %temperature (degree C)
             % see caption for Fig 1.2 - two equal TOC fractions 0.02 0.2 2
-            swi.C01=0.2*1e-2/12*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm3 bulk phase)
-            swi.C02=0.2*1e-2/12*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm3 bulk phase)
-            swi.O20=200.0e-9;   %was    300.0e-9                            %O2  concentration at SWI (mol/cm3)
+            swi.C01=0.02*1e-2/12*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm3 bulk phase)
+            swi.C02=0.02*1e-2/12*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm3 bulk phase)
+            swi.O20=80.0e-9;   %was    300.0e-9                            %O2  concentration at SWI (mol/cm3)
 %            swi.SO40=28000.0e-9;                                            %SO4 concentration at SWI (mol/cm3)
             swi.NO30=20.0e-9;                                               %NO3 concentration at SWI (mol/cm3)
             swi.NH40=1.0e-9;                                                %NH4 concentration at SWI (mol/cm3)
             swi.SO40 = 2800e-9;
             swi.H2S0=1.0e-9;         %was 0.0e-9                            %H2S concentration at SWI (mol/cm3)
             swi.PO40=1e-9;    % Sandra played with 3e-9                                              %PO4 concentration at SWI (mol/cm3)
-            swi.Mflux0=365*0.2e-10; % Sandra played with 10e-9; ;   % = 7.3e-9                            %flux of M to the sediment (mol/(cm2*yr))   TODO/CHECK: good value+right conversion? is from Slomp et al. 1996        
+            swi.Mflux0=365*0.2e-10; % Sandra played with 10e-9; ;   % = 7.3e-9    %flux of M to the sediment (mol/(cm2*yr))   TODO/CHECK: good value+right conversion? is from Slomp et al. 1996        
 
             swi.DIC0=2000.0e-9;                                             %DIC concentration at SWI (mol/cm3)
             swi.ALK0=2400.0e-9;                                             %ALK concentration at SWI (mol/cm3)
@@ -65,7 +65,7 @@ classdef benthic_test
             res.zSO4 = benthic_zSO4(res.bsd, res.swi);
             res.zNH4 = benthic_zNH4(res.bsd, res.swi);
             res.zH2S = benthic_zH2S(res.bsd, res.swi);
-%            res.zH2S = benthic_zH2S(res.bsd, res.swi);
+            res.zH2S = benthic_zH2S(res.bsd, res.swi);
             res.zPO4_M = benthic_zPO4_M(res.bsd, res.swi);
    
             tic;
@@ -120,7 +120,7 @@ classdef benthic_test
             
         end
         
-        function plot_column(res)
+        function plot_column(res, debug)
             % plot single sediment column vs depth
             
             set(0,'defaultLineLineWidth', 2)
@@ -133,8 +133,9 @@ classdef benthic_test
             % PO4
             subplot(1,2,1)
             for i=1:length(zgrid)                
-                [PO4(i), flxPO4(i), M(i), flxM(i)] = res.zPO4_M.calcPO4_M(zgrid(i), bsd, res.swi, res);
+                [PO4(i), flxPO4(i), M(i), flxM(i), e_M(i), f_M(i), p_M(i), q_M(i), g_M(i), dedz_M(i), dfdz_M(i), dpdz_M(i), dqdz_M(i), dgdz_M(i)] = res.zPO4_M.calcPO4_M(zgrid(i), bsd, res.swi, res);
             end
+
             plot(PO4, -zgrid, 'b')
             hold on
             
@@ -150,12 +151,12 @@ classdef benthic_test
            
             % Fe-bound P (M)
             subplot(1,2,2)
-            for i=1:length(zgrid)                
-                [PO4(i), flxPO4(i), M(i), flxM(i)] = res.zPO4_M.calcPO4_M(zgrid(i), bsd, res.swi, res);
-            end
+            %for i=1:length(zgrid)                
+            %    [PO4(i), flxPO4(i), M(i), flxM(i)] = res.zPO4_M.calcPO4_M(zgrid(i), bsd, res.swi, res);
+            %end
             plot(M, -zgrid, 'b')
             hold on
-            plot([0,max(M)], [-bsd.zbio,-bsd.zbio], 'k--')        
+%            plot([0,max(M)], [-bsd.zbio,-bsd.zbio], 'k--')        
             t=xlim;         % to draw penetration depths the correct lengths
             plot([0,t(1,2)], [-bsd.zbio,-bsd.zbio], 'k--')     
             plot([0,t(1,2)], [-res.zox,-res.zox], 'b--')     
@@ -165,7 +166,97 @@ classdef benthic_test
             ylabel('Sediment Depth (cm)')
             title ('Fe-bound P (mol/cm3)')
             
-	if(false)      
+        if debug
+            figure
+
+            subplot(3,2,1)     
+            hold on
+            plot(e_M, -zgrid, 'b')
+            title ('Fe-P - ODE solution')
+            
+            subplot(3,2,2)
+            hold on
+            plot(f_M, -zgrid, 'b')
+            
+            subplot(3,2,3)
+            hold on
+            plot(p_M, -zgrid, 'b')
+            
+            subplot(3,2,4)
+            hold on
+            plot(q_M, -zgrid, 'b')
+            
+            subplot(3,2,5)
+            hold on
+            plot(g_M, -zgrid, 'b')
+            
+            figure
+            hold on 
+            subplot(3,2,1)           
+            plot(dedz_M, -zgrid, 'b')
+            title ('Fe-P - ODE derivations')                       
+            subplot(3,2,2)
+            plot(dfdz_M, -zgrid, 'b')
+            subplot(3,2,3)
+            plot(dpdz_M, -zgrid, 'b')
+            subplot(3,2,4)
+            plot(dqdz_M, -zgrid, 'b')
+            subplot(3,2,5)
+            plot(dgdz_M, -zgrid, 'b')
+            
+            
+ %%%%%%%%%%%%%%%%%%%%% 
+ 
+ %         H2S
+ 
+ %%%%%%%%%%%%%%%%%%%%%  
+            figure
+            subplot(3,3,2)
+            for i=1:length(zgrid)
+                [H2S(i), flxH2S(i), e_H2S(i), dedz_H2S(i), f_H2S(i), dfdz_H2S(i), g_H2S(i), dgdz_H2S(i)] = res.zH2S.calcH2S_debug(zgrid(i), bsd, res.swi, res);
+            end
+            plot(H2S, -zgrid, 'b')
+            hold on
+            t=xlim;         % to draw penetration depths the correct lengths
+            plot([0,t(1,2)], [-bsd.zbio,-bsd.zbio], 'k--')     
+            plot([0,t(1,2)], [-res.zox,-res.zox], 'b--')     
+            plot([0,t(1,2)], [-res.zno3,-res.zno3], 'g--')     
+            plot([0,t(1,2)], [-res.zso4,-res.zso4], 'r--')          
+            xlabel ('H_2S (mol/cm3)')
+            ylabel('Sediment Depth (cm)')
+%            title ('H2S (mol/cm3)')
+
+            subplot(3,3,4)     
+            hold on
+            plot(e_H2S, -zgrid, 'b')
+            title ('H_2S - ODE solution')
+            
+            subplot(3,3,5)
+            hold on
+            plot(f_H2S, -zgrid, 'b')
+            
+            subplot(3,3,6)
+            hold on
+            plot(g_H2S, -zgrid, 'b')
+            
+            subplot(3,3,7)     
+            hold on
+            plot(dedz_H2S, -zgrid, 'b')
+            title ('H_2S - ODE derivations')
+            
+            subplot(3,3,8)
+            hold on
+            plot(dfdz_H2S, -zgrid, 'b')
+            
+            subplot(3,3,9)
+            hold on
+            plot(dgdz_H2S, -zgrid, 'b')
+
+
+        end
+            
+            
+	if(true)      
        % JUST CONCENTRATION
 	set(0,'defaultLineLineWidth', 2)
 	set(0,'DefaultAxesFontSize',12)

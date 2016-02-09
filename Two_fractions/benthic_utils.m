@@ -73,6 +73,14 @@ classdef benthic_utils
             % (Dis)continuity conditions at boundary:
             %                   y_r(xb)    = y_l(xb)     + Vb
             %                   dydx_r(xb) = dydx_l(xb)  + Db
+            
+            %         | A_l |         | A_r|      
+            %         | B_l |         | B_r|    
+            %     X   | C_l |   =  Y  | C_r|  + Z  
+            %         | D_l |         | D_r|               
+            
+            
+            
             %
             % Find C and D such that:
             %         | A_l |         | A_r|      
@@ -142,7 +150,7 @@ classdef benthic_utils
             A = Z(1);
             B = Z(2);
             C = Z(3);
-            %D = Z(4);                        
+     %       D = Z(4);                        
         end
         
        

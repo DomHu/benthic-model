@@ -133,7 +133,7 @@ classdef benthic_zH2S
                               
         
       
-        function [H2S, flxH2S] = calcH2S(obj, z, bsd, swi, r)
+        function [H2S, flxH2S, e, dedz, f, dfdz, g, dgdz] = calcH2S(obj, z, bsd, swi, r)
             % Calculate H2S concentration and flux at depth z from solution
             
             rH2S = r.rH2S;

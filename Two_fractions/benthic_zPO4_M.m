@@ -11,8 +11,8 @@ classdef benthic_zPO4_M
         KPO42=1.3;          %Adsorption coefficient in anoxic layer (-)
         ksPO4=0.26*365;      %Rate constant for kinetic PO4 sorption (1/yr)   0.12 fits 1.CASE; 2.2 fits 2. CASE DOM: was 0.5*365 from Nicolas; Slomp ea 1996 0.26
         %ksPO4=1e-15;
-        %kmPO4= 1e-20;
-        kmPO4=0.00053*365;	%Rate constant for Fe-bound P release upon Fe oxide reduction   DOM: was 1.8e-6 Slomp ea 1996 0.00053*365 
+        kmPO4= 1e-15 ;
+        %kmPO4=0.00053*365;	%Rate constant for Fe-bound P release upon Fe oxide reduction   DOM: was 1.8e-6 Slomp ea 1996 0.00053*365 
         kaPO4 = 0;
         %kaPO4=0.001*365;	%Rate constant for authigenic P formation (1/yr)    DOM: was 0.004*365 from Nicolas; Slomp ea 1996 0.001
         PO4s=1.0e-9;        %Equilibrium concentration for P sorption (mol/cm3)       was 1.5e-9; ; Slomp ea 1996
@@ -86,7 +86,7 @@ classdef benthic_zPO4_M
             [ e2_zox_P, dedz2_zox_P, f2_zox_P, dfdz2_zox_P, g2_zox_P, dgdz2_zox_P, p2_zox_P, dpdz2_zox_P, q2_zox_P, dqdz2_zox_P, ...
                 e2_zox_M, dedz2_zox_M, f2_zox_M, dfdz2_zox_M, g2_zox_M, dgdz2_zox_M, p2_zox_M, dpdz2_zox_M, q2_zox_M, dqdz2_zox_M] ...
                 = r.zTOC.calcfg_l12_PO4_M(r.zox, bsd, swi, r, obj.reac1_anox, obj.reac2_anox, obj.kaPO4/(1+obj.KPO42), obj.PO4a*obj.kaPO4/(1+obj.KPO42), bsd.SD*obj.kmPO4/(1+obj.KPO42), rPO4_M.ls2, obj.kmPO4, obj.kmPO4.*obj.Minf, 0);
-              % calcfg_l12_PO4_M(obj, z, bsd, swi, res,     reac1P,         reac2P,          ktempP,                        QtempP,                     alphaP,                        ls,      ktempM,           QtempM,    alphaM)
+              % calcfg_l12_PO4_M(obj, z, bsd, swi, res,     reac1P,         reac2P,          ktempP,                        QtempP,                     alphaP,                           ls,         ktempM,           QtempM,    alphaM)
             
             % match solutions at zox - continuous concentration and flux
             % organize the data in matrices and let matlab do the calculation
@@ -99,7 +99,7 @@ classdef benthic_zPO4_M
             Vb = 0;
             Fb = 0;
             
-            if(r.zox <= bsd.zbio)   % 1. CASE: 4 int const. in each layer
+            if(r.zox < bsd.zbio)   % 1. CASE: 4 int const. in each layer
                 % SD zox is bioturbated
                 X = [e1_zox_P, f1_zox_P, p1_zox_P, q1_zox_P; ...
                      dedz1_zox_P, dfdz1_zox_P, dpdz1_zox_P, dqdz1_zox_P; ...
@@ -184,6 +184,7 @@ classdef benthic_zPO4_M
             % and set DPO4M = 0
  
            % SD assume D2 == 0 (as q, dqdz2_zinf = 0 ) and solve for 3 unknowns
+           % Dominik 01.02.2016 Check: Do I need check for cases...?
             X = [dedz2_zinf_P, dfdz2_zinf_P, dpdz2_zinf_P; ...
                  EFPQ_P(1), EFPQ_P(2), EFPQ_P(3); ...                 
                  bsd.w*EFPQ_M(1), bsd.w*EFPQ_M(2), bsd.w*EFPQ_M(3)];
@@ -259,7 +260,7 @@ classdef benthic_zPO4_M
                
         function FPO4 = calcFPO4(obj, zPO4, bsd, swi, r)
            % Calculate PO4 consumption below zPO4, by organic matter and indirectly via methane oxidation 
-           
+           % Dom 20.01.2016 not used in code....
             tmpreac1    = bsd.PO4C.*bsd.gammaCH4;
             tmpreac2    = bsd.PO4C.*bsd.gammaCH4;
        
@@ -269,17 +270,19 @@ classdef benthic_zPO4_M
         
         
                                           
-        function [PO4, flxPO4, M, flxM] = calcPO4_M(obj, z, bsd, swi, r)
+        function [PO4, flxPO4, M, flxM, e_M, f_M, p_M, q_M, g_M, dedz_M, dfdz_M, dpdz_M, dqdz_M, dgdz_M] = calcPO4_M(obj, z, bsd, swi, r)
             % Calculate PO4 concentration and flux at depth z from solution
             
                 rPO4_M = r.rPO4_M;
-                if z <= bsd.zbio
+                if z < bsd.zbio
                     D_P = obj.DPO41;
                     D_M = bsd.Dbio;
                 else
                     D_P = obj.DPO42;
                     D_M = 0;
                 end
+                
+                
                 
                 if (z <= r.zox)   % layer 1                    
                     [ e_P, dedz_P, f_P, dfdz_P, g_P, dgdz_P, p_P, dpdz_P, q_P, dqdz_P, ...
@@ -306,7 +309,7 @@ classdef benthic_zPO4_M
                     flxM  = D_M.*(r.rPO4_M.A2.*dedz_M+r.rPO4_M.B2.*dfdz_M + r.rPO4_M.C2.*dpdz_M+r.rPO4_M.D2.*dqdz_M + dgdz_M);
                 end
                 
-        end
+         end
         
     end
     
