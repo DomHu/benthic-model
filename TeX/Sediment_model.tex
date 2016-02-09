@@ -211,16 +211,16 @@ across the bottom of the bioturbated zone, $z_{bio}$ (Table \ref{Tab:BC_OM+O2}).
 \hline
 \textbf{Boundary}& \textbf{Condition}&\\
 \hline
-$z=0$& known concentration& 1) $C_i(0)=C_{i0}$  \\
+$z=0$& known concentration& 1) $C_i(0)=C_{i0}$\\
 $z=z_{bio}$&continuity& 2) $C_i(z_{bio}^-)$=$C_i(z_{bio}^+)$\\
                &&3) $D_{bio}\cdot \frac{\partial C_i}{\partial z}|_{z_{bio}^-}=0$\\
 %Dom was               &&3) $D_{bio}\cdot \frac{\partial C_i}{\partial z}|_{z_{bio}^-}-w\cdot C_i(z_{bio}^-)=-w\cdot C_i(z_{bio}^+)$\\
 \hline
-$z=0$& known concentration& 1) $O_2(0)=O_{20}$  \\
+$z=0$& known concentration& 1) $O_2(0)=O_{20}$\\
 $z=z_{bio}$&continuity& 2) $O_2(z_{bio}^-)$=$O_2(z_{bio}^+)$\\
                &&3) $\left(D_{O_2,0}+D_{bio}\right )\cdot \frac{\partial O_2}{\partial z}|_{z_{bio}^-}=D_{O_2,0} \cdot \frac{\partial O_2}{\partial z}|_{z_{bio}^+}$\\
 %Dom was               &&3) $\left(D_{bio}+D_{mol,O_2}\right )\cdot \frac{\partial O_2}{\partial z}|_{z_{bio}^-}-w\cdot O_2(z_{bio}^-)=D_{mol,O_2} \cdot \frac{\partial O_2}{\partial z}|_{z_{bio}^+}-w\cdot O_2(z_{bio}^+)$\\
-$z=z_{ox}$& $O_2$ consumption& 4)$ O_2(z_{ox})=0$ \quad or \quad $\frac{\partial O_2}{\partial z}|_{z_{ox}}=0$\\
+$z=z_{ox}$& $O_2$ consumption& 4)$ O_2(z_{ox})=0$  \quad \textcolor{red}{and/or/at all???} \quad $\frac{\partial O_2}{\partial z}|_{z_{ox}}=0$\\
 $z=z_{ox}$& Flux from below& 5) $-\omega D_{O_2} \cdot \frac{\partial O_2}{\partial z}|_{z_{ox}}=F_{red, z_{ox}}$\\   
 &with:\textcolor{red}{ correct? \&}&$ \quad F_{red,z_{ox}}=\frac{1-\phi}{\phi} \cdot \int_{z_{ox}}^{\infty}  \sum_i \left( 2\gamma_{NH_4} NC_i + \delta SC_i \right) k_i C_i\ dz$ \\
 &\textcolor{red}{why $\omega$ at 5) (delete!?)}&\\
@@ -260,7 +260,7 @@ of organic matter below $z_{ox}$. Thus, assuming that fractions ($\gamma_{NH_4}$
 %To model nutrient dynamics the sediment is partitioned into two geochemical layers (oxic and suboxic)
 To model nitrate and ammonium dynamics the sediment is partitioned into two geochemical layers (oxic and suboxic), where different equations describe the biogeochemical processes. 
 Above the oxygen penetration depth organic matter mineralization produces ammonium, which is partly nitrified to nitrate (the fraction $\gamma_{NH_4}$). 
-In the suboxic zone ($z>z_{ox}$), oxygen concentration is zero and nitrate serves as the electron acceptor to respire organic matter, thus consuming nitrate and producing ammonium. Below the nitrate 
+In the suboxic zone ($z>z_{ox}$), oxygen concentration is zero and nitrate serves as the electron acceptor to respire organic matter, thus nitrate is consumed by denitrification and ammonium is produced. Below the nitrate 
 penetration depth $z_{NO_3}$, ammonium is still produced through OM mineralization. Therefore the diagenetic equations for nitrate and ammonium are given by:
 \begin{align}
 \intertext{1. Layer ($z \leq z_{ox}$)}
@@ -302,32 +302,82 @@ $z=z_{bio}$&continuity& 2) $NH_4(z_{bio}^-)$=$NH_4(z_{bio}^+)$\\
                && 3) $\left(D_{NH_4,0}+D_{bio}\right )\cdot \frac{\partial NH_4}{\partial z}|_{z_{bio}^-}=D_{NH_4,0} \cdot \frac{\partial NH_4}{\partial z}|_{z_{bio}^+}$\\
 $z=z_{ox}$& continuity& 4) $NH_4(z_{ox}^-)$=$NH_4(z_{ox}^+)$\\
                && 5) $-D_{NH_4} \cdot \frac{\partial NH_4}{\partial z}|_{z_{ox}^-} + (1-\gamma_{NH_4})\cdot F_{NH_4}=-D_{NH_4} \cdot \frac{\partial NH_4}{\partial z}|_{z_{ox}^+}$\\
-&where: & $\quad F_{NH_4}=\frac{1-\phi}{\phi} \cdot \int_{z_{NH_4}}^{\infty}  \sum_i k_i \cdot NC_i \cdot C_i\ dz$ \\          
-$z=z_{NH_4}$& NO$_3$ consumption & 6) $\frac{\partial NH_4}{\partial z}|_{z_{NH_4}}=0$\\
+&where: & $\quad F_{NH_4}=\frac{1-\phi}{\phi} \cdot \int_{z_{NO_3}}^{\infty}  \sum_i k_i \cdot NC_i \cdot C_i\ dz$ \\          
+$z=z_{\infty}$& NH$_4$ flux & 6) $\frac{\partial NH_4}{\partial z}|_{z_\infty}=0$\\
 \hline    
 \end{tabular}
 \label{Tab:BC_NO3+NH4}
 % is used to refer this table in the text
 \end{table}
-\subsubsection{Sulfate}
-Processes considered\\
-General equation\\
-Solution\\
+\subsubsection{Sulfate and Sulfide}
+When nitrate is depleted, sulfate reduction is the pathway to mineralize organic matter.  To describe sulfate and hydrogen sulfide concentrations in the sediments...
+Sulfate and sulfide dynamics are thus described by:
+\begin{align}
+\intertext{1. Layer ($z \leq z_{NO_3}$)}
+ \frac{\partial SO_4^I}{\partial t} &= 0 = D_{SO_4} \frac{\partial^2SO_4^I }{\partial z^2} - w\frac{\partial SO_4^I }{\partial z} \label{eq:SO4_ODE1_L1}\\ %\qquad &\text{1. Layer ($z\leq z_{ox}$)}\\
+ \frac{\partial H_2S^I}{\partial t} &= 0 = D_{H_2S} \frac{\partial^2H_2S^I }{\partial z^2} - w\frac{\partial H_2S^I }{\partial z}\label{eq:H2S_ODE1_L1}\\
+ \intertext{2. Layer ($z_{NO_3} < z \leq z_{SO_4}$ [or $z_\infty$ for H$_2$S])} 
+\frac{\partial SO_4^{II}}{\partial t} &= 0 = D_{SO_4} \frac{\partial^2SO_4^{II} }{\partial z^2} - w\frac{\partial SO_4^{II} }{\partial z} - \frac{1-\phi}{\phi} \cdot \sum_i SO_4C \cdot k_i \cdot C_{i}(z) \label{eq:NO3_ODE1_L2}\\
+\frac{\partial H_2S^{II}}{\partial t} &= 0 = D_{H_2S} \frac{\partial^2H_2S^{II} }{\partial z^2} - w\frac{\partial H_2S^{II} }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i SO_4C  \cdot k_i \cdot C_{i}(z)\label{eq:NH4_ODE1_L2}
+\end{align}
+where
+\begin{align}
+ D_{i}&=D_{i, 0}+D_{bio} &\text{if ($z\leq z_{bio}$)}\\
+ D_{i}&=D_{i, 0}                &\text{if ($z > z_{bio}$)} 
+\end{align} 
+and $i \in \{$SO$_4$, H$_2$S$\}$. 
+See boundary condition in Table \ref{Tab:BC_SO4+H2S}.
 
+\begin{table}[tbp]
+\caption{Boundary conditions for sulfate and sulfide.}
+% title of Table
+\centering
+% used for centering table
+\begin{tabular}{ |l| l| l|}
+\hline
+\textbf{Boundary}& \textbf{Condition}&\\
+\hline
+$z=0$& known concentration& 1) $SO_4(0)=SO_{40}$  \\
+$z=z_{bio}$&continuity& 2) $SO_4(z_{bio}^-)$=$SO_4(z_{bio}^+)$\\
+               && 3) $\left(D_{SO_4,0}+D_{bio}\right )\cdot \frac{\partial SO_4}{\partial z}|_{z_{bio}^-}=D_{SO_4,0} \cdot \frac{\partial SO_4}{\partial z}|_{z_{bio}^+}$\\
+$z=z_{ox}$& continuity& 4) $SO_4(z_{ox}^-)$=$SO_4(z_{ox}^+)$\\
+               && 5) $-D_{SO_4} \cdot \frac{\partial SO_4}{\partial z}|_{z_{ox}^-} + \gamma_{H_2S}\cdot F_{H_2S}=-D_{SO_4} \cdot \frac{\partial SO_4}{\partial z}|_{z_{ox}^+}$\\
+&where: & $\quad F_{H_2S}=\frac{1-\phi}{\phi} \cdot \left( \int_{z_{NO_3}}^{SO_4}  \sum_i k_i \cdot SO_4C \cdot C_i\ dz + \gamma_{CH_4}\cdot \int_{z_{SO_4}}^{\infty}  \sum_i k_i \cdot SO_4C \cdot C_i\ dz \right)$\\          
+$z=z_{SO_4}$& SO$_4$ consumption & 6) $SO_4(z_{SO_4})=0$ \quad \textcolor{red}{or/and (???)} \quad $-D_{SO_4} \cdot \frac{\partial SO_4}{\partial z}|_{z_{SO_4}}= F_{SO_4}(z_{SO_4})$\\
+$z=z_{SO_4}$& Flux from below& 7) $-D_{SO_4} \cdot \frac{\partial SO_4}{\partial z}|_{z_{SO_4}}=F_{SO_4}(z_{SO_4})$\\   
+&with:\textcolor{red}{ correct $SO_4C \cdot \gamma_{CH_4}$?}&$ \quad F_{SO_4}(z_{SO_4})=\frac{1-\phi}{\phi} \cdot \int_{z_{SO_4}}^{\infty}  \sum_i SO_4C \cdot \gamma_{CH_4} \cdot k_i C_i\ dz$ \\
+% was from Sandra &with:&$F_{red,z_{ox}}=\beta \cdot \int_{z_{ox}}^{\inf}  \sum_i k_i\cdot C_i  dz  + 2\cdot \gamma \cdot \int_{z_{O_2}}^{\inf}  \sum_i k_i\cdot C_i  -  $ \\
+\hline
+$z=0$& known concentration& 1) $H_2S(0)=H_2S_{0}$  \\
+$z=z_{bio}$&continuity& 2) $H_2S(z_{bio}^-)$=$H_2S(z_{bio}^+)$\\
+               && 3) $\left(D_{H_2S,0}+D_{bio}\right )\cdot \frac{\partial H_2S}{\partial z}|_{z_{bio}^-}=D_{H_2S,0} \cdot \frac{\partial H_2S}{\partial z}|_{z_{bio}^+}$\\
+$z=z_{ox}$& continuity& 4) $H_2S(z_{ox}^-)$=$H_2S(z_{ox}^+)$\\
+               && 5) $-D_{H_2S} \cdot \frac{\partial H_2S}{\partial z}|_{z_{ox}^-} + (1-\gamma_{H_2S})\cdot F_{H_2S}=-D_{H_2S} \cdot \frac{\partial H_2S}{\partial z}|_{z_{ox}^+}$\\
+&where: & $\quad F_{H_2S}=\frac{1-\phi}{\phi} \cdot \int_{z_{SO_4}}^{\infty}  \sum_i k_i \cdot NC_i \cdot C_i\ dz$ \\          
+$z=z_{H_2S}$& NH$_4$ flux & 6) $\frac{\partial H_2S}{\partial z}|_{z_{H_2S}}=0$\\
+\hline    
+\end{tabular}
+\label{Tab:BC_SO4+H2S}
+% is used to refer this table in the text
+\end{table}
+Sulfate:\\
+BC (5): Diffusive flux at $z_{ox}$ is equal, considering the flux of reduced substances (H$_2$S) from below (\textcolor{red}{(SD, matlab): include methane region as AOM will produce sulfide as well(?), 
+check code, as e.g. not included in prepfg\_l12 call: bc. taken into account at the bound. cond. at $z_{SO_4}$).} \\
+BC (7): Calculate SO4 consumption below zso4, by organic matter and indirectly via methane oxidation
 % \subsubsection{Ammonium}
 % Processes considered\\
 % general equation\\
 % solution\\
 
 \subsubsection{Phosphate}
-Processes considered\\
+Processes considered\\ 
 general equation\\
 solution\\
 
-\subsubsection{Sulfide}
-Processes considered\\
-general equation\\
-solution\\
+% \subsubsection{Sulfide}
+% Processes considered\\
+% general equation\\
+% solution\\
 
 \subsection{Model Parameters}
 \subsubsection{Transport Parameters}
