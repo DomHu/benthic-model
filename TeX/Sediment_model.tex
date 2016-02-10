@@ -184,7 +184,7 @@ representation of the benthic-pelagic coupling in Earth System Models. The sedim
 and reduced species return fluxes, and oxygen uptake fluxes. As a consequence, the reaction network must explicitly or implicitly account for the most important primary and secondary redox reactions, equilibrium reactions, 
 mineral precipitation/dissolution and adsorption/desorption, resulting in a complex set of coupled reaction-transport equations. The following 
 subsections provide a short discussion of the reaction processes included in the model and table \ref{tab_reactions} \textcolor{red}{what to do here?} provides an overview of the vertically resolved conservation equations for solid and dissolved species 
-in each layer.
+in each layer. Table \ref{table:reaction_parameters} summarizes the stoichiometric factors and secondary reaction parameters used in the model.
 
 \subsubsection{Organic matter}
 In marine sediments, organic matter (OM) is degraded by heterotrophic activity coupled to the sequential utilisation of terminal electron acceptors (TEAs), typically in the order of O$_2$, NO$_3^-$, Mn(VI), Fe(III) and SO$_4^{2-}$ 
@@ -195,11 +195,11 @@ for the change in organic matter degradability with burial. Each compound class 
 \begin{equation}
  \frac{\partial C_i}{\partial t} = 0= D_{C_i} \frac{\partial^2C_i }{\partial z^2} - w\frac{\partial C_i }{\partial z} - k_i\cdot C_{i} \label{eq:ODE_OC}
 \end{equation}
-where:
-\begin{align}
- D_{C_i}&=D_{bio} 	 &\text{if ($z\leq z_{bio}$)}\\
- D_{C_i}&=0            &\text{if ($z > z_{bio}$)} 
-\end{align}
+% where:
+% \begin{align}
+%  D_{C_i}&=D_{bio} 	 &\text{if ($z\leq z_{bio}$)}\\
+%  D_{C_i}&=0            &\text{if ($z > z_{bio}$)} 
+% \end{align}
 The solution of Eq. \ref{eq:ODE_OC} (see section \ref{sec:Solution} for details) requires the definition of boundary conditions. The model assumes a known concentration/flux at the sediment-water interface and continuity 
 across the bottom of the bioturbated zone, $z_{bio}$ (Table \ref{Tab:BC_OM+O2}).
 \begin{table}[tbp]
@@ -242,11 +242,11 @@ a factor of $\frac{1-\phi}{\phi}$, where $\phi$ is the sediment porosity. Oxygen
 \begin{align} 
  \frac{\partial O_2}{\partial t} &= 0= D_{O_2}\frac{\partial^2 O_2 }{\partial z^2} - w\frac{\partial O_2}{\partial z} - \frac{1-\phi}{\phi}\sum_i k_i \cdot [ OC + 2 \gamma_{NH_4} NC_i ]\cdot C_{i}(z) \label{eq:ODE_O2_1}
 \end{align}
-where:
-\begin{align}
- D_{O_2}&=D_{O_2, 0}+D_{bio}  &\text{if ($z\leq z_{bio}$)}\\
- D_{O_2}&=D_{O_2, 0}                &\text{if ($z > z_{bio}$)} 
-\end{align}  
+% where:
+% \begin{align}
+%  D_{O_2}&=D_{O_2, 0}+D_{bio}  &\text{if ($z\leq z_{bio}$)}\\
+%  D_{O_2}&=D_{O_2, 0}                &\text{if ($z > z_{bio}$)} 
+% \end{align}  
 To solve Eq. \ref{eq:ODE_O2_1} analytically (see section \ref{sec:Solution}) boundary conditions at three depths are defined (Table \ref{Tab:BC_OM+O2}). 
 The model assumes a known bottom water concentration and the complete consumption of oxygen at the oxygen penetration depth (or zero flux if $z_{ox}=z_\infty$). 
 It considers equal oxygen concentration and diffusive flux above ($z_{bio}^-$) and 
@@ -270,12 +270,13 @@ penetration depth $z_{NO_3}$, ammonium is still produced through OM mineralizati
 \frac{\partial NO_3^{II}}{\partial t} &= 0 = D_{NO_3} \frac{\partial^2NO_3^{II} }{\partial z^2} - w\frac{\partial NO_3^{II} }{\partial z} - \frac{1-\phi}{\phi} NO_3CR \cdot \sum_i k_i \cdot C_{i}(z) \label{eq:NO3_ODE1_L2}\\
 \frac{\partial NH_4^{II}}{\partial t} &= 0 = D_{NH_4} \frac{\partial^2NH_4^{II} }{\partial z^2} - w\frac{\partial NH_4^{II} }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i NC_i \cdot k_i \cdot C_{i}(z)\label{eq:NH4_ODE1_L2}
 \end{align}
-where
-\begin{align}
- D_{i}&=D_{i, 0}+D_{bio} &\text{if ($z\leq z_{bio}$)}\\
- D_{i}&=D_{i, 0}                &\text{if ($z > z_{bio}$)} 
-\end{align} 
-and $i \in \{$NO$_3$, NH$_4\}$. The boundary conditions to solve Equations \ref{eq:NO3_ODE1_L1} - \ref{eq:NH4_ODE1_L2} are summarized in Table \ref{Tab:BC_NO3+NH4}. The model assumes known bottom water concentrations 
+% where
+% \begin{align}
+%  D_{i}&=D_{i, 0}+D_{bio} &\text{if ($z\leq z_{bio}$)}\\
+%  D_{i}&=D_{i, 0}                &\text{if ($z > z_{bio}$)} 
+% \end{align} 
+% and $i \in \{$NO$_3$, NH$_4\}$. 
+The boundary conditions to solve Equations \ref{eq:NO3_ODE1_L1} - \ref{eq:NH4_ODE1_L2} are summarized in Table \ref{Tab:BC_NO3+NH4}. The model assumes known bottom water concentrations 
 for both species, the complete consumption of nitrate at the nitrate penetration depth (or zero flux if $z_{NO_3}=z_\infty$) and no change in ammonium flux at $z_\infty$. It considers equal concentrations and diffusive fluxes 
 at $z_{bio}$ and $z_{ox}$.  In addition, the re-oxidation of upward-diffusing reduced ammonium is considered in the oxic-suboxic boundary condition for nitrate and ammonium. 
 
@@ -301,9 +302,11 @@ $z=0$& known concentration& 1) $NH_4(0)=NH_{40}$  \\
 $z=z_{bio}$&continuity& 2) $NH_4(z_{bio}^-)$=$NH_4(z_{bio}^+)$\\
                && 3) $\left(D_{NH_4,0}+D_{bio}\right )\cdot \frac{\partial NH_4}{\partial z}|_{z_{bio}^-}=D_{NH_4,0} \cdot \frac{\partial NH_4}{\partial z}|_{z_{bio}^+}$\\
 $z=z_{ox}$& continuity& 4) $NH_4(z_{ox}^-)$=$NH_4(z_{ox}^+)$\\
-               && 5) $-D_{NH_4} \cdot \frac{\partial NH_4}{\partial z}|_{z_{ox}^-} + (1-\gamma_{NH_4})\cdot F_{NH_4}=-D_{NH_4} \cdot \frac{\partial NH_4}{\partial z}|_{z_{ox}^+}$\\
+    \textcolor{red}{not $+(1-\gamma_{NH_4})\cdot F_{NH_4}$?}           && 5) $-D_{NH_4} \cdot \frac{\partial NH_4}{\partial z}|_{z_{ox}^-} -\gamma_{NH_4}\cdot F_{NH_4}=-D_{NH_4} \cdot \frac{\partial NH_4}{\partial z}|_{z_{ox}^+}$\\
 &where: & $\quad F_{NH_4}=\frac{1-\phi}{\phi} \cdot \int_{z_{NO_3}}^{\infty}  \sum_i k_i \cdot NC_i \cdot C_i\ dz$ \\          
-$z=z_{\infty}$& NH$_4$ flux & 6) $\frac{\partial NH_4}{\partial z}|_{z_\infty}=0$\\
+$z=z_{NO_3}$&continuity& 6) $NH_4(z_{NO_3}^-)$=$NH_4(z_{NO_3}^+)$\\
+               & flux & 7) $D_{NH_4}\cdot \frac{\partial NH_4}{\partial z}|_{z_{NO_3}^-}=D_{NH_4} \cdot \frac{\partial NH_4}{\partial z}|_{z_{NO_3}^+}$\\
+$z=z_{\infty}$& NH$_4$ flux & 8) $\frac{\partial NH_4}{\partial z}|_{z_\infty}=0$\\
 \hline    
 \end{tabular}
 \label{Tab:BC_NO3+NH4}
@@ -320,16 +323,16 @@ Sulfate and sulfide dynamics are thus described by:
 \frac{\partial SO_4^{II}}{\partial t} &= 0 = D_{SO_4} \frac{\partial^2SO_4^{II} }{\partial z^2} - w\frac{\partial SO_4^{II} }{\partial z} - \frac{1-\phi}{\phi} \cdot \sum_i SO_4C \cdot k_i \cdot C_{i}(z) \label{eq:NO3_ODE1_L2}\\
 \frac{\partial H_2S^{II}}{\partial t} &= 0 = D_{H_2S} \frac{\partial^2H_2S^{II} }{\partial z^2} - w\frac{\partial H_2S^{II} }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i SO_4C  \cdot k_i \cdot C_{i}(z)\label{eq:NH4_ODE1_L2}
 \end{align}
-where
-\begin{align}
- D_{i}&=D_{i, 0}+D_{bio} &\text{if ($z\leq z_{bio}$)}\\
- D_{i}&=D_{i, 0}                &\text{if ($z > z_{bio}$)} 
-\end{align} 
-and $i \in \{$SO$_4$, H$_2$S$\}$. 
+% where
+% \begin{align}
+%  D_{i}&=D_{i, 0}+D_{bio} &\text{if ($z\leq z_{bio}$)}\\
+%  D_{i}&=D_{i, 0}                &\text{if ($z > z_{bio}$)} 
+% \end{align} 
+% and $i \in \{$SO$_4$, H$_2$S$\}$. 
 See boundary condition in Table \ref{Tab:BC_SO4+H2S}.
 
 \begin{table}[tbp]
-\caption{Boundary conditions for sulfate and sulfide.}
+\caption{Boundary conditions for sulfate and sulfide. As in MATLAB (in red my suggestions).}
 % title of Table
 \centering
 % used for centering table
@@ -339,41 +342,143 @@ See boundary condition in Table \ref{Tab:BC_SO4+H2S}.
 \hline
 $z=0$& known concentration& 1) $SO_4(0)=SO_{40}$  \\
 $z=z_{bio}$&continuity& 2) $SO_4(z_{bio}^-)$=$SO_4(z_{bio}^+)$\\
-               && 3) $\left(D_{SO_4,0}+D_{bio}\right )\cdot \frac{\partial SO_4}{\partial z}|_{z_{bio}^-}=D_{SO_4,0} \cdot \frac{\partial SO_4}{\partial z}|_{z_{bio}^+}$\\
+               & flux & 3) $\left(D_{SO_4,0}+D_{bio}\right )\cdot \frac{\partial SO_4}{\partial z}|_{z_{bio}^-}=D_{SO_4,0} \cdot \frac{\partial SO_4}{\partial z}|_{z_{bio}^+}$\\
 $z=z_{ox}$& continuity& 4) $SO_4(z_{ox}^-)$=$SO_4(z_{ox}^+)$\\
-               && 5) $-D_{SO_4} \cdot \frac{\partial SO_4}{\partial z}|_{z_{ox}^-} + \gamma_{H_2S}\cdot F_{H_2S}=-D_{SO_4} \cdot \frac{\partial SO_4}{\partial z}|_{z_{ox}^+}$\\
-&where: & $\quad F_{H_2S}=\frac{1-\phi}{\phi} \cdot \left( \int_{z_{NO_3}}^{SO_4}  \sum_i k_i \cdot SO_4C \cdot C_i\ dz + \gamma_{CH_4}\cdot \int_{z_{SO_4}}^{\infty}  \sum_i k_i \cdot SO_4C \cdot C_i\ dz \right)$\\          
-$z=z_{SO_4}$& SO$_4$ consumption & 6) $SO_4(z_{SO_4})=0$ \quad \textcolor{red}{or/and (???)} \quad $-D_{SO_4} \cdot \frac{\partial SO_4}{\partial z}|_{z_{SO_4}}= F_{SO_4}(z_{SO_4})$\\
-$z=z_{SO_4}$& Flux from below& 7) $-D_{SO_4} \cdot \frac{\partial SO_4}{\partial z}|_{z_{SO_4}}=F_{SO_4}(z_{SO_4})$\\   
-&with:\textcolor{red}{ correct $SO_4C \cdot \gamma_{CH_4}$?}&$ \quad F_{SO_4}(z_{SO_4})=\frac{1-\phi}{\phi} \cdot \int_{z_{SO_4}}^{\infty}  \sum_i SO_4C \cdot \gamma_{CH_4} \cdot k_i C_i\ dz$ \\
+               & flux \textcolor{red}{$\gamma_{H_2S}$ below?} & 5) $-D_{SO_4} \cdot \frac{\partial SO_4}{\partial z}|_{z_{ox}^-} +  F_{H_2S}(z_{ox})=-D_{SO_4} \cdot \frac{\partial SO_4}{\partial z}|_{z_{ox}^+}$\\
+&where:\textcolor{red}{$\int_{z_{SO_4}}^{\infty}$ here?} & $\quad F_{H_2S}(z_{ox})=\frac{1-\phi}{\phi} \cdot \textcolor{red}{\gamma_{H_2S}\cdot} \left( \int_{z_{NO_3}}^{SO_4}  \sum_i SO_4C \cdot k_i \cdot C_i\ dz + \gamma_{CH_4}\cdot \int_{z_{SO_4}}^{\infty}  \sum_i SO_4C \cdot k_i \cdot C_i\ dz \right)$\\          
+$z=z_{NO_3}$&continuity& 6) $SO_4(z_{NO_3}^-)$=$SO_4(z_{NO_3}^+)$\\
+               & flux & 7) $D_{SO_4}\cdot \frac{\partial SO_4}{\partial z}|_{z_{NO_3}^-}=D_{SO_4} \cdot \frac{\partial SO_4}{\partial z}|_{z_{NO_3}^+}$\\
+$z=z_{SO_4}$& SO$_4$ consumption & 8) $SO_4(z_{SO_4})=0$ \\%\quad \textcolor{red}{or/and (???)} \quad $\frac{\partial SO_4}{\partial z}|_{z_{SO_4}}= 0$\\
+& Flux from below& 9) $-D_{SO_4} \cdot \frac{\partial SO_4}{\partial z}|_{z_{SO_4}}= F_{SO_4}(z_{SO_4})$\\   
+&with:\textcolor{red}{ $SO_4C \cdot \gamma_{CH_4}$?}&$ \quad F_{SO_4}(z_{SO_4})=\frac{1-\phi}{\phi} \cdot \int_{z_{SO_4}}^{\infty}  \sum_i SO_4C \cdot \gamma_{CH_4} \cdot k_i \cdot C_i\ dz$ \textcolor{red}{not rather MC instead SO4C?}\\
 % was from Sandra &with:&$F_{red,z_{ox}}=\beta \cdot \int_{z_{ox}}^{\inf}  \sum_i k_i\cdot C_i  dz  + 2\cdot \gamma \cdot \int_{z_{O_2}}^{\inf}  \sum_i k_i\cdot C_i  -  $ \\
 \hline
 $z=0$& known concentration& 1) $H_2S(0)=H_2S_{0}$  \\
 $z=z_{bio}$&continuity& 2) $H_2S(z_{bio}^-)$=$H_2S(z_{bio}^+)$\\
-               && 3) $\left(D_{H_2S,0}+D_{bio}\right )\cdot \frac{\partial H_2S}{\partial z}|_{z_{bio}^-}=D_{H_2S,0} \cdot \frac{\partial H_2S}{\partial z}|_{z_{bio}^+}$\\
+               & flux & 3) $\left(D_{H_2S,0}+D_{bio}\right )\cdot \frac{\partial H_2S}{\partial z}|_{z_{bio}^-}=D_{H_2S,0} \cdot \frac{\partial H_2S}{\partial z}|_{z_{bio}^+}$\\
 $z=z_{ox}$& continuity& 4) $H_2S(z_{ox}^-)$=$H_2S(z_{ox}^+)$\\
-               && 5) $-D_{H_2S} \cdot \frac{\partial H_2S}{\partial z}|_{z_{ox}^-} + (1-\gamma_{H_2S})\cdot F_{H_2S}=-D_{H_2S} \cdot \frac{\partial H_2S}{\partial z}|_{z_{ox}^+}$\\
-&where: & $\quad F_{H_2S}=\frac{1-\phi}{\phi} \cdot \int_{z_{SO_4}}^{\infty}  \sum_i k_i \cdot NC_i \cdot C_i\ dz$ \\          
-$z=z_{H_2S}$& NH$_4$ flux & 6) $\frac{\partial H_2S}{\partial z}|_{z_{H_2S}}=0$\\
+               & flux & 5) $-D_{H_2S} \cdot \frac{\partial H_2S}{\partial z}|_{z_{ox}^-} +  F_{H_2S}(z_{ox})=-D_{H_2S} \cdot \frac{\partial H_2S}{\partial z}|_{z_{ox}^+}$\\
+\textcolor{red}{not as SO4!?}&where: \textcolor{red}{$1-\gamma_{H_2S}$?} & $\quad F_{H_2S}(z_{ox})=\frac{1-\phi}{\phi} \cdot \textcolor{red}{(1-\gamma_{H_2S})\cdot} \int_{z_{NO_3}}^{\infty}  \sum_i SO_4C \cdot k_i \cdot C_i\ dz$ \\          
+$z=z_{NO_3}$&continuity& 6) $H_2S(z_{NO_3}^-)$=$H_2S(z_{NO_3}^+)$\\
+               & flux & 7) $D_{H_2S}\cdot \frac{\partial H_2S}{\partial z}|_{z_{NO_3}^-}=D_{H_2S} \cdot \frac{\partial H_2S}{\partial z}|_{z_{NO_3}^+}$\\
+$z=z_{SO_4}$& continuity & 8) $H_2S(z_{SO_4}^-)$=$H_2S(z_{SO_4}^+)$\\ %$\frac{\partial H_2S}{\partial z}|_{z_{H_2S}}=0$\\
+               & flux (with AOM) & 9)  $-D_{H_2S}\cdot \frac{\partial H_2S}{\partial z}|_{z_{SO_4}^-} +  F_{H_2S}(z_{SO_4})=-D_{H_2S} \cdot \frac{\partial H_2S}{\partial z}|_{z_{SO_4}^+}$\\
+\textcolor{red}{correct???}&where: & $\quad F_{H_2S}(z_{SO_4})=\frac{1-\phi}{\phi} \cdot \int_{z_{SO_4}}^{\infty}  \sum_i SO_4C \cdot k_i \cdot C_i\ dz$ \\          
+$z=z_{\infty}$& flux & 10) $\frac{\partial H_2S}{\partial z}|_{z_\infty}=0$\\
 \hline    
 \end{tabular}
 \label{Tab:BC_SO4+H2S}
 % is used to refer this table in the text
 \end{table}
 Sulfate:\\
-BC (5): Diffusive flux at $z_{ox}$ is equal, considering the flux of reduced substances (H$_2$S) from below (\textcolor{red}{(SD, matlab): include methane region as AOM will produce sulfide as well(?), 
-check code, as e.g. not included in prepfg\_l12 call: bc. taken into account at the bound. cond. at $z_{SO_4}$).} \\
-BC (7): Calculate SO4 consumption below zso4, by organic matter and indirectly via methane oxidation
+BC (5): Diffusive flux at $z_{ox}$ is equal, considering the flux of reduced substances (H$_2$S) from below 
+\textcolor{red}{(SD, matlab): flux discontinuity from H2S source; include methane region as AOM will produce sulfide as well(?)} \\
+BC(9): matlab:Calculate SO4 consumption below zso4, by organic matter and indirectly via methane oxidation, \textcolor{red}{should it not be MC (methane to carbon ratio instead of SO4C}(???) \\
+
+Sulfide:\\
+BC (5): Match at zox, layer 1 - layer 2 (continuity, flux discontinuity from H2S source), flux of H2S to oxic interface (from all sources of H2S below), 
+NB: include methane region as AOM will produce sulphide as well \textcolor{red}{should it be not the same as in SO4???}\\
+BC (9): (flux with AOM production) flux of H2S produced by AOM interface (Source of H2S), \textcolor{red}{don't think the reaction conctants are correct in matlab!}
+
+
 % \subsubsection{Ammonium}
 % Processes considered\\
 % general equation\\
 % solution\\
+\begin{table}[hbtp]
+\caption{Reaction parameters. Value relates to mol of terminal electron acceptor consumed for 1 mol of organic matter mineralized.}
+% title of Table
+\centering
+% used for centering table
+\begin{tabular}{l c c l}
+% centered columns (6 columns)
+\hline\hline
+%inserts double horizontal lines
+Parameter/Variable & Unit  & Value & Description\\
+\hline
+\multicolumn{4}{l}{\textbf{stoichiometric factors}}\\
+OC & $mol/mol$ & 1.0 & oxygen to carbon ratio\\
+$NC_1$ & $mol/mol$ & 0.1509 & nitrogen to carbon ratio\\
+& & & refractory fraction\\
+$NC_2$ & $mol/mol$ & 0.13333 & nitrogen to carbon ratio\\
+& & & labile fraction\\
+$SO_4C$ & $mol/mol$ & 0.5 & sulfate to carbon ratio\\
+$MC$ & $mol/mol$ & 0.5 & methane to carbon ratio\\
+%$DICC^I$ & $mol/mol$ & 1 & DIC to carbon ratio\\
+%& & & until $z_{SO_4}$\\
+%$DICC^{II}$ & $mol/mol$ & 0.5 & DIC to carbon ratio\\
+%& & & for methanogenesis\\[0.5ex]
+\multicolumn{4}{l}{\textbf{secondary reaction parameters}}\\
+$\gamma_{NH_4}$ & - & 1.0 & fraction of NH$_4$ that is oxidised\\
+& & & in oxic layer\\
+$\gamma_{H_2S}$ & - & 0.8 & fraction of H$_2$S that is oxidised\\
+& & & in oxic layer\\
+$\gamma_{CH_4}$ & - & 1.0 & fraction of CH$_4$ that is oxidised\\
+& & & at $z_{SO_4}$\\
+\hline\hline
+% inserts double horizontal lines
+\end{tabular}
+\label{table:reaction_parameters}
+% is used to refer this table in the text
+\end{table}
 
+\textcolor{red}{TODO: MAKe table with reaction parameters (e.g. SO$_4$, NC$_i$, ...)!}
 \subsubsection{Phosphate}
-Processes considered\\ 
-general equation\\
-solution\\
+To model phosphorus (P) in the sediments the model takes into account the change with depth of phosphate (PO$_4$) and iron-bond P, thereby mainly following the description of \citet{caroline_p_slomp_key_1996} 
+and \citet{gypens_simple_2008}. Throughout the sediment column organic matter is mineralized resulting in a release of phosphate to the pore water. In the oxic part of the sediment, this PO$_4$ either 
+diffusives upward to the water column or is sorped to Fe oxides forming Fe-bound P (or M)\citep{slomp1998role}. In the suboxic/anoxic zone, PO$_4$ is not only produced through organic matter degradation but is 
+also released from the Fe-bound P pool due to the reduction of Fe oxides. Furthermore, phosphate concentrations can become high enough in this layer for authigenic mineral formation to occur \citep{cappellen_mathematical_1988}. 
+This phosphorus bound in authigenic minerals represents a permanent sink for reactive phosphorus \citep{caroline_p_slomp_key_1996}. 
+Therefore the diagenetic equations for phosphorus are written:
+\begin{align}
+\intertext{1. Layer ($z \leq z_{ox}$)}
+ \frac{\partial PO_4^I}{\partial t} &= \frac{D_{PO_4}}{1+K_{PO_4}^I} \frac{\partial^2PO_4^I }{\partial z^2} - w\frac{\partial PO_4^I }{\partial z} + \frac{1-\phi}{\phi \cdot (1+K_{PO_4}^I)}\sum_i 
+					\left( PO_4C_i \cdot k_i \cdot C_{i}(z) \right) \notag\\
+					& - \frac{k_{s}}{1+K_{PO_4}^I}(PO_4^I-PO_4^s)\\  %&\text{1. Layer ($z\leq z_{ox} \leq zbio$)}\label{eq:SO4_ODE1_Case1_sub1}\\
+ \frac{\partial M^I}{\partial t} &= D_{M}\frac{\partial^2M^I }{\partial z^2} - w\frac{\partial M^I }{\partial z} + k_{s}\frac{\phi}{1-\phi}(PO_4^I-PO_4^s)\\  
+ \intertext{2. Layer ($z_{ox} < z$)} 
+ \frac{\partial M^{II}}{\partial t} & = D_{M}\frac{\partial^2M^{II} }{\partial z^2} - w\frac{\partial M^{II} }{\partial z} - k_{m}(M^{II} - M^\infty)\\  
+ \frac{\partial PO_4^{II}}{\partial t} &= \frac{D_{PO_4}^1}{1+K_{PO_4}^{II}} \frac{\partial^2PO_4^{II} }{\partial z^2} - w\frac{\partial PO_4^{II} }{\partial z} + \frac{1-\phi}{\phi \cdot (1+K_{PO_4}^{II})}\sum_i 
+					\left( PO_4C_i \cdot k_i \cdot C_{i}(z) \right) \notag\\
+					& - \frac{k_{a}}{1+K_{PO_4}^{II}}(PO_4^{II}-PO_4^a) + \frac{(1-\phi)k_{m}}{\phi(1+K_{PO_4}^{II})}(M^{II}-M^\infty)\\
+\end{align}
+% where
+% \begin{align}
+%  D_{PO_4}&=D_{PO_4, 0}+D_{bio} &\text{ and }\quad D_{M}&= D_{bio} &\text{if ($z\leq z_{bio}$)}\\
+%  D_{PO_4}&=D_{PO_4, 0} &\text{ and }\quad D_{M}&= 0 &\text{if ($z > z_{bio}$)} 
+% \end{align}
+Explain boundary conditions in Table \ref{Tab:BC_PO4+M}.
 
+
+\begin{table}[tbp]
+\caption{Boundary conditions for phosphate and Fe-bound P (M). As in MATLAB (in red my suggestions).}
+% title of Table
+\centering
+% used for centering table
+\begin{tabular}{ |l| l| l|}
+\hline
+\textbf{Boundary}& \textbf{Condition}&\\
+\hline
+$z=0$& known concentration& 1) $PO_4(0)=PO_{40}$  \\
+$z=z_{bio}$&continuity& 2) $PO_4(z_{bio}^-)$=$PO_4(z_{bio}^+)$\\
+               & flux & 3) $\left(D_{PO_4,0}+D_{bio}\right )\cdot \frac{\partial PO_4}{\partial z}|_{z_{bio}^-}=D_{PO_4,0} \cdot \frac{\partial PO_4}{\partial z}|_{z_{bio}^+}$\\
+$z=z_{ox}$& continuity& 4) $PO_4(z_{ox}^-)$=$PO_4(z_{ox}^+)$\\
+               & flux & 5) $-\frac{D_{PO_4}}{1+K_{PO_4}^I} \cdot \frac{\partial PO_4}{\partial z}|_{z_{ox}^-} =-\frac{D_{PO_4}}{1+K_{PO_4}^{II}} \cdot \frac{\partial PO_4}{\partial z}|_{z_{ox}^+}$\\
+%&where:\textcolor{red}{$\int_{z_{SO_4}}^{\infty}$ here?} & $\quad F_{H_2S}(z_{ox})=\frac{1-\phi}{\phi} \cdot \textcolor{red}{\gamma_{H_2S}\cdot} \left( \int_{z_{NO_3}}^{SO_4}  \sum_i SO_4C \cdot k_i \cdot C_i\ dz + \gamma_{CH_4}\cdot \int_{z_{SO_4}}^{\infty}  \sum_i SO_4C \cdot k_i \cdot C_i\ dz \right)$\\          
+$z=z_{\infty}$& flux & 10) $\frac{\partial PO_4}{\partial z}|_{z_\infty}=0$\\
+\hline
+$z=0$& known concentration& 1) $M(0)=M_0$  \\
+$z=z_{bio}$&continuity& 2) $M(z_{bio}^-)$=$M(z_{bio}^+)$\\
+ \textcolor{red}{correct???} & flux & 3) $\frac{\partial M}{\partial z}|_{z_{bio}^-}=\frac{\partial M}{\partial z}|_{z_{bio}^+}$\\
+$z=z_{ox}$& continuity& 4) $M(z_{ox}^-)$=$M(z_{ox}^+)$\\
+ \textcolor{red}{correct???} & flux & 5) $\frac{\partial M}{\partial z}|_{z_{ox}^-} =\frac{\partial M}{\partial z}|_{z_{ox}^+}$\\
+%&where:\textcolor{red}{$\int_{z_{SO_4}}^{\infty}$ here?} & $\quad F_{H_2S}(z_{ox})=\frac{1-\phi}{\phi} \cdot \textcolor{red}{\gamma_{H_2S}\cdot} \left( \int_{z_{NO_3}}^{SO_4}  \sum_i SO_4C \cdot k_i \cdot C_i\ dz + \gamma_{CH_4}\cdot \int_{z_{SO_4}}^{\infty}  \sum_i SO_4C \cdot k_i \cdot C_i\ dz \right)$\\          
+$z=z_{\infty}$& flux & 10) $M(z_\infty)=M_\infty$\\
+\hline    
+\end{tabular}
+\label{Tab:BC_PO4+M}
+% is used to refer this table in the text
+\end{table}
 % \subsubsection{Sulfide}
 % Processes considered\\
 % general equation\\
