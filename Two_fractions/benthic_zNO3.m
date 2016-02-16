@@ -2,7 +2,7 @@ classdef benthic_zNO3
     % Solve NO3
     
     properties
-        qdispNO3=308.4221;                                          %NO3 diffusion coefficient in water (cm2/yr)
+        qdispNO3=308.42208;                                          %NO3 diffusion coefficient in water (cm2/yr)
         adispNO3=12.2640;                                           %NO3 linear coefficient for temperature dependence (cm2/yr/oC)
         DN1;                  %NO3 diffusion coefficient in bioturbated layer (cm2/yr)
         DN2;                       %NO3 diffusion coefficient in non-bioturbated layer (cm2/yr)

@@ -2,8 +2,8 @@ classdef benthic_zO2
     % Solve O2
     
     properties
-        qdispO2=348.5750;                                           %O2 diffusion coefficient in water (cm2/yr)
-        adispO2=14.0890;                                            %O2 linear coefficient for temperature dependence (cm2/yr/oC)
+        qdispO2=348.62172;                                           %O2 diffusion coefficient in water (cm2/yr)
+        adispO2=14.08608;                                            %O2 linear coefficient for temperature dependence (cm2/yr/oC)
         DO21;                   %O2 diffusion coefficient in bioturbated layer (cm2/yr)
         DO22;                        %O2 diffusion coefficient in non-bioturbated layer (cm2/yr)
         reac1;

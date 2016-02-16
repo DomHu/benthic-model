@@ -2,8 +2,8 @@ classdef benthic_zPO4_M
     % Solve PO4
     
     properties                      
-        qdispPO4=309.0528;          %PO4 diffusion coefficient in water (cm2/yr)
-        adispPO4=12.2640;           %PO4 linear coefficient for temperature dependence (cm2/yr/oC)
+        qdispPO4=112.90764; %Dom was from old NO3 309.0528;          %PO4 diffusion coefficient in water (cm2/yr)
+        adispPO4=5.586252   %Dom was from old NO3 12.2640;           %PO4 linear coefficient for temperature dependence (cm2/yr/oC)
         DPO41;                      %PO4 diffusion coefficient in bioturbated layer (cm2/yr)
         DPO42;                      %PO4 diffusion coefficient in non-bioturbated layer (cm2/yr)
         
