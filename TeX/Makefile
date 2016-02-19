@@ -13,7 +13,7 @@ Sediment_model.pdf: $(TEXS)  Sediment_model.bib
 
 
 clean: 
-	 \rm -f *.bbl *.dvi *.log *.aux *.blg *.out #Sediment_model.pdf  
+	 \rm -f *.bbl *.dvi *.log *.aux *.blg *.out *~ *backup #Sediment_model.pdf  
 spotless: 
 	 \rm -f *.bbl *.dvi *.log *.aux *.blg *.out Sediment_model.pdf  
 

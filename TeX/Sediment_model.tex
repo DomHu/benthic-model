@@ -123,7 +123,7 @@ How are sediment resolved in Earth System models\\
 Problem with that\\
 Alternative Model approaches, e.g. from coastal reserach\\
 Solution presented here\\ 
-
+See Van Cappellen and Wang (1996): ``Metal cycling in surface sediments: Modeling the interplay or transport and reaction'' for some good basic info! 
 
 \section{Model Description}
 This section describes the formulation and solution of the model. A glossary of parameters along with their respective units is provided in Tables \ref{table:sed-charac_transport-parameters} and \ref{table:reaction_parameters}.
@@ -184,15 +184,40 @@ of the ocean's redox structure and carbonate system and its feedbacks on global 
 representation of the benthic-pelagic coupling in Earth System Models. The sediment model has to provide robust quantifications of organic and inorganic carbon burial fluxes, growth-limiting nutrient, equilibrium invariant 
 and reduced species return fluxes, and oxygen uptake fluxes. As a consequence, the reaction network must explicitly or implicitly account for the most important primary and secondary redox reactions, equilibrium reactions, 
 mineral precipitation/dissolution and adsorption/desorption, resulting in a complex set of coupled reaction-transport equations. The following 
-subsections provide a short discussion of the reaction processes included in the model and table \ref{tab_reactions} \textcolor{red}{what to do here?} provides an overview of the vertically resolved conservation equations for solid and dissolved species 
-in each layer. Table \ref{table:sed-charac_transport-parameters} states the parameters for sediment characteristics and Table \ref{table:reaction_parameters} summarizes the stoichiometric factors and 
-secondary reaction parameters used in the model.
+subsections provide a short discussion of the reaction processes included in the model and give an overview of the 
+vertically resolved conservation equations and boundary conditions for solid and dissolved species in each layer. Table \ref{table:reactions_processes} states the reactions and variables considered in the reaction network. 
+\begin{table}[tbp]
+\caption{Reactions and variables implemented in the Reaction Network of SED (1.0). The primary and secondary redox reactions are listed in the sequence they occur with increasing sediment depth.}
+% title of Table
+\centering
+% used for centering table
+\begin{tabular}{l l}
+% centered columns (6 columns)
+\hline\hline
+%inserts double horizontal lines
+ & Description\\
+\hline
+Primary redox reactions &  Degradation of organic matter via aerobic respiration, denitrification,\\
+& sulfate reduction, methanogenesis (implicit)\\
+Secondary redox reactions &  Oxidation of ammonium and sulfide by oxygen, anaerobic oxidation\\
+& of methane by sulfate\\
+Nonredox reactions & \textcolor{red}{Formation of Fe-bound P, reduction of Fe oxides (?correct here)},\\
+& precipitation of authigenic P \\
+Variables & organic matter, oxygen, nitrate, ammonium, sulfate, sulfide (hydrogen sulfide),\\
+&  phosphate, Fe-bound P, DIC, ALK\\
+\hline\hline
+% inserts double horizontal lines
+\end{tabular}
+\label{table:reactions_processes}
+% is used to refer this table in the text
+\end{table}
+
 
 \subsubsection{Organic matter}
 In marine sediments, organic matter (OM) is degraded by heterotrophic activity coupled to the sequential utilisation of terminal electron acceptors (TEAs), typically in the order of O$_2$, NO$_3^-$, Mn(VI), Fe(III) and SO$_4^{2-}$ 
 followed by methanogenesis and/or fermentation. Organic matter degradation is described via a multi-G model approach \citep[][and references therein]{arndt_quantifying_2013}, assuming that the bulk OM is divided 
-into discrete compound classes $C_i$ characterised by specific degradation rate constants $k_i$. Such a multi-G approach allows for selective preservation of compound classes according to their degradability, $k_i$ and, thus, accounts 
-for the change in organic matter degradability with burial. Each compound class is degraded according to first-order kinetics. Organic matter dynamics are thus described by:
+into discrete compound classes $C_i$ characterised by specific degradation rate constants $k_i$. Such a multi-G approach allows for selective preservation of compound classes according to their degradability, $k_i$ and, thus, 
+accounts for the change in organic matter degradability with burial. Each compound class is degraded according to first-order kinetics. Organic matter dynamics are thus described by:
 
 \begin{equation}
  \frac{\partial C_i}{\partial t} = 0= D_{C_i} \frac{\partial^2C_i }{\partial z^2} - w\frac{\partial C_i }{\partial z} - k_i\cdot C_{i} \label{eq:ODE_OC}
@@ -401,7 +426,7 @@ BC (9): (flux with AOM production) flux of H2S produced by AOM interface (Source
 	\label{fig:P-cycle}
 	\end{center}
 \end{figure}
-To model phosphorus (P) in the sediments the model takes into account the change with depth of phosphate (PO$_4$) and iron-bond P, thereby mainly following the description of \citet{caroline_p_slomp_key_1996} 
+To model phosphorus (P) in the sediments the model takes into account the change with depth of phosphate (PO$_4$) and iron-bound P, thereby mainly following the description of \citet{caroline_p_slomp_key_1996} 
 and \citet{gypens_simple_2008}. Throughout the sediment column organic matter is mineralized resulting in a release of phosphate to the pore water. In the oxic part of the sediment, this PO$_4$ either 
 diffuses upward to the water column or is sorped to Fe oxides forming Fe-bound P (or M)\citep{slomp1998role}. In the suboxic/anoxic zone, PO$_4$ is not only produced through organic matter degradation but is 
 also released from the Fe-bound P pool due to the reduction of Fe oxides. Furthermore, phosphate concentrations can become high enough in this layer for authigenic mineral formation to occur \citep{cappellen_mathematical_1988}. 
@@ -463,11 +488,14 @@ $z=z_{\infty}$& assymptotic concentration & 10) $M(z_\infty)=M_\infty$\\
 % solution\\
 
 \subsection{Model Parameters}
-This section describes the model parameters needed to describe sediment transport and biogeochemical reactions related to the burial and mineralization of organic matter under a wide range of environmental conditions. 
+This section describes the parameters used in SED (1.0) to describe sediment transport and biogeochemical reactions related to the burial and mineralization of organic matter under a wide range of environmental conditions. 
+Table \ref{table:sed-charac_transport-parameters} states the parameters for sediment characteristics and Table \ref{table:reaction_parameters} summarizes the stoichiometric factors and 
+secondary reaction parameters used in the model.
+
 \subsubsection{Transport Parameters}
 Advection is the bulk flow of sediments and can be directly related to the accumulation of new material on the seafloor \citep[i.e. sedimentation,][]{burdige2006geochemistry}. 
 This results in a downward flux of older sediment material and porewater in relation to the sediment-water interface. SED (1.0) uses the empirical global relationship between 
-sediment accumulation rate (cm yr$^{-1}$) and water depth (m) of \citet{middelburg_empirical_1997}: 
+sediment accumulation rate (cm yr$^{-1}$) and seafloor depth (m) of \citet{middelburg_empirical_1997}: 
 \begin{equation}
  w = 3.3\cdot 10^{-0.87478367-0.00043512\cdot \text{depth}}\label{eq:sedimentation_rate}
 \end{equation}
@@ -532,10 +560,17 @@ $D_{PO_4}^T$ & $cm^2/yr/{}^{\circ}C$ & 5.586252 &Diffusion coefficient for linea
 
 
 \subsubsection {Reaction Parameters}
-short description
-\begin{table}[hbtp]
-\caption{Values for biogeochemical parameters used in SED (1.0). Stoichiometric factor relates to mol of terminal electron acceptor consumed for 1 mol of organic matter mineralized \textcolor{red}{correct?}.}
+\textcolor{red}{TODO}
+%The parameters relating to organic matter 
+The overall reactions implemented in SED (1.0) are listed in Table \ref{table:reactions_processes}. 
+The applied multi-G approach for organic matter degradation considers specific degradation rate constants $k_i$ (yr$^{-1}$) for each compound class. The degradation constants are generally taken from the coupled Earth System model 
+and are assumed invariant along the sediment column, therefore independent of the nature of the terminal electron acceptor. \textcolor{red}{ Talk about different stoichiometric factors... Where are they from??}
+\textcolor{red}{Next bit from Gypens:} Re-oxidation occurs in a ratio of 1 mol of oxygen per mole of carbon anoxically mineralized. Similarly, 2 mol of oxygen
+are consumed during nitrification of NH$_4$ produced in the anoxic zone. As nitrification may be incomplete in the oxic layer, we similarly allow for part of the ammonium flux to escape re-oxidation. 
 
+\begin{table}[hbtp]
+\caption{Values for biogeochemical parameters used in SED (1.0). \textcolor{red}{Stoichiometric factor for oxygen and sulfate relates to mol of terminal electron acceptor consumed for 1 mol of organic matter mineralized. 
+NC and MC related to moles of reduced species produces per mol organic matter mineralized. correct???}}
 % title of Table
 \centering
 % used for centering table
@@ -565,7 +600,7 @@ $\gamma_{H_2S}$ & - & 0.8 & fraction of H$_2$S that is oxidised\\
 $\gamma_{CH_4}$ & - & 1.0 & fraction of CH$_4$ that is oxidised\\
 & & & at $z_{SO_4}$\\
 \multicolumn{4}{l}{\textbf{Rate constants}}\\
-$k_i$ & $1/yr$ & from Earth System Model & OM degradation rate constant\\
+$k_i$ & $1/yr$ & from Earth System Model & OM degradation rate constants\\
 $k_s$ & $1/yr$ & \textcolor{red}{???} & rate constant for P sorption\\
 $k_m$ & $1/yr$ & \textcolor{red}{???} & rate constant for Fe-bound P release\\
 $k_a$ & $1/yr$ & \textcolor{red}{???} & rate constant for authigenic P formation\\
@@ -580,7 +615,8 @@ $k_a$ & $1/yr$ & \textcolor{red}{???} & rate constant for authigenic P formation
 \subsection{Module Structure}
 %Sandra: Technical description, e.g. how is it implemented and how can it be coupled to model\\
 \textcolor{red}{TODO: }
-Describe in which order we calculate the different profiles/exchange fluxes (first calculating OM profile, then different TEA profiles).\\ 
+%Describe in which order we calculate the different profiles/exchange fluxes (first calculating OM profile, then different TEA profiles).\\ 
+An analytical steady-state solution is found for the reaction-transport equation of each chemical species in each layer. 
 At each boundary (i.e. $z_{ox}, z_{bio}, z_{NO_3}$ and $z_{SO_4}$) the model has to match continuity and flux for different ODE solutions of the layer above and below the specific boundary. 
 In particular the bioturbation boundary is problematic as it can theoretically occur in any geochemical layer. In order to simplify this recurring boundary matching problem it is implemented in an independent algorithm 
 which is described in Section \ref{subsec:GBCM}. Instructions and requirements for coupling SED (1.0) to a global Earth Sytem Model are given in Section \ref{subsubsec:ESM_coupling}.

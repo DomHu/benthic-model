@@ -11,8 +11,8 @@ classdef benthic_zPO4_M
         KPO42=1.3;          %Adsorption coefficient in anoxic layer (-)
         ksPO4=0.26*365;      %Rate constant for kinetic PO4 sorption (1/yr)   0.12 fits 1.CASE; 2.2 fits 2. CASE DOM: was 0.5*365 from Nicolas; Slomp ea 1996 0.26
         %ksPO4=1e-15;
-        kmPO4= 1e-15 ;
-        %kmPO4=0.00053*365;	%Rate constant for Fe-bound P release upon Fe oxide reduction   DOM: was 1.8e-6 Slomp ea 1996 0.00053*365 
+        %kmPO4= 1e-15 ;
+        kmPO4=0.00053*365;	%Rate constant for Fe-bound P release upon Fe oxide reduction   DOM: was 1.8e-6 Slomp ea 1996 0.00053*365 
         kaPO4 = 0;
         %kaPO4=0.001*365;	%Rate constant for authigenic P formation (1/yr)    DOM: was 0.004*365 from Nicolas; Slomp ea 1996 0.001
         PO4s=1.0e-9;        %Equilibrium concentration for P sorption (mol/cm3)       was 1.5e-9; ; Slomp ea 1996
