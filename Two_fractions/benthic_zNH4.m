@@ -23,8 +23,10 @@ classdef benthic_zNH4
             % layer 1: 0 < z < zox, NH4 prod (remaining after oxidation)
             %      ls =      prepfg_l12( bsd, swi, r, reac1,     reac2,     ktemp, zU, zL, D1,        D2)
             rNH4.ls1 = r.zTOC.prepfg_l12(bsd, swi, r, (1-bsd.gamma),(1-bsd.gamma),0, 0, r.zox, obj.DNH41, obj.DNH42);
+                            % Dominik 23.02.2016: NC1 and NC2 missing in react1/2 ???
             % layer 2: zox < z < zno3, passive diffn TODO NH4 from denitrification?
-            rNH4.ls2 = r.zTOC.prepfg_l12(bsd, swi, r, 0,         0,         0,  r.zox, r.zno3, obj.DNH41, obj.DNH42);            
+            rNH4.ls2 = r.zTOC.prepfg_l12(bsd, swi, r, 0,         0,         0,  r.zox, r.zno3, obj.DNH41, obj.DNH42);  
+      % Dominik 23.02.2016: NH4 still produced also NCi missing in reac1/2 ???
             % layer 3: zno3 < z < zinf, NH4 production
             rNH4.ls3 = r.zTOC.prepfg_l12(bsd, swi, r, bsd.NC1,bsd.NC2, 0, r.zno3, bsd.zinf, obj.DNH41, obj.DNH42);
             
@@ -38,7 +40,7 @@ classdef benthic_zNH4
             [ e2_zno3, dedz2_zno3, f2_zno3, dfdz2_zno3, g2_zno3, dgdz2_zno3] ...
                 = r.zTOC.calcfg_l12(r.zno3, bsd, swi, r,     0,            0, 0, rNH4.ls2);
             % ... and top of layer 3
-            [ e3_zno3, dedz3_zno3, f3_zno3, dfdz3_zno3, g3_zno3, dgdz3_zno3] ...1
+            [ e3_zno3, dedz3_zno3, f3_zno3, dfdz3_zno3, g3_zno3, dgdz3_zno3] ...
                 = r.zTOC.calcfg_l12(r.zno3, bsd, swi, r, bsd.NC1, bsd.NC2, 0, rNH4.ls3);
             % match solutions at zno3 - continuous concentration and flux
              [zno3.a, zno3.b, zno3.c, zno3.d, zno3.e, zno3.f] = benthic_utils.matchsoln(e2_zno3, f2_zno3, g2_zno3, dedz2_zno3, dfdz2_zno3, dgdz2_zno3, ...
