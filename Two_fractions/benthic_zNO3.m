@@ -73,7 +73,7 @@ classdef benthic_zNO3
                 = r.zTOC.calcfg_l12(r.zox, bsd, swi, r, -bsd.NO3CR,       -bsd.NO3CR, 0, rNO3.ls2);
             
             %flux of NH4 to zox  TODO NH4 production by denitrification?
-            FNH4 = r.zTOC.calcReac(zno3, bsd.zinf, bsd.NC1, bsd.NC1, bsd, swi, r); % MULTIPLY BY 1/POR ????
+            FNH4 = r.zTOC.calcReac(zno3, bsd.zinf, bsd.NC1, bsd.NC2, bsd, swi, r); % MULTIPLY BY 1/POR ????
             % match solutions at zox - continuous concentration, flux discontinuity from H2S ox
             D = (r.zox <= bsd.zbio).*obj.DN1 + (r.zox > bsd.zbio).*obj.DN2;
             

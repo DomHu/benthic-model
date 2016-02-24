@@ -117,8 +117,8 @@ classdef benthic_zO2
         function FO2 = calcFO2(obj, zox, bsd, swi, r)            
             % Oxydation of reduced species at zox (NEED A RATIO for ODU! and add NH4
             % adsporption!
-           tmpreac1=1*bsd.SO4C+2*bsd.gamma*bsd.NC1;
-           tmpreac2=1*bsd.SO4C+2*bsd.gamma*bsd.NC2;
+           tmpreac1=bsd.gammaH2S*1*bsd.SO4C+2*bsd.gamma*bsd.NC1;
+           tmpreac2=bsd.gammaH2S*1*bsd.SO4C+2*bsd.gamma*bsd.NC2;
            % tmpreac1=0.2;
            % tmpreac2=0.2;
            %tmpreac1=bsd.OC+2*bsd.gamma*bsd.NC1;
