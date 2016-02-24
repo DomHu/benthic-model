@@ -83,8 +83,8 @@ classdef benthic_zSO4
             % Match at zox, layer 1 - layer 2 (continuity, flux discontinuity from H2S source)
             % flux of H2S to oxic interface (Source of SO4)
             % NB: include methane region as AOM will produce sulphide as well..
-            FH2S = r.zTOC.calcReac(r.zno3, zso4, bsd.SO4C, bsd.SO4C, bsd, swi, r) ... % MULTIPLY BY 1/POR ????
-               + bsd.gammaCH4.*r.zTOC.calcReac(zso4, bsd.zinf, bsd.SO4C, bsd.SO4C, bsd, swi, r);
+            FH2S = r.zTOC.calcReac(r.zno3, zso4, bsd.SO4C, bsd.SO4C, bsd, swi, r); % ... % MULTIPLY BY 1/POR ????
+     % Dominik 24.02.2016          + bsd.gammaCH4.*r.zTOC.calcReac(zso4, bsd.zinf, bsd.SO4C, bsd.SO4C, bsd, swi, r);
             % basis functions at bottom of layer 1
             [ e1_zox, dedz1_zox, f1_zox, dfdz1_zox, g1_zox, dgdz1_zox] ...
                 = r.zTOC.calcfg_l12(r.zox, bsd, swi, r, 0 , 0 , 0, rSO4.ls1);
@@ -100,7 +100,7 @@ classdef benthic_zSO4
             
              [zox.a, zox.b, zox.c, zox.d, zox.e, zox.f] = benthic_utils.matchsoln(e1_zox, f1_zox, g1_zox, dedz1_zox, dfdz1_zox, dgdz1_zox, ...
                                                              e2_zox, f2_zox, g2_zox, dedz2_zox, dfdz2_zox, dgdz2_zox, ...                                                            
-                                                            0, -r.zxf.*FH2S./D);
+                                                            0, -r.zxf.*bsd.gammaH2S*FH2S./D);
                                          %Dom 09.02.2016: is there a ...*gammaH2S*FH2S... missing?
             % Solution at swi, top of layer 1
             [ e1_0, dedz1_0, f1_0, dfdz1_0, g1_0, dgdz1_0] ...
@@ -155,8 +155,8 @@ classdef benthic_zSO4
         function FSO4 = calcFSO4(obj, zso4, bsd, swi, r)
            % Calculate SO4 consumption below zso4, by organic matter and indirectly via methane oxidation 
            
-            tmpreac1    = bsd.SO4C.*bsd.gammaCH4;
-            tmpreac2    = bsd.SO4C.*bsd.gammaCH4;
+            tmpreac1    = bsd.MC.*bsd.gammaCH4;
+            tmpreac2    = bsd.MC.*bsd.gammaCH4;
        
             FSO4 = r.zTOC.calcReac(zso4, bsd.zinf, tmpreac1, tmpreac2, bsd, swi, r);
             % TODO confirm (1-bsd.por)*  has been added (to k1 & k2 ?)

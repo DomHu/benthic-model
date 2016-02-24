@@ -16,8 +16,8 @@ classdef benthic_test
 %            swi.SO40=28000.0e-9;                                            %SO4 concentration at SWI (mol/cm3)
             swi.NO30=20.0e-9;                                               %NO3 concentration at SWI (mol/cm3)
             swi.NH40=1.0e-9;                                                %NH4 concentration at SWI (mol/cm3)
-            swi.SO40 = 2800e-9;
-            swi.H2S0=1.0e-9;         %was 0.0e-9                            %H2S concentration at SWI (mol/cm3)
+            swi.SO40 = 100e-9;
+            swi.H2S0=0.0e-9;         %was 0.0e-9                            %H2S concentration at SWI (mol/cm3)
             swi.PO40=1e-9;    % Sandra played with 3e-9                                              %PO4 concentration at SWI (mol/cm3)
             swi.Mflux0=365*0.2e-10; % Sandra played with 10e-9; ;   % = 7.3e-9    %flux of M to the sediment (mol/(cm2*yr))   TODO/CHECK: good value+right conversion? is from Slomp et al. 1996        
 
