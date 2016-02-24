@@ -177,7 +177,7 @@ $D_{\mathrm{mol},i}$ \citep[ hence, $D_{i,0}=D_{\mathrm{mol},i}\cdot f_{ir}$,][]
 \end{equation}
 where $D_i$ is the diffusion coefficient of species $i$ ($D_i=D_{i,0}+D_{\mathrm{bio}}=D_{\mathrm{mol},i}\cdot f_{ir}+D_{\mathrm{bio}}$ for dissolved species and $D_i=D_{\mathrm{bio}}$ for solid species) and $w$ is the burial rate. 
 The bioturbation coefficient $D_{\mathrm{bio}}$ is set to zero below $z_{\mathrm{bio}}$. In addition, infaunnal activity ceases ($D_{\mathrm{bio}}=0$) once bottom waters become anoxic (\chem{O_2} = 0.0 mol cm$^{-3}$ ). 
-\textcolor{red}{last bit not like that in model}
+\textcolor{red}{add if-query in code!!}
 
 \subsection{Reaction Network}\label{subsec:ReactionNetwork}
 Earth System models generally track the evolution of the global biogeochemical cycles of organic and inorganic carbon, the essential nutrients (nitrogen, phosphorus) and oxygen with the aim of investigating the evolution 
@@ -235,23 +235,25 @@ across the bottom of the bioturbated zone, $z_{\mathrm{bio}}$ (Table \ref{Tab:BC
 % title of Table
 \centering
 % used for centering table
-\begin{tabular}{ |l| l| l|}
+\begin{tabular}{ |c| c| c l|}
 \hline
-\textbf{Boundary}& \textbf{Condition}&\\
+\textbf{Boundary}& \textbf{Condition}& &\\
 \hline
-$z=0$& known concentration& 1) $C_i(0)=C_{i0}$\\
-$z=z_{\mathrm{bio}}$&continuity& 2) $C_i(z_{\mathrm{bio}}^-)$=$C_i(z_{\mathrm{bio}}^+)$\\
-               &&3) $D_{\mathrm{bio}}\cdot \frac{\partial C_i}{\partial z}|_{z_{\mathrm{bio}}^-}=0$\\
+$z=0$& known concentration& 1)& $C_i(0)=C_{i0}$\\
+$z=z_{\mathrm{bio}}$&continuity& 2)& $C_i(z_{\mathrm{bio}}^-)$=$C_i(z_{\mathrm{bio}}^+)$\\
+               &&3)&$-D_{\mathrm{bio}}\cdot \frac{\partial C_i}{\partial z}|_{z_{\mathrm{bio}}^-}=0$\\
 %Dom was               &&3) $D_{\mathrm{bio}}\cdot \frac{\partial C_i}{\partial z}|_{z_{\mathrm{bio}}^-}-w\cdot C_i(z_{\mathrm{bio}}^-)=-w\cdot C_i(z_{\mathrm{bio}}^+)$\\
 \hline
-$z=0$& known concentration& 1) $ \chem{O_2}(0)=O_{20}$\\
-$z=z_{\mathrm{bio}}$&continuity& 2) $ \chem{O_2}(z_{\mathrm{bio}}^-)$=$ \chem{O_2}(z_{\mathrm{bio}}^+)$\\
-               &&3) $\left(D_{ \chem{O_2},0}+D_{\mathrm{bio}}\right )\cdot \frac{\partial  \chem{O_2}}{\partial z}|_{z_{\mathrm{bio}}^-}=D_{ \chem{O_2},0} \cdot \frac{\partial  \chem{O_2}}{\partial z}|_{z_{\mathrm{bio}}^+}$\\
+$z=0$& known concentration& 1)&$\chem{O_2}(0)=O_{20}$\\
+$z=z_{\mathrm{bio}}$&continuity& 2)&$ \chem{O_2}(z_{\mathrm{bio}}^-)$=$ \chem{O_2}(z_{\mathrm{bio}}^+)$\\
+               &&3)&$-\left(D_{ \chem{O_2},0}+D_{\mathrm{bio}}\right )\cdot \frac{\partial  \chem{O_2}}{\partial z}|_{z_{\mathrm{bio}}^-}=-D_{ \chem{O_2},0} \cdot \frac{\partial  \chem{O_2}}{\partial z}|_{z_{\mathrm{bio}}^+}$\\
 %Dom was               &&3) $\left(D_{\mathrm{bio}}+D_{mol, \chem{O_2}}\right )\cdot \frac{\partial  \chem{O_2}}{\partial z}|_{z_{\mathrm{bio}}^-}-w\cdot  \chem{O_2}(z_{\mathrm{bio}}^-)=D_{mol, \chem{O_2}} \cdot \frac{\partial  \chem{O_2}}{\partial z}|_{z_{\mathrm{bio}}^+}-w\cdot  \chem{O_2}(z_{\mathrm{bio}}^+)$\\
-$z=z_{\mathrm{ox}}$&  \chem{O_2} consumption& 4)$  \chem{O_2}(z_{\mathrm{ox}})=0$  \quad \textcolor{red}{and/or/at all???} \quad $\frac{\partial  \chem{O_2}}{\partial z}|_{z_{\mathrm{ox}}}=0$\\
-$z=z_{\mathrm{ox}}$& Flux from below& 5) $-\omega D_{ \chem{O_2}} \cdot \frac{\partial  \chem{O_2}}{\partial z}|_{z_{\mathrm{ox}}}=F_{red, z_{\mathrm{ox}}}$\\   
-&with:\textcolor{red}{ correct? \&}&$ \quad F_{red,z_{\mathrm{ox}}}=\frac{1-\phi}{\phi} \cdot \int_{z_{\mathrm{ox}}}^{\infty}  \sum_i \left( 2\gamma_{\chem{NH_4}} \chem{NC_i} + \gamma_{\chem{H_2S}} \chem{SO_4C} \right) k_i C_i\ dz$ \\
-&\textcolor{red}{why $\omega$ at 5) (delete!?)}&\\
+$z=z_{\mathrm{ox}}$&  \chem{O_2} consumption & 4)&\textbf{IF} $ (\chem{O_2}(z_\infty)> 0 )$\\
+& ($z_{\mathrm{ox}} = z_\infty$) &&\quad $\frac{\partial  \chem{O_2}}{\partial z}|_{z_{\mathrm{ox}}}=0$ \\
+& & &\textbf{ELSE} \\
+& ($z_{\mathrm{ox}} < z_\infty$) & &\quad $  \chem{O_2}(z_{\mathrm{ox}})=0$  \quad and \quad $-D_{ \chem{O_2}} \cdot \frac{\partial  \chem{O_2}}{\partial z}|_{z_{\mathrm{ox}}}=F_{red, z_{\mathrm{ox}}}$\\
+%$z=z_{\mathrm{ox}}$& & 5) $-D_{ \chem{O_2}} \cdot \frac{\partial  \chem{O_2}}{\partial z}|_{z_{\mathrm{ox}}}=F_{red, z_{\mathrm{ox}}}$\\   
+&with flux from below &&$\quad F_{red,z_{\mathrm{ox}}}=\frac{1-\phi}{\phi} \cdot \int_{z_{\mathrm{ox}}}^{\infty}  \sum_i \left( 2\gamma_{\chem{NH_4}} \chem{NC_i} + \gamma_{\chem{H_2S}} \chem{SO_4C} \right) k_i C_i\ dz$ \\
 % was from Sandra &with:&$F_{red,z_{\mathrm{ox}}}=\beta \cdot \int_{z_{\mathrm{ox}}}^{\inf}  \sum_i k_i\cdot C_i  dz  + 2\cdot \gamma \cdot \int_{z_{\mathrm{ox}}}^{\inf}  \sum_i k_i\cdot C_i  -  $ \\
 \hline    
 \end{tabular}
@@ -315,28 +317,31 @@ at $z_{\mathrm{bio}}$ and $z_{\mathrm{ox}}$.  In addition, the re-oxidation of u
 % title of Table
 \centering
 % used for centering table
-\begin{tabular}{ |l| l| l|}
+\begin{tabular}{ |c| c| c l|}
 \hline
-\textbf{Boundary}& \textbf{Condition}&\\
+\textbf{Boundary}& \textbf{Condition}& &\\
 \hline
-$z=0$& known concentration& 1) $NO_3(0)=NO_{30}$  \\
-$z=z_{\mathrm{bio}}$&continuity& 2) $NO_3(z_{\mathrm{bio}}^-)$=$NO_3(z_{\mathrm{bio}}^+)$\\
-               && 3) $\left(D_{NO_3,0}+D_{\mathrm{bio}}\right )\cdot \frac{\partial NO_3}{\partial z}|_{z_{\mathrm{bio}}^-}=D_{NO_3,0} \cdot \frac{\partial NO_3}{\partial z}|_{z_{\mathrm{bio}}^+}$\\
-$z=z_{\mathrm{ox}}$& continuity& 4) $NO_3(z_{\mathrm{ox}}^-)$=$NO_3(z_{\mathrm{ox}}^+)$\\
-               && 5) $-D_{NO_3} \cdot \frac{\partial NO_3}{\partial z}|_{z_{\mathrm{ox}}^-} + \gamma_{\chem{NH_4}}\cdot F_{\chem{NH_4}}=-D_{NO_3} \cdot \frac{\partial NO_3}{\partial z}|_{z_{\mathrm{ox}}^+}$\\
-&where: & $\quad F_{\chem{NH_4}}=\frac{1-\phi}{\phi} \cdot \int_{z_{\chem{NO_3}}}^{\infty}  \sum_i k_i \cdot \chem{NC_i} \cdot C_i\ dz$ \\          
-$z=z_{\chem{NO_3}}$& NO$_3$ consumption & 6) $NO_3(z_{\chem{NO_3}})=0$ \quad or \quad $\frac{\partial NO_3}{\partial z}|_{z_{\chem{NO_3}}}=0$\\
+$z=0$& known concentration& 1)& $NO_3(0)=NO_{30}$  \\
+$z=z_{\mathrm{bio}}$&continuity& 2)& $NO_3(z_{\mathrm{bio}}^-)$=$NO_3(z_{\mathrm{bio}}^+)$\\
+               && 3)& $-\left(D_{NO_3,0}+D_{\mathrm{bio}}\right )\cdot \frac{\partial NO_3}{\partial z}|_{z_{\mathrm{bio}}^-}=-D_{NO_3,0} \cdot \frac{\partial NO_3}{\partial z}|_{z_{\mathrm{bio}}^+}$\\
+$z=z_{\mathrm{ox}}$& continuity& 4)& $NO_3(z_{\mathrm{ox}}^-)$=$NO_3(z_{\mathrm{ox}}^+)$\\
+               && 5)& $-D_{NO_3} \cdot \frac{\partial NO_3}{\partial z}|_{z_{\mathrm{ox}}^-} + \gamma_{\chem{NH_4}}\cdot F_{\chem{NH_4}}=-D_{NO_3} \cdot \frac{\partial NO_3}{\partial z}|_{z_{\mathrm{ox}}^+}$\\
+&where: & &$ F_{\chem{NH_4}}=\frac{1-\phi}{\phi} \cdot \int_{z_{\chem{NO_3}}}^{\infty}  \sum_i k_i \cdot \chem{NC_i} \cdot C_i\ dz$ \\          
+$z=z_{\chem{NO_3}}$& \chem{NO_3} consumption & 6) & \textbf{IF} $ (\chem{NO_3}(z_\infty)> 0 )$\\
+& ($z_{\chem{NO_3}} = z_\infty$) & & \quad $\frac{\partial NO_3}{\partial z}|_{z_{\chem{NO_3}}}=0$\\
+& & &\textbf{ELSE} \\
+& ($z_{\chem{NO_3}} < z_\infty$) & &\quad $NO_3(z_{\chem{NO_3}})=0$ \\
 % was from Sandra &with:&$F_{red,z_{\mathrm{ox}}}=\beta \cdot \int_{z_{\mathrm{ox}}}^{\inf}  \sum_i k_i\cdot C_i  dz  + 2\cdot \gamma \cdot \int_{z_{\mathrm{ox}}}^{\inf}  \sum_i k_i\cdot C_i  -  $ \\
 \hline
-$z=0$& known concentration& 1) $\chem{NH_4}(0)=NH_{40}$  \\
-$z=z_{\mathrm{bio}}$&continuity& 2) $\chem{NH_4}(z_{\mathrm{bio}}^-)$=$\chem{NH_4}(z_{\mathrm{bio}}^+)$\\
-               && 3) $\left(D_{\chem{NH_4},0}+D_{\mathrm{bio}}\right )\cdot \frac{\partial \chem{NH_4}}{\partial z}|_{z_{\mathrm{bio}}^-}=D_{\chem{NH_4},0} \cdot \frac{\partial \chem{NH_4}}{\partial z}|_{z_{\mathrm{bio}}^+}$\\
-$z=z_{\mathrm{ox}}$& continuity& 4) $\chem{NH_4}(z_{\mathrm{ox}}^-)$=$\chem{NH_4}(z_{\mathrm{ox}}^+)$\\
-    \textcolor{red}{not $+(1-\gamma_{\chem{NH_4}})\cdot F_{\chem{NH_4}}$?}           && 5) $-D_{\chem{NH_4}} \cdot \frac{\partial \chem{NH_4}}{\partial z}|_{z_{\mathrm{ox}}^-} -\gamma_{\chem{NH_4}}\cdot F_{\chem{NH_4}}=-D_{\chem{NH_4}} \cdot \frac{\partial \chem{NH_4}}{\partial z}|_{z_{\mathrm{ox}}^+}$\\
-&where: & $\quad F_{\chem{NH_4}}=\frac{1-\phi}{\phi} \cdot \int_{z_{\chem{NO_3}}}^{\infty}  \sum_i k_i \cdot \chem{NC_i} \cdot C_i\ dz$ \\          
-$z=z_{\chem{NO_3}}$&continuity& 6) $\chem{NH_4}(z_{\chem{NO_3}}^-)$=$\chem{NH_4}(z_{\chem{NO_3}}^+)$\\
-               & flux & 7) $D_{\chem{NH_4}}\cdot \frac{\partial \chem{NH_4}}{\partial z}|_{z_{\chem{NO_3}}^-}=D_{\chem{NH_4}} \cdot \frac{\partial \chem{NH_4}}{\partial z}|_{z_{\chem{NO_3}}^+}$\\
-$z=z_{\infty}$& \chem{NH_4} flux & 8) $\frac{\partial \chem{NH_4}}{\partial z}|_{z_\infty}=0$\\
+$z=0$& known concentration& 1)& $\chem{NH_4}(0)=NH_{40}$  \\
+$z=z_{\mathrm{bio}}$&continuity& 2)& $\chem{NH_4}(z_{\mathrm{bio}}^-)$=$\chem{NH_4}(z_{\mathrm{bio}}^+)$\\
+               && 3)& $-\left(D_{\chem{NH_4},0}+D_{\mathrm{bio}}\right )\cdot \frac{\partial \chem{NH_4}}{\partial z}|_{z_{\mathrm{bio}}^-}=-D_{\chem{NH_4},0} \cdot \frac{\partial \chem{NH_4}}{\partial z}|_{z_{\mathrm{bio}}^+}$\\
+$z=z_{\mathrm{ox}}$& continuity& 4)& $\chem{NH_4}(z_{\mathrm{ox}}^-)$=$\chem{NH_4}(z_{\mathrm{ox}}^+)$\\
+  && 5)& $-D_{\chem{NH_4}} \cdot \frac{\partial \chem{NH_4}}{\partial z}|_{z_{\mathrm{ox}}^-} +(1-\gamma_{\chem{NH_4}})\cdot F_{\chem{NH_4}}=-D_{\chem{NH_4}} \cdot \frac{\partial \chem{NH_4}}{\partial z}|_{z_{\mathrm{ox}}^+}$\\
+&where: & & $F_{\chem{NH_4}}=\frac{1-\phi}{\phi} \cdot \int_{z_{\chem{NO_3}}}^{\infty}  \sum_i k_i \cdot \chem{NC_i} \cdot C_i\ dz$ \\          
+$z=z_{\chem{NO_3}}$&continuity& 6)& $\chem{NH_4}(z_{\chem{NO_3}}^-)$=$\chem{NH_4}(z_{\chem{NO_3}}^+)$\\
+               & flux & 7)& $-D_{\chem{NH_4}}\cdot \frac{\partial \chem{NH_4}}{\partial z}|_{z_{\chem{NO_3}}^-}=-D_{\chem{NH_4}} \cdot \frac{\partial \chem{NH_4}}{\partial z}|_{z_{\chem{NO_3}}^+}$\\
+$z=z_{\infty}$& \chem{NH_4} flux & 8)& $\frac{\partial \chem{NH_4}}{\partial z}|_{z_\infty}=0$\\
 \hline    
 \end{tabular}
 \label{Tab:BC_NO3+NH4}
@@ -383,7 +388,7 @@ $z=z_{\chem{NO_3}}$&continuity& 6) $\chem{SO_4}(z_{\chem{NO_3}}^-)$=$\chem{SO_4}
                & flux & 7) $D_{\chem{SO_4}}\cdot \frac{\partial \chem{SO_4}}{\partial z}|_{z_{\chem{NO_3}}^-}=D_{\chem{SO_4}} \cdot \frac{\partial \chem{SO_4}}{\partial z}|_{z_{\chem{NO_3}}^+}$\\
 $z=z_{\chem{SO_4}}$& SO$_4$ consumption & 8) $\chem{SO_4}(z_{\chem{SO_4}})=0$ \\%\quad \textcolor{red}{or/and (???)} \quad $\frac{\partial \chem{SO_4}}{\partial z}|_{z_{\chem{SO_4}}}= 0$\\
 & Flux from below& 9) $-D_{\chem{SO_4}} \cdot \frac{\partial \chem{SO_4}}{\partial z}|_{z_{\chem{SO_4}}}= F_{\chem{SO_4}}(z_{\chem{SO_4}})$\\   
-&with:\textcolor{red}{ $\chem{SO_4C} \cdot \gamma_{\chem{CH_4}}$?}&$ \quad F_{\chem{SO_4}}(z_{\chem{SO_4}})=\frac{1-\phi}{\phi} \cdot \int_{z_{\chem{SO_4}}}^{\infty}  \sum_i \chem{SO_4C} \cdot \gamma_{CH_4} \cdot k_i \cdot C_i\ dz$ \textcolor{red}{not rather MC instead SO4C?}\\
+\textcolor{red}{add if-query!}&with:\textcolor{red}{ $\chem{SO_4C} \cdot \gamma_{\chem{CH_4}}$?}&$ \quad F_{\chem{SO_4}}(z_{\chem{SO_4}})=\frac{1-\phi}{\phi} \cdot \int_{z_{\chem{SO_4}}}^{\infty}  \sum_i \chem{SO_4C} \cdot \gamma_{CH_4} \cdot k_i \cdot C_i\ dz$ \textcolor{red}{not rather MC instead SO4C?}\\
 % was from Sandra &with:&$F_{red,z_{\mathrm{ox}}}=\beta \cdot \int_{z_{\mathrm{ox}}}^{\inf}  \sum_i k_i\cdot C_i  dz  + 2\cdot \gamma \cdot \int_{z_{\mathrm{ox}}}^{\inf}  \sum_i k_i\cdot C_i  -  $ \\
 \hline
 $z=0$& known concentration& 1) $\chem{H_2S}(0)=\chem{H_2S}_{0}$  \\
