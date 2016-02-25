@@ -6,13 +6,15 @@ classdef benthic_zNH4
         adispNH4=12.2640;                                           %NH4 linear coefficient for temperature dependence (cm2/yr/oC)
         DNH41;                      %NH4 diffusion coefficient in bioturbated layer (cm2/yr)
         DNH42;                      %NH4 diffusion coefficient in non-bioturbated layer (cm2/yr)
+        
+        KNH4=1.3;         %Adsorption coefficient (same in ocix and anoxic layer) (-)
        
     end
     
     methods
         function obj = benthic_zNH4(bsd, swi)
-            obj.DNH41=(obj.qdispNH4+obj.adispNH4*swi.T).*bsd.dispFactor+bsd.Dbio;                %NH4 diffusion coefficient in bioturbated layer (cm2/yr)
-            obj.DNH42=(obj.qdispNH4+obj.adispNH4*swi.T).*bsd.dispFactor;                     %NH4 diffusion coefficient in non-bioturbated layer (cm2/yr)           
+            obj.DNH41=((obj.qdispNH4+obj.adispNH4*swi.T).*bsd.dispFactor+bsd.Dbio)/(1+obj.KNH4);                %NH4 diffusion coefficient in bioturbated layer (cm2/yr)
+            obj.DNH42=((obj.qdispNH4+obj.adispNH4*swi.T).*bsd.dispFactor)/(1+obj.KNH4);                     %NH4 diffusion coefficient in non-bioturbated layer (cm2/yr)           
           
         end
         
@@ -22,17 +24,17 @@ classdef benthic_zNH4
             % Preparation: for each layer, sort out solution-matching across bioturbation boundary if necessary
             % layer 1: 0 < z < zox, NH4 prod (remaining after oxidation)
             %      ls =      prepfg_l12( bsd, swi, r, reac1,     reac2,     ktemp, zU, zL, D1,        D2)
-            rNH4.ls1 = r.zTOC.prepfg_l12(bsd, swi, r, (1-bsd.gamma)*bsd.NC1,(1-bsd.gamma)*bsd.NC2,0, 0, r.zox, obj.DNH41, obj.DNH42);
+            rNH4.ls1 = r.zTOC.prepfg_l12(bsd, swi, r, (1-bsd.gamma)*bsd.NC1/(1+obj.KNH4),(1-bsd.gamma)*bsd.NC2/(1+obj.KNH4),0, 0, r.zox, obj.DNH41, obj.DNH42);
                             % Dominik 23.02.2016: NC1 and NC2 missing in react1/2 ???
             % layer 2: zox < z < zno3, passive diffn TODO NH4 from denitrification?
             rNH4.ls2 = r.zTOC.prepfg_l12(bsd, swi, r, 0,         0,         0,  r.zox, r.zno3, obj.DNH41, obj.DNH42);  
             % layer 3: zno3 < z < zinf, NH4 production
-            rNH4.ls3 = r.zTOC.prepfg_l12(bsd, swi, r, bsd.NC1,bsd.NC2, 0, r.zno3, bsd.zinf, obj.DNH41, obj.DNH42);
+            rNH4.ls3 = r.zTOC.prepfg_l12(bsd, swi, r, bsd.NC1/(1+obj.KNH4),bsd.NC2/(1+obj.KNH4), 0, r.zno3, bsd.zinf, obj.DNH41, obj.DNH42);
             
             % Work up from the bottom, matching solutions at boundaries
             % Basis functions at bottom of layer 3 zinf
             [ e3_zinf, dedz3_zinf, f3_zinf, dfdz3_zinf, g3_zinf, dgdz3_zinf] ...
-                = r.zTOC.calcfg_l12(bsd.zinf, bsd, swi, r, bsd.NC1,bsd.NC2, 0, rNH4.ls3);
+                = r.zTOC.calcfg_l12(bsd.zinf, bsd, swi, r, bsd.NC1/(1+obj.KNH4),bsd.NC2/(1+obj.KNH4), 0, rNH4.ls3);
             
             % Match at zno3, layer 2 - layer 3 (continuity and flux)                        
             % basis functions at bottom of layer 2
@@ -40,7 +42,7 @@ classdef benthic_zNH4
                 = r.zTOC.calcfg_l12(r.zno3, bsd, swi, r,     0,            0, 0, rNH4.ls2);
             % ... and top of layer 3
             [ e3_zno3, dedz3_zno3, f3_zno3, dfdz3_zno3, g3_zno3, dgdz3_zno3] ...
-                = r.zTOC.calcfg_l12(r.zno3, bsd, swi, r, bsd.NC1, bsd.NC2, 0, rNH4.ls3);
+                = r.zTOC.calcfg_l12(r.zno3, bsd, swi, r, bsd.NC1/(1+obj.KNH4), bsd.NC2/(1+obj.KNH4), 0, rNH4.ls3);
             % match solutions at zno3 - continuous concentration and flux
              [zno3.a, zno3.b, zno3.c, zno3.d, zno3.e, zno3.f] = benthic_utils.matchsoln(e2_zno3, f2_zno3, g2_zno3, dedz2_zno3, dfdz2_zno3, dgdz2_zno3, ...
                                                                 e3_zno3, f3_zno3, g3_zno3, dedz3_zno3, dfdz3_zno3, dgdz3_zno3, ...
@@ -48,10 +50,10 @@ classdef benthic_zNH4
                                                         
             % Match at zox, layer 1 - layer 2 (continuity, flux discontinuity from NH4 sink)
             %flux of NH4 to oxic interface  TODO NH4 prod by denitrification?          
-            FNH4 = r.zTOC.calcReac(r.zno3, bsd.zinf, bsd.NC1, bsd.NC2, bsd, swi, r); % MULTIPLY BY 1/POR ????
+            FNH4 = r.zTOC.calcReac(r.zno3, bsd.zinf, bsd.NC1/(1+obj.KNH4), bsd.NC2/(1+obj.KNH4), bsd, swi, r); % MULTIPLY BY 1/POR ????
             % basis functions at bottom of layer 1
             [ e1_zox, dedz1_zox, f1_zox, dfdz1_zox, g1_zox, dgdz1_zox] ...
-                = r.zTOC.calcfg_l12(r.zox, bsd, swi, r,(1-bsd.gamma)*bsd.NC1,(1-bsd.gamma)*bsd.NC2 , 0, rNH4.ls1);
+                = r.zTOC.calcfg_l12(r.zox, bsd, swi, r,(1-bsd.gamma)*bsd.NC1/(1+obj.KNH4),(1-bsd.gamma)*bsd.NC2/(1+obj.KNH4) , 0, rNH4.ls1);
             % basis functions at top of layer 2
             [ e2_zox, dedz2_zox, f2_zox, dfdz2_zox, g2_zox, dgdz2_zox] ...
                 = r.zTOC.calcfg_l12(r.zox, bsd, swi, r, 0, 0, 0, rNH4.ls2);
@@ -63,7 +65,7 @@ classdef benthic_zNH4
             D  = (r.zox <= bsd.zbio).*obj.DNH41 + (r.zox > bsd.zbio).*obj.DNH42;
              [zox.a, zox.b, zox.c, zox.d, zox.e, zox.f] = benthic_utils.matchsoln(e1_zox, f1_zox, g1_zox, dedz1_zox, dfdz1_zox, dgdz1_zox, ...
                                                              e2_zox, f2_zox, g2_zox, dedz2_zox, dfdz2_zox, dgdz2_zox, ...                                                            
-                                                            0, -r.zxf.*(1-bsd.gamma).*FNH4./D);
+                                                            0, r.zxf.*bsd.gamma.*FNH4./D);
                     % Dominik 24.02.2016 think it should be -r.zxf.*(1-bsd.gamma).*FNH4./D -> but changes profile significantly!
                     % Dominik 24.02.2016 was r.zxf.*bsd.gamma.*FNH4./D
             % Solution at swi, top of layer 1
@@ -113,7 +115,7 @@ classdef benthic_zNH4
                 end
                 
                 if z <= r.zox   % layer 1
-                    [ e, dedz, f, dfdz, g, dgdz]  = r.zTOC.calcfg_l12(z, bsd, swi, r, (1-bsd.gamma)*bsd.NC1 ,(1-bsd.gamma)*bsd.NC2 , 0, rNH4.ls1);
+                    [ e, dedz, f, dfdz, g, dgdz]  = r.zTOC.calcfg_l12(z, bsd, swi, r, (1-bsd.gamma)*bsd.NC1/(1+obj.KNH4) ,(1-bsd.gamma)*bsd.NC2/(1+obj.KNH4) , 0, rNH4.ls1);
                     NH4     = r.rNH4.A1.*e + r.rNH4.B1.*f + g;
                     flxNH4  = D.*(r.rNH4.A1.*dedz+r.rNH4.B1.*dfdz + dgdz);
                 elseif z <= r.zno3 % layer 2
@@ -121,7 +123,7 @@ classdef benthic_zNH4
                     NH4     = r.rNH4.A2.*e + r.rNH4.B2.*f + g;
                     flxNH4  = D.*(r.rNH4.A2.*dedz+r.rNH4.B2.*dfdz + dgdz);
                 else
-                    [ e, dedz, f, dfdz, g, dgdz]  = r.zTOC.calcfg_l12(z, bsd, swi, r, bsd.NC1,bsd.NC2 , 0, rNH4.ls3);
+                    [ e, dedz, f, dfdz, g, dgdz]  = r.zTOC.calcfg_l12(z, bsd, swi, r, bsd.NC1/(1+obj.KNH4),bsd.NC2/(1+obj.KNH4) , 0, rNH4.ls3);
                     NH4     = r.rNH4.A3.*e + r.rNH4.B3.*f + g;
                     flxNH4  = D.*(r.rNH4.A3.*dedz+r.rNH4.B3.*dfdz + dgdz);
                 end

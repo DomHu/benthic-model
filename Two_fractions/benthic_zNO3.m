@@ -6,6 +6,8 @@ classdef benthic_zNO3
         adispNO3=12.2640;                                           %NO3 linear coefficient for temperature dependence (cm2/yr/oC)
         DN1;                  %NO3 diffusion coefficient in bioturbated layer (cm2/yr)
         DN2;                       %NO3 diffusion coefficient in non-bioturbated layer (cm2/yr)
+        
+        KNH4=1.3;         %Adsorption coefficient (same in ocix and anoxic layer) (-)
     end
     
     methods
@@ -73,7 +75,7 @@ classdef benthic_zNO3
                 = r.zTOC.calcfg_l12(r.zox, bsd, swi, r, -bsd.NO3CR,       -bsd.NO3CR, 0, rNO3.ls2);
             
             %flux of NH4 to zox  TODO NH4 production by denitrification?
-            FNH4 = r.zTOC.calcReac(zno3, bsd.zinf, bsd.NC1, bsd.NC2, bsd, swi, r); % MULTIPLY BY 1/POR ????
+            FNH4 = r.zTOC.calcReac(zno3, bsd.zinf, bsd.NC1/(1+obj.KNH4), bsd.NC2/(1+obj.KNH4), bsd, swi, r); % MULTIPLY BY 1/POR ????
             % match solutions at zox - continuous concentration, flux discontinuity from H2S ox
             D = (r.zox <= bsd.zbio).*obj.DN1 + (r.zox > bsd.zbio).*obj.DN2;
             

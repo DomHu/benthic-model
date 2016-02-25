@@ -15,7 +15,7 @@ classdef benthic_test
             swi.O20=80.0e-9;   %was    300.0e-9                            %O2  concentration at SWI (mol/cm3)
 %            swi.SO40=28000.0e-9;                                            %SO4 concentration at SWI (mol/cm3)
             swi.NO30=20.0e-9;                                               %NO3 concentration at SWI (mol/cm3)
-            swi.NH40=1.0e-9;                                                %NH4 concentration at SWI (mol/cm3)
+            swi.NH40=0.0e-9;                                                %NH4 concentration at SWI (mol/cm3)
             swi.SO40 = 100e-9;
             swi.H2S0=0.0e-9;         %was 0.0e-9                            %H2S concentration at SWI (mol/cm3)
             swi.PO40=1e-9;    % Sandra played with 3e-9                                              %PO4 concentration at SWI (mol/cm3)

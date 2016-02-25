@@ -75,7 +75,8 @@ classdef benthic_zH2S
             % Match at zox, layer 1 - layer 2 (continuity, flux discontinuity from H2S source)
             %flux of H2S to oxic interface (from all sources of H2S below)
             % NB: include methane region as AOM will produce sulphide as well..
-            zoxFH2S = r.zTOC.calcReac(r.zno3, bsd.zinf, bsd.SO4C, bsd.SO4C, bsd, swi, r); % MULTIPLY BY 1/POR ????
+            zoxFH2S = r.zTOC.calcReac(r.zno3, r.zso4, bsd.SO4C, bsd.SO4C, bsd, swi, r) ... % MULTIPLY BY 1/POR ????
+               + r.zTOC.calcReac(r.zso4, bsd.zinf, bsd.MC, bsd.MC, bsd, swi, r); % Dominik 25.02.2016
              %Dom 24.02.2016: actually should be 2 integrals for H2S produced: SO4-reduction + AOM (see documentation, but has the same reac const = 0.5) :
             % basis functions at bottom of layer 1
             [ e1_zox, dedz1_zox, f1_zox, dfdz1_zox, g1_zox, dgdz1_zox] ...
@@ -93,9 +94,9 @@ classdef benthic_zH2S
             
             [zox.a, zox.b, zox.c, zox.d, zox.e, zox.f] = benthic_utils.matchsoln(e1_zox, f1_zox, g1_zox, dedz1_zox, dfdz1_zox, dgdz1_zox, ...
                                                              e2_zox, f2_zox, g2_zox, dedz2_zox, dfdz2_zox, dgdz2_zox, ...                                                            
-                                                            0, -r.zxf.*(1-bsd.gammaH2S).*zoxFH2S./D);
+                                                            0, r.zxf.*bsd.gammaH2S.*zoxFH2S./D);
                     % Dominik 24.02.2016 think it should be -r.zxf.*(1-bsd.gammaH2S).*zoxFH2S./D -> but changes profile significantly!
-                    % Dominik 24.02.2016 was r.zxf.*zoxFH2S./D     
+                    % Dominik 24.02.2016 was r.zxf.*zoxFH2S./D    need gammaH2S here! 
             % Solution at swi, top of layer 1
             [ e1_0, dedz1_0, f1_0, dfdz1_0, g1_0, dgdz1_0] ...
                 = r.zTOC.calcfg_l12(0, bsd, swi, r, 0 , 0 , 0, rH2S.ls1);

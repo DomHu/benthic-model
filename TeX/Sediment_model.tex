@@ -64,7 +64,11 @@
 %\usepackage{rotating}
 
 \usepackage{amsmath}
- 
+\usepackage{lineno}	% Dominik linenumbers
+
+\usepackage{marginnote} %Dominik for commments during drafting
+\setlength{\marginparwidth}{35mm}
+
 
 \begin{document}
 
@@ -251,9 +255,9 @@ $z=z_{\mathrm{bio}}$&continuity& 2)&$ \chem{O_2}(z_{\mathrm{bio}}^-)$=$ \chem{O_
 $z=z_{\mathrm{ox}}$&  \chem{O_2} consumption & 4)&\textbf{IF} $ (\chem{O_2}(z_\infty)> 0 )$\\
 & ($z_{\mathrm{ox}} = z_\infty$) &&\quad $\frac{\partial  \chem{O_2}}{\partial z}|_{z_{\mathrm{ox}}}=0$ \\
 & & &\textbf{ELSE} \\
-& ($z_{\mathrm{ox}} < z_\infty$) & &\quad $  \chem{O_2}(z_{\mathrm{ox}})=0$  \quad and \quad $-D_{ \chem{O_2}} \cdot \frac{\partial  \chem{O_2}}{\partial z}|_{z_{\mathrm{ox}}}=F_{red, z_{\mathrm{ox}}}$\\
+& ($z_{\mathrm{ox}} < z_\infty$) & &\quad $  \chem{O_2}(z_{\mathrm{ox}})=0$  \quad and \quad $-D_{ \chem{O_2}} \cdot \frac{\partial  \chem{O_2}}{\partial z}|_{z_{\mathrm{ox}}}=F_{red}(z_\mathrm{ox})$\\
 %$z=z_{\mathrm{ox}}$& & 5) $-D_{ \chem{O_2}} \cdot \frac{\partial  \chem{O_2}}{\partial z}|_{z_{\mathrm{ox}}}=F_{red, z_{\mathrm{ox}}}$\\   
-&with flux from below &&$\quad F_{red,z_{\mathrm{ox}}}=\frac{1-\phi}{\phi} \cdot \int_{z_{\mathrm{ox}}}^{\infty}  \sum_i \left( 2\gamma_{\chem{NH_4}} \chem{NC_i} + \gamma_{\chem{H_2S}} \chem{SO_4C} \right) k_i C_i\ dz$ \\
+&with flux from below &&$\quad F_{red}(z_\mathrm{ox})=\frac{1-\phi}{\phi} \cdot \int_{z_{\mathrm{ox}}}^{\infty}  \sum_i \left( 2\gamma_{\chem{NH_4}} \chem{NC_i} + \gamma_{\chem{H_2S}} \chem{SO_4C} \right) k_i C_i\ dz$ \\
 % was from Sandra &with:&$F_{red,z_{\mathrm{ox}}}=\beta \cdot \int_{z_{\mathrm{ox}}}^{\inf}  \sum_i k_i\cdot C_i  dz  + 2\cdot \gamma \cdot \int_{z_{\mathrm{ox}}}^{\inf}  \sum_i k_i\cdot C_i  -  $ \\
 \hline    
 \end{tabular}
@@ -297,10 +301,14 @@ penetration depth $z_{\chem{NO_3}}$, ammonium is still produced through OM miner
 \begin{align}
 \intertext{1. Layer ($z \leq z_{\mathrm{ox}}$)}
  \frac{\partial NO_3^I}{\partial t} &= 0 = D_{NO_3} \frac{\partial^2NO_3^I }{\partial z^2} - w\frac{\partial NO_3^I }{\partial z} + \gamma_{\chem{NH_4}} \frac{1-\phi}{\phi} \cdot \sum_i \chem{NC_i} \cdot k_i \cdot C_{i}(z)\label{eq:NO3_ODE1_L1}\\ %\qquad &\text{1. Layer ($z\leq z_{\mathrm{ox}}$)}\\
- \frac{\partial \chem{NH_4}^I}{\partial t} &= 0 = D_{\chem{NH_4}} \frac{\partial^2\chem{NH_4}^I }{\partial z^2} - w\frac{\partial \chem{NH_4}^I }{\partial z} + (1-\gamma_{\chem{NH_4}}) \frac{1-\phi}{\phi} \cdot \sum_i \chem{NC_i} \cdot k_i \cdot C_{i}(z)\label{eq:NH4_ODE1_L1}\\
- \intertext{2. Layer ($z_{\mathrm{ox}} < z \leq z_{\chem{NO_3}}$ [or $z_\infty$ for \chem{NH_4}])} 
+ \frac{\partial \chem{NH_4}^I}{\partial t} &= 0 = \frac{D_{\chem{NH_4}}}{1+K_\chem{NH_4}} \frac{\partial^2\chem{NH_4}^I }{\partial z^2} - w\frac{\partial \chem{NH_4}^I }{\partial z} + \frac{1-\gamma_{\chem{NH_4}}}{1+K_\chem{NH_4}}\cdot \frac{1-\phi}{\phi} \cdot \sum_i \chem{NC_i} \cdot k_i \cdot C_{i}(z)\label{eq:NH4_ODE1_L1}\\
+ \intertext{2. Layer ($z_{\mathrm{ox}} < z \leq z_{\chem{NO_3}}$)} 
 \frac{\partial NO_3^{II}}{\partial t} &= 0 = D_{NO_3} \frac{\partial^2NO_3^{II} }{\partial z^2} - w\frac{\partial NO_3^{II} }{\partial z} - \frac{1-\phi}{\phi} NO_3C \cdot \sum_i k_i \cdot C_{i}(z) \label{eq:NO3_ODE1_L2}\\
-\frac{\partial \chem{NH_4}^{II}}{\partial t} &= 0 = D_{\chem{NH_4}} \frac{\partial^2\chem{NH_4}^{II} }{\partial z^2} - w\frac{\partial \chem{NH_4}^{II} }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i \chem{NC_i} \cdot k_i \cdot C_{i}(z)\label{eq:NH4_ODE1_L2}
+\frac{\partial \chem{NH_4}^{II}}{\partial t} &= 0 = \frac{D_{\chem{NH_4}}}{1+K_\chem{NH_4}} \frac{\partial^2\chem{NH_4}^{II} }{\partial z^2} - w\frac{\partial \chem{NH_4}^{II} }{\partial z} \label{eq:NH4_ODE1_L2}
+ \intertext{3. Layer ($z_{\chem{NO_3}} < z \leq z_\infty$)} 
+\frac{\partial \chem{NH_4}^{III}}{\partial t} &= 0 = \frac{D_{\chem{NH_4}}}{1+K_\chem{NH_4}} \frac{\partial^2\chem{NH_4}^{III} }{\partial z^2} - w\frac{\partial \chem{NH_4}^{III} }{\partial z} + \frac{1}{1+K_\chem{NH_4}}\cdot\frac{1-\phi}{\phi} \cdot \sum_i \chem{NC_i} \cdot k_i \cdot C_{i}(z)\label{eq:NH4_ODE1_L2}
+%>>>
+\marginnote{\textcolor{red}{\textbf{DH}: added \chem{NH_4} adsorption here and in code ($K_\chem{NH_4}=1.3$)}}[-4cm]%<<<
 \end{align}
 % where
 % \begin{align}
@@ -325,8 +333,8 @@ $z=0$& known concentration& 1)& $NO_3(0)=NO_{30}$  \\
 $z=z_{\mathrm{bio}}$&continuity& 2)& $NO_3(z_{\mathrm{bio}}^-)$=$NO_3(z_{\mathrm{bio}}^+)$\\
                && 3)& $-\left(D_{NO_3,0}+D_{\mathrm{bio}}\right )\cdot \frac{\partial NO_3}{\partial z}|_{z_{\mathrm{bio}}^-}=-D_{NO_3,0} \cdot \frac{\partial NO_3}{\partial z}|_{z_{\mathrm{bio}}^+}$\\
 $z=z_{\mathrm{ox}}$& continuity& 4)& $NO_3(z_{\mathrm{ox}}^-)$=$NO_3(z_{\mathrm{ox}}^+)$\\
-               && 5)& $-D_{NO_3} \cdot \frac{\partial NO_3}{\partial z}|_{z_{\mathrm{ox}}^-} + \gamma_{\chem{NH_4}}\cdot F_{\chem{NH_4}}=-D_{NO_3} \cdot \frac{\partial NO_3}{\partial z}|_{z_{\mathrm{ox}}^+}$\\
-&where: & &$ F_{\chem{NH_4}}=\frac{1-\phi}{\phi} \cdot \int_{z_{\chem{NO_3}}}^{\infty}  \sum_i k_i \cdot \chem{NC_i} \cdot C_i\ dz$ \\          
+               && 5)& $-D_{NO_3} \cdot \frac{\partial NO_3}{\partial z}|_{z_{\mathrm{ox}}^-} + \gamma_{\chem{NH_4}}\cdot F_{\chem{NH_4}}(z_{\mathrm{ox}})=-D_{NO_3} \cdot \frac{\partial NO_3}{\partial z}|_{z_{\mathrm{ox}}^+}$\\
+&where: & &$ F_{\chem{NH_4}}(z_{\mathrm{ox}})=\frac{1}{1+K_\chem{NH_4}}\cdot \frac{1-\phi}{\phi} \cdot \int_{z_{\chem{NO_3}}}^{\infty}  \sum_i k_i \cdot \chem{NC_i} \cdot C_i\ dz$ \\          
 $z=z_{\chem{NO_3}}$& \chem{NO_3} consumption & 6) & \textbf{IF} $ (\chem{NO_3}(z_\infty)> 0 )$\\
 & ($z_{\chem{NO_3}} = z_\infty$) & & \quad $\frac{\partial NO_3}{\partial z}|_{z_{\chem{NO_3}}}=0$\\
 & & &\textbf{ELSE} \\
@@ -335,17 +343,19 @@ $z=z_{\chem{NO_3}}$& \chem{NO_3} consumption & 6) & \textbf{IF} $ (\chem{NO_3}(z
 \hline
 $z=0$& known concentration& 1)& $\chem{NH_4}(0)=NH_{40}$  \\
 $z=z_{\mathrm{bio}}$&continuity& 2)& $\chem{NH_4}(z_{\mathrm{bio}}^-)$=$\chem{NH_4}(z_{\mathrm{bio}}^+)$\\
-               && 3)& $-\left(D_{\chem{NH_4},0}+D_{\mathrm{bio}}\right )\cdot \frac{\partial \chem{NH_4}}{\partial z}|_{z_{\mathrm{bio}}^-}=-D_{\chem{NH_4},0} \cdot \frac{\partial \chem{NH_4}}{\partial z}|_{z_{\mathrm{bio}}^+}$\\
+               && 3)& $-\frac{D_{\chem{NH_4},0}+D_{\mathrm{bio}}}{1+K_\chem{NH_4}}\cdot \frac{\partial \chem{NH_4}}{\partial z}|_{z_{\mathrm{bio}}^-}=-\frac{D_{\chem{NH_4},0}}{1+K_\chem{NH_4}} \cdot \frac{\partial \chem{NH_4}}{\partial z}|_{z_{\mathrm{bio}}^+}$\\
 $z=z_{\mathrm{ox}}$& continuity& 4)& $\chem{NH_4}(z_{\mathrm{ox}}^-)$=$\chem{NH_4}(z_{\mathrm{ox}}^+)$\\
-  && 5)& $-D_{\chem{NH_4}} \cdot \frac{\partial \chem{NH_4}}{\partial z}|_{z_{\mathrm{ox}}^-} +(1-\gamma_{\chem{NH_4}})\cdot F_{\chem{NH_4}}=-D_{\chem{NH_4}} \cdot \frac{\partial \chem{NH_4}}{\partial z}|_{z_{\mathrm{ox}}^+}$\\
-&where: & & $F_{\chem{NH_4}}=\frac{1-\phi}{\phi} \cdot \int_{z_{\chem{NO_3}}}^{\infty}  \sum_i k_i \cdot \chem{NC_i} \cdot C_i\ dz$ \\          
+  & & 5)& $-\frac{D_{\chem{NH_4}}}{1+K_\chem{NH_4}} \cdot \frac{\partial \chem{NH_4}}{\partial z}|_{z_{\mathrm{ox}}^-} -\gamma_{\chem{NH_4}}\cdot F_{\chem{NH_4}}(z_{\mathrm{ox}})=-\frac{D_{\chem{NH_4}}}{1+K_\chem{NH_4}} \cdot \frac{\partial \chem{NH_4}}{\partial z}|_{z_{\mathrm{ox}}^+}$\\
+&where: & & $F_{\chem{NH_4}}(z_{\mathrm{ox}})=\frac{1}{1+K_\chem{NH_4}}\cdot \frac{1-\phi}{\phi} \cdot \int_{z_{\chem{NO_3}}}^{\infty}  \sum_i k_i \cdot \chem{NC_i} \cdot C_i\ dz$ \\          
 $z=z_{\chem{NO_3}}$&continuity& 6)& $\chem{NH_4}(z_{\chem{NO_3}}^-)$=$\chem{NH_4}(z_{\chem{NO_3}}^+)$\\
-               & flux & 7)& $-D_{\chem{NH_4}}\cdot \frac{\partial \chem{NH_4}}{\partial z}|_{z_{\chem{NO_3}}^-}=-D_{\chem{NH_4}} \cdot \frac{\partial \chem{NH_4}}{\partial z}|_{z_{\chem{NO_3}}^+}$\\
+               & flux & 7)& $-\frac{D_{\chem{NH_4}}}{1+K_\chem{NH_4}}\cdot \frac{\partial \chem{NH_4}}{\partial z}|_{z_{\chem{NO_3}}^-}=-\frac{D_{\chem{NH_4}}}{1+K_\chem{NH_4}} \cdot \frac{\partial \chem{NH_4}}{\partial z}|_{z_{\chem{NO_3}}^+}$\\
 $z=z_{\infty}$& \chem{NH_4} flux & 8)& $\frac{\partial \chem{NH_4}}{\partial z}|_{z_\infty}=0$\\
 \hline    
 \end{tabular}
 \label{Tab:BC_NO3+NH4}
-% is used to refer this table in the text
+%>>>
+\marginnote{\textcolor{red}{\textbf{DH}: added $K_\chem{NH_4}$ here. (not in Gypens)}}[-5cm]
+\marginnote{\textcolor{red}{\textbf{DH}: BC 5) for \chem{NH_4} should this not be $+(1-\gamma_{\chem{NH_4}})\cdot F_{\chem{NH_4}}$??}}[-2cm]%<<<
 \end{table}
 \subsubsection{Sulfate and Sulfide}
 When nitrate is depleted, sulfate reduction is the pathway to mineralize organic matter, thus consuming sulfate (SO$_4$) and producing hydrogen sulfide (H$_2$S) until the sulfate penetration depth ($z_{\chem{\chem{SO_4}}}$). 
@@ -355,8 +365,10 @@ Sulfate and sulfide dynamics are thus described by:
  \frac{\partial \chem{SO_4}^I}{\partial t} &= 0 = D_{\chem{SO_4}} \frac{\partial^2\chem{SO_4}^I }{\partial z^2} - w\frac{\partial \chem{SO_4}^I }{\partial z} \label{eq:SO4_ODE1_L1}\\ %\qquad &\text{1. Layer ($z\leq z_{\mathrm{ox}}$)}\\
  \frac{\partial \chem{H_2S}^I}{\partial t} &= 0 = D_{\chem{H_2S}} \frac{\partial^2\chem{H_2S}^I }{\partial z^2} - w\frac{\partial \chem{H_2S}^I }{\partial z}\label{eq:H2S_ODE1_L1}\\
  \intertext{2. Layer ($z_{\chem{NO_3}} < z \leq z_{\chem{SO_4}}$)} 
-\frac{\partial \chem{SO_4}^{II}}{\partial t} &= 0 = D_{\chem{SO_4}} \frac{\partial^2\chem{SO_4}^{II} }{\partial z^2} - w\frac{\partial \chem{SO_4}^{II} }{\partial z} - \frac{1-\phi}{\phi} \cdot \sum_i \chem{SO_4C} \cdot k_i \cdot C_{i}(z) \label{eq:NO3_ODE1_L2}\\
-\frac{\partial \chem{H_2S}^{II}}{\partial t} &= 0 = D_{\chem{H_2S}} \frac{\partial^2\chem{H_2S}^{II} }{\partial z^2} - w\frac{\partial \chem{H_2S}^{II} }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i \chem{SO_4C}  \cdot k_i \cdot C_{i}(z)\label{eq:NH4_ODE1_L2}
+\frac{\partial \chem{SO_4}^{II}}{\partial t} &= 0 = D_{\chem{SO_4}} \frac{\partial^2\chem{SO_4}^{II} }{\partial z^2} - w\frac{\partial \chem{SO_4}^{II} }{\partial z} - \frac{1-\phi}{\phi} \cdot \sum_i \chem{SO_4C} \cdot k_i \cdot C_{i}(z) \label{eq:SO4_ODE1_L2}\\
+\frac{\partial \chem{H_2S}^{II}}{\partial t} &= 0 = D_{\chem{H_2S}} \frac{\partial^2\chem{H_2S}^{II} }{\partial z^2} - w\frac{\partial \chem{H_2S}^{II} }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i \chem{SO_4C}  \cdot k_i \cdot C_{i}(z)\label{eq:H2S_ODE1_L2}
+ \intertext{3. Layer ($z_{\chem{SO_4}} < z \leq z_{\infty}$)} 
+\frac{\partial \chem{H_2S}^{III}}{\partial t} &= 0 = D_{\chem{H_2S}} \frac{\partial^2\chem{H_2S}^{III} }{\partial z^2} - w\frac{\partial \chem{H_2S}^{III} }{\partial z}\label{eq:H2S_ODE1_L3}
 \end{align}
 % where
 % \begin{align}
@@ -370,43 +382,50 @@ for both species. At the sulfate penetration depth ($z_{\chem{SO_4}}$) sulfate i
 the amount of methane produced below. Additionally H$_2$S is produced by AOM which is considered in the flux boundary condition at $z_{\chem{SO_4}}$ . \textcolor{red}{correct??}\\
 
 \begin{table}[tbp]
-\caption{Boundary conditions for sulfate and sulfide. As in MATLAB (in red my suggestions).}
+\caption{Boundary conditions for sulfate and sulfide.}
 % title of Table
 \centering
 % used for centering table
-\begin{tabular}{ |l| l| l|}
+\begin{tabular}{ |c| c| c l|}
 \hline
-\textbf{Boundary}& \textbf{Condition}&\\
+\textbf{Boundary}& \textbf{Condition}&&\\
 \hline
-$z=0$& known concentration& 1) \chem{SO_4}(0)=\chem{SO_{40}}  \\
-$z=z_{\mathrm{bio}}$&continuity& 2) $\chem{SO_4}(z_{\mathrm{bio}}^-)$=$\chem{SO_4}(z_{\mathrm{bio}}^+)$\\
-               & flux & 3) $\left(D_{\chem{SO_4},0}+D_{\mathrm{bio}}\right )\cdot \frac{\partial \chem{SO_4}}{\partial z}|_{z_{\mathrm{bio}}^-}=D_{\chem{SO_4},0} \cdot \frac{\partial \chem{SO_4}}{\partial z}|_{z_{\mathrm{bio}}^+}$\\
-$z=z_{\mathrm{ox}}$& continuity& 4) $\chem{SO_4}(z_{\mathrm{ox}}^-)$=$\chem{SO_4}(z_{\mathrm{ox}}^+)$\\
-               & flux \textcolor{red}{$\gamma_{\chem{H_2S}}$ below?} & 5) $-D_{\chem{SO_4}} \cdot \frac{\partial \chem{SO_4}}{\partial z}|_{z_{\mathrm{ox}}^-} +  F_{\chem{H_2S}}(z_{\mathrm{ox}})=-D_{\chem{SO_4}} \cdot \frac{\partial \chem{SO_4}}{\partial z}|_{z_{\mathrm{ox}}^+}$\\
-&where:\textcolor{red}{$\int_{z_{\chem{\chem{SO_4}}}}^{\infty}$ here?} & $\quad F_{\chem{H_2S}}(z_{\mathrm{ox}})=\frac{1-\phi}{\phi} \cdot \textcolor{red}{\gamma_{\chem{H_2S}}\cdot} \left( \int_{z_{\chem{NO_3}}}^{\chem{SO_4}}  \sum_i \chem{SO_4C} \cdot k_i \cdot C_i\ dz + \gamma_{CH_4}\cdot \int_{z_{\chem{SO_4}}}^{\infty}  \sum_i \chem{SO_4}C \cdot k_i \cdot C_i\ dz \right)$\\          
-$z=z_{\chem{NO_3}}$&continuity& 6) $\chem{SO_4}(z_{\chem{NO_3}}^-)$=$\chem{SO_4}(z_{\chem{NO_3}}^+)$\\
-               & flux & 7) $D_{\chem{SO_4}}\cdot \frac{\partial \chem{SO_4}}{\partial z}|_{z_{\chem{NO_3}}^-}=D_{\chem{SO_4}} \cdot \frac{\partial \chem{SO_4}}{\partial z}|_{z_{\chem{NO_3}}^+}$\\
-$z=z_{\chem{SO_4}}$& SO$_4$ consumption & 8) $\chem{SO_4}(z_{\chem{SO_4}})=0$ \\%\quad \textcolor{red}{or/and (???)} \quad $\frac{\partial \chem{SO_4}}{\partial z}|_{z_{\chem{SO_4}}}= 0$\\
-& Flux from below& 9) $-D_{\chem{SO_4}} \cdot \frac{\partial \chem{SO_4}}{\partial z}|_{z_{\chem{SO_4}}}= F_{\chem{SO_4}}(z_{\chem{SO_4}})$\\   
-\textcolor{red}{add if-query!}&with:\textcolor{red}{ $\chem{SO_4C} \cdot \gamma_{\chem{CH_4}}$?}&$ \quad F_{\chem{SO_4}}(z_{\chem{SO_4}})=\frac{1-\phi}{\phi} \cdot \int_{z_{\chem{SO_4}}}^{\infty}  \sum_i \chem{SO_4C} \cdot \gamma_{CH_4} \cdot k_i \cdot C_i\ dz$ \textcolor{red}{not rather MC instead SO4C?}\\
+$z=0$& known concentration& 1)& \chem{SO_4}(0)=\chem{SO_{40}}  \\
+$z=z_{\mathrm{bio}}$&continuity& 2)& $\chem{SO_4}(z_{\mathrm{bio}}^-)$=$\chem{SO_4}(z_{\mathrm{bio}}^+)$\\
+               & flux & 3)& $-\left(D_{\chem{SO_4},0}+D_{\mathrm{bio}}\right )\cdot \frac{\partial \chem{SO_4}}{\partial z}|_{z_{\mathrm{bio}}^-}=-D_{\chem{SO_4},0} \cdot \frac{\partial \chem{SO_4}}{\partial z}|_{z_{\mathrm{bio}}^+}$\\
+$z=z_{\mathrm{ox}}$& continuity& 4)& $\chem{SO_4}(z_{\mathrm{ox}}^-)$=$\chem{SO_4}(z_{\mathrm{ox}}^+)$\\
+               & flux & 5)& $-D_{\chem{SO_4}} \cdot \frac{\partial \chem{SO_4}}{\partial z}|_{z_{\mathrm{ox}}^-} + \gamma_{\chem{H_2S}}\cdot F_{\chem{H_2S}}(z_{\mathrm{ox}})=-D_{\chem{SO_4}} \cdot \frac{\partial \chem{SO_4}}{\partial z}|_{z_{\mathrm{ox}}^+}$\\
+&where:& &$\quad F_{\chem{H_2S}}(z_{\mathrm{ox}})=\frac{1-\phi}{\phi} \cdot \left( \int_{z_{\chem{NO_3}}}^{\chem{SO_4}}  \sum_i \chem{SO_4C} \cdot k_i \cdot C_i\ dz + \gamma_\chem{CH_4}\cdot \int_{z_{\chem{SO_4}}}^{\infty}  \sum_i \chem{MC} \cdot k_i \cdot C_i\ dz \right)$\\          
+$z=z_{\chem{NO_3}}$&continuity& 6)& $\chem{SO_4}(z_{\chem{NO_3}}^-)$=$\chem{SO_4}(z_{\chem{NO_3}}^+)$\\
+               & flux & 7)& $-D_{\chem{SO_4}}\cdot \frac{\partial \chem{SO_4}}{\partial z}|_{z_{\chem{NO_3}}^-}=-D_{\chem{SO_4}} \cdot \frac{\partial \chem{SO_4}}{\partial z}|_{z_{\chem{NO_3}}^+}$\\
+$z=z_{\chem{SO_4}}$& SO$_4$ consumption & 8)&  \textbf{IF} $ (\chem{SO_4}(z_\infty)> 0 )$\\
+& ($z_{\chem{SO_4}} = z_\infty$) && \quad $\frac{\partial SO_4}{\partial z}|_{z_{\chem{SO_4}}}=0$\\
+& & &\textbf{ELSE} \\
+& ($z_{\chem{SO_4}} < z_\infty$) && \quad $\chem{SO_4}(z_{\chem{SO_4}})=0$ \quad and \quad $-D_{\chem{SO_4}} \cdot \frac{\partial \chem{SO_4}}{\partial z}|_{z_{\chem{SO_4}}}= \gamma_\chem{CH_4} \cdot F_{\chem{CH_4}}(z_{\chem{SO_4}})$\\%\quad \textcolor{red}{or/and (???)} \quad $\frac{\partial \chem{SO_4}}{\partial z}|_{z_{\chem{SO_4}}}= 0$\\   
+&with flux from below:& &$ \quad F_{\chem{CH_4}}(z_{\chem{SO_4}})=\frac{1-\phi}{\phi} \cdot \int_{z_{\chem{SO_4}}}^{\infty}  \sum_i \chem{MC} \cdot k_i \cdot C_i\ dz$ \\
 % was from Sandra &with:&$F_{red,z_{\mathrm{ox}}}=\beta \cdot \int_{z_{\mathrm{ox}}}^{\inf}  \sum_i k_i\cdot C_i  dz  + 2\cdot \gamma \cdot \int_{z_{\mathrm{ox}}}^{\inf}  \sum_i k_i\cdot C_i  -  $ \\
 \hline
-$z=0$& known concentration& 1) $\chem{H_2S}(0)=\chem{H_2S}_{0}$  \\
-$z=z_{\mathrm{bio}}$&continuity& 2) $\chem{H_2S}(z_{\mathrm{bio}}^-)$=$\chem{H_2S}(z_{\mathrm{bio}}^+)$\\
-               & flux & 3) $\left(D_{\chem{H_2S},0}+D_{\mathrm{bio}}\right )\cdot \frac{\partial \chem{H_2S}}{\partial z}|_{z_{\mathrm{bio}}^-}=D_{\chem{H_2S},0} \cdot \frac{\partial \chem{H_2S}}{\partial z}|_{z_{\mathrm{bio}}^+}$\\
-$z=z_{\mathrm{ox}}$& continuity& 4) $\chem{H_2S}(z_{\mathrm{ox}}^-)$=$\chem{H_2S}(z_{\mathrm{ox}}^+)$\\
-               & flux & 5) $-D_{\chem{H_2S}} \cdot \frac{\partial \chem{H_2S}}{\partial z}|_{z_{\mathrm{ox}}^-} +  F_{\chem{H_2S}}(z_{\mathrm{ox}})=-D_{\chem{H_2S}} \cdot \frac{\partial \chem{H_2S}}{\partial z}|_{z_{\mathrm{ox}}^+}$\\
-\textcolor{red}{not as SO4!?}&where: \textcolor{red}{$1-\gamma_{\chem{H_2S}}$?} & $\quad F_{\chem{H_2S}}(z_{\mathrm{ox}})=\frac{1-\phi}{\phi} \cdot \textcolor{red}{(1-\gamma_{\chem{H_2S}})\cdot} \int_{z_{\chem{NO_3}}}^{\infty}  \sum_i \chem{SO_4C} \cdot k_i \cdot C_i\ dz$ \\          
-$z=z_{\chem{NO_3}}$&continuity& 6) $\chem{H_2S}(z_{\chem{NO_3}}^-)$=$\chem{H_2S}(z_{\chem{NO_3}}^+)$\\
-               & flux & 7) $D_{\chem{H_2S}}\cdot \frac{\partial \chem{H_2S}}{\partial z}|_{z_{\chem{NO_3}}^-}=D_{\chem{H_2S}} \cdot \frac{\partial \chem{H_2S}}{\partial z}|_{z_{\chem{NO_3}}^+}$\\
-$z=z_{\chem{SO_4}}$& continuity & 8) $\chem{H_2S}(z_{\chem{SO_4}}^-)$=$\chem{H_2S}(z_{\chem{SO_4}}^+)$\\ %$\frac{\partial \chem{H_2S}}{\partial z}|_{z_{\chem{H_2S}}}=0$\\
-               & flux (with AOM) & 9)  $-D_{\chem{H_2S}}\cdot \frac{\partial \chem{H_2S}}{\partial z}|_{z_{\chem{SO_4}}^-} +  F_{\chem{H_2S}}(z_{\chem{SO_4}})=-D_{\chem{H_2S}} \cdot \frac{\partial \chem{H_2S}}{\partial z}|_{z_{\chem{SO_4}}^+}$\\
-\textcolor{red}{correct???}&where: & $\quad F_{\chem{H_2S}}(z_{\chem{SO_4}})=\frac{1-\phi}{\phi} \cdot \int_{z_{\chem{SO_4}}}^{\infty}  \sum_i SO_4C \cdot k_i \cdot C_i\ dz$ \\          
-$z=z_{\infty}$& flux & 10) $\frac{\partial \chem{H_2S}}{\partial z}|_{z_\infty}=0$\\
+$z=0$& known concentration& 1)& $\chem{H_2S}(0)=\chem{H_2S}_{0}$  \\
+$z=z_{\mathrm{bio}}$&continuity& 2)& $\chem{H_2S}(z_{\mathrm{bio}}^-)$=$\chem{H_2S}(z_{\mathrm{bio}}^+)$\\
+               & flux & 3)& $-\left(D_{\chem{H_2S},0}+D_{\mathrm{bio}}\right )\cdot \frac{\partial \chem{H_2S}}{\partial z}|_{z_{\mathrm{bio}}^-}=-D_{\chem{H_2S},0} \cdot \frac{\partial \chem{H_2S}}{\partial z}|_{z_{\mathrm{bio}}^+}$\\
+$z=z_{\mathrm{ox}}$& continuity& 4)& $\chem{H_2S}(z_{\mathrm{ox}}^-)$=$\chem{H_2S}(z_{\mathrm{ox}}^+)$\\
+               & flux & 5)& $-D_{\chem{H_2S}} \cdot \frac{\partial \chem{H_2S}}{\partial z}|_{z_{\mathrm{ox}}^-} - \gamma_\chem{H_2S}  F_{\chem{H_2S}}(z_{\mathrm{ox}})=-D_{\chem{H_2S}} \cdot \frac{\partial \chem{H_2S}}{\partial z}|_{z_{\mathrm{ox}}^+}$\\
+&where: & &$\quad F_{\chem{H_2S}}(z_{\mathrm{ox}})=\frac{1-\phi}{\phi} \cdot \left( \int_{z_{\chem{NO_3}}}^{\chem{SO_4}}  \sum_i \chem{SO_4C} \cdot k_i \cdot C_i\ dz + \gamma_\chem{CH_4}\cdot \int_{z_{\chem{SO_4}}}^{\infty}  \sum_i \chem{MC} \cdot k_i \cdot C_i\ dz \right)$\\            
+$z=z_{\chem{NO_3}}$&continuity& 6)& $\chem{H_2S}(z_{\chem{NO_3}}^-)$=$\chem{H_2S}(z_{\chem{NO_3}}^+)$\\
+               & flux & 7)& $-D_{\chem{H_2S}}\cdot \frac{\partial \chem{H_2S}}{\partial z}|_{z_{\chem{NO_3}}^-}=-D_{\chem{H_2S}} \cdot \frac{\partial \chem{H_2S}}{\partial z}|_{z_{\chem{NO_3}}^+}$\\
+$z=z_{\chem{SO_4}}$& continuity & 8)& $\chem{H_2S}(z_{\chem{SO_4}}^-)$=$\chem{H_2S}(z_{\chem{SO_4}}^+)$\\ %$\frac{\partial \chem{H_2S}}{\partial z}|_{z_{\chem{H_2S}}}=0$\\
+               & flux (with AOM) & 9)&  $-D_{\chem{H_2S}}\cdot \frac{\partial \chem{H_2S}}{\partial z}|_{z_{\chem{SO_4}}^-} + \gamma_\chem{CH_4}\cdot F_{\chem{CH_4}}(z_{\chem{SO_4}})=-D_{\chem{H_2S}} \cdot \frac{\partial \chem{H_2S}}{\partial z}|_{z_{\chem{SO_4}}^+}$\\
+&where: & &$\quad F_{\chem{CH_4}}(z_{\chem{SO_4}})=\frac{1-\phi}{\phi} \cdot \int_{z_{\chem{SO_4}}}^{\infty}  \sum_i \chem{MC} \cdot k_i \cdot C_i\ dz$ \\          
+$z=z_{\infty}$& \chem{CH_4} flux & 10)& $\frac{\partial \chem{H_2S}}{\partial z}|_{z_\infty}=0$\\
 \hline    
 \end{tabular}
 \label{Tab:BC_SO4+H2S}
-% is used to refer this table in the text
+%>>>
+\marginnote{\textcolor{red}{\textbf{DH}: BC 5) don't delete $\int_{z_{\chem{\chem{SO_4}}}}^{\infty}$ here... profile would decreases then above zox}}[-13cm]%<<<
+%>>>
+\marginnote{\textcolor{red}{\textbf{DH}: think correct, because at 8) \chem{CH_4} from $\int_{z_{\chem{\chem{SO_4}}}}^{\infty}$ is oxidised to \chem{H_2S}; at 5) this \chem{H_2S} to \chem{SO_4}}}[-10.5cm]%<<<
+%>>>
+\marginnote{\textcolor{red}{\textbf{DH}: BC 5) for \chem{H_2S} should this not be $+(1-\gamma_{\chem{H_2S}})\cdot F_{\chem{H_2S}}$??}}[-3cm]%<<<
 \end{table}
 Sulfate:\\
 BC (5): Diffusive flux at $z_{\mathrm{ox}}$ is equal, considering the flux of reduced substances (H$_2$S) from below 
