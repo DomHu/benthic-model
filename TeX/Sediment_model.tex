@@ -91,7 +91,7 @@
 
 
 
-\runningtitle{SED (1.0)-a sediment modle for Earth System Models}
+\runningtitle{OMEN-SED 1.0 - a sediment model for Earth System Models}
 
 \runningauthor{H\"ulse et al.}
 
@@ -122,11 +122,18 @@ Here we describe the first version of the OrganicMatter ENabled SEDiment model (
 
 \introduction  %% \introduction[modified heading if necessary]
 Role of marine sediments for climate and global biogeochemical cycles\\
+Represent the biggest, climate-relevant carbon pool in the surficial carbon cycle. Diagenetic processes represent an important link between carbon stored in more climate-relevant reservoirs like the oceans and the atmosphere, 
+and carbon sequestered for much longer, geological timescales in sedimentary rock \citep{burdige2006geochemistry}. 
+Highlight especially importance of OM burial \citep[see e.g.][]{burdige_preservation_2007, kriest_numerical_2011, arndt_quantifying_2013}.\\[2ex]
 Diagenetic Models\\
+See e.g. \citep{soetaert_coupling_2000, mackenzie_past_2004}.\\[2ex]
 How are sediment resolved in Earth System models\\
-Problem with that\\
-Alternative Model approaches, e.g. from coastal reserach\\
-Solution presented here\\ 
+See e.g. \citep{soetaert_coupling_2000}\\[2ex]
+Problem with that: \\
+The spatial variability in e.g. benthic particulate organic carbon (POC) mineralization kinetics throughout the ocean is currently unknown. This creates considerable 
+uncertainties when diagenetic models are used to couple benthic and pelagic biogeochemical cycles in global models. \citep{kriest_numerical_2011} \\[2ex]
+Alternative Model approaches, e.g. from coastal research\\[2ex]
+Solution presented here\\ [2ex]
 See Van Cappellen and Wang (1996): ``Metal cycling in surface sediments: Modeling the interplay or transport and reaction'' for some good basic info! 
 
 \section{Model Description}
@@ -349,7 +356,7 @@ $z=z_{\mathrm{ox}}$& continuity& 4)& $\chem{NH_4}(z_{\mathrm{ox}}^-)$=$\chem{NH_
 &where: & & $F_{\chem{NH_4}}(z_{\mathrm{ox}})=\frac{1}{1+K_\chem{NH_4}}\cdot \frac{1-\phi}{\phi} \cdot \int_{z_{\chem{NO_3}}}^{\infty}  \sum_i k_i \cdot \chem{NC_i} \cdot C_i\ dz$ \\          
 $z=z_{\chem{NO_3}}$&continuity& 6)& $\chem{NH_4}(z_{\chem{NO_3}}^-)$=$\chem{NH_4}(z_{\chem{NO_3}}^+)$\\
                & flux & 7)& $-\frac{D_{\chem{NH_4}}}{1+K_\chem{NH_4}}\cdot \frac{\partial \chem{NH_4}}{\partial z}|_{z_{\chem{NO_3}}^-}=-\frac{D_{\chem{NH_4}}}{1+K_\chem{NH_4}} \cdot \frac{\partial \chem{NH_4}}{\partial z}|_{z_{\chem{NO_3}}^+}$\\
-$z=z_{\infty}$& \chem{NH_4} flux & 8)& $\frac{\partial \chem{NH_4}}{\partial z}|_{z_\infty}=0$\\
+$z=z_{\infty}$& zero \chem{NH_4} flux & 8)& $\frac{\partial \chem{NH_4}}{\partial z}|_{z_\infty}=0$\\
 \hline    
 \end{tabular}
 \label{Tab:BC_NO3+NH4}
@@ -376,10 +383,15 @@ Sulfate and sulfide dynamics are thus described by:
 %  D_{i}&=D_{i, 0}                &\text{if ($z > z_{\mathrm{bio}}$)} 
 % \end{align} 
 % and $i \in \{$SO$_4$, H$_2$S$\}$. 
-To solve equations \ref{eq:SO4_ODE1_L1} - \ref{eq:NH4_ODE1_L2} the model assumes known concentrations at the sediment-water interface and continuity 
-across the bioturbation depth ($z_{\mathrm{bio}}$) and the nitrate penetration depth ($z_{\chem{NO_3}}$) (see Table \ref{Tab:BC_SO4+H2S}). The re-oxidation of reduced H$_2$S from below is considered in the oxic-suboxic boundary condition 
-for both species. At the sulfate penetration depth ($z_{\chem{SO_4}}$) sulfate is used for anaerobic oxidation of methane (AOM) which is produced below $z_{\chem{SO_4}}$. Therefore sulfate concentration is zero and its diffusive flux must equal 
-the amount of methane produced below. Additionally H$_2$S is produced by AOM which is considered in the flux boundary condition at $z_{\chem{SO_4}}$ . \textcolor{red}{correct??}\\
+To solve equations \ref{eq:SO4_ODE1_L1} - \ref{eq:H2S_ODE1_L3} the model assumes known concentrations at the sediment-water interface and continuity 
+across the bioturbation depth and the nitrate penetration depth (see Table \ref{Tab:BC_SO4+H2S}). 
+The re-oxidation of reduced \chem{H_2S} to \chem{SO_4} is considered in the 
+oxic-suboxic boundary condition for both species, here including the methanic zone, as \chem{H_2S} is also produced during anaerobic oxidation of methane (AOM). 
+Furthermore, sulfate is used at $z_{\chem{SO_4}}$ to oxidize methane from below and thus producing \chem{H_2S}. 
+In case $z_{\chem{SO_4}}<z_\infty$, sulfate concentration is zero at $z_{\chem{SO_4}}$ and its diffusive flux must equal the amount of methane produced below; or, in case $z_{\chem{SO_4}}=z_\infty$, 
+a zero flux condition for sulfate is considered. At lower boundary ($z_\infty$) zero flux of \chem{H_2S} is considered. 
+%Additionally H$_2$S is produced by AOM which is considered in the flux boundary condition at $z_{\chem{SO_4}}$. 
+\textcolor{red}{correct??}\\
 
 \begin{table}[tbp]
 \caption{Boundary conditions for sulfate and sulfide.}
@@ -416,7 +428,7 @@ $z=z_{\chem{NO_3}}$&continuity& 6)& $\chem{H_2S}(z_{\chem{NO_3}}^-)$=$\chem{H_2S
 $z=z_{\chem{SO_4}}$& continuity & 8)& $\chem{H_2S}(z_{\chem{SO_4}}^-)$=$\chem{H_2S}(z_{\chem{SO_4}}^+)$\\ %$\frac{\partial \chem{H_2S}}{\partial z}|_{z_{\chem{H_2S}}}=0$\\
                & flux (with AOM) & 9)&  $-D_{\chem{H_2S}}\cdot \frac{\partial \chem{H_2S}}{\partial z}|_{z_{\chem{SO_4}}^-} + \gamma_\chem{CH_4}\cdot F_{\chem{CH_4}}(z_{\chem{SO_4}})=-D_{\chem{H_2S}} \cdot \frac{\partial \chem{H_2S}}{\partial z}|_{z_{\chem{SO_4}}^+}$\\
 &where: & &$\quad F_{\chem{CH_4}}(z_{\chem{SO_4}})=\frac{1-\phi}{\phi} \cdot \int_{z_{\chem{SO_4}}}^{\infty}  \sum_i \chem{MC} \cdot k_i \cdot C_i\ dz$ \\          
-$z=z_{\infty}$& \chem{CH_4} flux & 10)& $\frac{\partial \chem{H_2S}}{\partial z}|_{z_\infty}=0$\\
+$z=z_{\infty}$& zero \chem{H_2S} flux & 10)& $\frac{\partial \chem{H_2S}}{\partial z}|_{z_\infty}=0$\\
 \hline    
 \end{tabular}
 \label{Tab:BC_SO4+H2S}
@@ -425,17 +437,17 @@ $z=z_{\infty}$& \chem{CH_4} flux & 10)& $\frac{\partial \chem{H_2S}}{\partial z}
 %>>>
 \marginnote{\textcolor{red}{\textbf{DH}: think correct, because at 8) \chem{CH_4} from $\int_{z_{\chem{\chem{SO_4}}}}^{\infty}$ is oxidised to \chem{H_2S}; at 5) this \chem{H_2S} to \chem{SO_4}}}[-10.5cm]%<<<
 %>>>
-\marginnote{\textcolor{red}{\textbf{DH}: BC 5) for \chem{H_2S} should this not be $+(1-\gamma_{\chem{H_2S}})\cdot F_{\chem{H_2S}}$??}}[-3cm]%<<<
+\marginnote{\textcolor{red}{\textbf{DH}: BC 5) for \chem{H_2S} should this not be $+(1-\gamma_{\chem{H_2S}})\cdot F_{\chem{H_2S}}$??}}[-3.5cm]%<<<
 \end{table}
-Sulfate:\\
-BC (5): Diffusive flux at $z_{\mathrm{ox}}$ is equal, considering the flux of reduced substances (H$_2$S) from below 
-\textcolor{red}{(SD, matlab): flux discontinuity from H2S source; include methane region as AOM will produce sulfide as well(?)} \\
-BC(9): matlab:Calculate SO4 consumption below zso4, by organic matter and indirectly via methane oxidation, \textcolor{red}{should it not be MC (methane to carbon ratio instead of SO4C}(???) \\
-
-Sulfide:\\
-BC (5): Match at zox, layer 1 - layer 2 (continuity, flux discontinuity from H2S source), flux of H2S to oxic interface (from all sources of H2S below), 
-NB: include methane region as AOM will produce sulphide as well \textcolor{red}{should it be not the same as in SO4???}\\
-BC (9): (flux with AOM production) flux of H2S produced by AOM interface (Source of H2S), \textcolor{red}{don't think the reaction conctants are correct in matlab!}
+% % % % Sulfate:\\
+% % % % BC (5): Diffusive flux at $z_{\mathrm{ox}}$ is equal, considering the flux of reduced substances (H$_2$S) from below 
+% % % % \textcolor{red}{(SD, matlab): flux discontinuity from H2S source; include methane region as AOM will produce sulfide as well(?)} \\
+% % % % BC(9): matlab:Calculate SO4 consumption below zso4, by organic matter and indirectly via methane oxidation, \textcolor{red}{should it not be MC (methane to carbon ratio instead of SO4C}(???) \\
+% % % % 
+% % % % Sulfide:\\
+% % % % BC (5): Match at zox, layer 1 - layer 2 (continuity, flux discontinuity from H2S source), flux of H2S to oxic interface (from all sources of H2S below), 
+% % % % NB: include methane region as AOM will produce sulphide as well \textcolor{red}{should it be not the same as in SO4???}\\
+% % % % BC (9): (flux with AOM production) flux of H2S produced by AOM interface (Source of H2S), \textcolor{red}{don't think the reaction conctants are correct in matlab!}
 
 
 % \subsubsection{Ammonium}
@@ -516,6 +528,10 @@ $z=z_{\infty}$& assymptotic concentration & 10) $M(z_\infty)=M_\infty$\\
 % general equation\\
 % solution\\
 
+\subsubsection{Dissolved Inorganic Carbon (DIC)}
+
+\subsubsection{Alkalinity}
+
 \subsection{Model Parameters}
 This section describes the parameters used in SED (1.0) to describe sediment transport and biogeochemical reactions related to the burial and mineralization of organic matter under a wide range of environmental conditions. 
 Table \ref{table:sed-charac_transport-parameters} states the parameters for sediment characteristics and Table \ref{table:reaction_parameters} summarizes the stoichiometric factors and 
@@ -582,8 +598,8 @@ $D_{\chem{NH_4}}^0$ & cm$^2$\,yr$^{-1}$ & 308.42208 &Molecular diffusion coeffic
 $D_{\chem{NH_4}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 12.2640 &Diffusion coefficient for linear temp. dependence of ammonium\\ % value was 0.0386 (changed by Nicolas 2207)
 $D_{\chem{SO_4}}^0$ & cm$^2$\,yr$^{-1}$ & 157.68 &Molecular diffusion coefficient of sulfate at 0$^\circ$C\\
 $D_{\chem{SO_4}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 7.884 &Diffusion coefficient for linear temp. dependence of sulfate\\ % value was 0.0386 (changed by Nicolas 2207)
-$D_{\chem{H_2S}}^0$ & cm$^2$\,yr$^{-1}$ & \textcolor{red}{???} &Molecular diffusion coefficient of sulfide at 0$^\circ$C\\
-$D_{\chem{H_2S}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & \textcolor{red}{???} &Diffusion coefficient for linear temp. dependence of sulfide\\ % value was 0.0386 (changed by Nicolas 2207)
+$D_{\chem{H_2S}}^0$ & cm$^2$\,yr$^{-1}$ & 307.476 & Molecular diffusion coefficient of sulfide at 0$^\circ$C\\
+$D_{\chem{H_2S}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 9.636 & Diffusion coefficient for linear temp. dependence of sulfide\\ % value was 0.0386 (changed by Nicolas 2207)
 $D_{\chem{PO_4}}^0$ & cm$^2$\,yr$^{-1}$ & 112.90764 &Molecular diffusion coefficient of phosphate at 0$^\circ$C\\
 $D_{\chem{PO_4}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 5.586252 &Diffusion coefficient for linear temp. dependence of phosphate\\ % value was 0.0386 (changed by Nicolas 2207)
 \hline\hline

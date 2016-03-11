@@ -141,7 +141,7 @@ MODULE benthic
         !zinf = 1000
         !zlow=100
         Dbio=3                                 !bioturbation coefficient (cm2/yr)
-        por=0.8                                !porosity (-)
+        por=0.8                                !porosity (-) defined as: porewater_vol./(solid_sed_vol.+porewater_vol.)
         tort=3.0                               !tortuosity (-)
         irrigationFactor=1.0
 
@@ -301,6 +301,8 @@ MODULE benthic
     print*, 'F_TOC1', char(9), F_TOC1
     print*, 'F_TOC2', char(9), F_TOC2
     print*, 'F_TOC', char(9), F_TOC
+
+! DH: need to give back fraction buried of initially deposited (so fraction of the input values to this subroutine)
 
     end SUBROUTINE zTOC
 

@@ -10,11 +10,12 @@ classdef benthic_test
             %bottom water concentrations
             swi.T=20.0;                         %temperature (degree C)
             % see caption for Fig 1.2 - two equal TOC fractions 0.02 0.2 2
-            swi.C01=0.02*1e-2/12*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm3 bulk phase)
+            swi.C01=0.06*1e-2/12*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm3 bulk phase)
             swi.C02=0.02*1e-2/12*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm3 bulk phase)
-            swi.O20=80.0e-9;   %was    300.0e-9                            %O2  concentration at SWI (mol/cm3)
+            swi.O20=300.0e-9;   %was    300.0e-9                            %O2  concentration at SWI (mol/cm3)
 %            swi.SO40=28000.0e-9;                                            %SO4 concentration at SWI (mol/cm3)
-            swi.NO30=20.0e-9;                                               %NO3 concentration at SWI (mol/cm3)
+            swi.NO30=0.0e-9;             % was 20.0e-9                                  %NO3 concentration at SWI (mol/cm3)
+            swi.Nitrogen=false;
             swi.NH40=0.0e-9;                                                %NH4 concentration at SWI (mol/cm3)
             swi.SO40 = 100e-9;
             swi.H2S0=0.0e-9;         %was 0.0e-9                            %H2S concentration at SWI (mol/cm3)
@@ -61,7 +62,7 @@ classdef benthic_test
             % calculate 
             res.zTOC = benthic_zTOC(res.bsd);
             res.zO2 = benthic_zO2(res.bsd, res.swi);           
-            res.zNO3 = benthic_zNO3(res.bsd, res.swi);
+   %         res.zNO3 = benthic_zNO3(res.bsd, res.swi);
             res.zSO4 = benthic_zSO4(res.bsd, res.swi);
             res.zNH4 = benthic_zNH4(res.bsd, res.swi);
             res.zH2S = benthic_zH2S(res.bsd, res.swi);
@@ -71,7 +72,11 @@ classdef benthic_test
             tic;
             res = res.zTOC.calc(res.bsd,res.swi, res);
             res = res.zO2.calc(res.bsd, res.swi, res);
-            res = res.zNO3.calc(res.bsd, res.swi, res);
+            if(swi.Nitrogen)
+                res = res.zNO3.calc(res.bsd, res.swi, res);
+            else
+                res.zno3=res.zox;
+            end
             res = res.zSO4.calc(res.bsd, res.swi, res);
             res = res.zNH4.calc(res.bsd, res.swi, res);
             res = res.zH2S.calc(res.bsd, res.swi, res);
@@ -80,7 +85,16 @@ classdef benthic_test
             
             %%%%% WRITE OUTPUT:
             answ = res
-            
+            [Cinf, C1inf, C2inf] = res.zTOC.calcC( 100, res.bsd, res.swi, res);
+            [Cswi, C1swi, C2swi] = res.zTOC.calcC( 0, res.bsd, res.swi, res);
+            fprintf('frac1 concentration at zinf %g \n',  C1inf);
+            fprintf('frac2 concentration at zinf %g \n',  C2inf);
+            fprintf('both concentration at zinf %g \n',  Cinf);
+            fprintf('frac1 concentration at swi %g \n',  C1swi);
+            fprintf('frac2 concentration at swi %g \n',  C2swi);
+            fprintf('both concentration at swi %g \n',  Cswi);
+           
+            fprintf('sed preservation of POC %g \n',  Cinf/Cswi);
             %%% WRITE EXACT FLUX
             FO2_exact=res.zO2.calcFO2_exact(res.zox,res.bsd, res.swi, res);
             fprintf('exact F_O2 flux (mol cm^{-2} yr^{-1}) %g \n',  FO2_exact);
