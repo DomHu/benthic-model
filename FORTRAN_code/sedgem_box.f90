@@ -237,17 +237,18 @@ CONTAINS
             case ('arndt_0')
                       ! Arndt SIMPLE
                 ! global initialize - move somewhere else
-                call sub_huelseetal2016_initialize(600.0)
-              
                 print*, ' '
                 print*, ' '
                 print*, '---START OMEN-SEDIMENT---'
                 print*, 'grid-point ',dum_i,dum_j, dum_D
+                
+                call sub_huelseetal2016_initialize(600.0, dum_sfcsumocn(io_T))
+              
                 print*,'loc_new_sed(is_POC_frac2) ', loc_new_sed(is_POC_frac2)
                 print*,'is_POC ',loc_new_sed(is_POC)/dum_dtyr,loc_new_sed(is_POC),dum_dtyr
                 ! DH TODO: should be called just once, not for every grid
                 ! calculate wt% from POC flux (both fractions)
-                loc_wtpct = fun_sed_calcCorgwt(loc_new_sed(is_POC)/dum_dtyr,dum_D,0.8,2.7)
+                loc_wtpct = fun_sed_calcCorgwt(loc_new_sed(is_POC)/dum_dtyr,dum_D, por, rho_sed)
                 print*,'fun_sed_calcCorgwt = ',loc_wtpct
        
                 !       if(loc_wtpct==0.0)then

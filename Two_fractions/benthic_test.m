@@ -15,7 +15,7 @@ classdef benthic_test
             swi.O20=300.0e-9;   %was    300.0e-9                            %O2  concentration at SWI (mol/cm3)
 %            swi.SO40=28000.0e-9;                                            %SO4 concentration at SWI (mol/cm3)
             swi.NO30=0.0e-9;             % was 20.0e-9                                  %NO3 concentration at SWI (mol/cm3)
-            swi.Nitrogen=false;
+            swi.Nitrogen=true;
             swi.NH40=0.0e-9;                                                %NH4 concentration at SWI (mol/cm3)
             swi.SO40 = 100e-9;
             swi.H2S0=0.0e-9;         %was 0.0e-9                            %H2S concentration at SWI (mol/cm3)
@@ -62,7 +62,7 @@ classdef benthic_test
             % calculate 
             res.zTOC = benthic_zTOC(res.bsd);
             res.zO2 = benthic_zO2(res.bsd, res.swi);           
-   %         res.zNO3 = benthic_zNO3(res.bsd, res.swi);
+            res.zNO3 = benthic_zNO3(res.bsd, res.swi);
             res.zSO4 = benthic_zSO4(res.bsd, res.swi);
             res.zNH4 = benthic_zNH4(res.bsd, res.swi);
             res.zH2S = benthic_zH2S(res.bsd, res.swi);

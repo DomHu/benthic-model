@@ -90,7 +90,7 @@ classdef benthic_zH2S
 
             % match solutions at zox - continuous concentration, flux discontinuity from H2S ox
             
-            D = (r.zox <= bsd.zbio).*obj.DH2S1 + (r.zox > bsd.zbio).*obj.DH2S1;
+            D = (r.zox <= bsd.zbio).*obj.DH2S1 + (r.zox > bsd.zbio).*obj.DH2S2;
             
             [zox.a, zox.b, zox.c, zox.d, zox.e, zox.f] = benthic_utils.matchsoln(e1_zox, f1_zox, g1_zox, dedz1_zox, dfdz1_zox, dgdz1_zox, ...
                                                              e2_zox, f2_zox, g2_zox, dedz2_zox, dfdz2_zox, dgdz2_zox, ...                                                            
