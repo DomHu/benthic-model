@@ -81,8 +81,8 @@ CONTAINS
         REAL,DIMENSION(n_sed)::loc_exe_sed                         ! top layer material to be exchanged with stack
         logical::loc_flag_stackgrow,loc_flag_stackshrink           ! growing or shrinking of stack occurs (by a 1 cm layer)
 
-        real::loc_wtpct
-        real::loc_POC1_wtpct_swi, loc_POC2_wtpct_swi                ! POC concentration at SWI [wt%]
+!        real::loc_wtpct
+!        real::loc_POC1_wtpct_swi, loc_POC2_wtpct_swi                ! POC concentration at SWI [wt%]
         REAL,DIMENSION(n_ocn)::loc_new_swifluxes                    ! SWI return fluxes of solutes, calculated with sediment-model            
 
         ! *** (a) initialize variables
@@ -236,45 +236,15 @@ CONTAINS
                 end DO
             case ('arndt_0')
                       ! Arndt SIMPLE
-                ! global initialize - move somewhere else
-                print*, ' '
-                print*, ' '
+                print*, ' '        
                 print*, '---START OMEN-SEDIMENT---'
-                print*, 'grid-point ',dum_i,dum_j, dum_D
+                print*, 'grid-point ',dum_i,dum_j, dum_D      
                 
-                call sub_huelseetal2016_initialize(600.0, dum_sfcsumocn(io_T))
-              
-                print*,'loc_new_sed(is_POC_frac2) ', loc_new_sed(is_POC_frac2)
-                print*,'is_POC ',loc_new_sed(is_POC)/dum_dtyr,loc_new_sed(is_POC),dum_dtyr
-                ! DH TODO: should be called just once, not for every grid
-                ! calculate wt% from POC flux (both fractions)
-                loc_wtpct = fun_sed_calcCorgwt(loc_new_sed(is_POC)/dum_dtyr,dum_D, por, rho_sed)
-                print*,'fun_sed_calcCorgwt = ',loc_wtpct
-       
-                !       if(loc_wtpct==0.0)then
-                !           loc_sed_pres_fracC=0.0
-                !           ! what TODO when no POC, still call sediment model for solutes?
-                !       else
-                !           loc_POC1_wtpct_swi = (1-loc_new_sed(is_POC_frac2))*loc_wtpct
-                !           loc_POC2_wtpct_swi = loc_new_sed(is_POC_frac2)*loc_wtpct           
-                !           call sub_huelseetal2016_zTOC(loc_POC1_wtpct_swi, loc_POC2_wtpct_swi, loc_sed_pres_fracC)
-                !       end if
-        
-                loc_POC1_wtpct_swi = (1-loc_new_sed(is_POC_frac2))*loc_wtpct
-                loc_POC2_wtpct_swi = loc_new_sed(is_POC_frac2)*loc_wtpct 
-                call sub_huelseetal2016_main(loc_POC1_wtpct_swi, loc_POC2_wtpct_swi, dum_sfcsumocn(:), loc_sed_pres_fracC, loc_new_swifluxes(:))
-
+                call sub_huelseetal2016_main(dum_dtyr, dum_D, loc_new_sed(:), dum_sfcsumocn(:), loc_sed_pres_fracC, loc_new_swifluxes(:))
     
-                print*,'  '
-                print*,'loc_sed_pres_fracC ', loc_sed_pres_fracC
+!               print*,'loc_sed_pres_fracC ', loc_sed_pres_fracC
 
-                !!$print*,dum_i,dum_j,dum_D
-                !tmp_var = fun_tmp(0.1,1000.0)
-                !!$stop
-                !tmp_var = fun_arndtetal2013_sedpres((1-loc_new_sed(is_POC_frac2))*loc_wtpct, loc_new_sed(is_POC_frac2)*loc_wtpct,dum_D)
-                !print*,'fun_arndtetal2013_sedflx = ',tmp_var
-
-                ! NOTE: fun_arndtetal2013_sedpres calculates the fractional preservation of total Corg
+                ! NOTE ANDY: fun_arndtetal2013_sedpres calculates the fractional preservation of total Corg
                 !       loc_sed_pres_fracC = fun_arndtetal2013_sedpres((1-loc_new_sed(is_POC_frac2))*loc_wtpct, loc_new_sed(is_POC_frac2)*loc_wtpct,dum_D)*loc_new_sed(is_POC)
                 DO l=1,n_l_sed
                     is = conv_iselected_is(l)
