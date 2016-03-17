@@ -10,101 +10,92 @@ MODULE sedgem_box_benthic
     use genie_control
     USE sedgem_lib
     IMPLICIT NONE
+    
     !sediment characteristics
-    real*8 rho_sed                            ! sediment density (g/cm3)
-    !        real*8 wdepth                            ! water depth (m)
-    real*8 w                                      ! burial velocity  (cm/yr)
-    real*8 z0, zox                                ! surface
-    real*8 zbio                                ! bioturbation depth (cm)
+    real*8 rho_sed                          ! sediment density (g/cm3)
+    !        real*8 wdepth                  ! water depth (m)
+    real*8 w                                ! burial velocity  (cm/yr)
+    real*8 z0                               ! top of the sediments
+    real*8 zox, zno3, zso4                  ! penetration depth for O2, NO3, SO4    
+    real*8 zbio                             ! bioturbation depth (cm)
 
-    real*8 zinf                               !Inifinity (cm)
-    !zinf = 1000
-    !zlow=100
-    real*8 Dbio                                 !bioturbation coefficient (cm2/yr)
-    real*8 por                                !porosity (-)
-    real*8 tort                              !tortuosity (-)
-    real*8 irrigationFactor                   !irrigation factor (-)
-    real*8 dispFactor                             !dispersion factor (-)
+    real*8 zinf                             ! Inifinity - bottom of the sediments (cm)
+    real*8 Dbio                             ! bioturbation coefficient (cm2/yr)
+    real*8 por                              ! porosity (-)
+    real*8 tort                             ! tortuosity (-)
+    real*8 irrigationFactor                 ! irrigation factor (-)
+    real*8 dispFactor                       ! dispersion factor (-)
 
     !stoichiometric factors
-    real*8 SD                                     !volume factor solid->dissolved phase
-    real*8 OC                                     !O2/C (mol/mol)
-    real*8 NC1                                    !N/C first TOC fraction (mol/mol)
-    real*8 NC2                                    !N/C second TOC fraction (mol/mol)
-    real*8 PC1                                    !P/C first TOC fraction (mol/mol)
-    real*8 PC2                                    !P/C second TOC fraction (mol/mol)
-    real*8 SO4C                                   !SO4/C (mol/mol)
-    real*8 DICC1                                  !DIC/C until zSO4 (mol/mol)
-    real*8 DICC2                                  !DIC/C below zSO$ (mol/mol)
-    real*8 MC                                     !CH4/C (mol/mol)
-    real*8 gamma                                !fraction of NH4 that is oxidised in oxic layer
-    real*8 gammaH2S                           !fraction of H2S that is oxidised in oxic layer
-    real*8 gammaCH4                           !fraction of CH4 that is oxidised at SO4
-    real*8 satSO4                               ! SO4 saturation
-    real*8 NO3CR                                  ! NO3 consumed by Denitrification
+    real*8 SD                               ! volume factor solid->dissolved phase
+    real*8 OC                               ! O2/C (mol/mol)
+    real*8 NC1                              ! N/C first TOC fraction (mol/mol)
+    real*8 NC2                              ! N/C second TOC fraction (mol/mol)
+    real*8 PC1                              ! P/C first TOC fraction (mol/mol)
+    real*8 PC2                              ! P/C second TOC fraction (mol/mol)
+    real*8 SO4C                             ! SO4/C (mol/mol)
+    real*8 DICC1                            ! DIC/C until zSO4 (mol/mol)
+    real*8 DICC2                            ! DIC/C below zSO$ (mol/mol)
+    real*8 MC                               ! CH4/C (mol/mol)
+    real*8 gamma                            ! fraction of NH4 that is oxidised in oxic layer
+    real*8 gammaH2S                         ! fraction of H2S that is oxidised in oxic layer
+    real*8 gammaCH4                         ! fraction of CH4 that is oxidised at SO4
+    real*8 satSO4                           ! SO4 saturation
+    real*8 NO3CR                            ! NO3 consumed by Denitrification
 
     real*8 zoxgf                            ! cm, rolloff NH4, H2S oxidation for small zox depth
 
     !bottom water concentrations (initialized locally)
-!    real*8 dum_Temp                                                      !temperature (degree C)
-    real*8 dum_POC1_conc_swi                                         !TOC concentration at SWI (wt!) -> (mol/cm3 bulk phase)
-    real*8 dum_POC2_conc_swi                                        !TOC concentration at SWI (wt!) -> (mol/cm3 bulk phase)
-    real*8 dum_swiconc_O2                                               !O2  concentration at SWI (mol/cm3)
-!    real*8 SO40                                             !SO4 concentration at SWI (mol/cm3)
-    real*8 dum_swiconc_SO4
-    real*8 dum_swiconc_H2S                                  !H2S concentration at SWI (mol/cm3)
-!    real*8 H2S0                                             !H2S concentration at SWI (mol/cm3)
-    real*8 DIC0                                             !DIC concentration at SWI (mol/cm3)
-    real*8 ALK0                                             !ALK concentration at SWI (mol/cm3)
-    real*8 dum_swiconc_NO3                                               !NO3 concentration at SWI (mol/cm3)
-    real*8 dum_swiconc_NH4                                               !NH4 concentration at SWI (mol/cm3)
-    real*8 PO40                                                  !PO4 concentration at SWI (mol/cm3)
-    real*8 S0                                                     !Salinity at SWI
+    real*8 dum_POC1_conc_swi                !TOC concentration at SWI (wt!) -> (mol/cm3 bulk phase)
+    real*8 dum_POC2_conc_swi                !TOC concentration at SWI (wt!) -> (mol/cm3 bulk phase)
+    real*8 dum_swiconc_O2                   ! O2 concentration at SWI (mol/cm3)
+    real*8 dum_swiconc_SO4                  ! SO4 concentration at SWI (mol/cm3)
+    real*8 dum_swiconc_H2S                  ! H2S concentration at SWI (mol/cm3)
+    real*8 dum_swiconc_NO3                  ! NO3 concentration at SWI (mol/cm3)
+    real*8 dum_swiconc_NH4                  ! NH4 concentration at SWI (mol/cm3)
 
 
     ! ORGANIC MATTER
-    real*8 DC1                                           !TOC diffusion coefficient (cm2/yr)
-    real*8 C, C1, C2
-    real*8 k1                                             !TOC degradation rate constnat (1/yr)
-    real*8 k2                                              !TOC degradation rate constant (1/yr)
+    real*8 DC1                              ! TOC diffusion coefficient (cm2/yr)
+    real*8 k1                               ! TOC degradation rate constnat (1/yr)
+    real*8 k2                               ! TOC degradation rate constant (1/yr)
 
     ! O2
-    real*8 qdispO2                          !O2 diffusion coefficient in water (cm2/yr)
-    real*8 adispO2                          !O2 linear coefficient for temperature dependence (cm2/yr/oC)
-    real*8 DO21                             !O2 diffusion coefficient in bioturbated layer (cm2/yr)
-    real*8 DO22                             !O2 diffusion coefficient in non-bioturbated layer (cm2/yr)
-    real*8 r_zxf                            !roll off oxidation at low zox
-
-    real*8 aa11, bb11, aa21, A11, A21, aa12, bb12, aa22, A12, A22
-    real*8 ls_a, ls_b, ls_c, ls_d, ls_e, ls_f
+    real*8 qdispO2                          ! O2 diffusion coefficient in water (cm2/yr)
+    real*8 adispO2                          ! O2 linear coefficient for temperature dependence (cm2/yr/oC)
+    real*8 DO21                             ! O2 diffusion coefficient in bioturbated layer (cm2/yr)
+    real*8 DO22                             ! O2 diffusion coefficient in non-bioturbated layer (cm2/yr)
+    real*8 r_zxf                            ! roll off oxidation at low zox
 
     ! Nitrate (NO3)
-    real*8 qdispNO3                 ! NO3 diffusion coefficient in water (cm2/yr)
-    real*8 adispNO3                 ! NO3 linear coefficient for temperature dependence (cm2/yr/oC)
-    real *8 DN1                     ! NO3 diffusion coefficient in bioturbated layer (cm2/yr)
-    real*8 DN2                      ! NO3 diffusion coefficient in non-bioturbated layer (cm2/yr)
-    real*8 KNH4                 ! Adsorption coefficient (same in ocix and anoxic layer) (-)
+    real*8 qdispNO3                         ! NO3 diffusion coefficient in water (cm2/yr)
+    real*8 adispNO3                         ! NO3 linear coefficient for temperature dependence (cm2/yr/oC)
+    real*8 DN1                              ! NO3 diffusion coefficient in bioturbated layer (cm2/yr)
+    real*8 DN2                              ! NO3 diffusion coefficient in non-bioturbated layer (cm2/yr)
+    real*8 KNH4                             ! Adsorption coefficient (same in ocix and anoxic layer) (-)
     
-    real*8 zno3
 
     ! Sulfate (SO4)
-    real*8 qdispSO4                 ! SO4 diffusion coefficient in water (cm2/yr)
-    real*8 adispSO4                 ! SO4 linear coefficient for temperature dependence (cm2/yr/oC)
-    real*8 DSO41                    ! SO4 diffusion coefficient in bioturbated layer (cm2/yr)
-    real*8 DSO42                    ! SO4 diffusion coefficient in non-bioturbated layer (cm2/yr)
-    real*8 zso4
+    real*8 qdispSO4                         ! SO4 diffusion coefficient in water (cm2/yr)
+    real*8 adispSO4                         ! SO4 linear coefficient for temperature dependence (cm2/yr/oC)
+    real*8 DSO41                            ! SO4 diffusion coefficient in bioturbated layer (cm2/yr)
+    real*8 DSO42                            ! SO4 diffusion coefficient in non-bioturbated layer (cm2/yr)
 
     ! Ammonium (NH4)
-    real*8 qdispNH4                 ! NH4 diffusion coefficient in water (cm2/yr)
-    real*8 adispNH4                 ! NH4 linear coefficient for temperature dependence (cm2/yr/oC)
-    real*8 DNH41                    ! NH4 diffusion coefficient in bioturbated layer (cm2/yr)
-    real*8 DNH42                    ! NH4 diffusion coefficient in non-bioturbated layer (cm2/yr)
+    real*8 qdispNH4                         ! NH4 diffusion coefficient in water (cm2/yr)
+    real*8 adispNH4                         ! NH4 linear coefficient for temperature dependence (cm2/yr/oC)
+    real*8 DNH41                            ! NH4 diffusion coefficient in bioturbated layer (cm2/yr)
+    real*8 DNH42                            ! NH4 diffusion coefficient in non-bioturbated layer (cm2/yr)
 
     ! Hydrogen sulfide (H2S)
-    real*8 qdispH2S                 ! H2S diffusion coefficient in water (cm2/yr)
-    real*8 adispH2S                 ! H2S linear coefficient for temperature dependence (cm2/yr/oC)
-    real*8 DH2S1                    ! H2S diffusion coefficient in bioturbated layer (cm2/yr)
-    real*8 DH2S2                    ! H2S diffusion coefficient in non-bioturbated layer (cm2/yr)
+    real*8 qdispH2S                         ! H2S diffusion coefficient in water (cm2/yr)
+    real*8 adispH2S                         ! H2S linear coefficient for temperature dependence (cm2/yr/oC)
+    real*8 DH2S1                            ! H2S diffusion coefficient in bioturbated layer (cm2/yr)
+    real*8 DH2S2                            ! H2S diffusion coefficient in non-bioturbated layer (cm2/yr)
+
+    ! Dom TODO: check if I really need them globally!!??
+    real*8 aa11, bb11, aa21, A11, A21, aa12, bb12, aa22, A12, A22
+    real*8 ls_a, ls_b, ls_c, ls_d, ls_e, ls_f
 
     SAVE
 
@@ -123,7 +114,7 @@ CONTAINS
     !------------------------------------------------------------------------------------
 
 !    SUBROUTINE sub_huelseetal2016_main(dum_POC1_wtpct_swi, dum_POC2_wtpct_swi, dum_sfcsumocn, dum_sed_pres_fracC, dum_new_swifluxes)
-    SUBROUTINE sub_huelseetal2016_main(dum_dtyr, dum_D, loc_new_sed, dum_sfcsumocn, dum_sed_pres_fracC, dum_new_swifluxes)
+    SUBROUTINE sub_huelseetal2016_main(dum_dtyr, dum_i, dum_j, dum_D, loc_new_sed, dum_sfcsumocn, dum_sed_pres_fracC, dum_new_swifluxes)
         !   __________________________________________________________
         !
         !   Main subroutine: 
@@ -135,43 +126,56 @@ CONTAINS
         
         IMPLICIT NONE
         ! dummy arguments
-        REAL,INTENT(in)::dum_dtyr                                  ! time-step        
+        REAL,INTENT(in)::dum_dtyr                                  ! time-step     
+        integer,INTENT(in)::dum_i, dum_j                            ! grid point (i,j)           
         REAL,INTENT(in)::dum_D                                     ! depth        
         REAL,DIMENSION(n_sed),intent(in)::loc_new_sed                         ! new (sedimenting) top layer material
         real,DIMENSION(n_ocn),intent(in)::dum_sfcsumocn                     ! ocean composition interface array
 !        real,INTENT(in)::dum_POC1_wtpct_swi, dum_POC2_wtpct_swi             ! POC concentrations at SWI [wt%]
         real,INTENT(inout)::dum_sed_pres_fracC                              ! fraction POC-preserved/POC-deposited [-]
-        real,DIMENSION(n_ocn),intent(inout)::dum_new_swifluxes              ! SWI return fluxes of solutes, calculated with sediment-model
+        real,DIMENSION(n_ocn),intent(inout)::dum_new_swifluxes              ! SWI return fluxes of solutes, calculated with sediment-model [pos. values flux from water-column to sediment]
 
         ! local variables        
         real::loc_wtpct
         real::loc_POC1_wtpct_swi, loc_POC2_wtpct_swi                ! POC concentration at SWI [wt%]
+        real::loc_O2_swiflux                                        ! SWI return fluxes of O2 [mol/cm^3]
+        real::loc_SO4_swiflux                                       ! SWI return fluxes of SO4 [mol/cm^3]
+        real::loc_NO3_swiflux                                       ! SWI return fluxes of NO3 [mol/cm^3]
+        real::loc_H2S_swiflux                                       ! SWI return fluxes of H2S [mol/cm^3]
+        real::loc_NH4_swiflux                                       ! SWI return fluxes of H2S [mol/cm^3]
+        
 !        real::dum_POC1_wtpct_swi, dum_POC2_wtpct_swi             ! POC concentrations at SWI [wt%]
+        logical, parameter :: loc_print_results  = .FALSE.
+        
 
 
-        print*,'---------- IN OMEN MAIN -----------  '
+!        print*,'---------- IN OMEN MAIN -----------  '
         
         ! initialize BW concentrations 
-        !dum_swiconc_O2 = dum_sfcsumocn(io_O2)
-        !dum_swiconc_NO3 = dum_sfcsumocn(io_NO3)
-        !dum_swiconc_SO4 = dum_sfcsumocn(io_SO4)
-        !dum_swiconc_NH4 = dum_sfcsumocn(io_NH4)        
-        !dum_swiconc_H2S = dum_sfcsumocn(io_H2S)        
-        dum_swiconc_O2 = 300.0e-9
-        dum_swiconc_NO3 = 0e-9
-        dum_swiconc_SO4 = 100e-9
-        dum_swiconc_NH4 = 0.0
-        dum_swiconc_H2S = 0.0e-9 
+        !   THE FOLLOWING VALUES WILL BE PASSED DOWN FROM GENIE
+        ! *****************************************************************
 
-        ! DH TODO: some of it should be called just once, not for every grid
-        call sub_huelseetal2016_initialize(600.0, dum_sfcsumocn(io_T))
+        ! dum_sfcsumocn mol/kg -> SEDIMENT MODEL needs mol/cm^3
+        dum_swiconc_O2 = dum_sfcsumocn(io_O2)*1e-3
+        dum_swiconc_NO3 = dum_sfcsumocn(io_NO3)*1e-3
+        dum_swiconc_SO4 = dum_sfcsumocn(io_SO4)*1e-3
+        dum_swiconc_NH4 = dum_sfcsumocn(io_NH4)*1e-3     
+        dum_swiconc_H2S = dum_sfcsumocn(io_H2S)*1e-3       
+!        dum_swiconc_O2 = 300.0e-9
+!        dum_swiconc_NO3 = 0e-9
+!        dum_swiconc_SO4 = 100e-9
+!        dum_swiconc_NH4 = 0.0
+!        dum_swiconc_H2S = 0.0e-9 
+        
+        ! DH TODO: some of initialize should be called just once, not for every grid point
+        call sub_huelseetal2016_initialize(dum_D, dum_sfcsumocn(io_T))
               
-        print*,'loc_new_sed(is_POC_frac2) ', loc_new_sed(is_POC_frac2)
-        print*,'is_POC ',loc_new_sed(is_POC)/dum_dtyr,loc_new_sed(is_POC),dum_dtyr
+!        print*,'loc_new_sed(is_POC_frac2) ', loc_new_sed(is_POC_frac2)
+!        print*,'is_POC ',loc_new_sed(is_POC)/dum_dtyr,loc_new_sed(is_POC),dum_dtyr
 
-        ! calculate wt% from POC flux (both fractions)
-        loc_wtpct = fun_sed_calcCorgwt(loc_new_sed(is_POC)/dum_dtyr,dum_D, por, rho_sed)
-        print*,'fun_sed_calcCorgwt = ',loc_wtpct
+        ! calculate wt% of mol from POC flux (both fractions)
+        loc_wtpct = fun_sed_calcCorgwt(loc_new_sed(is_POC)/dum_dtyr, w, por, rho_sed)
+!        print*,'fun_sed_calcCorgwt = ',loc_wtpct
        
         
         loc_POC1_wtpct_swi = (1-loc_new_sed(is_POC_frac2))*loc_wtpct
@@ -182,53 +186,64 @@ CONTAINS
             dum_sed_pres_fracC=0.0
             ! what TODO when no POC, still call sediment model for solutes?
         else
-        !    call sub_huelseetal2016_zTOC(loc_POC1_wtpct_swi, loc_POC2_wtpct_swi, dum_sed_pres_fracC)
+            call sub_huelseetal2016_zTOC(loc_POC1_wtpct_swi, loc_POC2_wtpct_swi, dum_sed_pres_fracC)
         ! below test with specific wt% to compare with matlab
-            call sub_huelseetal2016_zTOC(0.06, 0.02, dum_sed_pres_fracC)    
+        !    call sub_huelseetal2016_zTOC(0.006, 0.002, dum_sed_pres_fracC)    
         !        print*,'loc_sed_pres_fracC FIX', loc_sed_pres_fracC
         end if
         
-        ! DH: can do it as a function as don't need to give values. BW-O2 is global variable
-        call sub_huelseetal2016_zO2(dum_swiconc_O2, dum_new_swifluxes(io_O2))
-        print*,'zox = ', zox
-        print*,'FINAL O2 SWI flux = ', dum_new_swifluxes(io_O2)
+        ! Dom TODO: can do it as a function as don't need to give values. BW-O2 is global variable
+        call sub_huelseetal2016_zO2(dum_swiconc_O2, loc_O2_swiflux)
+        dum_new_swifluxes(io_O2) = loc_O2_swiflux                                   ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
         
-!        if(ocn_select(io_NO3))then
-            call sub_huelseetal2016_zNO3(dum_swiconc_NO3, dum_new_swifluxes(io_NO3))
-!        else
-!            zno3 = zox
-!        end if
-        print*,'zno3 = ', zno3
-        print*,'FINAL NO3 SWI flux = ', dum_new_swifluxes(io_NO3)                
+        if(ocn_select(io_NO3))then
+            call sub_huelseetal2016_zNO3(dum_swiconc_NO3, loc_NO3_swiflux)
+            dum_new_swifluxes(io_NO3) = loc_NO3_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
+        else
+            zno3 = zox
+        end if
 
         ! here check for SWI concentration, as problem with root-finding
         ! when is zero. And as no SO4 produced no need to call subroutine anyway        
         if(ocn_select(io_SO4))then        
             if(dum_swiconc_SO4 > 0.0)then
-                call sub_huelseetal2016_zSO4(dum_swiconc_SO4, dum_new_swifluxes(io_SO4))
+                call sub_huelseetal2016_zSO4(dum_swiconc_SO4, loc_SO4_swiflux)
+                dum_new_swifluxes(io_SO4) = loc_SO4_swiflux                         ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
             else        
                 zso4 = zno3
             end if
         else
             zso4 = zno3
-        end if
-                
-        print*,'zso4 = ', zso4
-        print*,'FINAL SO4 SWI flux = ', dum_new_swifluxes(io_SO4)
+        end if              
 
-!        if(ocn_select(io_NH4))then                     
-            call sub_huelseetal2016_zNH4(dum_swiconc_NH4, dum_new_swifluxes(io_NH4))
-!        else
-!            ! If not selected nothing needs to be done
-!        end if
-        print*,'FINAL NH4 SWI flux = ', dum_new_swifluxes(io_NH4)
-
-        if(ocn_select(io_H2S))then                     
-            call sub_huelseetal2016_zH2S(dum_swiconc_H2S, dum_new_swifluxes(io_H2S))
+        if(ocn_select(io_NH4))then                     
+            call sub_huelseetal2016_zNH4(dum_swiconc_NH4, loc_NH4_swiflux)
+            dum_new_swifluxes(io_NH4) = loc_NH4_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
         else
             ! If not selected nothing needs to be done
         end if
-        print*,'FINAL H2S SWI flux = ', dum_new_swifluxes(io_H2S)
+
+        if(ocn_select(io_H2S))then                     
+            call sub_huelseetal2016_zH2S(dum_swiconc_H2S, loc_H2S_swiflux)
+            dum_new_swifluxes(io_H2S) = loc_H2S_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
+        else
+            ! If not selected nothing needs to be done
+        end if
+
+        if(loc_print_results) then
+            print*, 'grid-point ',dum_i, dum_j, dum_D      
+            print*,'POC concentration frac 1 2 at SWI [wt% in mol] ', loc_POC1_wtpct_swi, loc_POC2_wtpct_swi
+            print*,'zox = ', zox
+            print*,'FINAL O2 SWI flux = ', dum_new_swifluxes(io_O2)
+            print*,'zno3 = ', zno3
+            print*,'FINAL NO3 SWI flux = ', dum_new_swifluxes(io_NO3)                
+            print*,'zso4 = ', zso4
+            print*,'FINAL SO4 SWI flux = ', dum_new_swifluxes(io_SO4)
+            print*,'FINAL NH4 SWI flux = ', dum_new_swifluxes(io_NH4)
+            print*,'FINAL H2S SWI flux = ', dum_new_swifluxes(io_H2S)           
+            print*,'Fraction POC-preserved/POC-deposited =' , dum_sed_pres_fracC
+            print*,' '
+        end if
 
     end SUBROUTINE sub_huelseetal2016_main
     
@@ -248,108 +263,106 @@ CONTAINS
         !   initalize
         !   __________________________________________________________
 
-        !   MOST OF THE FOLLOWING VALUES WILL BE PASSED DOWN FROM GENIE
-        ! *****************************************************************
         real,INTENT(in)::dum_D                      ! ocean depth (m) +vs downwards
         real,INTENT(in)::dum_TempK                  ! temperature (K)
         
         ! local variables
         real*8 loc_TempC                            ! temperature (degree C)         
-        !loc_TempC = dum_TempK - 273.15
-        loc_TempC = 20.0
-    !        print*, ' '
-    print*, '----------- start sub_huelseetal2016_initialize --------------'      
-    print*, 'loc_TempC ', loc_TempC  
+
+!        print*, ' '
+!        print*, '----------- start sub_huelseetal2016_initialize --------------'      
 
 
-        rho_sed=2.5                           ! sediment density (g/cm3)
-        !        wdepth=600                            ! water depth (m)
-        z0  = 0.0                               ! surface
+        ! *********************************************************************************
+        !
+        ! initialize globally (so just once in the very beginning)
+        !
+        ! *********************************************************************************       
+        
+        rho_sed = 2.5                                       ! sediment density (g/cm3)
+        z0 = 0.0                                            ! top of the sediments
         zox = 0.0
-        zbio=5.0                                ! bioturbation depth (cm)
+        zno3 = 0.0
+        zso4 = 0.0
+        zinf = 100.0                                        ! Inifinity - bottom of the sediments (cm)
+        zbio = 10.0                                         ! bioturbation depth (cm)
 
-        zinf=100.0                               !Inifinity (cm)
-        !zinf = 1000
-        !zlow=100
-        Dbio=3                                 !bioturbation coefficient (cm2/yr)
-        por=0.8                                !porosity (-) defined as: porewater_vol./(solid_sed_vol.+porewater_vol.)
-        tort=3.0                               !tortuosity (-)
-        irrigationFactor=1.0
+        Dbio = 3.0                                          ! bioturbation coefficient (cm2/yr)
+        por = 0.8                                           ! porosity (-) defined as: porewater_vol./(solid_sed_vol.+porewater_vol.)
+        tort = 3.0                                          ! tortuosity (-)
+        irrigationFactor = 1.0
 
-        gamma=1                                !fraction of NH4 that is oxidised in oxic layer
-        gammaH2S=1                           !fraction of H2S that is oxidised in oxic layer
-        gammaCH4=1                           !fraction of CH4 that is oxidised at SO4
-        satSO4=0                               ! SO4 saturation
+        gamma = 1.0                                         ! fraction of NH4 that is oxidised in oxic layer
+        gammaH2S = 1.0                                      ! fraction of H2S that is oxidised in oxic layer
+        gammaCH4 = 1.0                                      ! fraction of CH4 that is oxidised at SO4
+        satSO4 = 0.0                                        ! SO4 saturation
 
-        zoxgf = 0.1                            ! cm, rolloff NH4, H2S oxidation for small zox depth
+        KNH4 = 1.3                                          !Adsorption coefficient (same in oxic and anoxic layer) (-)
 
-        !bottom water concentrations
-!        T=20.0                                                     ! temperature (degree C)
-        !        C01=0.2*1e-2/12*rho_sed                                ! TOC concentration at SWI (wt!) -> (mol/cm3 bulk phase)
-        !        C02=0.2*1e-2/12*rho_sed                                ! TOC concentration at SWI (wt!) -> (mol/cm3 bulk phase)
-        !   O20=300.0e-9         !was  300.0e-9                                     ! O2  concentration at SWI (mol/cm3)
-!        SO40=100.0e-9      !  28000.0e-9                                     ! SO4 concentration at SWI (mol/cm3)
-!        H2S0=0.0e-9           !was 0.0e-9                                 ! H2S concentration at SWI (mol/cm3)
-        DIC0=2000.0e-9                                             ! DIC concentration at SWI (mol/cm3)
-        ALK0=2400.0e-9                                             ! ALK concentration at SWI (mol/cm3)
-!        dum_swiconc_NO3=20.0e-9                                               ! NO3 concentration at SWI (mol/cm3)
-!        dum_swiconc_NH4=1.0e-9                                                ! NH4 concentration at SWI (mol/cm3)
-        PO40=1e-9                                                  ! PO4 concentration at SWI (mol/cm3)
-        S0=35                                                      ! Salinity at SWI
+        zoxgf = 0.1                                         ! cm, rolloff NH4, H2S oxidation for small zox depth
 
-
-        w=10.0**(-0.87478367-0.00043512*dum_D)*3.3             ! sedimentation rate, cm/yr / burial velocity / advection
-        dispFactor=por**(tort-1.0)*irrigationFactor             !dispersion factor (-) - Ausbreitung - type of mixing that accompanies hydrodynamic flows -> ~builds out paths of flow
-        SD=(1-por)/por                                          !volume factor solid->dissolved phase
-        OC=1.0*SD                                               ! O2/C (mol/mol)
-        NC1=0.1509*SD                                           ! N/C first TOC fraction (mol/mol)
-        NC2=0.13333*SD                                          ! N/C second TOC fraction (mol/mol)
-        SO4C=0.5*SD                                             ! SO4/C (mol/mol)
-        PC1=0.0094*SD                                          ! P/C first TOC fraction (mol/mol)
-        PC2=0.0094*SD                                          ! P/C second TOC fraction (mol/mol)
-        DICC1=1.0*SD                                           ! DIC/C until zSO4 (mol/mol)
-        DICC2=0.5*SD                                           ! DIC/C below zSO$ (mol/mol)
-        MC=0.5*SD                                              ! CH4/C (mol/mol)
-        NO3CR=(94.4/106)*SD                                    ! NO3 consumed by Denitrification
-
+        dispFactor = por**(tort-1.0)*irrigationFactor       !dispersion factor (-) - Ausbreitung - type of mixing that accompanies hydrodynamic flows -> ~builds out paths of flow
+        SD=(1-por)/por                                      !volume factor solid->dissolved phase
+        OC=1.0*SD                                           ! O2/C (mol/mol)
+        NC1=0.1509*SD                                       ! N/C first TOC fraction (mol/mol)
+        NC2=0.13333*SD                                      ! N/C second TOC fraction (mol/mol)
+        SO4C=0.5*SD                                         ! SO4/C (mol/mol)
+        PC1=0.0094*SD                                       ! P/C first TOC fraction (mol/mol)
+        PC2=0.0094*SD                                       ! P/C second TOC fraction (mol/mol)
+        DICC1=1.0*SD                                        ! DIC/C until zSO4 (mol/mol)
+        DICC2=0.5*SD                                        ! DIC/C below zSO$ (mol/mol)
+        MC=0.5*SD                                           ! CH4/C (mol/mol)
+        NO3CR=(94.4/106)*SD                                 ! NO3 consumed by Denitrification
+        
         ! ORGANIC MATTER
         DC1 = Dbio
         k1=0.01
         k2=0.001
 
+        ! GLOBAL DIFFUSION COEFFICIENTS
         ! O2
-        qdispO2=348.62172
-        adispO2=14.08608
+        qdispO2=348.62172                                   ! O2 diffusion coefficient in water at 0 degree C (cm2/yr)
+        adispO2=14.08608                                    ! O2 linear coefficient for temperature dependence (cm2/yr/oC)
 
-        DO21=(qdispO2+adispO2*loc_TempC)*dispFactor+Dbio
-        DO22=(qdispO2+adispO2*loc_TempC)*dispFactor
-
-        r_zxf=0.0
-
-        ! Nitrate (NO3)
+        ! Nitrate (NO3) - Ammonium (NH4)        
         qdispNO3=308.42208
         adispNO3=12.2640
-        DN1=(qdispNO3+adispNO3*loc_TempC)*dispFactor+Dbio
-        DN2=(qdispNO3+adispNO3*loc_TempC)*dispFactor
-        KNH4 = 1.3                                        !Adsorption coefficient (same in ocix and anoxic layer) (-)
-        zno3 = 0.0
-
-        ! Sulfate (SO4)
-        qdispSO4=309.0528                               ! SO4 diffusion coefficient in water (cm2/yr)
-        adispSO4=12.2640                                ! SO4 linear coefficient for temperature dependence (cm2/yr/oC)
-        DSO41=(qdispSO4+adispSO4*loc_TempC)*dispFactor+Dbio     ! SO4 diffusion coefficient in bioturbated layer (cm2/yr)
-        DSO42=(qdispSO4+adispSO4*loc_TempC)*dispFactor          ! SO4 diffusion coefficient in non-bioturbated layer (cm2/yr)
-        zso4 = 0.0
-
-        ! Ammonium (NH4)
         qdispNH4=309.0528
         adispNH4=12.2640
+                
+        ! Sulfate (SO4) - Hydrogen sulfide (H2S)
+        qdispSO4=309.0528                                   ! SO4 diffusion coefficient in water at 0 degree C  (cm2/yr)
+        adispSO4=12.2640                                    ! SO4 linear coefficient for temperature dependence (cm2/yr/oC)
+        qdispH2S=309.0528
+        adispH2S=12.2640
+
+! *********************************************************************************
+
+        ! initialize locally
+
+! *********************************************************************************
+
+        loc_TempC = dum_TempK - 273.15
+!        loc_TempC = 20.0
+!        print*, 'loc_TempC ', loc_TempC  
+
+        w=10.0**(-0.87478367-0.00043512*dum_D)*3.3              ! sedimentation rate, cm/yr / burial velocity / advection (Middelburg et al., Deep Sea Res. 1, 1997)
+
+        ! Diffusion coefficients
+        ! O2
+        DO21=(qdispO2+adispO2*loc_TempC)*dispFactor+Dbio        ! O2 diffusion coefficient in bioturbated layer (cm2/yr)
+        DO22=(qdispO2+adispO2*loc_TempC)*dispFactor             ! O2 diffusion coefficient in non-bioturbated layer (cm2/yr)
+
+
+        ! Nitrate (NO3) - Ammonium (NH4)        
+        DN1=(qdispNO3+adispNO3*loc_TempC)*dispFactor+Dbio
+        DN2=(qdispNO3+adispNO3*loc_TempC)*dispFactor
         DNH41=((qdispNH4+adispNH4*loc_TempC)*dispFactor+Dbio)/(1.0+KNH4)
         DNH42=((qdispNH4+adispNH4*loc_TempC)*dispFactor)/(1.0+KNH4)
 
-        ! Hydrogen sulfide (H2S)
-        qdispH2S=309.0528
-        adispH2S=12.2640
+        ! Sulfate (SO4) - Hydrogen sulfide (H2S)
+        DSO41=(qdispSO4+adispSO4*loc_TempC)*dispFactor+Dbio     ! SO4 diffusion coefficient in bioturbated layer (cm2/yr)
+        DSO42=(qdispSO4+adispSO4*loc_TempC)*dispFactor          ! SO4 diffusion coefficient in non-bioturbated layer (cm2/yr)
         DH2S1=(qdispH2S+adispH2S*loc_TempC)*dispFactor+Dbio
         DH2S2=(qdispH2S+adispH2S*loc_TempC)*dispFactor
 
@@ -375,24 +388,27 @@ CONTAINS
         !   organic matter burial
 
         ! dummy arguments
-        real,INTENT(in)::dum_POC1_wtpct_swi, dum_POC2_wtpct_swi           ! POC concentrations at SWI
-        real,INTENT(inout)::dum_sed_pres_fracC      ! POC concentrations at zinf
+        real,INTENT(in)::dum_POC1_wtpct_swi, dum_POC2_wtpct_swi             ! POC concentrations at SWI
+        real,INTENT(inout)::dum_sed_pres_fracC                              ! POC concentrations at zinf
 
         ! local variables
         real*8 loc_POC1_conc_zinf, loc_POC2_conc_zinf
         !    real*8 aa11, bb11, aa21, A11, A21, aa12, bb12, aa22, A12, A22
-        real*8 dC1dz, C1flx, dC2dz, C2flx, Cflx             ! Cflx: Sed input flux to upper boundary, per cm^2 water column
-        real*8 F_TOC1, F_TOC2, F_TOC                        ! Flux through lower boundary zinf, per cm^2 water-column
+        real*8 dC1dz, C1flx, dC2dz, C2flx, Cflx                             ! Cflx: Sed input flux to upper boundary, per cm^2 water column
+        real*8 F_TOC1, F_TOC2, F_TOC                                        ! Flux through lower boundary zinf, per cm^2 water-column
 
 
 !        print*,' ------------------ START zTOC ---------------------'
 !        print*,' sedimentation rate/burial velocity w = ', w
 
         ! initialize BW conentration POC1,2 in mol/cm3
-        dum_POC1_conc_swi=0.01*dum_POC1_wtpct_swi/12.0*rho_sed         ! %TOC concentration frac1 at SWI (wt%) -> (mol/cm3 bulk phase)
-        dum_POC2_conc_swi=0.01*dum_POC2_wtpct_swi/12.0*rho_sed         ! %TOC concentration frac2 at SWI (wt%) -> (mol/cm3 bulk phase)
-        print*, 'dum_POC1_conc_swi', char(9), dum_POC1_conc_swi
-        print*, 'dum_POC2_conc_swi', char(9), dum_POC2_conc_swi
+        dum_POC1_conc_swi=0.01*dum_POC1_wtpct_swi*rho_sed              ! %TOC concentration frac1 at SWI (wt%) -> (mol/cm3 bulk phase)
+        dum_POC2_conc_swi=0.01*dum_POC2_wtpct_swi*rho_sed              ! %TOC concentration frac2 at SWI (wt%) -> (mol/cm3 bulk phase)
+        ! Dom: Use this when comparing with MATLAB, here we use wt% of g -> *1/12
+!        dum_POC1_conc_swi=0.01*dum_POC1_wtpct_swi/12.0*rho_sed              ! %TOC concentration frac1 at SWI (wt%) -> (mol/cm3 bulk phase)
+!        dum_POC2_conc_swi=0.01*dum_POC2_wtpct_swi/12.0*rho_sed              ! %TOC concentration frac2 at SWI (wt%) -> (mol/cm3 bulk phase)
+!        print*, 'dum_POC1_conc_swi', char(9), dum_POC1_conc_swi
+!        print*, 'dum_POC2_conc_swi', char(9), dum_POC2_conc_swi
 
         aa11 = (w-sqrt(w**2+4*DC1*k1))/(2*DC1)
         bb11 = (w+sqrt(w**2+4*DC1*k1))/(2*DC1)
@@ -455,8 +471,8 @@ CONTAINS
         end if
 
         ! DH: need to give back fraction buried of initially deposited (so fraction of the input values to this subroutine)
-        print*, 'loc_POC1_conc_zinf ', char(9), loc_POC1_conc_zinf
-        print*, 'loc_POC2_conc_zinf ', char(9), loc_POC2_conc_zinf
+!        print*, 'loc_POC1_conc_zinf ', char(9), loc_POC1_conc_zinf
+!        print*, 'loc_POC2_conc_zinf ', char(9), loc_POC2_conc_zinf
 
         dum_sed_pres_fracC = (loc_POC1_conc_zinf+loc_POC2_conc_zinf)/(dum_POC1_conc_swi+dum_POC2_conc_swi)
 
@@ -490,8 +506,8 @@ CONTAINS
 
         !    print*, ''
         !    print*, ''
-        print*, '---------------------- START zO2 ------------------------ '
-        print*,'--- SWI O2 =', dum_swiconc_O2
+!        print*, '---------------------- START zO2 ------------------------ '
+!        print*,'--- SWI O2 =', dum_swiconc_O2
         zox = 1e-10
         bctype = 1
         flxzox = 0.0
@@ -532,12 +548,12 @@ CONTAINS
         call sub_huelseetal2016_zO2_calcbc(zox, bctype, flxzox, conczox, loc_new_swiflux_O2, r_zxf)
         !    print*,' '
         !    print*,'---------- FINAL RESULTS zO2 --------- '
-        print*,'zox ', char(9), zox
+!        print*,'zox ', char(9), zox
         !        print*,'r_zxf', char(9), r_zxf
         !        print*,''
-        print*,'flxzox', char(9), flxzox
-        print*,'conczox', char(9), conczox
-        print*,'loc_new_swiflux_O2', char(9), loc_new_swiflux_O2
+!        print*,'flxzox', char(9), flxzox
+!        print*,'conczox', char(9), conczox
+!        print*,'loc_new_swiflux_O2', char(9), loc_new_swiflux_O2
 
 
     END SUBROUTINE sub_huelseetal2016_zO2
@@ -726,7 +742,7 @@ CONTAINS
 
 !    print*, ''
 !    print*, '------------------------------------------------------------------'
-    print*, '---------------------- START zNO3 ------------------------------- '
+!    print*, '---------------------- START zNO3 ------------------------------- '
 
     bctype = 2
     ! Try zero flux at zinf and see if we have any NO3 left
@@ -750,11 +766,11 @@ CONTAINS
     call sub_huelseetal2016_zNO3_calcbc(zno3, bctype, flxzno3, conczno3, loc_new_swiflux_NO3)
 
 !    print*,' ---- FINAL RESULTS zNO3: ----'
-    print*,'zno3', char(9), zno3
-    print*,''
-    print*,'flxzno3', char(9), flxzno3
-    print*,'conczno3', char(9), conczno3
-    print*,'loc_new_swiflux_NO3', char(9), loc_new_swiflux_NO3
+!    print*,'zno3', char(9), zno3
+!    print*,''
+!    print*,'flxzno3', char(9), flxzno3
+!    print*,'conczno3', char(9), conczno3
+!    print*,'loc_new_swiflux_NO3', char(9), loc_new_swiflux_NO3
 
     END SUBROUTINE sub_huelseetal2016_zNO3
 
@@ -945,10 +961,9 @@ CONTAINS
         integer bctype
 
 
-        !    print*, ''
-        !    print*, '------------------------------------------------------------------'
-        print*, '---------------------- START zSO4 ------------------------------- '
-        print*, ' BWI SO4 concentration = ', dum_swiconc_SO4
+!        print*, '------------------------------------------------------------------'
+!        print*, '---------------------- START zSO4 ------------------------------- '
+!        print*, ' BWI SO4 concentration = ', dum_swiconc_SO4
  
         ! Iteratively solve for zso4
 
@@ -1246,7 +1261,7 @@ CONTAINS
 
 !    print*, ''
 !    print*, '------------------------------------------------------------------'
-    print*, '---------------------- START zNH4 ------------------------------- '
+!    print*, '---------------------- START zNH4 ------------------------------- '
 
     ! Preparation: for each layer, sort out solution-matching across bioturbation boundary if necessary
     ! layer 1: 0 < z < zox, NH4 prod (remaining after oxidation)
@@ -1341,8 +1356,8 @@ CONTAINS
 !            & zox_a , zox_b , zox_c , zox_d , zox_e ,zox_f
 !    print*,' '
 !    print*,' ---------------- RESULTS: benthic_zNH4 ---------------- '
-    print*,'loc_new_swiflux_NH4', char(9), loc_new_swiflux_NH4
-    print*,' '
+!    print*,'loc_new_swiflux_NH4', char(9), loc_new_swiflux_NH4
+!    print*,' '
 !    print*,'rNH4_A3, rNH4_B3, rNH4_A2, rNH4_B2, rNH4_A1, rNH4_B1', &
 !          &  rNH4_A3, rNH4_B3, rNH4_A2, rNH4_B2, rNH4_A1, rNH4_B1
 
@@ -1401,8 +1416,8 @@ CONTAINS
 
 !    print*, ''
 !    print*, '------------------------------------------------------------------'
-    print*, '---------------------- START zH2S ------------------------------- '
-        print*, ' BWI H2S concentration = ', dum_swiconc_H2S
+!    print*, '---------------------- START zH2S ------------------------------- '
+!        print*, ' BWI H2S concentration = ', dum_swiconc_H2S
 
     ! Calculate H2S
 
@@ -1821,50 +1836,52 @@ CONTAINS
     !   *****************************************************************
     ! *******************************************************************
 
-    function fun_sed_calcCorgwt(dum_FPOC,dum_D,dum_por,dum_den)
-        ! -------------------------------------------------------- !
-        ! RESULT VARIABLE
-        ! -------------------------------------------------------- !
-        real::fun_sed_calcCorgwt
-        ! -------------------------------------------------------- !
-        ! -------------------------------------------------------- !
-        ! DUMMY ARGUMENTS
-        ! -------------------------------------------------------- !
-        real,INTENT(in)::dum_FPOC                                  ! POC flux (mol cm-2 yr-1)
-        real,INTENT(in)::dum_D                                     ! ocean depth (m) (+vs downwards)
-        real,INTENT(in)::dum_por                                   ! sediment porosity (cm3 cm-3)
-        real,INTENT(in)::dum_den                                   ! sediment density (g cm-3)
-        ! -------------------------------------------------------- !
-
-        ! -------------------------------------------------------- !
-        ! DEFINE LOCAL VARIABLES
-        ! -------------------------------------------------------- !
-        real::loc_sed_v_burial                                     ! sediment burial velocity (cm yr-1)
-        !        real::loc_sed_wtpt_corg
-        !        real::loc_sed_den
-        real::loc_sed_Fdet
-
-        ! mass fraction of Corg is equal to % of total mass per unit volume ...
-        ! but taken at the bottom boundary level, also equal to the % of the burial fraction
-        ! wt% Corg = FCorg/(FCorg + Fdet)*100.0
-
-        !        print*, ' '
-        !        print*, '----------- IN fun_sed_calcCorgwt --------------'
-        !        print*, ' '
-
-        !burial velocity [cm yr^-1](Middelburg et al., Deep Sea Res. 1, 1997)
-        loc_sed_v_burial = 10.0**(-0.87478367-0.00043512*dum_D)*3.3
-
-        ! assume all buried sediment is detrital to a first approximation
-        ! (burial velocity) x (solids as a fraction of total volume) x (density)
-        ! NOTE: units of (g cm-2 yr-1)
-        loc_sed_Fdet = loc_sed_v_burial*(1.0 - dum_por)*dum_den
-        ! calculate Corg wt%
-        ! NOTE: 100% scale
-        fun_sed_calcCorgwt = 100.0*dum_FPOC/(dum_FPOC+loc_sed_Fdet)
-
-    end function fun_sed_calcCorgwt
-
+!!!!!!!!!!!! Dominik: Moved to sedgem_lib.f90
+!
+!    function fun_sed_calcCorgwt(dum_FPOC,dum_D,dum_por,dum_den)
+!        ! -------------------------------------------------------- !
+!        ! RESULT VARIABLE
+!        ! -------------------------------------------------------- !
+!        real::fun_sed_calcCorgwt
+!        ! -------------------------------------------------------- !
+!        ! -------------------------------------------------------- !
+!        ! DUMMY ARGUMENTS
+!        ! -------------------------------------------------------- !
+!        real,INTENT(in)::dum_FPOC                                  ! POC flux (mol cm-2 yr-1)
+!        real,INTENT(in)::dum_D                                     ! ocean depth (m) (+vs downwards)
+!        real,INTENT(in)::dum_por                                   ! sediment porosity (cm3 cm-3)
+!        real,INTENT(in)::dum_den                                   ! sediment density (g cm-3)
+!        ! -------------------------------------------------------- !
+!
+!        ! -------------------------------------------------------- !
+!        ! DEFINE LOCAL VARIABLES
+!        ! -------------------------------------------------------- !
+!        real::loc_sed_v_burial                                     ! sediment burial velocity (cm yr-1)
+!        !        real::loc_sed_wtpt_corg
+!        !        real::loc_sed_den
+!        real::loc_sed_Fdet
+!
+!        ! mass fraction of Corg is equal to % of total mass per unit volume ...
+!        ! but taken at the bottom boundary level, also equal to the % of the burial fraction
+!        ! wt% Corg = FCorg/(FCorg + Fdet)*100.0
+!
+!        !        print*, ' '
+!        !        print*, '----------- IN fun_sed_calcCorgwt --------------'
+!        !        print*, ' '
+!
+!        !burial velocity [cm yr^-1](Middelburg et al., Deep Sea Res. 1, 1997)
+!        loc_sed_v_burial = 10.0**(-0.87478367-0.00043512*dum_D)*3.3
+!
+!        ! assume all buried sediment is detrital to a first approximation
+!        ! (burial velocity) x (solids as a fraction of total volume) x (density)
+!        ! NOTE: units of (g cm-2 yr-1)
+!        loc_sed_Fdet = loc_sed_v_burial*(1.0 - dum_por)*dum_den
+!        ! calculate Corg wt%
+!        ! NOTE: 100% scale
+!        fun_sed_calcCorgwt = 100.0*dum_FPOC/(dum_FPOC+loc_sed_Fdet)
+!
+!    end function fun_sed_calcCorgwt
+!
 
     SUBROUTINE sub_matchsoln(E_l, F_l, G_l, dEdx_l, dFdx_l, dGdx_l, &
     E_r, F_r, G_r, dEdx_r, dFdx_r, dGdx_r, &

@@ -236,16 +236,14 @@ CONTAINS
                 end DO
             case ('arndt_0')
                       ! Arndt SIMPLE
-                print*, ' '        
-                print*, '---START OMEN-SEDIMENT---'
-                print*, 'grid-point ',dum_i,dum_j, dum_D      
+!                print*, ' '        
+!                print*, '---START OMEN-SEDIMENT---'
+!                print*, 'grid-point ',dum_i,dum_j, dum_D      
                 
-                call sub_huelseetal2016_main(dum_dtyr, dum_D, loc_new_sed(:), dum_sfcsumocn(:), loc_sed_pres_fracC, loc_new_swifluxes(:))
+                call sub_huelseetal2016_main(dum_dtyr, dum_i, dum_j, dum_D, loc_new_sed(:), dum_sfcsumocn(:), loc_sed_pres_fracC, loc_new_swifluxes(:))
     
 !               print*,'loc_sed_pres_fracC ', loc_sed_pres_fracC
-
-                ! NOTE ANDY: fun_arndtetal2013_sedpres calculates the fractional preservation of total Corg
-                !       loc_sed_pres_fracC = fun_arndtetal2013_sedpres((1-loc_new_sed(is_POC_frac2))*loc_wtpct, loc_new_sed(is_POC_frac2)*loc_wtpct,dum_D)*loc_new_sed(is_POC)
+!                print*,' '
                 DO l=1,n_l_sed
                     is = conv_iselected_is(l)
                     if ( &
@@ -1358,6 +1356,11 @@ CONTAINS
                ! Following Arndt et al. [2013]
                ! NOTE:
                !!!loc_sed_pres_fracC = fun_arndtetal2013_sedflx(0.0,0.0)
+
+
+
+
+
 
 
 
