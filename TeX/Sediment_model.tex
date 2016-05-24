@@ -81,7 +81,7 @@
 \Author[1]{Dominik}{H\"ulse}
 \Author[1]{Sandra}{Arndt}
 \Author[2]{Stuart}{Daines}
-\Author[1, 3]{Andy J.}{Ridgwell}
+\Author[1, 3]{Andy}{Ridgwell}
 
 \affil[1]{School of Geographical Sciences, University of Bristol, Clifton, Bristol BS8 1SS, UK}
 \affil[2]{Earth System Science, University of Exeter, North Park Road, Exeter EX4 4QE, UK}
@@ -199,7 +199,7 @@ mineral precipitation/dissolution and adsorption/desorption, resulting in a comp
 subsections provide a short discussion of the reaction processes included in the model and give an overview of the 
 vertically resolved conservation equations and boundary conditions for solid and dissolved species in each layer. Table \ref{table:reactions_processes} states the reactions and variables considered in the reaction network. 
 \begin{table}[tbp]
-\caption{Reactions and variables implemented in the Reaction Network of SED (1.0). The primary and secondary redox reactions are listed in the sequence they occur with increasing sediment depth.}
+\caption{Reactions and variables implemented in the Reaction Network of OMEN-SED (1.0). The primary and secondary redox reactions are listed in the sequence they occur with increasing sediment depth.}
 % title of Table
 \centering
 % used for centering table
@@ -460,7 +460,7 @@ $z=z_{\infty}$& zero \chem{H_2S} flux & 10)& $\frac{\partial \chem{H_2S}}{\parti
 \begin{figure}[htbp]
 \begin{center}
 	\includegraphics[width=0.8\textwidth]{figures/P-cycle.pdf}
-	\caption{A schematic of the sedimentary P cycle in SED (1.0). Red numbers represent kinetic rate constants for phosphorus dynamics (compare Table \ref{table:reaction_parameters}; p$_i$ represents uptake rate of PO$_4$ 
+	\caption{A schematic of the sedimentary P cycle in OMEN-SED (1.0). Red numbers represent kinetic rate constants for phosphorus dynamics (compare Table \ref{table:reaction_parameters}; p$_i$ represents uptake rate of PO$_4$ 
 	via primary production in shallow environments). Adapted from \citet{caroline_p_slomp_key_1996}.}
 	\label{fig:P-cycle}
 	\end{center}
@@ -533,13 +533,13 @@ $z=z_{\infty}$& assymptotic concentration & 10) $M(z_\infty)=M_\infty$\\
 \subsubsection{Alkalinity}
 
 \subsection{Model Parameters}
-This section describes the parameters used in SED (1.0) to describe sediment transport and biogeochemical reactions related to the burial and mineralization of organic matter under a wide range of environmental conditions. 
+This section describes the parameters used in OMEN-SED (1.0) to describe sediment transport and biogeochemical reactions related to the burial and mineralization of organic matter under a wide range of environmental conditions. 
 Table \ref{table:sed-charac_transport-parameters} states the parameters for sediment characteristics and Table \ref{table:reaction_parameters} summarizes the stoichiometric factors and 
 secondary reaction parameters used in the model.
 
 \subsubsection{Transport Parameters}
 Advection is the bulk flow of sediments and can be directly related to the accumulation of new material on the seafloor \citep[i.e. sedimentation,][]{burdige2006geochemistry}. 
-This results in a downward flux of older sediment material and porewater in relation to the sediment-water interface. SED (1.0) uses the empirical global relationship between 
+This results in a downward flux of older sediment material and porewater in relation to the sediment-water interface. OMEN-SED (1.0) uses the empirical global relationship between 
 sediment accumulation rate (cm yr$^{-1}$) and seafloor depth (m) of \citet{middelburg_empirical_1997}: 
 \begin{equation}
  w = 3.3\cdot 10^{-0.87478367-0.00043512\cdot \text{depth}}\label{eq:sedimentation_rate}
@@ -550,7 +550,7 @@ The bioturbation coefficient $D_{\mathrm{bio}}$ (cm$^2$ yr$^-1$) is constant in 
  D_{\mathrm{bio}} = 5.2\cdot 10^{0.76241122-0.00039724\cdot \text{depth}}\label{eq:bioturbation_coeff}
 \end{equation}
 Studies showed that bioturbational effects on a global scale are largely restricted to the upper 10 cm of the sediments and are only marginally related to seafloor depth \citep[e.g.][]{boudreau_mean_1998, teal_global_2010}. 
-Therefore, SED (1.0) imposes a globally invariant bioturbation depth of 10cm. 
+Therefore, OMEN-SED (1.0) imposes a globally invariant bioturbation depth of 10cm. 
 Bioirrigation can enhance the molecular diffusion coefficient $D_{i,0}=D_{\mathrm{mol},i}\cdot f_{ir}$ \citep{soetaert1996dynamic}. However, here we do not consider this effect 
 and set $f_{ir}$ to a constant value of 1. The specific molecular diffusion coefficients $D_{\mathrm{mol},i}$ are corrected for sediment porosity $\phi$, tortuosity F and are linearly interpolated for an ambient temperature $T$ using zero-degree 
 coefficients $D^0_i$ and temperature dependent diffusion coefficients $D^T_i$ \citep[compare ][]{gypens_simple_2008}:
@@ -573,8 +573,8 @@ Values for $D^T_i$ and $D^0_i$ are summarized in Table \ref{table:sed-charac_tra
 Parameter & Unit  & Value & Description/Source\\
 \hline
 $\rho_{\mathrm{sed}}$ & g\,cm$^{-3}$ & 2.5 & Sediment density \\
-$w$ & cm\,yr$^{-1}$ & 0.03 & Advection/\\
-&&& Sediment accumulation rate \\
+$w$ & cm\,yr$^{-1}$ &  Fct. of seafloor  & Advection/Sediment accumulation rate \\
+&& depth & \citet{middelburg_empirical_1997}\\
 $z_{\mathrm{bio}}$& cm & 10 & Bioturbation depth\\
 &&&\citet{boudreau_mean_1998, teal_global_2010}\\
 $D_{\mathrm{bio}}$& cm$^2$\,yr$^{-1}$ & Fct. of seafloor & Bioturbation coefficient\\
@@ -612,7 +612,7 @@ $D_{\chem{PO_4}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 5.586252 &Diffus
 
 \subsubsection {Reaction Parameters}
 %The parameters relating to organic matter 
-%The overall reactions implemented in SED (1.0) are listed in Table \ref{table:reactions_processes}. 
+%The overall reactions implemented in OMEN-SED (1.0) are listed in Table \ref{table:reactions_processes}. 
 The applied multi-G approach for organic matter degradation considers specific degradation rate constants $k_i$ (yr$^{-1}$) for each compound class. The degradation constants are generally taken from the coupled Earth System model 
 and are assumed invariant along the sediment column, therefore independent of the nature of the terminal electron acceptor. 
 The stoichiometry of organic matter is represented by the factors \chem{NC_i} and \chem{PC_i} denoting the molecular nitrogen to carbon and phosphorus to carbon ratio. 
@@ -628,7 +628,7 @@ See Table \ref{table:reaction_parameters} for a complete summary of the paramete
 %\textcolor{red}{Next bit from Gypens:} Re-oxidation occurs in a ratio of 1 mol of oxygen per mol of carbon anoxically mineralized. Similarly, 2 mol of oxygen
 %are consumed during nitrification of \chem{NH_4} produced in the anoxic zone. As nitrification may be incomplete in the oxic layer, we similarly allow for part of the ammonium flux to escape re-oxidation. 
 \begin{table}[btp]
-\caption{Values for biogeochemical parameters used in SED (1.0). 
+\caption{Values for biogeochemical parameters used in OMEN-SED (1.0). 
 %\textcolor{red}{Stoichiometric factor for oxygen and sulfate relates to mol of terminal electron acceptor consumed for 1 mol of organic matter mineralized. 
 %NC and MC related to mol of reduced species produces per mol organic matter mineralized. correct???}
 }
@@ -681,7 +681,7 @@ $k_a$ & yr$^{-1}$ & \textcolor{red}{???} & rate constant for authigenic P format
 An analytical steady-state solution is found for the reaction-transport equation of each chemical species in each layer. 
 At each boundary (i.e. $z_{\mathrm{ox}}, z_{\mathrm{bio}}, z_{\chem{NO_3}}$ and $z_{\chem{SO_4}}$) the model has to match continuity and flux for different ODE solutions of the layer above and below the specific boundary. 
 In particular the bioturbation boundary is problematic as it can theoretically occur in any geochemical layer. In order to simplify this recurring boundary matching problem it is implemented in an independent algorithm 
-which is described in Section \ref{subsec:GBCM}. Instructions and requirements for coupling SED (1.0) to a global Earth Sytem Model are given in Section \ref{subsubsec:ESM_coupling}.
+which is described in Section \ref{subsec:GBCM}. Instructions and requirements for coupling OMEN-SED (1.0) to a global Earth Sytem Model are given in Section \ref{subsubsec:ESM_coupling}.
 
 \subsubsection{Generic boundary condition matching (GBCM)}\label{subsec:GBCM}
 A general steady-state advection-diffusion-reaction (ADR) diagenetic equation looks like:

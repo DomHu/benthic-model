@@ -7,12 +7,12 @@ classdef benthic_zPO4_M
         DPO41;                      %PO4 diffusion coefficient in bioturbated layer (cm2/yr)
         DPO42;                      %PO4 diffusion coefficient in non-bioturbated layer (cm2/yr)
         
-        KPO41=10.0;         %Adsorption coefficient in oxic layer (-)
+        KPO41=10.0;  %is 10.0     %Adsorption coefficient in oxic layer (-) 
         KPO42=1.3;          %Adsorption coefficient in anoxic layer (-)
-        %ksPO4=0.26*365;      %Rate constant for kinetic P sorption (1/yr)   0.12 fits 1.CASE; 2.2 fits 2. CASE DOM: was 0.5*365 from Nicolas; Slomp ea 1996 0.26
-        ksPO4=1e-15;
-        kmPO4= 1e-15 ;
-        %kmPO4=0.00053*365;	%Rate constant for Fe-bound P release upon Fe oxide reduction   DOM: was 1.8e-6 Slomp ea 1996 0.00053*365 
+        ksPO4=0.26*365;      %Rate constant for kinetic P sorption (1/yr)   0.12 fits 1.CASE; 2.2 fits 2. CASE DOM: was 0.5*365 from Nicolas; Slomp ea 1996 0.26
+        %ksPO4=1e-15;
+        %kmPO4= 1e-15 ;
+        kmPO4=0.00053*365;	%Rate constant for Fe-bound P release upon Fe oxide reduction   DOM: was 1.8e-6 Slomp ea 1996 0.00053*365 
         kaPO4 = 0;
         %kaPO4=0.001*365;	%Rate constant for authigenic P formation (1/yr)    DOM: was 0.004*365 from Nicolas; Slomp ea 1996 0.001
         PO4s=1.0e-9;        %Equilibrium concentration for P sorption (mol/cm3)       was 1.5e-9; ; Slomp ea 1996
@@ -35,8 +35,10 @@ classdef benthic_zPO4_M
     
     methods
         function obj = benthic_zPO4_M(bsd, swi)
-            obj.DPO41=((obj.qdispPO4+obj.adispPO4*swi.T).*bsd.dispFactor+bsd.Dbio)/(1+obj.KPO41);            %PO4 diffusion coefficient in bioturbated layer (cm2/yr)
-            obj.DPO42=((obj.qdispPO4+obj.adispPO4*swi.T).*bsd.dispFactor)/(1+obj.KPO42);                     %PO4 diffusion coefficient in non-bioturbated layer (cm2/yr)
+            obj.DPO41=((obj.qdispPO4+obj.adispPO4*swi.T).*bsd.dispFactor+bsd.Dbio);            %PO4 diffusion coefficient in bioturbated layer (cm2/yr)
+            obj.DPO42=((obj.qdispPO4+obj.adispPO4*swi.T).*bsd.dispFactor);                     %PO4 diffusion coefficient in non-bioturbated layer (cm2/yr)
+            %DH 2405 was obj.DPO41=((obj.qdispPO4+obj.adispPO4*swi.T).*bsd.dispFactor+bsd.Dbio)/(1+obj.KPO41);            %PO4 diffusion coefficient in bioturbated layer (cm2/yr)
+            %DH 2405 was obj.DPO42=((obj.qdispPO4+obj.adispPO4*swi.T).*bsd.dispFactor)/(1+obj.KPO42);                     %PO4 diffusion coefficient in non-bioturbated layer (cm2/yr)
 
   
              %reactive terms: OM degradation
@@ -54,7 +56,7 @@ classdef benthic_zPO4_M
             
             % layer 1: 0 < z < zox, OM degradation (-) Sorption to sediment Fe-oxides (ktemp) 
             %           ls =  prepfg_l12_PO4M(   bsd, swi, r, reac1P,        reac2P,        ktempP                 ,     QP,                        zU, zL,    D1P,        D2P , alphaP
-            rPO4_M.ls1 = r.zTOC.prepfg_l12_PO4_M(bsd, swi, r, obj.reac1_ox, obj.reac2_ox, obj.ksPO4/(1+obj.KPO41), obj.PO4s*obj.ksPO4/(1+obj.KPO41),0, r.zox, obj.DPO41, obj.DPO42, 0, ...
+            rPO4_M.ls1 = r.zTOC.prepfg_l12_PO4_M(bsd, swi, r, obj.reac1_ox, obj.reac2_ox, obj.ksPO4/(1+obj.KPO41), obj.PO4s*obj.ksPO4/(1+obj.KPO41),0, r.zox, obj.DPO41/(1+obj.KPO41), obj.DPO42/(1+obj.KPO41), 0, ...
                                                 0, 0, bsd.Dbio, 0, (1/bsd.SD)*obj.ksPO4);
                                   % for M  ktempM, QM, D1M,   D2M,  alphaM
                                 
@@ -62,7 +64,7 @@ classdef benthic_zPO4_M
             % OM degradation (-) authigenic P formation (ktemp) (+) P desorption due to Fe-bound P release upon Fe oxide reduction
 
             %             ls =  prepfg_l12_PO4M( bsd, swi, r,     reac1P,        reac2P,        ktempP                ,     QP,                             zU,   zL,        D1P,       D2P,    alphaP
-            rPO4_M.ls2 = r.zTOC.prepfg_l12_PO4_M(bsd, swi, r, obj.reac1_anox, obj.reac2_anox, obj.kaPO4/(1+obj.KPO42), obj.PO4a*obj.kaPO4/(1+obj.KPO42), r.zox, bsd.zinf, obj.DPO41, obj.DPO42, bsd.SD*obj.kmPO4/(1+obj.KPO42), ...
+            rPO4_M.ls2 = r.zTOC.prepfg_l12_PO4_M(bsd, swi, r, obj.reac1_anox, obj.reac2_anox, obj.kaPO4/(1+obj.KPO42), obj.PO4a*obj.kaPO4/(1+obj.KPO42), r.zox, bsd.zinf, obj.DPO41/(1+obj.KPO42), obj.DPO42/(1+obj.KPO42), bsd.SD*obj.kmPO4/(1+obj.KPO42), ...
                                                 obj.kmPO4, obj.kmPO4.*obj.Minf, bsd.Dbio, 0, 0);
                                   % for M           ktempM,       QM,              D1M,  D2M, alphaM)
                                   
@@ -235,12 +237,13 @@ classdef benthic_zPO4_M
 % % % %             flxzPO4 = D.*(rPO4_M.A3.*dedz3_zPO4+rPO4_M.B3.*dfdz3_zPO4 + dgdz3_zPO4);        % includes 1/por ie flux per (cm^2 pore area)
             
 
-            % flux PO4 at swi - DO include por so this is per cm^2 water column area
-            r.flxswi_P = bsd.por.*obj.DPO41.*(rPO4_M.A2.*dEFPQdz_P(1)+rPO4_M.B2.*dEFPQdz_P(2) + rPO4_M.C2.*dEFPQdz_P(3)+rPO4_M.D2.*dEFPQdz_P(4) + dgdz1_0_P);   % NB: use A2, B2, C2, D2 as these are _xformed_ layer 1 basis functions
+            % DH 2405: need to check if anoxic bc of adsorption coeff? flux PO4 at swi - DO include por so this is per cm^2 water column area
+            r.flxswi_P = bsd.por.*obj.DPO41/(1+obj.KPO41).*(rPO4_M.A2.*dEFPQdz_P(1)+rPO4_M.B2.*dEFPQdz_P(2) + rPO4_M.C2.*dEFPQdz_P(3)+rPO4_M.D2.*dEFPQdz_P(4) + dgdz1_0_P);   % NB: use A2, B2, C2, D2 as these are _xformed_ layer 1 basis functions
             
             % flux M at swi - DO include por so this is per cm^2 water column area
-            r.flxswi_M = bsd.por.*obj.DPO41.*(rPO4_M.A2.*dEFPQdz_M(1)+rPO4_M.B2.*dEFPQdz_M(2) + rPO4_M.C2.*dEFPQdz_M(3)+rPO4_M.D2.*dEFPQdz_M(4) + dgdz1_0_M);   % NB: use A2, B2, C2, D2 as these are _xformed_ layer 1 basis functions
-            
+            r.flxswi_M = bsd.por.*bsd.Dbio*(rPO4_M.A2.*dEFPQdz_M(1)+rPO4_M.B2.*dEFPQdz_M(2) + rPO4_M.C2.*dEFPQdz_M(3)+rPO4_M.D2.*dEFPQdz_M(4) + dgdz1_0_M);   % NB: use A2, B2, C2, D2 as these are _xformed_ layer 1 basis functions
+            % DH 2405 was r.flxswi_M = bsd.por.*obj.DPO41.*(rPO4_M.A2.*dEFPQdz_M(1)+rPO4_M.B2.*dEFPQdz_M(2) + rPO4_M.C2.*dEFPQdz_M(3)+rPO4_M.D2.*dEFPQdz_M(4) + dgdz1_0_M);   % NB: use A2, B2, C2, D2 as these are _xformed_ layer 1 basis functions
+
             
             % save coeffs for layer 1          
             L1_P = zox.C*[ rPO4_M.A2; rPO4_M.B2; rPO4_M.C2; rPO4_M.D2]+zox.D;
@@ -292,7 +295,7 @@ classdef benthic_zPO4_M
                     
                     
                     PO4     = r.rPO4_M.A1.*e_P + r.rPO4_M.B1.*f_P + r.rPO4_M.C1.*p_P + r.rPO4_M.D1.*q_P + g_P;
-                    flxPO4  = D_P.*(r.rPO4_M.A1.*dedz_P+r.rPO4_M.B1.*dfdz_P + r.rPO4_M.C1.*dpdz_P+r.rPO4_M.D1.*dqdz_P + dgdz_P);
+                    flxPO4  = D_P/(1+obj.KPO41).*(r.rPO4_M.A1.*dedz_P+r.rPO4_M.B1.*dfdz_P + r.rPO4_M.C1.*dpdz_P+r.rPO4_M.D1.*dqdz_P + dgdz_P);
                     M     = r.rPO4_M.A1.*e_M + r.rPO4_M.B1.*f_M + r.rPO4_M.C1.*p_M + r.rPO4_M.D1.*q_M + g_M;
                     flxM  = D_M.*(r.rPO4_M.A1.*dedz_M+r.rPO4_M.B1.*dfdz_M + r.rPO4_M.C1.*dpdz_M+r.rPO4_M.D1.*dqdz_M + dgdz_M);
 
@@ -304,7 +307,7 @@ classdef benthic_zPO4_M
                    
                     
                     PO4     = r.rPO4_M.A2.*e_P + r.rPO4_M.B2.*f_P + r.rPO4_M.C2.*p_P + r.rPO4_M.D2.*q_P + g_P;
-                    flxPO4  = D_P.*(r.rPO4_M.A2.*dedz_P+r.rPO4_M.B2.*dfdz_P + r.rPO4_M.C2.*dpdz_P+r.rPO4_M.D2.*dqdz_P + dgdz_P);
+                    flxPO4  = D_P/(1+obj.KPO42).*(r.rPO4_M.A2.*dedz_P+r.rPO4_M.B2.*dfdz_P + r.rPO4_M.C2.*dpdz_P+r.rPO4_M.D2.*dqdz_P + dgdz_P);
                     M     = r.rPO4_M.A2.*e_M + r.rPO4_M.B2.*f_M + r.rPO4_M.C2.*p_M + r.rPO4_M.D2.*q_M + g_M;
                     flxM  = D_M.*(r.rPO4_M.A2.*dedz_M+r.rPO4_M.B2.*dfdz_M + r.rPO4_M.C2.*dpdz_M+r.rPO4_M.D2.*dqdz_M + dgdz_M);
                 end

@@ -5,7 +5,7 @@
 % Calculate a single sediment column with default parameters
 % >> swi=benthic_test.default_swi()
 % >> res=benthic_test.test_benthic(1,swi);
-% >> benthic_test.plot_column(res)
+% >> benthic_test.plot_column(res, false)
 %
 % Calculate and plot 1000 sed columns vs O2 gradient 
 % >> res=benthic_test.test_benthic(1000,swi);

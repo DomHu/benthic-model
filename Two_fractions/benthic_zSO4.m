@@ -46,7 +46,7 @@ classdef benthic_zSO4
                 r.zso4 = (bctype==1).*zso4 + (bctype==2).*bsd.zinf;
             end
             
-            [flxzso4, conczso4, flxswiSO4, r] = obj.calcbc(r.zso4, bsd, swi, r, bctype);
+            [flxzso4, conczso4, flxswiSO4, r] = obj.calcbc(r.zso4, bsd, swi, r, bctype);    % Dom18.05.2016: not necessary for bctype 2 (done in line 32 already)
             r.flxzso4 = flxzso4;
             r.conczso4 = conczso4;
             r.flxswiSO4 = flxswiSO4;
