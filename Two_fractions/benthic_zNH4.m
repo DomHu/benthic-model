@@ -23,7 +23,7 @@ classdef benthic_zNH4
                        
             % Preparation: for each layer, sort out solution-matching across bioturbation boundary if necessary
             % layer 1: 0 < z < zox, NH4 prod (remaining after oxidation)
-            %      ls =      prepfg_l12( bsd, swi, r, reac1,     reac2,     ktemp, zU, zL, D1,        D2)
+            %      ls =      prepfg_l12( bsd, swi, r,        reac1,                                reac2,               ktemp, zU, zL,       D1,        D2)
             rNH4.ls1 = r.zTOC.prepfg_l12(bsd, swi, r, (1-bsd.gamma)*bsd.NC1/(1+obj.KNH4),(1-bsd.gamma)*bsd.NC2/(1+obj.KNH4),0, 0, r.zox, obj.DNH41, obj.DNH42);
                             % Dominik 23.02.2016: NC1 and NC2 missing in react1/2 ???
             % layer 2: zox < z < zno3, passive diffn TODO NH4 from denitrification?
@@ -88,7 +88,8 @@ classdef benthic_zNH4
           
             
             % flux at swi - DO include por so this is per cm^2 water column area
-            r.flxswiNH4 = bsd.por.*obj.DNH41.*(rNH4.A3.*dedz1_0+rNH4.B3.*dfdz1_0 + dgdz1_0);   % NB: use A3, B3 as these are _xformed_ layer 1 basis functions
+            r.flxswiNH4 = bsd.por.*obj.DNH41.*(rNH4.A3.*dedz1_0+rNH4.B3.*dfdz1_0 + dgdz1_0);
+            %DH 25.05. should be: r.flxswiNH4 = bsd.por.*(obj.DNH41.*(rNH4.A3.*dedz1_0+rNH4.B3.*dfdz1_0 + dgdz1_0) - bsd.w.*swi.NH40);   % NB: use A3, B3 as these are _xformed_ layer 1 basis functions
             
             % save coeffs for layers 2 and 1
             rNH4.A2 = zno3.a.*rNH4.A3 + zno3.b.*rNH4.B3 + zno3.e;
