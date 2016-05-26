@@ -70,7 +70,7 @@ classdef benthic_zNH4
                     % Dominik 24.02.2016 was r.zxf.*bsd.gamma.*FNH4./D
             % Solution at swi, top of layer 1
             [ e1_0, dedz1_0, f1_0, dfdz1_0, g1_0, dgdz1_0] ...
-                = r.zTOC.calcfg_l12(0, bsd, swi, r, 0 , 0 , 0, rNH4.ls1);
+                = r.zTOC.calcfg_l12(0, bsd, swi, r, (1-bsd.gamma)*bsd.NC1/(1+obj.KNH4) , (1-bsd.gamma)*bsd.NC2/(1+obj.KNH4) , 0, rNH4.ls1);
             % transform to use coeffs from l3
             [ e1_0, f1_0, g1_0, dedz1_0,  dfdz1_0, dgdz1_0]= benthic_utils.xformsoln(e1_0, f1_0, g1_0, dedz1_0, dfdz1_0, dgdz1_0, ...
                                                                zox.a , zox.b , zox.c , zox.d , zox.e ,zox.f);

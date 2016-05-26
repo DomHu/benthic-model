@@ -17,7 +17,7 @@ classdef benthic_test
             swi.O20=300e-9;   %was    300.0e-9                            %O2  concentration at SWI (mol/cm3)
             swi.NO30=20.0e-9;             % was 20.0e-9                                  %NO3 concentration at SWI (mol/cm3)
             swi.Nitrogen=true;
-            swi.NH40=5.0e-9;                                                %NH4 concentration at SWI (mol/cm3)
+            swi.NH40=0.0e-9;                                                %NH4 concentration at SWI (mol/cm3)
             swi.SO40=280.0e-9;                                            %SO4 concentration at SWI (mol/cm3)
             %swi.SO40 = 200e-9;
             swi.H2S0=0.0e-9;         %was 0.0e-9                            %H2S concentration at SWI (mol/cm3)
@@ -232,7 +232,7 @@ classdef benthic_test
             bsd = res.bsd;
             zgrid = 0:0.1:bsd.zinf;
             
-        if(true)                
+        if(false)                
             figure
             % PO4
             subplot(1,2,1)
@@ -274,7 +274,7 @@ classdef benthic_test
         end
            
             
-	if(false)      
+	if(true)      
        % CONCENTRATIONS WITHOUT PO4
 	set(0,'defaultLineLineWidth', 2)
 	set(0,'DefaultAxesFontSize',12)
