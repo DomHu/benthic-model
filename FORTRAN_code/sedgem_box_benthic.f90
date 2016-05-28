@@ -114,7 +114,7 @@ CONTAINS
     !------------------------------------------------------------------------------------
 
 !    SUBROUTINE sub_huelseetal2016_main(dum_POC1_wtpct_swi, dum_POC2_wtpct_swi, dum_sfcsumocn, dum_sed_pres_fracC, dum_new_swifluxes)
-    SUBROUTINE sub_huelseetal2016_main(dum_dtyr, dum_i, dum_j, dum_D, loc_new_sed, dum_sfcsumocn, dum_sed_pres_fracC, dum_new_swifluxes)
+    SUBROUTINE sub_huelseetal2016_main(dum_dtyr, dum_D, loc_new_sed, dum_sfcsumocn, dum_sed_pres_fracC, dum_new_swifluxes)
         !   __________________________________________________________
         !
         !   Main subroutine: 
@@ -126,8 +126,7 @@ CONTAINS
         
         IMPLICIT NONE
         ! dummy arguments
-        REAL,INTENT(in)::dum_dtyr                                  ! time-step     
-        integer,INTENT(in)::dum_i, dum_j                            ! grid point (i,j)           
+        REAL,INTENT(in)::dum_dtyr                                  ! time-step             
         REAL,INTENT(in)::dum_D                                     ! depth        
         REAL,DIMENSION(n_sed),intent(in)::loc_new_sed                         ! new (sedimenting) top layer material
         real,DIMENSION(n_ocn),intent(in)::dum_sfcsumocn                     ! ocean composition interface array
@@ -136,17 +135,17 @@ CONTAINS
         real,DIMENSION(n_ocn),intent(inout)::dum_new_swifluxes              ! SWI return fluxes of solutes, calculated with sediment-model [pos. values flux from water-column to sediment]
 
         ! local variables        
-        real::loc_wtpct
+        real::loc_wtpct, loc_wtpct_Middel
         real::loc_POC1_wtpct_swi, loc_POC2_wtpct_swi                ! POC concentration at SWI [wt%]
         real::loc_O2_swiflux                                        ! SWI return fluxes of O2 [mol/cm^3]
         real::loc_SO4_swiflux                                       ! SWI return fluxes of SO4 [mol/cm^3]
         real::loc_NO3_swiflux                                       ! SWI return fluxes of NO3 [mol/cm^3]
         real::loc_H2S_swiflux                                       ! SWI return fluxes of H2S [mol/cm^3]
         real::loc_NH4_swiflux                                       ! SWI return fluxes of H2S [mol/cm^3]
-        
+        real::loc_fPOC
 !        real::dum_POC1_wtpct_swi, dum_POC2_wtpct_swi             ! POC concentrations at SWI [wt%]
-        logical, parameter :: loc_print_results  = .FALSE.
-        
+        logical :: loc_print_results  = .FALSE.
+        REAL::loc_new_sed_vol                                      ! new sediment volume (as SOLID material)
 
 
 !        print*,'---------- IN OMEN MAIN -----------  '
@@ -162,24 +161,33 @@ CONTAINS
         dum_swiconc_NH4 = dum_sfcsumocn(io_NH4)*1e-3     
         dum_swiconc_H2S = dum_sfcsumocn(io_H2S)*1e-3       
 !        dum_swiconc_O2 = 300.0e-9
-!        dum_swiconc_NO3 = 0e-9
-!        dum_swiconc_SO4 = 100e-9
+!        dum_swiconc_NO3 = 20e-9
+!        dum_swiconc_SO4 = 200e-9
 !        dum_swiconc_NH4 = 0.0
-!        dum_swiconc_H2S = 0.0e-9 
-        
+!        dum_swiconc_H2S = 4.0e-9 
         ! DH TODO: some of initialize should be called just once, not for every grid point
         call sub_huelseetal2016_initialize(dum_D, dum_sfcsumocn(io_T))
-              
+        ! below test with specific temperature to compare with matlab
+!!!!        call sub_huelseetal2016_initialize(600.0, 293.15)
 !        print*,'loc_new_sed(is_POC_frac2) ', loc_new_sed(is_POC_frac2)
 !        print*,'is_POC ',loc_new_sed(is_POC)/dum_dtyr,loc_new_sed(is_POC),dum_dtyr
 
         ! calculate wt% of mol from POC flux (both fractions)
-        loc_wtpct = fun_sed_calcCorgwt(loc_new_sed(is_POC)/dum_dtyr, w, por, rho_sed)
-!        print*,'fun_sed_calcCorgwt = ',loc_wtpct
-       
+        ! NOTE: the units of the Corg flux must be changed from (cm3 cm-2) to (mol cm-2 yr-1) 
+        loc_fPOC = conv_POC_cm3_mol*loc_new_sed(is_POC)/dum_dtyr
+        ! calculate sediment accumulation rate in cm yr-1
+        loc_new_sed_vol = fun_calc_sed_vol(loc_new_sed(:))
+        loc_wtpct = fun_sed_calcCorgwt(loc_fPOC, loc_new_sed_vol, por, rho_sed)        
+        ! DH 28.05.2016 with Middelburgh: 
+        loc_wtpct_Middel = fun_sed_calcCorgwt(loc_fPOC, w, por, rho_sed)        
         
         loc_POC1_wtpct_swi = (1-loc_new_sed(is_POC_frac2))*loc_wtpct
         loc_POC2_wtpct_swi = loc_new_sed(is_POC_frac2)*loc_wtpct         
+!        print*,'loc_new_sed(is_POC) = ', loc_new_sed(is_POC)
+!        print*,'loc_fPOC = ', loc_fPOC
+!        print*,'loc_wtpct = ', loc_wtpct       
+!        print*,'loc_POC1_wtpct_swi = ', loc_POC1_wtpct_swi       
+!        print*,'loc_POC2_wtpct_swi = ', loc_POC2_wtpct_swi       
         
         ! Check for no POC deposited -> nothing preserved
         if(loc_POC1_wtpct_swi==0.0 .AND. loc_POC2_wtpct_swi ==0)then
@@ -188,7 +196,7 @@ CONTAINS
         else
             call sub_huelseetal2016_zTOC(loc_POC1_wtpct_swi, loc_POC2_wtpct_swi, dum_sed_pres_fracC)
         ! below test with specific wt% to compare with matlab
-        !    call sub_huelseetal2016_zTOC(0.006, 0.002, dum_sed_pres_fracC)    
+!!!!            call sub_huelseetal2016_zTOC(0.006, 0.002, dum_sed_pres_fracC)    
         !        print*,'loc_sed_pres_fracC FIX', loc_sed_pres_fracC
         end if
         
@@ -229,18 +237,34 @@ CONTAINS
         else
             ! If not selected nothing needs to be done
         end if
-
+loc_print_results = .true.
         if(loc_print_results) then
-            print*, 'grid-point ',dum_i, dum_j, dum_D      
-            print*,'POC concentration frac 1 2 at SWI [wt% in mol] ', loc_POC1_wtpct_swi, loc_POC2_wtpct_swi
-            print*,'zox = ', zox
-            print*,'FINAL O2 SWI flux = ', dum_new_swifluxes(io_O2)
-            print*,'zno3 = ', zno3
-            print*,'FINAL NO3 SWI flux = ', dum_new_swifluxes(io_NO3)                
-            print*,'zso4 = ', zso4
-            print*,'FINAL SO4 SWI flux = ', dum_new_swifluxes(io_SO4)
-            print*,'FINAL NH4 SWI flux = ', dum_new_swifluxes(io_NH4)
-            print*,'FINAL H2S SWI flux = ', dum_new_swifluxes(io_H2S)           
+            loc_new_sed_vol = fun_calc_sed_vol(loc_new_sed(:))
+            print*,'dum_D = ', dum_D 
+            print*,'GENIE loc_new_sed_vol (or deposition rate) = ', loc_new_sed_vol 
+            print*,'loc_new_sed(is_POC)= ', loc_new_sed(is_POC)
+            print*,'loc_new_sed(is_det)= ', loc_new_sed(is_det)
+            print*,'loc_new_sed(is_CaCO3)= ', loc_new_sed(is_CaCO3)
+            print*,'loc_new_sed(is_opal)= ', loc_new_sed(is_opal)
+!            print*,'loc_wtpct(%) = 100*loc_new_sed(is_POC)/(loc_new_sed(is_POC)+loc_new_sed(is_det)+loc_new_sed(is_CaCO3)) = ', 100*loc_new_sed(is_POC)/(loc_new_sed(is_POC)+loc_new_sed(is_det)+loc_new_sed(is_CaCO3)) 
+            print*,'loc_wtpct(%) = 100*loc_new_sed(is_POC)/ loc_new_sed_vol = ', 100*loc_new_sed(is_POC)/ loc_new_sed_vol
+            print*,'loc_wtpct(%) = 100*loc_new_sed(is_det)/ loc_new_sed_vol = ', 100*loc_new_sed(is_det)/ loc_new_sed_vol
+            print*,'loc_wtpct(%) = 100*loc_new_sed(is_CaCO3)/ loc_new_sed_vol = ', 100*loc_new_sed(is_CaCO3)/ loc_new_sed_vol
+            print*,'loc_wtpct = ', loc_wtpct 
+            print*,'Middelburg: sedimentation raste w = ', w 
+            print*,'loc_wtpct_Middel = ', loc_wtpct_Middel 
+!            print*,'dum_swiconc_O2 = ', dum_swiconc_O2
+!            print*,'dum_swiconc_NO3 = ', dum_swiconc_NO3       
+!            print*, 'grid-point depth',dum_D      
+!            print*,'POC concentration frac 1 2 at SWI [wt% in mol] ', loc_POC1_wtpct_swi, loc_POC2_wtpct_swi
+!            print*,'zox = ', zox
+!            print*,'FINAL O2 SWI flux = ', dum_new_swifluxes(io_O2)
+!            print*,'zno3 = ', zno3
+!            print*,'FINAL NO3 SWI flux = ', dum_new_swifluxes(io_NO3)               
+!            print*,'zso4 = ', zso4
+!            print*,'FINAL SO4 SWI flux = ', dum_new_swifluxes(io_SO4)
+!            print*,'FINAL NH4 SWI flux = ', dum_new_swifluxes(io_NH4)
+!            print*,'FINAL H2S SWI flux = ', dum_new_swifluxes(io_H2S)           
             print*,'Fraction POC-preserved/POC-deposited =' , dum_sed_pres_fracC
             print*,' '
         end if
@@ -343,7 +367,6 @@ CONTAINS
 ! *********************************************************************************
 
         loc_TempC = dum_TempK - 273.15
-!        loc_TempC = 20.0
 !        print*, 'loc_TempC ', loc_TempC  
 
         w=10.0**(-0.87478367-0.00043512*dum_D)*3.3              ! sedimentation rate, cm/yr / burial velocity / advection (Middelburg et al., Deep Sea Res. 1, 1997)
@@ -401,12 +424,12 @@ CONTAINS
 !        print*,' ------------------ START zTOC ---------------------'
 !        print*,' sedimentation rate/burial velocity w = ', w
 
-        ! initialize BW conentration POC1,2 in mol/cm3
-        dum_POC1_conc_swi=0.01*dum_POC1_wtpct_swi*rho_sed              ! %TOC concentration frac1 at SWI (wt%) -> (mol/cm3 bulk phase)
-        dum_POC2_conc_swi=0.01*dum_POC2_wtpct_swi*rho_sed              ! %TOC concentration frac2 at SWI (wt%) -> (mol/cm3 bulk phase)
+        ! initialize BW conentration POC1,2 in mol/cm3   DH WHY here not divided by 12?????
+!        dum_POC1_conc_swi=0.01*dum_POC1_wtpct_swi*rho_sed              ! %TOC concentration frac1 at SWI (wt%) -> (mol/cm3 bulk phase)
+!        dum_POC2_conc_swi=0.01*dum_POC2_wtpct_swi*rho_sed              ! %TOC concentration frac2 at SWI (wt%) -> (mol/cm3 bulk phase)
         ! Dom: Use this when comparing with MATLAB, here we use wt% of g -> *1/12
-!        dum_POC1_conc_swi=0.01*dum_POC1_wtpct_swi/12.0*rho_sed              ! %TOC concentration frac1 at SWI (wt%) -> (mol/cm3 bulk phase)
-!        dum_POC2_conc_swi=0.01*dum_POC2_wtpct_swi/12.0*rho_sed              ! %TOC concentration frac2 at SWI (wt%) -> (mol/cm3 bulk phase)
+        dum_POC1_conc_swi=0.01*dum_POC1_wtpct_swi/12.0*rho_sed              ! %TOC concentration frac1 at SWI (wt%) -> (mol/cm3 bulk phase)
+        dum_POC2_conc_swi=0.01*dum_POC2_wtpct_swi/12.0*rho_sed              ! %TOC concentration frac2 at SWI (wt%) -> (mol/cm3 bulk phase)
 !        print*, 'dum_POC1_conc_swi', char(9), dum_POC1_conc_swi
 !        print*, 'dum_POC2_conc_swi', char(9), dum_POC2_conc_swi
 
