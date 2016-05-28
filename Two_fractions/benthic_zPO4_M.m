@@ -18,7 +18,7 @@ classdef benthic_zPO4_M
         PO4s=1.0e-9;        %Equilibrium concentration for P sorption (mol/cm3)       was 1.5e-9; ; Slomp ea 1996
         PO4a= 3.7e-9;        %Equilibrium concentration for authigenic P formation (mol/cm3) was 0.7e-9
         %Minf = 0;
-        Minf=1.99e-9;       % asymptotic concentration for Fe-bound P (mol/cm3)      TODO/CHECK: good value? is from Slomp et al. 1996 Dom was 1.99e-6
+        Minf=1.0e-10;       % asymptotic concentration for Fe-bound P (mol/cm3)      TODO/CHECK: good value? is from Slomp et al. 1996 Dom was 1.99e-6
 
    % OLD FROM NICOLAS     
 %        FePFlux=0.01/1000;                                          %mol/m2/hr     Flux to the surface
@@ -50,6 +50,13 @@ classdef benthic_zPO4_M
         end
         
         function r = calc(obj, bsd, swi, r)
+            
+            if(r.zox == bsd.zinf)
+                obj.Minf=1.99e-6;       % asymptotic concentration for Fe-bound P (mol/cm3)      TODO/CHECK: good value? is from Slomp et al. 1996 Dom was 1.99e-6
+            else
+                obj.Minf=1.0e-10;       % asymptotic concentration in anoxic conditions 
+            end
+
 
             
             % Preparation: for each layer, sort out solution-matching across bioturbation boundary if necessary
@@ -238,11 +245,12 @@ classdef benthic_zPO4_M
             
 
             % DH 2405: need to check if anoxic bc of adsorption coeff? flux PO4 at swi - DO include por so this is per cm^2 water column area
-            r.flxswi_P = bsd.por.*obj.DPO41/(1+obj.KPO41).*(rPO4_M.A2.*dEFPQdz_P(1)+rPO4_M.B2.*dEFPQdz_P(2) + rPO4_M.C2.*dEFPQdz_P(3)+rPO4_M.D2.*dEFPQdz_P(4) + dgdz1_0_P);   % NB: use A2, B2, C2, D2 as these are _xformed_ layer 1 basis functions
+            % DH: added advective flux 28.05.2016
+            r.flxswi_P = bsd.por.*(obj.DPO41/(1+obj.KPO41).*(rPO4_M.A2.*dEFPQdz_P(1)+rPO4_M.B2.*dEFPQdz_P(2) + rPO4_M.C2.*dEFPQdz_P(3)+rPO4_M.D2.*dEFPQdz_P(4) + dgdz1_0_P) - bsd.w.*swi.PO40);   % NB: use A2, B2, C2, D2 as these are _xformed_ layer 1 basis functions
             
             % flux M at swi - DO include por so this is per cm^2 water column area
             r.flxswi_M = bsd.por.*bsd.Dbio*(rPO4_M.A2.*dEFPQdz_M(1)+rPO4_M.B2.*dEFPQdz_M(2) + rPO4_M.C2.*dEFPQdz_M(3)+rPO4_M.D2.*dEFPQdz_M(4) + dgdz1_0_M);   % NB: use A2, B2, C2, D2 as these are _xformed_ layer 1 basis functions
-            % DH 2405 was r.flxswi_M = bsd.por.*obj.DPO41.*(rPO4_M.A2.*dEFPQdz_M(1)+rPO4_M.B2.*dEFPQdz_M(2) + rPO4_M.C2.*dEFPQdz_M(3)+rPO4_M.D2.*dEFPQdz_M(4) + dgdz1_0_M);   % NB: use A2, B2, C2, D2 as these are _xformed_ layer 1 basis functions
+%DH2405 was r.flxswi_M = bsd.por.*obj.DPO41.*(rPO4_M.A2.*dEFPQdz_M(1)+rPO4_M.B2.*dEFPQdz_M(2) + rPO4_M.C2.*dEFPQdz_M(3)+rPO4_M.D2.*dEFPQdz_M(4) + dgdz1_0_M);   % NB: use A2, B2, C2, D2 as these are _xformed_ layer 1 basis functions
 
             
             % save coeffs for layer 1          
@@ -275,6 +283,13 @@ classdef benthic_zPO4_M
                                           
         function [PO4, flxPO4, M, flxM, e_M, f_M, p_M, q_M, g_M, dedz_M, dfdz_M, dpdz_M, dqdz_M, dgdz_M] = calcPO4_M(obj, z, bsd, swi, r)
             % Calculate PO4 concentration and flux at depth z from solution
+            
+                if(r.zox == bsd.zinf)
+                    obj.Minf=1.99e-6;       % asymptotic concentration for Fe-bound P (mol/cm3)      TODO/CHECK: good value? is from Slomp et al. 1996 Dom was 1.99e-6
+                else
+                    obj.Minf=1.99e-10;       % asymptotic concentration in anoxic conditions 
+                end
+
             
                 rPO4_M = r.rPO4_M;
                 if z <= bsd.zbio

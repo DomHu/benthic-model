@@ -117,8 +117,9 @@ classdef benthic_zNO3
             flxzno3 = D.*(rNO3.A2.*dedz2_zno3+rNO3.B2.*dfdz2_zno3 + dgdz2_zno3);        % includes 1/por ie flux per (cm^2 pore area)
             conczno3 = rNO3.A2.*e2_zno3+rNO3.B2.*f2_zno3 + g2_zno3;
             % flux at swi - DO include por so this is per cm^2 water column area
-            flxswi = bsd.por.*obj.DN1.*(rNO3.A2.*dedz1_0+rNO3.B2.*dfdz1_0 + dgdz1_0);   % NB: use A2, B2 as these are _xformed_ layer 1 basis functions
-            
+            % DH: added advective flux 28.05.2016
+            flxswi = bsd.por.*(obj.DN1.*(rNO3.A2.*dedz1_0+rNO3.B2.*dfdz1_0 + dgdz1_0) - bsd.w.*swi.NO30);   % NB: use A2, B2 as these are _xformed_ layer 1 basis functions
+
             % save coeffs for layer 1             
             rNO3.A1 = zox.a.*rNO3.A2 + zox.b.*rNO3.B2 + zox.e;
             rNO3.B1 = zox.c.*rNO3.A2 + zox.d.*rNO3.B2 + zox.f;

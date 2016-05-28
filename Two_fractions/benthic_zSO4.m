@@ -137,7 +137,8 @@ classdef benthic_zSO4
             flxzso4 = D.*(rSO4.A3.*dedz3_zso4+rSO4.B3.*dfdz3_zso4 + dgdz3_zso4);        % includes 1/por ie flux per (cm^2 pore area)
             
             % flux at swi - DO include por so this is per cm^2 water column area
-            flxswi = bsd.por.*obj.DSO41.*(rSO4.A3.*dedz1_0+rSO4.B3.*dfdz1_0 + dgdz1_0);   % NB: use A3, B3 as these are _xformed_ layer 1 basis functions
+            % DH: added advective flux 28.05.2016
+            flxswi = bsd.por.*(obj.DSO41.*(rSO4.A3.*dedz1_0+rSO4.B3.*dfdz1_0 + dgdz1_0) - bsd.w.*swi.SO40);   % NB: use A3, B3 as these are _xformed_ layer 1 basis functions
             
             % save coeffs for layers 2 and 1
             rSO4.A2 = zno3.a.*rSO4.A3 + zno3.b.*rSO4.B3 + zno3.e;

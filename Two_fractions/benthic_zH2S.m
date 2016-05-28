@@ -116,7 +116,8 @@ classdef benthic_zH2S
                        
             
             % flux at swi - DO include por so this is per cm^2 water column area
-            r.flxswiH2S = bsd.por.*obj.DH2S1.*(rH2S.A4.*dedz1_0+rH2S.B4.*dfdz1_0 + dgdz1_0);   % NB: use A4, B4 as these are _xformed_ layer 1 basis functions
+            % DH: added advective flux 28.05.2016
+            r.flxswiH2S = bsd.por.*(obj.DH2S1.*(rH2S.A4.*dedz1_0+rH2S.B4.*dfdz1_0 + dgdz1_0) - bsd.w.*swi.H2S0);   % NB: use A4, B4 as these are _xformed_ layer 1 basis functions
             
             % save coeffs for layers 3, 2 and 1
             rH2S.A3 = zso4.a.*rH2S.A4 + zso4.b.*rH2S.B4 + zso4.e;

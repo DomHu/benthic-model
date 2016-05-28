@@ -10,15 +10,15 @@ classdef benthic_test
             %bottom water concentrations
             swi.T=20.0;                         %temperature (degree C)
             % see caption for Fig 1.2 - two equal TOC fractions 0.02 0.2 2
-            swi.C01=0.06*1e-2/12*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm3 bulk phase)
-            swi.C02=0.06*1e-2/12*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm3 bulk phase)
+            swi.C01=0.6*1e-2/12*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm3 bulk phase)
+            swi.C02=0.6*1e-2/12*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm3 bulk phase)
             %swi.C01=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm3 bulk phase)
             %swi.C02=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm3 bulk phase)
             swi.O20=300e-9;   %was    300.0e-9                            %O2  concentration at SWI (mol/cm3)
             swi.NO30=20.0e-9;             % was 20.0e-9                                  %NO3 concentration at SWI (mol/cm3)
             swi.Nitrogen=true;
             swi.NH40=0.0e-9;                                                %NH4 concentration at SWI (mol/cm3)
-            swi.SO40=280.0e-9;                                            %SO4 concentration at SWI (mol/cm3)
+            swi.SO40=28000.0e-9;                                            %SO4 concentration at SWI (mol/cm3)
             %swi.SO40 = 200e-9;
             swi.H2S0=0.0e-9;         %was 0.0e-9                            %H2S concentration at SWI (mol/cm3)
             swi.PO40=1e-9;    % Sandra played with 3e-9                                              %PO4 concentration at SWI (mol/cm3)
@@ -232,7 +232,7 @@ classdef benthic_test
             bsd = res.bsd;
             zgrid = 0:0.1:bsd.zinf;
             
-        if(false)                
+        if(true)                
             figure
             % PO4
             subplot(1,2,1)
