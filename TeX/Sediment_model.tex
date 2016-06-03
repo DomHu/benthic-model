@@ -121,10 +121,18 @@ Here we describe the first version of the OrganicMatter ENabled SEDiment model (
 
 
 \introduction  %% \introduction[modified heading if necessary]
-Role of marine sediments for climate and global biogeochemical cycles\\
-Represent the biggest, climate-relevant carbon pool in the surficial carbon cycle. Diagenetic processes represent an important link between carbon stored in more climate-relevant reservoirs like the oceans and the atmosphere, 
-and carbon sequestered for much longer, geological timescales in sedimentary rock \citep{burdige2006geochemistry}. 
-Highlight especially importance of OM burial \citep[see e.g.][]{burdige_preservation_2007, kriest_numerical_2011, arndt_quantifying_2013}.\\[2ex]
+%Organic matter (OM) deposition on the sea-floor fuels early diagenetic processes in marine sediments and the resulting fluxes of chemical elements across the sediment-water interface are of considerable importance 
+Degradation of organic matter (OM) in marine sediments fuels benthic biogeochemical processes and the resulting fluxes across the sediment-water interface are of considerable importance 
+for many global biogeochemical cycles \citep{arndt_quantifying_2013}. Burial of OM represents an important connection between carbon stored in more climate-relevant reservoirs like the oceans, atmosphere, 
+and the marine sediments and carbon that is sequestered for much longer, geological timescales in sedimentary rock or coal \citep{mackenzie_sediments_2005, burdige_preservation_2007}. 
+Biological primary production of organic matter (\chem{CH_2O} in equation \ref{eq:photosynthesis}) and the reverse process of degradation can be written in a greatly simplified reaction as:
+\begin{reaction}
+\chem{CO_2}+\chem{H_2O} \rightleftharpoons \chem{CH_2O} + \chem{O_2}\label{eq:photosynthesis}
+\end{reaction}
+On long timescales production of OM is generally greater than degradation which results in some organic matter being buried in marine sediments and oxygen accumulating in the atmosphere. 
+Thus burial of OM leads to net oxygen input to, and \chem{CO_2} removal from, the atmosphere \citep{berner_phanerozoic_2004}. 
+Therefore, globally quantifying the degradation of organic matter in marine sediments and related biogeochemical dynamics is important for understanding climate and the cycling of many elements on various timescales. \\[2ex]
+
 Diagenetic Models\\
 See e.g. \citep{soetaert_coupling_2000, mackenzie_past_2004}.\\[2ex]
 How are sediment resolved in Earth System models\\
@@ -176,6 +184,11 @@ a sulfate reduction zone situated between $z_{\chem{NO_3}}$ and a dynamically ca
 Each zone is characterised by a set of diagenetic equations that encapsulate the most pertinent reaction and transport processes in the respective zone (see section \ref{subsec:Transport} and \ref{subsec:ReactionNetwork} 
 for more details). 
 
+OMEN calculates and feeds back to the Earth System model the fraction of POC preserved in the sediments and the sediment-water interface fluxes of the dissolved species $C_i$:
+\begin{equation}
+\mathrm{Flux\_SWI(C_i)} = \phi \cdot \left(D_i \frac{\partial C_i}{\partial z} + w C_i(0) \right)
+\end{equation}
+where $w$ is the deposition rate, $D_i$ is the diffusion coefficient and $C_i(0)$ the sediment-water concentration of species $i$. 
 
 \subsection{Transport}\label{subsec:Transport}
 The model accounts for both advection and diffusion of dissolved and solid species, assuming that sediment compaction is negligible ($\frac{\partial \phi}{\partial z}$=0). 
@@ -186,7 +199,7 @@ $D_{\mathrm{mol},i}$ \citep[ hence, $D_{i,0}=D_{\mathrm{mol},i}\cdot f_{ir}$,][]
 \begin{equation}
 \frac{\partial F}{\partial z}=-\frac{\partial}{\partial z}\left( -\xi D_i \frac{\partial C_i}{\partial z} +\xi w C_i\right) \label{Eq_flux_divergence}
 \end{equation}
-where $D_i$ is the diffusion coefficient of species $i$ ($D_i=D_{i,0}+D_{\mathrm{bio}}=D_{\mathrm{mol},i}\cdot f_{ir}+D_{\mathrm{bio}}$ for dissolved species and $D_i=D_{\mathrm{bio}}$ for solid species) and $w$ is the burial rate. 
+where $D_i$ is the diffusion coefficient of species $i$ ($D_i=D_{i,0}+D_{\mathrm{bio}}=D_{\mathrm{mol},i}\cdot f_{ir}+D_{\mathrm{bio}}$ for dissolved species and $D_i=D_{\mathrm{bio}}$ for solid species) and $w$ is the deposition rate. 
 The bioturbation coefficient $D_{\mathrm{bio}}$ is set to zero below $z_{\mathrm{bio}}$. In addition, infaunnal activity ceases ($D_{\mathrm{bio}}=0$) once bottom waters become anoxic (\chem{O_2} = 0.0 mol cm$^{-3}$ ). 
 \textcolor{red}{add if-query in code!!}
 
@@ -314,8 +327,6 @@ penetration depth $z_{\chem{NO_3}}$, ammonium is still produced through OM miner
 \frac{\partial \chem{NH_4}^{II}}{\partial t} &= 0 = \frac{D_{\chem{NH_4}}}{1+K_\chem{NH_4}} \frac{\partial^2\chem{NH_4}^{II} }{\partial z^2} - w\frac{\partial \chem{NH_4}^{II} }{\partial z} \label{eq:NH4_ODE1_L2}
  \intertext{3. Layer ($z_{\chem{NO_3}} < z \leq z_\infty$)} 
 \frac{\partial \chem{NH_4}^{III}}{\partial t} &= 0 = \frac{D_{\chem{NH_4}}}{1+K_\chem{NH_4}} \frac{\partial^2\chem{NH_4}^{III} }{\partial z^2} - w\frac{\partial \chem{NH_4}^{III} }{\partial z} + \frac{1}{1+K_\chem{NH_4}}\cdot\frac{1-\phi}{\phi} \cdot \sum_i \chem{NC_i} \cdot k_i \cdot C_{i}(z)\label{eq:NH4_ODE1_L2}
-%>>>
-\marginnote{\textcolor{red}{\textbf{DH}: added \chem{NH_4} adsorption here and in code ($K_\chem{NH_4}=1.3$)}}[-4cm]%<<<
 \end{align}
 % where
 % \begin{align}
@@ -348,7 +359,7 @@ $z=z_{\chem{NO_3}}$& \chem{NO_3} consumption & 6) & \textbf{IF} $ (\chem{NO_3}(z
 & ($z_{\chem{NO_3}} < z_\infty$) & &\quad $NO_3(z_{\chem{NO_3}})=0$ \\
 % was from Sandra &with:&$F_{red,z_{\mathrm{ox}}}=\beta \cdot \int_{z_{\mathrm{ox}}}^{\inf}  \sum_i k_i\cdot C_i  dz  + 2\cdot \gamma \cdot \int_{z_{\mathrm{ox}}}^{\inf}  \sum_i k_i\cdot C_i  -  $ \\
 \hline
-$z=0$& known concentration& 1)& $\chem{NH_4}(0)=NH_{40}$  \\
+$z=0$& known concentration& 1)& $\chem{NH_4}(0)= \chem{NH_{40}}$  \\
 $z=z_{\mathrm{bio}}$&continuity& 2)& $\chem{NH_4}(z_{\mathrm{bio}}^-)$=$\chem{NH_4}(z_{\mathrm{bio}}^+)$\\
                && 3)& $-\frac{D_{\chem{NH_4},0}+D_{\mathrm{bio}}}{1+K_\chem{NH_4}}\cdot \frac{\partial \chem{NH_4}}{\partial z}|_{z_{\mathrm{bio}}^-}=-\frac{D_{\chem{NH_4},0}}{1+K_\chem{NH_4}} \cdot \frac{\partial \chem{NH_4}}{\partial z}|_{z_{\mathrm{bio}}^+}$\\
 $z=z_{\mathrm{ox}}$& continuity& 4)& $\chem{NH_4}(z_{\mathrm{ox}}^-)$=$\chem{NH_4}(z_{\mathrm{ox}}^+)$\\
@@ -360,9 +371,6 @@ $z=z_{\infty}$& zero \chem{NH_4} flux & 8)& $\frac{\partial \chem{NH_4}}{\partia
 \hline    
 \end{tabular}
 \label{Tab:BC_NO3+NH4}
-%>>>
-\marginnote{\textcolor{red}{\textbf{DH}: added $K_\chem{NH_4}$ here. (not in Gypens)}}[-5cm]
-\marginnote{\textcolor{red}{\textbf{DH}: BC 5) for \chem{NH_4} should this not be $+(1-\gamma_{\chem{NH_4}})\cdot F_{\chem{NH_4}}$??}}[-2cm]%<<<
 \end{table}
 \subsubsection{Sulfate and Sulfide}
 When nitrate is depleted, sulfate reduction is the pathway to mineralize organic matter, thus consuming sulfate (SO$_4$) and producing hydrogen sulfide (H$_2$S) until the sulfate penetration depth ($z_{\chem{\chem{SO_4}}}$). 
@@ -433,11 +441,9 @@ $z=z_{\infty}$& zero \chem{H_2S} flux & 10)& $\frac{\partial \chem{H_2S}}{\parti
 \end{tabular}
 \label{Tab:BC_SO4+H2S}
 %>>>
-\marginnote{\textcolor{red}{\textbf{DH}: BC 5) don't delete $\int_{z_{\chem{\chem{SO_4}}}}^{\infty}$ here... profile would decreases then above zox}}[-13cm]%<<<
+\marginnote{\textcolor{red}{\textbf{DH}: @Sandra: BC 5) Include $\int_{z_{\chem{\chem{SO_4}}}}^{\infty}$ here?}}[-13cm]%<<<
 %>>>
-\marginnote{\textcolor{red}{\textbf{DH}: think correct, because at 8) \chem{CH_4} from $\int_{z_{\chem{\chem{SO_4}}}}^{\infty}$ is oxidised to \chem{H_2S}; at 5) this \chem{H_2S} to \chem{SO_4}}}[-10.5cm]%<<<
-%>>>
-\marginnote{\textcolor{red}{\textbf{DH}: BC 5) for \chem{H_2S} should this not be $+(1-\gamma_{\chem{H_2S}})\cdot F_{\chem{H_2S}}$??}}[-3.5cm]%<<<
+\marginnote{\textcolor{red}{\textbf{DH}: @Sandra: think yes, because at 8) \chem{CH_4} from $\int_{z_{\chem{\chem{SO_4}}}}^{\infty}$ is oxidised to \chem{H_2S}; at 5) this \chem{H_2S} to \chem{SO_4}}}[-10.5cm]%<<<
 \end{table}
 % % % % Sulfate:\\
 % % % % BC (5): Diffusive flux at $z_{\mathrm{ox}}$ is equal, considering the flux of reduced substances (H$_2$S) from below 
@@ -473,18 +479,16 @@ This phosphorus bound in authigenic minerals represents a permanent sink for rea
 Therefore the diagenetic equations for phosphorus are written:
 \begin{align}
 \intertext{1. Layer ($z \leq z_{\mathrm{ox}}$)}
- \frac{\partial \chem{PO_4}^I}{\partial t} &= \frac{D_{\chem{PO_4}}}{1+K_{\chem{PO_4}}^I} \frac{\partial^2\chem{PO_4}^I }{\partial z^2} - w\frac{\partial \chem{PO_4}^I }{\partial z} + \frac{1-\phi}{\phi \cdot (1+K_{\chem{PO_4}}^I)}\sum_i 
+ \frac{\partial \chem{PO_4}^I}{\partial t} &= \frac{D_{\chem{PO_4}}}{1+K_{\chem{PO_4}}^I} \frac{\partial^2\chem{PO_4}^I }{\partial z^2} - w\frac{\partial \chem{PO_4}^I }{\partial z} + \frac{1-\phi}{\phi}\frac{1}{1+K_{\chem{PO_4}}^I}\sum_i 
 					\left( \chem{PC}_i \cdot k_i \cdot C_{i}(z) \right) \notag\\
 					& - \frac{k_{s}}{1+K_{\chem{PO_4}}^I}(\chem{PO_4}^I-\chem{PO_4}^s)\label{eq:PO4_ODE_L1}\\  %&\text{1. Layer ($z\leq z_{\mathrm{ox}} \leq zbio$)}\label{eq:SO4_ODE1_Case1_sub1}\\
- \frac{\partial M^I}{\partial t} &= D_{M}\frac{\partial^2M^I }{\partial z^2} - w\frac{\partial M^I }{\partial z} + k_{s}\frac{\phi}{1-\phi}(\chem{PO_4}^I-\chem{PO_4}^s)\label{eq:M_ODE_L1}\\  
+ \frac{\partial M^I}{\partial t} &= D_{M}\frac{\partial^2M^I }{\partial z^2} - w\frac{\partial M^I }{\partial z} + \frac{\phi}{1-\phi}k_{s}(\chem{PO_4}^I-\chem{PO_4}^s)\label{eq:M_ODE_L1}\\  
  \intertext{2. Layer ($z_{\mathrm{ox}} < z$)} 
  \frac{\partial M^{II}}{\partial t} & = D_{M}\frac{\partial^2M^{II} }{\partial z^2} - w\frac{\partial M^{II} }{\partial z} - k_{m}(M^{II} - M^\infty)\label{eq:M_ODE_L2}\\  
- \frac{\partial \chem{PO_4}^{II}}{\partial t} &= \frac{D_{\chem{PO_4}}^1}{1+K_{\chem{PO_4}}^{II}} \frac{\partial^2\chem{PO_4}^{II} }{\partial z^2} - w\frac{\partial \chem{PO_4}^{II} }{\partial z} + \frac{1-\phi}{\phi \cdot (1+K_{\chem{PO_4}}^{II})}\sum_i 
+ \frac{\partial \chem{PO_4}^{II}}{\partial t} &= \frac{D_{\chem{PO_4}}}{1+K_{\chem{PO_4}}^{II}} \frac{\partial^2\chem{PO_4}^{II} }{\partial z^2} - w\frac{\partial \chem{PO_4}^{II} }{\partial z} + \frac{1-\phi}{\phi} \frac{1}{1+K_{\chem{PO_4}}^{II}}\sum_i 
 					\left( \chem{PC}_i \cdot k_i \cdot C_{i}(z) \right) \notag\\
-					& - \frac{k_{a}}{1+K_{\chem{PO_4}}^{II}}(\chem{PO_4}^{II}-\chem{PO_4}^a) + \frac{(1-\phi)k_{m}}{\phi(1+K_{\chem{PO_4}}^{II})}(M^{II}-M^\infty)\label{eq:PO4_ODE_L2}\\
+					& - \frac{k_{a}}{1+K_{\chem{PO_4}}^{II}}(\chem{PO_4}^{II}-\chem{PO_4}^a) + \frac{(1-\phi)}{\phi}\frac{k_{m}}{1+K_{\chem{PO_4}}^{II}}(M^{II}-M^\infty)\label{eq:PO4_ODE_L2}\\
 \end{align}
-%>>>
-\marginnote{\textcolor{red}{\textbf{DH}: Added $K_{PO_4}$ in code. Why higher PO4 conc. even though diff-coeff is much lower now?}}[-4cm]%<<<
 % where
 % \begin{align}
 %  D_{\chem{PO_4}}&=D_{\chem{PO_4}, 0}+D_{\mathrm{bio}} &\text{ and }\quad D_{M}&= D_{\mathrm{bio}} &\text{if ($z\leq z_{\mathrm{bio}}$)}\\
@@ -492,7 +496,9 @@ Therefore the diagenetic equations for phosphorus are written:
 % \end{align}
 The boundary conditions to solve Equations \ref{eq:PO4_ODE_L1} - \ref{eq:PO4_ODE_L2} are summarized in Table \ref{Tab:BC_PO4+M}. 
 The model assumes known bottom water concentrations and equal concentrations and diffusive fluxes at $z_{\mathrm{bio}}$ and $z_{\mathrm{ox}}$ for both species. Additionally it considers no change in phosphate flux and an assymptotic Fe-bound P 
-concentration at $z_\infty$. 
+concentration at $z_\infty$. \\
+
+\textcolor{red}{@ Sandra: SWI Flux for M does not exist, right???}
 
 \begin{table}[tbp]
 \caption{Boundary conditions for phosphate and Fe-bound P (M).}
@@ -513,9 +519,9 @@ $z=z_{\infty}$& flux & 10) $\frac{\partial \chem{PO_4}}{\partial z}|_{z_\infty}=
 \hline
 $z=0$& known concentration& 1) $M(0)=M_0$  \\
 $z=z_{\mathrm{bio}}$&continuity& 2) $M(z_{\mathrm{bio}}^-)$=$M(z_{\mathrm{bio}}^+)$\\
- \textcolor{red}{correct???} & flux & 3) $\frac{\partial M}{\partial z}|_{z_{\mathrm{bio}}^-}=\frac{\partial M}{\partial z}|_{z_{\mathrm{bio}}^+}$\\
+  & flux & 3) $\frac{\partial M}{\partial z}|_{z_{\mathrm{bio}}^-}=\frac{\partial M}{\partial z}|_{z_{\mathrm{bio}}^+}$\\
 $z=z_{\mathrm{ox}}$& continuity& 4) $M(z_{\mathrm{ox}}^-)$=$M(z_{\mathrm{ox}}^+)$\\
- \textcolor{red}{correct???} & flux & 5) $\frac{\partial M}{\partial z}|_{z_{\mathrm{ox}}^-} =\frac{\partial M}{\partial z}|_{z_{\mathrm{ox}}^+}$\\
+  & flux & 5) $\frac{\partial M}{\partial z}|_{z_{\mathrm{ox}}^-} =\frac{\partial M}{\partial z}|_{z_{\mathrm{ox}}^+}$\\
 %&where:\textcolor{red}{$\int_{z_{\chem{SO_4}}}^{\infty}$ here?} & $\quad F_{\chem{H_2S}}(z_{\mathrm{ox}})=\frac{1-\phi}{\phi} \cdot \textcolor{red}{\gamma_{\chem{H_2S}}\cdot} \left( \int_{z_{\chem{NO_3}}}^{SO_4}  \sum_i SO_4C \cdot k_i \cdot C_i\ dz + \gamma_{CH_4}\cdot \int_{z_{\chem{SO_4}}}^{\infty}  \sum_i SO_4C \cdot k_i \cdot C_i\ dz \right)$\\          
 $z=z_{\infty}$& assymptotic concentration & 10) $M(z_\infty)=M_\infty$\\
 \hline    
@@ -550,7 +556,7 @@ The bioturbation coefficient $D_{\mathrm{bio}}$ (cm$^2$ yr$^-1$) is constant in 
  D_{\mathrm{bio}} = 5.2\cdot 10^{0.76241122-0.00039724\cdot \text{depth}}\label{eq:bioturbation_coeff}
 \end{equation}
 Studies showed that bioturbational effects on a global scale are largely restricted to the upper 10 cm of the sediments and are only marginally related to seafloor depth \citep[e.g.][]{boudreau_mean_1998, teal_global_2010}. 
-Therefore, OMEN-SED (1.0) imposes a globally invariant bioturbation depth of 10cm. 
+Therefore, OMEN-SED (1.0) imposes a globally invariant bioturbation depth of 10 cm. 
 Bioirrigation can enhance the molecular diffusion coefficient $D_{i,0}=D_{\mathrm{mol},i}\cdot f_{ir}$ \citep{soetaert1996dynamic}. However, here we do not consider this effect 
 and set $f_{ir}$ to a constant value of 1. The specific molecular diffusion coefficients $D_{\mathrm{mol},i}$ are corrected for sediment porosity $\phi$, tortuosity F and are linearly interpolated for an ambient temperature $T$ using zero-degree 
 coefficients $D^0_i$ and temperature dependent diffusion coefficients $D^T_i$ \citep[compare ][]{gypens_simple_2008}:
