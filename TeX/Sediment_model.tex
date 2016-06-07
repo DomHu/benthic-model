@@ -127,21 +127,47 @@ for many global biogeochemical cycles \citep{arndt_quantifying_2013}. Burial of 
 and the marine sediments and carbon that is sequestered for much longer, geological timescales in sedimentary rock or coal \citep{mackenzie_sediments_2005, burdige_preservation_2007}. 
 Biological primary production of organic matter (\chem{CH_2O} in equation \ref{eq:photosynthesis}) and the reverse process of degradation can be written in a greatly simplified reaction as:
 \begin{reaction}
-\chem{CO_2}+\chem{H_2O} \rightleftharpoons \chem{CH_2O} + \chem{O_2}\label{eq:photosynthesis}
+\chem{CO_2}+\chem{H_2O} \rightleftharpoons \chem{CH_2O} + \chem{O_2}.\label{eq:photosynthesis}
 \end{reaction}
 On long timescales production of OM is generally greater than degradation which results in some organic matter being buried in marine sediments and oxygen accumulating in the atmosphere. 
 Thus burial of OM leads to net oxygen input to, and \chem{CO_2} removal from, the atmosphere \citep{berner_phanerozoic_2004}. 
-Therefore, globally quantifying the degradation of organic matter in marine sediments and related biogeochemical dynamics is important for understanding climate and the cycling of many elements on various timescales. \\[2ex]
+Therefore, globally quantifying the degradation of organic matter in marine sediments and related biogeochemical dynamics is important for understanding climate and the cycling of many chemical elements on various timescales.
+Such studies and quantifications are possible through the application of idealised mathematical representations of diagenesis, or so-called diagenetic models \citep[e.g.][]{berner_early_1980, boudreau1997diagenetic}.
+The number of research questions that can be addressed with diagenetic models is infinite and a plethora of different approaches have been developed, mainly following two distinct directions \citep{arndt_quantifying_2013}. 
+First, state-of-the art diagenetic models simulating all of the essential coupled redox and equilibrium reactions within marine sediments that control carbon burial and benthic recycling fluxes 
+(e.g. BRNS, \citeauthor{aguilera_knowledge-based_2005}, \citeyear{aguilera_knowledge-based_2005}; 
+MEDIA, \citeauthor{meysman_reactive_2003}, \citeyear{meysman_reactive_2003}; OMEXDIA, \citeauthor{soetaert_model_1996}, \citeyear{soetaert_model_1996}). These ``complete'' models generally use a so-called multi-G approach, thus dividing the bulk organic 
+carbon pool into a number of compound classes that are characterised by different degradabilities $k_i$. However, their global applicability is limited by the high computation cost of simulating all biogeochemical reactions. 
+The second group of models is less sophisticated and comprehensive than the ``complete'' diagenetic models and is used for the coupling to global Earth System Models 
+(e.g. DCESS, \citeauthor{shaffer_presentation_2008}, \citeyear{shaffer_presentation_2008}; HAMOCC, , \citeauthor{heinze_global_1999}, \citeyear{heinze_global_1999}; 
+MEDUSA, \citeauthor{munhoven_glacialinterglacial_2007}, \citeyear{munhoven_glacialinterglacial_2007}). In particular, these models consider fewer biogeochemical reactions and apply the 1G approach, 
+thus just representing a single organic matter pool which is degraded at a constant rate. 
 
-Diagenetic Models\\
+\textcolor{red}{TODO:} Sandra review: large scale of published model parameters illustrates the complex nature of organic matter dynamics! Very difficult to find global relationships to relate model parameters 
+to available environmental characteristics, such as water depth, deposition rate.
+Sentence about: even though there is some potential most ESM use the following:
+
+In most current Earth System models, sediment-water exchange of OM and chemical elements is generally treated in a very simplistic way \citep{soetaert_coupling_2000, huelse_biopump_models_2016}. 
+Most Earth system Models of Intermediate Complexity (EMICs) for instance represent the sediment-water interface either as a reflective or a conservative/semi-reflective boundary \citep{huelse_biopump_models_2016}. 
+Thus, all particulate material deposited on the seafloor is either instantaneously consumed (reflective boundary), or a fixed fraction is buried in the sediments (conservative/semi-reflective boundary). 
+Both highly simplified approaches furthermore completely neglect the exchange of solute species through the sediment-water interface and, therefore, cannot resolve the complex benthic-pelagic coupling. 
+However, due to their computational efficiency, both representations are often used in global biogeochemical models \citep[e.g.][]{najjar_impact_2007, ridgwell_marine_2007, goosse_description_2010}
+
 See e.g. \citep{soetaert_coupling_2000, mackenzie_past_2004}.\\[2ex]
+
 How are sediment resolved in Earth System models\\
 See e.g. \citep{soetaert_coupling_2000}\\[2ex]
 Problem with that: \\
 The spatial variability in e.g. benthic particulate organic carbon (POC) mineralization kinetics throughout the ocean is currently unknown. This creates considerable 
 uncertainties when diagenetic models are used to couple benthic and pelagic biogeochemical cycles in global models. \citep{kriest_numerical_2011} \\[2ex]
+
 Alternative Model approaches, e.g. from coastal research\\[2ex]
-Solution presented here\\ [2ex]
+
+Here, we present the OrganicMatter ENabled SEDiment model (OMEN-SED 1.0), a new, one-dimensional, numerically efficient reactive transport model (RTM) for the biogeochemical dynamics of organic matter,  
+related chemical elements (\chem{O}, \chem{N}, \chem{S}, \chem{P}) and associated pore water quantities (ALK, DIC) in deep-sea sediments. OMEN-SEDs computational efficiency makes it appropriate for 
+the coupling to Earth System Models and therefore for studying global biogeochemical dynamics over geological timescales.
+Also mention here presented as a 2G-Model, however OMEN-SED can easily be extended to a Multi-G approach. \\ [2ex]
+
 See Van Cappellen and Wang (1996): ``Metal cycling in surface sediments: Modeling the interplay or transport and reaction'' for some good basic info! 
 
 \section{Model Description}
