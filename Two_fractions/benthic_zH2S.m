@@ -47,21 +47,21 @@ classdef benthic_zH2S
             [ e3_zso4, dedz3_zso4, f3_zso4, dfdz3_zso4, g3_zso4, dgdz3_zso4] ...
                 = r.zTOC.calcfg_l12(r.zso4, bsd, swi, r,  obj.reac1, obj.reac2, 0, rH2S.ls3);
             % ... and top of layer 4
-            [ e4_zso4, dedz4_zso4, f4_zso4, dfdz4_zso4, g4_zso4, dgdz4_zso4] ...1
+            [ e4_zso4, dedz4_zso4, f4_zso4, dfdz4_zso4, g4_zso4, dgdz4_zso4] ...
                 = r.zTOC.calcfg_l12(r.zso4, bsd, swi, r,  0,  0, 0, rH2S.ls4);
             %flux of H2S produced by AOM interface (Source of H2S)   
             zso4FH2S = r.zTOC.calcReac(r.zso4, bsd.zinf, bsd.MC, bsd.MC, bsd, swi, r); % MULTIPLY BY 1/POR ????
             % match solutions at zso4 - continuous concentration and flux
             [zso4.a, zso4.b, zso4.c, zso4.d, zso4.e, zso4.f] = benthic_utils.matchsoln(e3_zso4, f3_zso4, g3_zso4, dedz3_zso4, dfdz3_zso4, dgdz3_zso4, ...
                                                                 e4_zso4, f4_zso4, g4_zso4, dedz4_zso4, dfdz4_zso4, dgdz4_zso4, ...
-                                                                0, -zso4FH2S./obj.DH2S2);
+                                                                0, -bsd.gammaCH4.*zso4FH2S./obj.DH2S2);
                                          %Dom 24.02.2016: No *(1-gammaCH4)*zso4FH2S... missing here!                   
             % Match at zno3, layer 2 - layer 3 (continuity and flux)                        
             % basis functions at bottom of layer 2
             [ e2_zno3, dedz2_zno3, f2_zno3, dfdz2_zno3, g2_zno3, dgdz2_zno3] ...
                 = r.zTOC.calcfg_l12(r.zno3, bsd, swi, r,     0,            0, 0, rH2S.ls2);
             % ... and top of layer 3
-            [ e3_zno3, dedz3_zno3, f3_zno3, dfdz3_zno3, g3_zno3, dgdz3_zno3] ...1
+            [ e3_zno3, dedz3_zno3, f3_zno3, dfdz3_zno3, g3_zno3, dgdz3_zno3] ...
                 = r.zTOC.calcfg_l12(r.zno3, bsd, swi, r, obj.reac1, obj.reac2, 0, rH2S.ls3);
             % ... transformed to use coeffs from l4
             [e3_zno3, f3_zno3, g3_zno3, dedz3_zno3, dfdz3_zno3, dgdz3_zno3] = benthic_utils.xformsoln(e3_zno3, f3_zno3, g3_zno3, dedz3_zno3, dfdz3_zno3, dgdz3_zno3, ...

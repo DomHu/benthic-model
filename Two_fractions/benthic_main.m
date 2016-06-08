@@ -33,13 +33,21 @@ classdef benthic_main < handle
         PC2;                                    %P/C second TOC fraction (mol/mol)
         SO4C;                                   %SO4/C (mol/mol)
         DICC1;                                  %DIC/C until zSO4 (mol/mol)
-        DICC2;                                  %DIC/C below zSO$ (mol/mol)
+        DICC2;                                  %DIC/C below zSO4 (mol/mol)
         MC;                                     %CH4/C (mol/mol)
         gamma=0.8;                                %fraction of NH4 that is oxidised in oxic layer
         gammaH2S=0.95;                           %fraction of H2S that is oxidised in oxic layer
         gammaCH4=1;                           %fraction of CH4 that is oxidised at SO4
         satSO4=0;                               % SO4 saturation
         NO3CR;                                  % NO3 consumed by Denitrification
+        ALKROX;                                              % Aerobic degradation                     
+        ALKRNIT;                                                 % Nitrification    
+        ALKRDEN;                                           % Denitrification
+        ALKRSUL;                                             % Sulfato reduction
+        ALKRH2S;                                                 % H2S oxydation (CHECK THIS VALUE!!!)
+        ALKRMET;                                             % Methanogenesis
+        ALKRAOM;                                                  % AOM
+
         
         zoxgf = 0.1;                            % cm, rolloff NH4, H2S oxidation for small zox depth
         
@@ -84,6 +92,14 @@ classdef benthic_main < handle
             obj.DICC2=0.5*obj.SD;                                               %DIC/C below zSO$ (mol/mol)
             obj.MC=0.5*obj.SD;                                                  %CH4/C (mol/mol)
             obj.NO3CR=(94.4/106)*obj.SD;                                        % NO3 consumed by Denitrification
+            obj.ALKROX=15.0/106;                                                  % Aerobic degradation                     
+            obj.ALKRNIT=-2.0;                                                     % Nitrification    
+            obj.ALKRDEN=93.4/106;                                               % Denitrification
+            obj.ALKRSUL=15.0/106;                                                 % Sulfato reduction
+            obj.ALKRH2S=-1.0;                                                     % H2S oxydation (CHECK THIS VALUE!!!)
+            obj.ALKRMET=14.0/106;                                                 % Methanogenesis
+            obj.ALKRAOM=2.0;                                                      % AOM
+
 
         end
     end

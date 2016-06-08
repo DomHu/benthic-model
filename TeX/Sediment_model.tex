@@ -561,8 +561,67 @@ $z=z_{\infty}$& assymptotic concentration & 10) $M(z_\infty)=M_\infty$\\
 % solution\\
 
 \subsubsection{Dissolved Inorganic Carbon (DIC)}
+Dissolved inorganic carbon (DIC) is produced by when organic matter is degraded. Explain different ratios for the two layers.
+\begin{align}
+\intertext{1. Layer ($z \leq z_{\chem{SO_4}}$)}
+  \frac{\partial DIC^I}{\partial t} &= 0 = D_{DIC} \frac{\partial^2DIC^I }{\partial z^2} - w\frac{\partial DIC^I }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i \chem{DICC^I} \cdot k_i \cdot C_{i}(z)\label{eq:DIC_ODE1_L1}\\ %\qquad &\text{1. Layer ($z\leq z_{\mathrm{ox}}$)}\\
+ \intertext{2. Layer ($z_{\chem{SO_4}} < z \leq z_\infty$)} 
+  \frac{\partial DIC^{II}}{\partial t} &= 0 = D_{DIC} \frac{\partial^2DIC^{II} }{\partial z^2} - w\frac{\partial DIC^{II} }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i \chem{DICC^{II}} \cdot k_i \cdot C_{i}(z)\label{eq:DIC_ODE1_L2} %\qquad &\text{1. Layer ($z\leq z_{\mathrm{ox}}$)}\\
+\end{align}
+To solve equations \ref{eq:DIC_ODE1_L1} and \ref{eq:DIC_ODE1_L2} the model assumes the boundary conditions summarised in Table \ref{Tab:BC_DIC+ALK}.
+
+\begin{table}[tbp]
+\caption{Boundary conditions for DIC and alkalinity.}
+% title of Table
+\centering
+% used for centering table
+\begin{tabular}{ |c| c| c l|}
+\hline
+\textbf{Boundary}& \textbf{Condition}&&\\
+\hline
+$z=0$& known concentration& 1)& $\chem{DIC}(0)=\chem{DIC}_{0}$  \\
+$z=z_{\mathrm{bio}}$&continuity& 2)& $\chem{DIC}(z_{\mathrm{bio}}^-)$=$\chem{DIC}(z_{\mathrm{bio}}^+)$\\
+               & flux & 3)& $-\left(D_{\chem{DIC},0}+D_{\mathrm{bio}}\right )\cdot \frac{\partial \chem{DIC}}{\partial z}|_{z_{\mathrm{bio}}^-}=-D_{\chem{DIC},0} \cdot \frac{\partial \chem{DIC}}{\partial z}|_{z_{\mathrm{bio}}^+}$\\
+$z=z_{\chem{SO_4}}$& continuity & 8)& $\chem{DIC}(z_{\chem{SO_4}}^-)$=$\chem{DIC}(z_{\chem{SO_4}}^+)$\\ %$\frac{\partial \chem{DIC}}{\partial z}|_{z_{\chem{DIC}}}=0$\\
+               & flux (with AOM) & 9)&  $-D_{\chem{DIC}}\cdot \frac{\partial \chem{DIC}}{\partial z}|_{z_{\chem{SO_4}}^-} + \gamma_\chem{CH_4}\cdot F_{\chem{CH_4}}(z_{\chem{SO_4}})=-D_{\chem{DIC}} \cdot \frac{\partial \chem{DIC}}{\partial z}|_{z_{\chem{SO_4}}^+}$\\
+&where: & &$\quad F_{\chem{CH_4}}(z_{\chem{SO_4}})=\frac{1-\phi}{\phi} \cdot \int_{z_{\chem{SO_4}}}^{\infty}  \sum_i \chem{MC} \cdot k_i \cdot C_i\ dz$ \\          
+$z=z_{\infty}$& zero \chem{DIC} flux & 10)& $\frac{\partial \chem{DIC}}{\partial z}|_{z_\infty}=0$\\
+\hline
+$z=0$& known concentration& 1)& $\chem{ALK}(0)=\chem{ALK}_{0}$  \\
+$z=z_{\mathrm{bio}}$&continuity& 2)& $\chem{ALK}(z_{\mathrm{bio}}^-)$=$\chem{ALK}(z_{\mathrm{bio}}^+)$\\
+               & flux & 3)& $-\left(D_{\chem{ALK},0}+D_{\mathrm{bio}}\right )\cdot \frac{\partial \chem{ALK}}{\partial z}|_{z_{\mathrm{bio}}^-}=-D_{\chem{ALK},0} \cdot \frac{\partial \chem{ALK}}{\partial z}|_{z_{\mathrm{bio}}^+}$\\
+$z=z_{\mathrm{ox}}$& continuity& 4)& $\chem{ALK}(z_{\mathrm{ox}}^-)$=$\chem{ALK}(z_{\mathrm{ox}}^+)$\\
+               & flux & 5)& $-D_{\chem{ALK}} \cdot \frac{\partial \chem{ALK}}{\partial z}|_{z_{\mathrm{ox}}^-} +  F_{\chem{ALK}}(z_{\mathrm{ox}})=-D_{\chem{ALK}} \cdot \frac{\partial \chem{ALK}}{\partial z}|_{z_{\mathrm{ox}}^+}$\\
+&where: & &$\quad F_{\chem{ALK}}(z_{\mathrm{ox}})=\frac{1-\phi}{\phi} \cdot \left( \chem{ALK}^\chem{H_2S}\gamma_\chem{H_2S} \int_{z_{\chem{NO_3}}}^{\chem{SO_4}} \sum_i \chem{SO_4C} \cdot k_i \cdot C_i\ dz \right)+ $\\
+& & &$\qquad \qquad \qquad \quad \frac{1-\phi}{\phi} \cdot \left(\chem{ALK}^\chem{NIT} \frac{\gamma_\chem{NH_4}}{1+k_\chem{NH_4}}\int_{z_{\chem{NO_3}}}^{\infty}  \sum_i \chem{NC_i} \cdot k_i \cdot C_i\ dz \right)$\\            
+$z=z_{\chem{NO_3}}$&continuity& 6)& $\chem{ALK}(z_{\chem{NO_3}}^-)$=$\chem{ALK}(z_{\chem{NO_3}}^+)$\\
+               & flux & 7)& $-D_{\chem{ALK}}\cdot \frac{\partial \chem{ALK}}{\partial z}|_{z_{\chem{NO_3}}^-}=-D_{\chem{ALK}} \cdot \frac{\partial \chem{ALK}}{\partial z}|_{z_{\chem{NO_3}}^+}$\\
+$z=z_{\chem{SO_4}}$& continuity & 8)& $\chem{ALK}(z_{\chem{SO_4}}^-)$=$\chem{ALK}(z_{\chem{SO_4}}^+)$\\ %$\frac{\partial \chem{ALK}}{\partial z}|_{z_{\chem{ALK}}}=0$\\
+               & flux (with AOM) & 9)&  $-D_{\chem{ALK}}\cdot \frac{\partial \chem{ALK}}{\partial z}|_{z_{\chem{SO_4}}^-} + F_{\chem{ALK}}(z_{\chem{SO_4}})=-D_{\chem{ALK}} \cdot \frac{\partial \chem{ALK}}{\partial z}|_{z_{\chem{SO_4}}^+}$\\
+&where: & &$\quad F_{\chem{ALK}}(z_{\chem{SO_4}})=\frac{1-\phi}{\phi} \cdot \left( \chem{ALK}^\chem{AOM}\gamma_\chem{CH_4}\cdot \int_{z_{\chem{SO_4}}}^{\infty}  \sum_i \chem{MC} \cdot k_i \cdot C_i\ dz \right)$ \\          
+$z=z_{\infty}$& zero \chem{ALK} flux & 10)& $\frac{\partial \chem{ALK}}{\partial z}|_{z_\infty}=0$\\
+\hline    
+\end{tabular}
+\label{Tab:BC_DIC+ALK}
+\end{table}
 
 \subsubsection{Alkalinity}
+Alkalinity is produced and consumed by when organic matter is degraded. Explain why it is produced/consumed, where and how in the different layers $j \in \{I,\ II,\ III,\ IV\}$ and talk earlier on in the model description why it matters.
+% \begin{equation}
+%   \frac{\partial \chem{ALK}^{}}{\partial t} = 0 = D_{\chem{ALK}} \frac{\partial^2\chem{ALK}^{I} }{\partial z^2} - w\frac{\partial \chem{ALK}^{I} }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i \mathrm{REAC_{ALK}} \cdot k_i \cdot C_{i}(z) \label{eq:ALK_ODE}
+% \end{equation}
+\begin{align}
+ \intertext{1. Layer ($z \leq z_{\chem{ox}}$)} 
+\frac{\partial \chem{ALK}^{I}}{\partial t} &= 0 = D_{\chem{ALK}} \frac{\partial^2\chem{ALK}^{I} }{\partial z^2} - w\frac{\partial \chem{ALK}^{I} }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i (\gamma_{\chem{NH_4}} \chem{NC_i} \chem{ALK}^\mathrm{NIT} + \chem{ALK}^\mathrm{OX})\cdot k_i \cdot C_{i}(z) \label{eq:ALK_ODE1_L1}\\
+ \intertext{2. Layer ($z_{\chem{ox}} < z \leq z_{\chem{NO_3}} $)} 
+\frac{\partial \chem{ALK}^{II}}{\partial t} &= 0 = D_{\chem{ALK}} \frac{\partial^2\chem{ALK}^{II} }{\partial z^2} - w\frac{\partial \chem{ALK}^{II} }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i \chem{ALK}^\mathrm{DEN}\cdot k_i \cdot C_{i}(z)\label{eq:ALK_ODE1_L2}
+ \intertext{3. Layer ($z_{\chem{NO_3}} < z \leq z_{\chem{SO_4}} $)} 
+\frac{\partial \chem{ALK}^{III}}{\partial t} &= 0 = D_{\chem{ALK}} \frac{\partial^2\chem{ALK}^{III} }{\partial z^2} - w\frac{\partial \chem{ALK}^{III} }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i \chem{ALK}^\mathrm{SUL}\cdot k_i \cdot C_{i}(z)\label{eq:ALK_ODE1_L2}
+ \intertext{4. Layer ($z_{\chem{SO_4}} < z \leq z_{\infty} $)} 
+\frac{\partial \chem{ALK}^{IV}}{\partial t} &= 0 = D_{\chem{ALK}} \frac{\partial^2\chem{ALK}^{IV} }{\partial z^2} - w\frac{\partial \chem{ALK}^{IV} }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i \chem{ALK}^\mathrm{MET}\cdot k_i \cdot C_{i}(z)\label{eq:ALK_ODE1_L2}
+\end{align}
+To solve equations \ref{eq:ALK_ODE1_L1} and \ref{eq:ALK_ODE1_L2} the model assumes the boundary conditions summarised in Table \ref{Tab:BC_DIC+ALK}.
+
 
 \subsection{Model Parameters}
 This section describes the parameters used in OMEN-SED (1.0) to describe sediment transport and biogeochemical reactions related to the burial and mineralization of organic matter under a wide range of environmental conditions. 
@@ -684,14 +743,21 @@ Parameter/Variable & Unit  & Value & Description\\
 \chem{OC} & mol/mol & 1.0 & oxygen to carbon ratio\\
 \chem{NO_3C} & mol/mol & 94.4/106 & nitrate to carbon ratio\\
 \chem{SO_4C} & mol/mol & 0.5 & sulfate to carbon ratio\\
+$\chem{ALK}^\mathrm{OX}$ & mol/mol & 15/106 & ALK from aerobic degradation\\
+$\chem{ALK}^\mathrm{NIT}$ & mol/mol & -2 & ALK from nitrification\\
+$\chem{ALK}^\mathrm{DEN}$ & mol/mol & 93.4/106 & ALK from denitrification\\
+$\chem{ALK}^\mathrm{SUL}$ & mol/mol & 15/106 & ALK from sulfate reduction\\
+$\chem{ALK}^\mathrm{MET}$ & mol/mol & 14/106 & ALK from methanogenesis\\
+$\chem{ALK}^\mathrm{H2S}$ & mol/mol & -1 & ALK from \chem{H_2S} oxidation \textcolor{red}{CORRECT???}\\
+$\chem{ALK}^\mathrm{AOM}$ & mol/mol & 2 & ALK from methanogenesis\\
 %$DICC^I$ & $mol/mol$ & 1 & DIC to carbon ratio\\
 %& & & until $z_{\chem{SO_4}}$\\
 %$DICC^{II}$ & $mol/mol$ & 0.5 & DIC to carbon ratio\\
 %& & & for methanogenesis\\[0.5ex]
 \multicolumn{4}{l}{\textbf{Secondary reaction parameters}}\\
-$\gamma_{\chem{NH_4}}$ & - & 1.0 & fraction of \chem{NH_4} that is oxidised\\
+$\gamma_{\chem{NH_4}}$ & - & 0.8 & fraction of \chem{NH_4} that is oxidised\\
 & & & in oxic layer\\
-$\gamma_{\chem{H_2S}}$ & - & 0.8 & fraction of \chem{H_2S} that is oxidised\\
+$\gamma_{\chem{H_2S}}$ & - & 0.95 & fraction of \chem{H_2S} that is oxidised\\
 & & & in oxic layer\\
 $\gamma_{\chem{CH_4}}$ & - & 1.0 & fraction of \chem{CH_4} that is oxidised\\
 & & & at $z_{\chem{SO_4}}$\\

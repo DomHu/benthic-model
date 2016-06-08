@@ -18,8 +18,8 @@ classdef benthic_test
             swi.NO30=20.0e-9;             % was 20.0e-9                                  %NO3 concentration at SWI (mol/cm3)
             swi.Nitrogen=true;
             swi.NH40=0.0e-9;                                                %NH4 concentration at SWI (mol/cm3)
-            swi.SO40=28000.0e-9;                                            %SO4 concentration at SWI (mol/cm3)
-            %swi.SO40 = 200e-9;
+            %swi.SO40=28000.0e-9;                                            %SO4 concentration at SWI (mol/cm3)
+            swi.SO40 = 100e-9;
             swi.H2S0=0.0e-9;         %was 0.0e-9                            %H2S concentration at SWI (mol/cm3)
             swi.PO40=1e-9;    % Sandra played with 3e-9                                              %PO4 concentration at SWI (mol/cm3)
             swi.Mflux0=365*0.2e-10; % Sandra played with 10e-9; ;   % = 7.3e-9    %flux of M to the sediment (mol/(cm2*yr))   TODO/CHECK: good value+right conversion? is from Slomp et al. 1996        
@@ -157,6 +157,8 @@ classdef benthic_test
             res.zH2S = benthic_zH2S(res.bsd, res.swi);
             res.zH2S = benthic_zH2S(res.bsd, res.swi);
             res.zPO4_M = benthic_zPO4_M(res.bsd, res.swi);
+            res.zDIC = benthic_zDIC(res.bsd, res.swi);
+            res.zALK = benthic_zALK(res.bsd, res.swi);
    
             tic;
             res = res.zTOC.calc(res.bsd,res.swi, res);
@@ -170,6 +172,8 @@ classdef benthic_test
             res = res.zNH4.calc(res.bsd, res.swi, res);
             res = res.zH2S.calc(res.bsd, res.swi, res);
             res = res.zPO4_M.calc(res.bsd, res.swi, res);
+            res = res.zDIC.calc(res.bsd, res.swi, res);
+            res = res.zALK.calc(res.bsd, res.swi, res);
             toc;
             
             %%%%% WRITE OUTPUT:
@@ -235,14 +239,12 @@ classdef benthic_test
         if(true)                
             figure
             % PO4
-            subplot(1,2,1)
+            subplot(2,2,1)
             for i=1:length(zgrid)                
                 [PO4(i), flxPO4(i), M(i), flxM(i), e_M(i), f_M(i), p_M(i), q_M(i), g_M(i), dedz_M(i), dfdz_M(i), dpdz_M(i), dqdz_M(i), dgdz_M(i)] = res.zPO4_M.calcPO4_M(zgrid(i), bsd, res.swi, res);
             end
-
             plot(PO4, -zgrid, 'b')
-            hold on
-            
+            hold on            
             t=xlim;         % to draw penetration depths the correct lengths
             plot([0,t(1,2)], [-bsd.zbio,-bsd.zbio], 'k--')     
             plot([0,t(1,2)], [-res.zox,-res.zox], 'b--')     
@@ -254,7 +256,7 @@ classdef benthic_test
             title ('PO_4 (mol/cm3)')
            
             % Fe-bound P (M)
-            subplot(1,2,2)
+            subplot(2,2,2)
             %for i=1:length(zgrid)                
             %    [PO4(i), flxPO4(i), M(i), flxM(i)] = res.zPO4_M.calcPO4_M(zgrid(i), bsd, res.swi, res);
             %end
@@ -270,6 +272,37 @@ classdef benthic_test
             ylabel('Depth (cm)')
             title ('Fe-bound P (mol/cm3)')
             
+            % DIC
+            subplot(2,2,3)
+            for i=1:length(zgrid)
+                [DIC(i), flxDIC(i)] = res.zDIC.calcDIC(zgrid(i), bsd, res.swi, res);
+            end
+            plot(DIC, -zgrid, 'b')
+            hold on
+            t=xlim;         % to draw penetration depths the correct lengths
+            plot([0,t(1,2)], [-bsd.zbio,-bsd.zbio], 'k--')     
+            plot([0,t(1,2)], [-res.zox,-res.zox], 'b--')     
+            plot([0,t(1,2)], [-res.zno3,-res.zno3], 'g--')     
+            plot([0,t(1,2)], [-res.zso4,-res.zso4], 'r--')          
+            xlabel ('DIC (mol/cm3)')
+            ylabel('Depth (cm)')
+            
+            % ALK
+            subplot(2,2,4)
+            for i=1:length(zgrid)
+                [ALK(i), flxALK(i)] = res.zALK.calcALK(zgrid(i), bsd, res.swi, res);
+            end
+            plot(ALK, -zgrid, 'b')
+            hold on
+            t=xlim;         % to draw penetration depths the correct lengths
+            plot([0,t(1,2)], [-bsd.zbio,-bsd.zbio], 'k--')     
+            plot([0,t(1,2)], [-res.zox,-res.zox], 'b--')     
+            plot([0,t(1,2)], [-res.zno3,-res.zno3], 'g--')     
+            plot([0,t(1,2)], [-res.zso4,-res.zso4], 'r--')          
+            xlabel ('ALK (mol/cm3)')
+            ylabel('Depth (cm)')
+            
+
             print('-dpsc2', ['PO4_PROFILES.ps']);
         end
            
