@@ -10,7 +10,7 @@ classdef benthic_main < handle
         
         %sediment characteristics
         rho_sed=2.5;                            % sediment density (g/cm3)
-        wdepth=600;                            % water depth (m)
+        wdepth=3560.67;     % Dom was 600.0                       % water depth (m)
         w;                                      % burial velocity  (cm/yr)
         z0  = 0;                                % surface
         zbio=10;            % Sandra played with 0.0                    % bioturbation depth (cm)       
@@ -83,10 +83,10 @@ classdef benthic_main < handle
             obj.SD=(1-obj.por)./obj.por;   % Sandra played with 1.0
             
             obj.OC=1.0*obj.SD;                                                  %O2/C (mol/mol)
-            obj.NC1=0.1509*obj.SD;                                              %N/C first TOC fraction (mol/mol)
-            obj.NC2=0.13333*obj.SD;                                             %N/C second TOC fraction (mol/mol)            
-            obj.PC1=0.0094*obj.SD;  % Sandra played with 1e-20;                                            %P/C first TOC fraction (mol/mol)
-            obj.PC2=0.0094*obj.SD;  % Sandra played with  1e-20;                                         %P/C second TOC fraction (mol/mol)
+            obj.NC1=0.1509*obj.SD;                                          %N/C first TOC fraction: 16/106 (mol/mol)
+            obj.NC2=0.13333*obj.SD;                                         %N/C second TOC fraction (mol/mol)            
+            obj.PC1=0.0094*obj.SD;  % Sandra played with 1e-20;             %P/C first TOC fraction  1/106 (mol/mol)
+            obj.PC2=0.0094*obj.SD;  % Sandra played with  1e-20;            %P/C second TOC fraction 1/106 (mol/mol)
             obj.SO4C=0.5*obj.SD;                                                %SO4/C (mol/mol)
             obj.DICC1=1.0*obj.SD;                                               %DIC/C until zSO4 (mol/mol)
             obj.DICC2=0.5*obj.SD;                                               %DIC/C below zSO$ (mol/mol)
@@ -108,7 +108,8 @@ classdef benthic_main < handle
         
         function w = sedrate(wdepth)
             % sedimentation rate, cm/yr
-            w=10.0.^(-0.87478367-0.00043512*wdepth)*3.3; % 0.03; 
+            %w=10.0.^(-0.87478367-0.00043512*wdepth)*3.3; % 0.03; 
+            w=8.64920555619174509e-4;
         end
         
         

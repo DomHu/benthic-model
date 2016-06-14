@@ -9,7 +9,8 @@ classdef benthic_zALK
         
         KNH4=1.3;         %Adsorption coefficient (same in ocix and anoxic layer) (-)
         
-        reac1;
+        reac11;
+        reac12;
         reac2;
         reac3;
         reac4;
@@ -22,7 +23,8 @@ classdef benthic_zALK
 
   
              %reactive terms: OM degradation
-             obj.reac1=bsd.gamma*bsd.NC1*bsd.ALKRNIT+bsd.ALKROX*bsd.SD;     % z < zox:  Nitrification (-2) Aerobic degradation (+15/106)
+             obj.reac11=bsd.gamma*bsd.NC1/(1+obj.KNH4)*bsd.ALKRNIT+bsd.ALKROX*bsd.SD;     % z < zox:  Nitrification (-2) Aerobic degradation (+15/106)
+             obj.reac12=bsd.gamma*bsd.NC2/(1+obj.KNH4)*bsd.ALKRNIT+bsd.ALKROX*bsd.SD;     % z < zox:  Nitrification (-2) Aerobic degradation (+15/106)
              obj.reac2=bsd.SD*bsd.ALKRDEN;                                  % zox < z < zno3: Denitrification (+93.4/106)
              obj.reac3=bsd.SD*bsd.ALKRSUL;                                  % zno3 < z < zso4: Sulfate reduction (+15/106)
              obj.reac4=bsd.SD*bsd.ALKRMET;                                  % zso4 < z < zinf: Methanogenesis (+14/106)
@@ -36,7 +38,7 @@ classdef benthic_zALK
             % Preparation: for each layer, sort out solution-matching across bioturbation boundary if necessary
             % layer 1: 0 < z < zox, Nitrification (-) Aerobic degradation (+)
             %      ls =      prepfg_l12( bsd, swi, r, reac1,                                            reac2,                                          ktemp, zU, zL, D1,        D2)
-            rALK.ls1 = r.zTOC.prepfg_l12(bsd, swi, r, obj.reac1, obj.reac1,         0,     0, r.zox, obj.DALK1, obj.DALK2);
+            rALK.ls1 = r.zTOC.prepfg_l12(bsd, swi, r, obj.reac11, obj.reac12,         0,     0, r.zox, obj.DALK1, obj.DALK2);
             % layer 2: zox < z < zno3, Denitrification (+)
             rALK.ls2 = r.zTOC.prepfg_l12(bsd, swi, r, obj.reac2, obj.reac2,         0,  r.zox, r.zno3, obj.DALK1, obj.DALK2);            
             % layer 3: zno3 < z < zso4, Sulfate reduction (+)
@@ -87,7 +89,7 @@ classdef benthic_zALK
              %Dom 24.02.2016: actually should be 2 integrals for ALK produced: ALK-reduction + AOM (see documentation, but has the same reac const = 0.5) :
             % basis functions at bottom of layer 1
             [ e1_zox, dedz1_zox, f1_zox, dfdz1_zox, g1_zox, dgdz1_zox] ...
-                = r.zTOC.calcfg_l12(r.zox, bsd, swi, r, obj.reac1, obj.reac1 , 0, rALK.ls1);
+                = r.zTOC.calcfg_l12(r.zox, bsd, swi, r, obj.reac11, obj.reac12 , 0, rALK.ls1);
             % basis functions at top of layer 2
             [ e2_zox, dedz2_zox, f2_zox, dfdz2_zox, g2_zox, dgdz2_zox] ...
                 = r.zTOC.calcfg_l12(r.zox, bsd, swi, r, obj.reac2, obj.reac2, 0, rALK.ls2);
@@ -106,7 +108,7 @@ classdef benthic_zALK
                     % Dominik 24.02.2016 was r.zxf.*zoxFALK./D    need gammaALK here! 
             % Solution at swi, top of layer 1
             [ e1_0, dedz1_0, f1_0, dfdz1_0, g1_0, dgdz1_0] ...
-                = r.zTOC.calcfg_l12(0, bsd, swi, r, obj.reac1, obj.reac1 , 0, rALK.ls1);
+                = r.zTOC.calcfg_l12(0, bsd, swi, r, obj.reac11, obj.reac12 , 0, rALK.ls1);
             % transform to use coeffs from l4
             [ e1_0, f1_0, g1_0, dedz1_0,  dfdz1_0, dgdz1_0]= benthic_utils.xformsoln(e1_0, f1_0, g1_0, dedz1_0, dfdz1_0, dgdz1_0, ...
                                                                zox.a , zox.b , zox.c , zox.d , zox.e ,zox.f);
@@ -156,7 +158,7 @@ classdef benthic_zALK
             end
             
             if z <= r.zox   % layer 1
-                [ e, dedz, f, dfdz, g, dgdz]  = r.zTOC.calcfg_l12(z, bsd, swi, r, obj.reac1, obj.reac1 , 0, rALK.ls1);
+                [ e, dedz, f, dfdz, g, dgdz]  = r.zTOC.calcfg_l12(z, bsd, swi, r, obj.reac11, obj.reac12 , 0, rALK.ls1);
                 ALK     = r.rALK.A1.*e + r.rALK.B1.*f + g;
                 flxALK  = D.*(r.rALK.A1.*dedz+r.rALK.B1.*dfdz + dgdz);
             elseif z <= r.zno3 % layer 2

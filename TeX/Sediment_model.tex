@@ -65,6 +65,7 @@
 
 \usepackage{amsmath}
 \usepackage{lineno}	% Dominik linenumbers
+\usepackage{rotating}	% Dominik rotate table
 
 \usepackage{marginnote} %Dominik for commments during drafting
 \setlength{\marginparwidth}{35mm}
@@ -882,7 +883,37 @@ TEXT
 
 
 \appendix
-\section{}    %% Appendix A
+\section{Reaction Network}    %% Appendix A
+\begin{sidewaystable}[tbp]
+\caption{Primary pathways of organic matter degradation, secondary redox reactions and stoichiometries implemented in the reaction network.}
+% title of Table
+\centering
+% used for centering table
+\begin{tabular}{l l}
+% centered columns (6 columns)
+\hline\hline
+%inserts double horizontal lines
+ Pathway & Stoichiometry \\
+\hline
+& Primary Redox Reactions\\
+\hline
+Aerobic degradation &  $ \chem{(CH_2O)_x(NH_3)_y(H_3PO_4)_z} + \mathrm{(x+2y)}\chem{O_2} + \mathrm{(y+2z)}\chem{HCO_3^-} \rightarrow \mathrm{(x+y+2z)}\chem{CO_2} + \chem{yNO_3^-} + \chem{zHPO_4^{2-}} + \mathrm{(x+2y+2z)}\chem{H_2O}$\\
+Denitrification & $ 5\chem{(CH_2O)_x(NH_3)_y(H_3PO_4)_z} + \mathrm{(4x+3y)}\chem{NO_3^-} \rightarrow \mathrm{(2x+4y)}\chem{N_2} +  \mathrm{(x-3y+10z)}\chem{CO_2} + \mathrm{(4x+3y-10z)}\chem{HCO_3^-} + 5\chem{zHPO_4^{2-}} + \mathrm{(3x+6y+10z)}\chem{H_2O}$\\
+Sulfate reduction &  $ 2\chem{(CH_2O)_x(NH_3)_y(H_3PO_4)_z} + \chem{xSO_4^{2-}} +  \mathrm{2(y-2z)}\chem{CO_2} + \mathrm{2(y-2z)}\chem{H_2O}\rightarrow \chem{xH_2S} +  \mathrm{2(x+y-2z)}\chem{HCO_3^-}  + \mathrm{2y}\chem{NH_4^+} + 2\chem{zHPO_4^{2-}}$\\
+Methanogenesis & -----\\
+\hline
+& Secondary Redox Reactions\\
+\hline
+Nitrification & $\chem{NH_4^++2O_2+2HCO_3^-}\rightarrow \chem{NO_3^-+2CO_2+3H_2O}$\\
+Sulfide oxidation & $\chem{H_2S + 2O_2 + 2HCO_3^-} \rightarrow \chem{SO_4^{2-} + 2CO_2 + 2H_2O}$\\
+AOM & $\chem{CH_4 + SO_4^{2-}} \rightarrow \chem{HCO_3^- + HS^- + H_2O}$ \textcolor{red}{how get $H_2S$?} $\rightarrow \chem{CO_3^{2-}+H_2S+H_2O}$\\
+\hline\hline
+% inserts double horizontal lines
+\end{tabular}
+\label{table:Reaction_Network}
+% is used to refer this table in the text
+\end{sidewaystable}
+
 
 \subsection{}                               %% Appendix A1, A2, etc.
 
