@@ -10,16 +10,16 @@ classdef benthic_main < handle
         
         %sediment characteristics
         rho_sed=2.5;                            % sediment density (g/cm3)
-        wdepth=3560.67;     % Dom was 600.0                       % water depth (m)
+        wdepth=500.0;     % Dom was 600.0                       % water depth (m)
         w;                                      % burial velocity  (cm/yr)
         z0  = 0;                                % surface
-        zbio=10;            % Sandra played with 0.0                    % bioturbation depth (cm)       
+        zbio=5.0;            % Sandra played with 0.0                    % bioturbation depth (cm)       
         
         zinf=100;                               %Inifinity (cm)
         %zinf = 1000;
         %zlow=100;                              
-        Dbio=3;                                 %bioturbation coefficient (cm2/yr)
-        por=0.8;                                %porosity (-)
+        Dbio=5.2*(10.0^(0.7624-0.0003972*500.0)); % Dom was 3;                                 %bioturbation coefficient (cm2/yr)
+        por=0.85;                                %porosity (-)
         tort=3.0;                               %tortuosity (-)
         irrigationFactor=1.0;                   %irrigation factor (-)
         dispFactor;                             %dispersion factor (-)
@@ -108,8 +108,8 @@ classdef benthic_main < handle
         
         function w = sedrate(wdepth)
             % sedimentation rate, cm/yr
-            %w=10.0.^(-0.87478367-0.00043512*wdepth)*3.3; % 0.03; 
-            w=8.64920555619174509e-4;
+            w=10.0.^(-0.87478367-0.00043512*wdepth)*3.3; % 0.03; 
+            %w=8.64920555619174509e-4;
         end
         
         
