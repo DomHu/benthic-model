@@ -29,6 +29,10 @@ classdef benthic_test
             swi.S0=35;                                                      %Salinity at SWI
         end
         
+        function swi = sensitivity_swi()
+            
+        end
+        
         function test_w()
             wdepth = 0:5000;
             w = benthic_main.sedrate(wdepth);

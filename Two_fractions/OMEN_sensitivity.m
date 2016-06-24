@@ -21,7 +21,7 @@ n = 200;     % n values are randomly distributed with one from each interval (0,
 Latin_Cube = lhsdesign(n,par);
 
 % Set the parameter ranges
-range_k1 = [log10(1e-4), log10(50)];  % [-4, 1.699] OM degradation frac 1 (labile) 
+range_k1 = [log10(1e-4), log10(40)];  % [-4, 1.6021] OM degradation frac 1 (labile) 
 range_f1 = [0.05, 0.95];              % fraction of labile OM
 range_KNH4 = [0.8, 1.7];              % NH4 adsorption
 range_KPO4ox = [100.0, 400.0];        % P Adsorption coefficient in oxic layer
@@ -52,6 +52,20 @@ kmPO4 = V(:,7);
 kaPO4 = 10.^V(:,8);
 gammaNH4 = V(:,9);
 gammaH2S = V(:,10);
+
+% initialize SWI concentrationsn and other parameters
+swi=benthic_test.default_swi();
+
+% 
+
+
+
+
+
+
+
+
+
 
 %%%%% Other techniques as proposed to use different ones: http://www2.mae.ufl.edu/mdo/Papers/5176.pdf
 
