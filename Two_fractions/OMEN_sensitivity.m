@@ -4,6 +4,7 @@
 
 clear
 
+plot_results = false;
 % Make/Save Latin hypercube for parameters
 
 % X = lhsdesign(n,p) returns an n-by-p matrix, X, 
@@ -18,10 +19,13 @@ clear
 par = 10;    % parameters
 n = 200;     % n values are randomly distributed with one from each interval (0,1/n), (1/n,2/n), ..., (1-1/n,1)
 % calculate Latin Hypercube: each row is one representations of the variables for an Experiment
-Latin_Cube = lhsdesign(n,par);
+
+%Latin_Cube = lhsdesign(n,par);
+%save Latin_Cube.mat Latin_Cube
+load('Latin_Cube.mat')
 
 % Set the parameter ranges
-range_k1 = [log10(1e-4), log10(40)];  % [-4, 1.6021] OM degradation frac 1 (labile) 
+range_k1 = [log10(1e-4), log10(20)];  % [-4, 1.3010] OM degradation frac 1 (labile) 
 range_f1 = [0.05, 0.95];              % fraction of labile OM
 range_KNH4 = [0.8, 1.7];              % NH4 adsorption
 range_KPO4ox = [100.0, 400.0];        % P Adsorption coefficient in oxic layer
@@ -55,17 +59,29 @@ gammaH2S = V(:,10);
 
 % initialize SWI concentrationsn and other parameters
 swi=benthic_test.default_swi();
-
 % 
+wtpc = 1.0;     % Overall POC wt\% reaching the SWI
+swi=benthic_test.sensitivity_swi(swi, wtpc, k1, f1, KNH4, KPO4ox, KPO4anox, ksPO4, kmPO4, kaPO4, gammaNH4, gammaH2S);
+    
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%%%                       PLOT the Results
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-
-
-
-
+if(plot_results)
+    Plot_sensitivity_single(swi.Results, log10(k1), range_k1, 'k1', 'log(k1) [yr^{-1}]')
+    Plot_sensitivity_single(swi.Results, f1, [0, 1], 'f1', 'labile fraction')
+    Plot_sensitivity_single(swi.Results, KNH4, range_KNH4,'KNH4', 'K_{NH_4} [-]')
+    Plot_sensitivity_single(swi.Results, KPO4ox, range_KPO4ox,'KPO4ox', 'KPO4ox [-]')
+    Plot_sensitivity_single(swi.Results, KPO4anox, range_KPO4anox,'KPO4anox', 'KPO4anox [-]')
+    Plot_sensitivity_single(swi.Results, ksPO4, range_ksPO4,'ksPO4', 'ksPO4 [yr^{-1}]')
+    Plot_sensitivity_single(swi.Results, kmPO4, range_kmPO4,'kmPO4', 'kmPO4 [yr^{-1}]')
+    Plot_sensitivity_single(swi.Results, log10(kaPO4), range_kaPO4,'kaPO4', 'log10(kaPO4) [yr^{-1}]')
+    Plot_sensitivity_single(swi.Results, gammaNH4, range_gammaNH4,'gammaNH4', 'gammaNH4 [-]')
+    Plot_sensitivity_single(swi.Results, gammaH2S, range_gammaH2S,'gammaH2S', 'gammaH2S [-]')
+end
 
 %%%%% Other techniques as proposed to use different ones: http://www2.mae.ufl.edu/mdo/Papers/5176.pdf
 
