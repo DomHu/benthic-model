@@ -10,12 +10,12 @@ classdef benthic_test
             %bottom water concentrations
             swi.T=10.0; %20.0;                         %temperature (degree C)
             % see caption for Fig 1.2 - two equal TOC fractions 0.02 0.2 2
-            swi.C01=0.05*1e-2/12*bsd.rho_sed; %1.45*0.5*400.0e-6*1/(10.0.^(-0.87478367-0.00043512*500.0)*3.3); % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm3 bulk phase)
-            swi.C02=0.05*1e-2/12*bsd.rho_sed; %6.5*0.5*400.0e-6*1/(10.0.^(-0.87478367-0.00043512*500.0)*3.3); % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm3 bulk phase)
+            swi.C01=0.05*1e-2/12*bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*bsd.rho_sed; %TOC concentration at SWI (wt%) -> (mol/cm3 bulk phase)
+            swi.C02=0.05*1e-2/12*bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm3 bulk phase)
             %swi.C01=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm3 bulk phase)
             %swi.C02=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm3 bulk phase)
-            swi.O20=300.e-9;   %was    300.0e-9                            %O2  concentration at SWI (mol/cm3)
-            swi.NO30=20.0e-9;             % was 20.0e-9                                  %NO3 concentration at SWI (mol/cm3)
+            swi.O20=10.e-9;   %was    300.0e-9                            %O2  concentration at SWI (mol/cm3)
+            swi.NO30=40.0e-9;             % was 20.0e-9                                  %NO3 concentration at SWI (mol/cm3)
             swi.Nitrogen=true;
             swi.NH40=0.0e-9;                                                %NH4 concentration at SWI (mol/cm3)
             swi.SO40=28000.0e-9;                                            %SO4 concentration at SWI (mol/cm3)
@@ -29,7 +29,7 @@ classdef benthic_test
             swi.S0=35;                                                      %Salinity at SWI
         end
         
-        function swi = sensitivity_swi(swi, wtpc, k1, f1, KNH4, KPO4ox, KPO4anox, ksPO4, kmPO4, kaPO4, gammaNH4, gammaH2S)
+        function swi = sensitivity_swi(swi, Params)
             
             res.bsd = benthic_main(1);
             res.bsd.usescalarcode = true;
@@ -57,20 +57,20 @@ classdef benthic_test
             fprintf(fileID,'%1s %8s %12s %12s %12s %12s %12s %12s %8s %8s\n','% Exp','F_O2','F_NO3','F_SO4','F_NH4','F_H2S','F_PO4','zox','zNO3','zSO4');
             fclose(fileID);    
             
-            for i=1:length(k1)  
+            for i=1:length(Params.k1)  
                 i
-                res.swi.C01=f1(i)*wtpc*1e-2/12*res.bsd.rho_sed;       %TOC concentration at SWI (wt%) -> (mol/cm3 bulk phase)
-                res.swi.C02=(1-f1(i))*wtpc*1e-2/12*res.bsd.rho_sed;
-                res.zTOC.k1 = k1(i);
-                res.zTOC.k2 = k1(i)*0.01;                
-                res.zNO3.KNH4 = KNH4(i);
-                res.zPO4_M.KPO41 = KPO4ox(i);
-                res.zPO4_M.KPO42 = KPO4anox(i);
-                res.zPO4_M.ksPO4 = ksPO4(i);
-                res.zPO4_M.kmPO4 = kmPO4(i);
-                res.zPO4_M.kaPO4 = kaPO4(i);
-                res.bsd.gamma = gammaNH4(i);
-                res.bsd.gammaH2S = gammaH2S(i);
+                res.swi.C01=Params.f1(i)*Params.wtpc(i)*1e-2/12*res.bsd.rho_sed;       %TOC concentration at SWI (wt%) -> (mol/cm3 bulk phase)
+                res.swi.C02=(1-Params.f1(i))*Params.wtpc(i)*1e-2/12*res.bsd.rho_sed;
+                res.zTOC.k1 = Params.k1(i);
+                res.zTOC.k2 = Params.k1(i)*0.01;                
+                res.zNO3.KNH4 = Params.KNH4(i);
+                res.zPO4_M.KPO41 = Params.KPO4ox(i);
+                res.zPO4_M.KPO42 = Params.KPO4anox(i);
+                res.zPO4_M.ksPO4 = Params.ksPO4(i);
+                res.zPO4_M.kmPO4 = Params.kmPO4(i);
+                res.zPO4_M.kaPO4 = Params.kaPO4(i);
+                res.bsd.gamma = Params.gammaNH4(i);
+                res.bsd.gammaH2S = Params.gammaH2S(i);
             
    
             res = res.zTOC.calc(res.bsd,res.swi, res);

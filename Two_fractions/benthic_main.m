@@ -18,7 +18,7 @@ classdef benthic_main < handle
         zinf=100;                               %Inifinity (cm)
         %zinf = 1000;
         %zlow=100;                              
-        Dbio=5.2*(10.0^(0.7624-0.0003972*500.0)); % Dom was 3;                                 %bioturbation coefficient (cm2/yr)
+        Dbio; % was 29.06.2016 =5.2*(10.0^(0.7624-0.0003972*obj.wdepth)); % Dom was 3;                                 %bioturbation coefficient (cm2/yr)
         por=0.85;                                %porosity (-)
         tort=3.0;                               %tortuosity (-)
         irrigationFactor=1.0;                   %irrigation factor (-)
@@ -79,6 +79,7 @@ classdef benthic_main < handle
             obj.usescalarcode = (obj.ncl == 1);
             
             obj.w=benthic_main.sedrate(obj.wdepth); 
+            obj.Dbio=benthic_main.biorate(obj.wdepth);
             obj.dispFactor=obj.por.^(obj.tort-1.0).*obj.irrigationFactor;                 %dispersion factor (-)
             obj.SD=(1-obj.por)./obj.por;   % Sandra played with 1.0
             
@@ -108,11 +109,15 @@ classdef benthic_main < handle
         
         function w = sedrate(wdepth)
             % sedimentation rate, cm/yr
-            w=10.0.^(-0.87478367-0.00043512*wdepth)*3.3; % 0.03; 
-            %w=8.64920555619174509e-4;
+            w = 0.2668; % is at 500m this is of  10.0.^(-0.87478367-0.00043512*wdepth)*3.3; % 0.03; 
+      
         end
         
-        
+         function Dbio = biorate(wdepth)
+            % sedimentation rate, cm/yr
+            Dbio=3.0; %5.2*(10.0^(0.7624-0.0003972*wdepth)); % Dom was 3.0;                                 %bioturbation coefficient (cm2/yr)
+            %w=8.64920555619174509e-4;
+        end       
         
         
         
