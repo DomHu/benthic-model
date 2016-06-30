@@ -3,10 +3,33 @@
 % Examples:
 %
 % Calculate a single sediment column with default parameters
+%
+% Execute now with 
+% >> benthic_test.run_OMEN
+% was:
 % >> swi=benthic_test.default_swi()
 % >> res=benthic_test.test_benthic(1,swi);
 % >> benthic_test.plot_column(res, false)
 %
+
+
+% Calculate a single sediment column with default parameters and compare
+% with BRNS results saved in OMEN-BRNS - save output *.ps in OMEN-BRNS
+% >> benthic_test.run_OMEN_BRNS
+
+
+% OMEN_sensitivity.m
+% generate Latin Hypercube for various parameters and calculate SWI fluxes
+% and penetration depths with OMEN 
+% save resulting *.ps in folder Sensitivity
+
+
+
+
+
+
+%%%%% STUART
+
 % Calculate and plot 1000 sed columns vs O2 gradient 
 % >> res=benthic_test.test_benthic(1000,swi);
 % >> benthic_test.plot_summary(res)

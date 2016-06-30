@@ -5,17 +5,18 @@ classdef benthic_test
     end
     
     methods(Static)
+              
         function swi = default_swi()
             bsd = benthic_main();
             %bottom water concentrations
-            swi.T=10.0; %20.0;                         %temperature (degree C)
+            swi.T=8.1; %20.0;                         %temperature (degree C)
             % see caption for Fig 1.2 - two equal TOC fractions 0.02 0.2 2
             swi.C01=0.05*1e-2/12*bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*bsd.rho_sed; %TOC concentration at SWI (wt%) -> (mol/cm3 bulk phase)
             swi.C02=0.05*1e-2/12*bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm3 bulk phase)
             %swi.C01=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm3 bulk phase)
             %swi.C02=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm3 bulk phase)
-            swi.O20=300.e-9;   %was    300.0e-9                            %O2  concentration at SWI (mol/cm3)
-            swi.NO30=20.0e-9;             % was 20.0e-9                                  %NO3 concentration at SWI (mol/cm3)
+            swi.O20=10.e-9;   %was    300.0e-9                            %O2  concentration at SWI (mol/cm3)
+            swi.NO30=40.0e-9;             % was 20.0e-9                                  %NO3 concentration at SWI (mol/cm3)
             swi.Nitrogen=true;
             swi.NH40=0.0e-9;                                                %NH4 concentration at SWI (mol/cm3)
             swi.SO40=28000.0e-9;                                            %SO4 concentration at SWI (mol/cm3)
@@ -29,8 +30,27 @@ classdef benthic_test
             swi.S0=35;                                                      %Salinity at SWI
         end
         
-        function swi = sensitivity_swi(swi, Params)
-            
+        function run_OMEN()            
+            clear
+            swi=benthic_test.default_swi()
+            % set date-time
+            str_date = datestr(now,'ddmmyy_HH_MM_SS');
+            res=benthic_test.test_benthic(1,swi);
+            benthic_test.plot_column(res, false, swi, str_date)
+        end
+        
+         function run_OMEN_BRNS()
+            clear
+            swi=benthic_test.default_swi()
+            % set date-time
+            str_date = datestr(now,'ddmmyy_HH_MM_SS');
+            res=benthic_test.test_benthic(1,swi);
+            benthic_test.plot_OMEN_BRNS(res, swi, str_date)
+        end
+
+        
+        function swi = sensitivity_swi(swi, Params, str_date)
+
             res.bsd = benthic_main(1);
             res.bsd.usescalarcode = true;
             
@@ -53,7 +73,7 @@ classdef benthic_test
             res.zDIC = benthic_zDIC(res.bsd, res.swi);
             res.zALK = benthic_zALK(res.bsd, res.swi);
             
-            fileID = fopen('Results.txt','w');
+            fileID = fopen(['./Sensitivity/Results_' str_date '.txt'],'w');
             fprintf(fileID,'%1s %8s %12s %12s %12s %12s %12s %12s %8s %8s\n','% Exp','F_O2','F_NO3','F_SO4','F_NH4','F_H2S','F_PO4','zox','zNO3','zSO4');
             fclose(fileID);    
             
@@ -91,7 +111,7 @@ classdef benthic_test
             
             swi.Results(i,:) = [i res.flxswiO2 res.flxswiNO3 res.flxswiSO4 res.flxswiNH4 res.flxswiH2S res.flxswi_P res.zox res.zno3 res.zso4];
             
-            fileID = fopen('Results.txt','a');
+            fileID = fopen(['./Sensitivity/Results_' str_date '.txt'],'a');
             fprintf(fileID,'%3d %7.6e %7.6e %7.6e %7.6e %7.6e %7.6e %8.5f %8.5f %8.5f\n',i, res.flxswiO2, res.flxswiNO3, res.flxswiSO4, res.flxswiNH4, res.flxswiH2S, res.flxswi_P, res.zox, res.zno3, res.zso4);
             fclose(fileID);          
             
@@ -126,11 +146,13 @@ classdef benthic_test
         end
         
         function res = test_TOC_load( ncl, swi )
-            a=1000;
+            clear
+            swi=benthic_test.default_swi()
+            a=500;
             for n = 1:a
-            swi.C01=n*0.0005*1e-2*2.5;                                %TOC concentration at SWI (wt%) -> (mol/cm3 bulk phase)
-            swi.C02=n*0.0005*1e-2*2.5;                                %TOC concentration at SWI (wt%) -> (mol/cm3 bulk phase)
-
+            swi.C01=n/10*1e-2/12*2.5;                                %TOC concentration at SWI (wt%) -> (mol/cm3 bulk phase)
+            swi.C02=n/10*1e-2/12*2.5;                                %TOC concentration at SWI (wt%) -> (mol/cm3 bulk phase)
+                   
             if nargin < 1
                 ncl = 1;
             end
@@ -202,7 +224,7 @@ classdef benthic_test
             figure
             hold on;
             box on;
-            plot((1:a)/100, -res.O2depth, 'b',(1:a)/100, -res.NO3depth, 'g', (1:a)/100, -res.SO4depth, 'r')            
+            plot((1:a)/10, -res.O2depth, 'b',(1:a)/10, -res.NO3depth, 'g', (1:a)/10, -res.SO4depth, 'r')            
             xlabel('TOC (wt%)');
             ylabel('TEA penetration depth (cm)');
             hleg=legend('Oxygen', 'Nitrate', 'Sulfate');
@@ -317,27 +339,27 @@ classdef benthic_test
             
         end
         
-	function plot_OMEN_BRNS(res, swi)
+	function plot_OMEN_BRNS(res, swi, str_date)
             % plot single sediment column vs depth and compare with BRNS
             
-            g1=load('../FortranFilesDominik_4_1Test/g1.dat','ascii');
-            g2=load('../FortranFilesDominik_4_1Test/g2.dat','ascii');
-            zzo2=load('../FortranFilesDominik_4_1Test/zzo2.dat','ascii');
-            zno3=load('../FortranFilesDominik_4_1Test/zno3.dat','ascii');
-            zso4=load('../FortranFilesDominik_4_1Test/zso4.dat','ascii');
-            zpo4=load('../FortranFilesDominik_4_1Test/zpo4.dat','ascii');
-            znh4=load('../FortranFilesDominik_4_1Test/znh4.dat','ascii');
-            zh2s=load('../FortranFilesDominik_4_1Test/zh2s.dat','ascii');
+            g1=load('OMEN-BRNS/FortranFilesDominik_4_1Test/g1.dat','ascii');
+            g2=load('OMEN-BRNS/FortranFilesDominik_4_1Test/g2.dat','ascii');
+            zzo2=load('OMEN-BRNS/FortranFilesDominik_4_1Test/zzo2.dat','ascii');
+            zno3=load('OMEN-BRNS/FortranFilesDominik_4_1Test/zno3.dat','ascii');
+            zso4=load('OMEN-BRNS/FortranFilesDominik_4_1Test/zso4.dat','ascii');
+            zpo4=load('OMEN-BRNS/FortranFilesDominik_4_1Test/zpo4.dat','ascii');
+            znh4=load('OMEN-BRNS/FortranFilesDominik_4_1Test/znh4.dat','ascii');
+            zh2s=load('OMEN-BRNS/FortranFilesDominik_4_1Test/zh2s.dat','ascii');
             
             % Porosity and bioturbation coeff. depth invariant
-            g1_di=load('../FortranFilesDominik_4_1Test_depthinvariant/g1.dat','ascii');
-            g2_di=load('../FortranFilesDominik_4_1Test_depthinvariant/g2.dat','ascii');
-            zzo2_di=load('../FortranFilesDominik_4_1Test_depthinvariant/zzo2.dat','ascii');
-            zno3_di=load('../FortranFilesDominik_4_1Test_depthinvariant/zno3.dat','ascii');
-            zso4_di=load('../FortranFilesDominik_4_1Test_depthinvariant/zso4.dat','ascii');
-            zpo4_di=load('../FortranFilesDominik_4_1Test_depthinvariant/zpo4.dat','ascii');
-            znh4_di=load('../FortranFilesDominik_4_1Test_depthinvariant/znh4.dat','ascii');
-            zh2s_di=load('../FortranFilesDominik_4_1Test_depthinvariant/zh2s.dat','ascii');
+            g1_di=load('OMEN-BRNS/FortranFilesDominik_4_1Test_depthinvariant/g1.dat','ascii');
+            g2_di=load('OMEN-BRNS/FortranFilesDominik_4_1Test_depthinvariant/g2.dat','ascii');
+            zzo2_di=load('OMEN-BRNS/FortranFilesDominik_4_1Test_depthinvariant/zzo2.dat','ascii');
+            zno3_di=load('OMEN-BRNS/FortranFilesDominik_4_1Test_depthinvariant/zno3.dat','ascii');
+            zso4_di=load('OMEN-BRNS/FortranFilesDominik_4_1Test_depthinvariant/zso4.dat','ascii');
+            zpo4_di=load('OMEN-BRNS/FortranFilesDominik_4_1Test_depthinvariant/zpo4.dat','ascii');
+            znh4_di=load('OMEN-BRNS/FortranFilesDominik_4_1Test_depthinvariant/znh4.dat','ascii');
+            zh2s_di=load('OMEN-BRNS/FortranFilesDominik_4_1Test_depthinvariant/zh2s.dat','ascii');
             
    
             [l1, l2]=size(zzo2);
@@ -426,7 +448,7 @@ classdef benthic_test
 
             ha = axes('Position',[0 0 1 1],'Xlim',[0 1],'Ylim',[0 1],'Box','off','Visible','off','Units','normalized', 'clipping' , 'off');
             text(0.5, 1,'\bf Test 4\_1: 500m anoxic (no Mn, Fe)','HorizontalAlignment','center','VerticalAlignment', 'top')
-            print('-dpsc2', ['PO4_PROFILES.ps']);
+            print('-dpsc2', ['./OMEN-BRNS/PO4_PROFILES_' str_date '.ps']);
         end
            
             
@@ -501,7 +523,7 @@ classdef benthic_test
                 plot([0,t(1,2)], [-res.zox,-res.zox], 'b--')     
                 plot([0,t(1,2)], [-res.zno3,-res.zno3], 'g--')     
                 plot([0,t(1,2)], [-res.zso4,-res.zso4], 'r--')             
-                axis ([-Inf Inf -40.0 0.0])
+                axis ([0.0 4e-8 -40.0 0.0])
                 xlabel ('NO_3 (mol/cm3)')
                 ylabel('Depth (cm)')
     %            title ('NO3 (mol/cm3)')
@@ -569,7 +591,7 @@ classdef benthic_test
 
                 ha = axes('Position',[0 0 1 1],'Xlim',[0 1],'Ylim',[0 1],'Box','off','Visible','off','Units','normalized', 'clipping' , 'off');
                 text(0.5, 1,'\bf OMEN (blue) vs BRNS (red);  depthinv. (green) - Test 4\_1: 500m anoxic (no Mn, Fe)','HorizontalAlignment','center','VerticalAlignment', 'top')
-                print('-dpsc2', ['ALL_PROFILES.ps']);
+                print('-dpsc2', ['./OMEN-BRNS/ALL_PROFILES_' str_date '.ps']);
 
             else
                 figure;
@@ -645,7 +667,7 @@ classdef benthic_test
     %            title ('H2S (mol/cm3)')
 
 
-                print('-dpsc2', ['ALL_PROFILES.ps']);
+                print('-dpsc2', ['./OMEN-BRNS/ALL_PROFILES_' str_date '.ps']);
             end
 
     end
@@ -655,7 +677,7 @@ classdef benthic_test
 
         end
         
-        function plot_column(res, debug, swi)
+        function plot_column(res, debug, swi, str_date)
             % plot single sediment column vs depth
             
             set(0,'defaultLineLineWidth', 2)
@@ -731,7 +753,7 @@ classdef benthic_test
             ylabel('Depth (cm)')
             
 
-            print('-dpsc2', ['PO4_PROFILES.ps']);
+            print('-dpsc2', ['PO4_PROFILES_' str_date '.ps']);
         end
            
             
@@ -848,7 +870,7 @@ classdef benthic_test
     %            title ('H2S (mol/cm3)')
 
 
-                print('-dpsc2', ['ALL_PROFILES.ps']);
+                print('-dpsc2', ['ALL_PROFILES_' str_date '.ps']);
 
             else
                 figure;
@@ -924,7 +946,7 @@ classdef benthic_test
     %            title ('H2S (mol/cm3)')
 
 
-                print('-dpsc2', ['ALL_PROFILES.ps']);
+                print('-dpsc2', ['ALL_PROFILES_' str_date '.ps']);
             end
 
     end

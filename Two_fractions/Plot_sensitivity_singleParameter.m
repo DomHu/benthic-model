@@ -4,8 +4,10 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [] = Plot_sensitivity_singleParameter(Results, ind, range, NameVar, xaxis)
+function [] = Plot_sensitivity_singleParameter(Results, ind, range, NameVar, xaxis, str_date)
 
+% % % set date-time
+% % str_date = datestr(now,'ddmmyy_HH_MM_SS')
 
 % for i=1:length(k1)
 %     if(abs(Results(i,7))>0.1)
@@ -88,6 +90,6 @@ function [] = Plot_sensitivity_singleParameter(Results, ind, range, NameVar, xax
     
 %	ha = axes('Position',[0 0 1 1],'Xlim',[0 1],'Ylim',[0 1],'Box','off','Visible','off','Units','normalized', 'clipping' , 'off');
 %	text(0.5, 1,'\bf Test 4\_1: 500m anoxic (no Mn, Fe)','HorizontalAlignment','center','VerticalAlignment', 'top')
-	print('-dpsc2', ['1_' NameVar '_Sensitivity.ps']);
+	print('-dpsc2', ['./Sensitivity/1_' NameVar '_Sensitivity_' str_date '.ps']);
 end
 

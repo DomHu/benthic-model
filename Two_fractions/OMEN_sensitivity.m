@@ -59,9 +59,11 @@ Params.gammaH2S = V(:,10);
 % initialize SWI concentrationsn and other parameters
 swi=benthic_test.default_swi();
 % 
-Params.wtpc = ones(1,n)./10;     % Overall POC wt\% reaching the SWI
+Params.wtpc = ones(1,n);     % Overall POC wt\% reaching the SWI
 
-swi=benthic_test.sensitivity_swi(swi, Params);
+% set date-time
+str_date = datestr(now,'ddmmyy_HH_MM_SS');
+swi=benthic_test.sensitivity_swi(swi, Params, str_date);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -70,35 +72,35 @@ swi=benthic_test.sensitivity_swi(swi, Params);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-plot_results_singlePar = false;
+plot_results_singlePar = true;
 if(plot_results_singlePar)
-    Results_NaN = load('Results_NaN.txt','ascii');  % TODO: check how to create this file automaticly
+%    Results_NaN = load('Results_NaN.txt','ascii');  % TODO: check how to create this file automaticly
 % with created results    Plot_sensitivity_singleParameter(swi.Results, log10(Params.k1), Params.range_k1, 'k1', 'log(k1) [yr^{-1}]')
-    Plot_sensitivity_singleParameter(Results_NaN, log10(Params.k1), Params.range_k1, 'k1', 'log(k1) [yr^{-1}]')
-    Plot_sensitivity_singleParameter(swi.Results, Params.f1, [0, 1], 'f1', 'labile fraction')
-    Plot_sensitivity_singleParameter(swi.Results, Params.KNH4, Params.range_KNH4,'KNH4', 'K_{NH_4} [-]')
-    Plot_sensitivity_singleParameter(swi.Results, Params.KPO4ox, Params.range_KPO4ox,'KPO4ox', 'KPO4ox [-]')
-    Plot_sensitivity_singleParameter(swi.Results, Params.KPO4anox, Params.range_KPO4anox,'KPO4anox', 'KPO4anox [-]')
-    Plot_sensitivity_singleParameter(swi.Results, Params.ksPO4, Params.range_ksPO4,'ksPO4', 'ksPO4 [yr^{-1}]')
-    Plot_sensitivity_singleParameter(swi.Results, Params.kmPO4, Params.range_kmPO4,'kmPO4', 'kmPO4 [yr^{-1}]')
-    Plot_sensitivity_singleParameter(swi.Results, log10(Params.kaPO4), Params.range_kaPO4,'kaPO4', 'log(kaPO4) [yr^{-1}]')
-    Plot_sensitivity_singleParameter(swi.Results, Params.gammaNH4, Params.range_gammaNH4,'gammaNH4', 'gammaNH4 [-]')
-    Plot_sensitivity_singleParameter(swi.Results, Params.gammaH2S, Params.range_gammaH2S,'gammaH2S', 'gammaH2S [-]')
+    Plot_sensitivity_singleParameter(swi.Results, log10(Params.k1), Params.range_k1, 'k1', 'log(k1) [yr^{-1}]', str_date)
+    Plot_sensitivity_singleParameter(swi.Results, Params.f1, [0, 1], 'f1', 'labile fraction', str_date)
+    Plot_sensitivity_singleParameter(swi.Results, Params.KNH4, Params.range_KNH4,'KNH4', 'K_{NH_4} [-]', str_date)
+    Plot_sensitivity_singleParameter(swi.Results, Params.KPO4ox, Params.range_KPO4ox,'KPO4ox', 'KPO4ox [-]', str_date)
+    Plot_sensitivity_singleParameter(swi.Results, Params.KPO4anox, Params.range_KPO4anox,'KPO4anox', 'KPO4anox [-]', str_date)
+    Plot_sensitivity_singleParameter(swi.Results, Params.ksPO4, Params.range_ksPO4,'ksPO4', 'ksPO4 [yr^{-1}]', str_date)
+    Plot_sensitivity_singleParameter(swi.Results, Params.kmPO4, Params.range_kmPO4,'kmPO4', 'kmPO4 [yr^{-1}]', str_date)
+    Plot_sensitivity_singleParameter(swi.Results, log10(Params.kaPO4), Params.range_kaPO4,'kaPO4', 'log(kaPO4) [yr^{-1}]', str_date)
+    Plot_sensitivity_singleParameter(swi.Results, Params.gammaNH4, Params.range_gammaNH4,'gammaNH4', 'gammaNH4 [-]', str_date)
+    Plot_sensitivity_singleParameter(swi.Results, Params.gammaH2S, Params.range_gammaH2S,'gammaH2S', 'gammaH2S [-]', str_date)
 end
 
-plot_results_singleOut = false;
+plot_results_singleOut = true;
 if(plot_results_singleOut)    
 %    Results_NaN = load('Results_NaN.txt','ascii'); % TODO: check how to create this file automaticly
 
-    Plot_sensitivity_singleOutput(Params, swi.Results, 2, 'FO2', 'F_{O_2}')
-    Plot_sensitivity_singleOutput(Params, swi.Results, 3, 'FNO3', 'F_{NO_3}')
-    Plot_sensitivity_singleOutput(Params, swi.Results, 4, 'FSO4', 'F_{SO_4}')
-    Plot_sensitivity_singleOutput(Params, swi.Results, 5, 'FNH4', 'F_{NH_4}')
-    Plot_sensitivity_singleOutput(Params, swi.Results, 6, 'FH2S', 'F_{H_2S}')
-    Plot_sensitivity_singleOutput(Params, swi.Results, 7, 'FPO4', 'F_{PO_4}')
-    Plot_sensitivity_singleOutput(Params, swi.Results, 8, 'zox', 'z_{O_2}')
-    Plot_sensitivity_singleOutput(Params, swi.Results, 9, 'zNO3', 'z_{NO_3}')
-    Plot_sensitivity_singleOutput(Params, swi.Results, 10, 'zSO4', 'z_{SO_4}')    
+    Plot_sensitivity_singleOutput(Params, swi.Results, 2, 'FO2', 'F_{O_2}', str_date)
+    Plot_sensitivity_singleOutput(Params, swi.Results, 3, 'FNO3', 'F_{NO_3}', str_date)
+    Plot_sensitivity_singleOutput(Params, swi.Results, 4, 'FSO4', 'F_{SO_4}', str_date)
+    Plot_sensitivity_singleOutput(Params, swi.Results, 5, 'FNH4', 'F_{NH_4}', str_date)
+    Plot_sensitivity_singleOutput(Params, swi.Results, 6, 'FH2S', 'F_{H_2S}', str_date)
+    Plot_sensitivity_singleOutput(Params, swi.Results, 7, 'FPO4', 'F_{PO_4}', str_date)
+    Plot_sensitivity_singleOutput(Params, swi.Results, 8, 'zox', 'z_{O_2}', str_date)
+    Plot_sensitivity_singleOutput(Params, swi.Results, 9, 'zNO3', 'z_{NO_3}', str_date)
+    Plot_sensitivity_singleOutput(Params, swi.Results, 10, 'zSO4', 'z_{SO_4}', str_date)    
 end
 
 %%%%% Other techniques as proposed to use different ones: http://www2.mae.ufl.edu/mdo/Papers/5176.pdf

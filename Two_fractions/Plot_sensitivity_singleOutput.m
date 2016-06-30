@@ -4,7 +4,9 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [] = Plot_sensitivity_singleOutput(Params, Results, index,NameVar, yaxis)
+function [] = Plot_sensitivity_singleOutput(Params, Results, index,NameVar, yaxis, str_date)
+% % % Set date and time
+% % str_date = datestr(now,'ddmmyy_HH_MM_SS')
 
 
     figure
@@ -82,5 +84,5 @@ function [] = Plot_sensitivity_singleOutput(Params, Results, index,NameVar, yaxi
     
 %	ha = axes('Position',[0 0 1 1],'Xlim',[0 1],'Ylim',[0 1],'Box','off','Visible','off','Units','normalized', 'clipping' , 'off');
 %	text(0.5, 1,'\bf Test 4\_1: 500m anoxic (no Mn, Fe)','HorizontalAlignment','center','VerticalAlignment', 'top')
-	print('-dpsc2', ['2_' NameVar '_Sensitivity.ps']);
+	print('-dpsc2', ['./Sensitivity/2_' NameVar '_Sensitivity_' str_date '.ps']);
 end
