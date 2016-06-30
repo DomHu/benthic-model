@@ -59,7 +59,8 @@ Params.gammaH2S = V(:,10);
 % initialize SWI concentrationsn and other parameters
 swi=benthic_test.default_swi();
 % 
-Params.wtpc = ones(1,n);     % Overall POC wt\% reaching the SWI
+Params.wtpc = ones(1,n)./10;     % Overall POC wt\% reaching the SWI
+
 swi=benthic_test.sensitivity_swi(swi, Params);
 
 
@@ -71,9 +72,9 @@ swi=benthic_test.sensitivity_swi(swi, Params);
 
 plot_results_singlePar = false;
 if(plot_results_singlePar)
-%    Results_NaN = load('Results_NaN.txt','ascii');  % TODO: check how to create this file automaticly
+    Results_NaN = load('Results_NaN.txt','ascii');  % TODO: check how to create this file automaticly
 % with created results    Plot_sensitivity_singleParameter(swi.Results, log10(Params.k1), Params.range_k1, 'k1', 'log(k1) [yr^{-1}]')
-    Plot_sensitivity_singleParameter(swi.Results, log10(Params.k1), Params.range_k1, 'k1', 'log(k1) [yr^{-1}]')
+    Plot_sensitivity_singleParameter(Results_NaN, log10(Params.k1), Params.range_k1, 'k1', 'log(k1) [yr^{-1}]')
     Plot_sensitivity_singleParameter(swi.Results, Params.f1, [0, 1], 'f1', 'labile fraction')
     Plot_sensitivity_singleParameter(swi.Results, Params.KNH4, Params.range_KNH4,'KNH4', 'K_{NH_4} [-]')
     Plot_sensitivity_singleParameter(swi.Results, Params.KPO4ox, Params.range_KPO4ox,'KPO4ox', 'KPO4ox [-]')
