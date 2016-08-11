@@ -137,22 +137,28 @@ Such studies and quantifications are possible through the application of idealis
 The number of research questions that can be addressed with diagenetic models is infinite and a plethora of different approaches have been developed, mainly following two distinct directions \citep{arndt_quantifying_2013}. 
 First, state-of-the art diagenetic models simulating all of the essential coupled redox and equilibrium reactions within marine sediments that control carbon burial and benthic recycling fluxes 
 (e.g. BRNS, \citeauthor{aguilera_knowledge-based_2005}, \citeyear{aguilera_knowledge-based_2005}; 
-MEDIA, \citeauthor{meysman_reactive_2003}, \citeyear{meysman_reactive_2003}; OMEXDIA, \citeauthor{soetaert_model_1996}, \citeyear{soetaert_model_1996}). These ``complete'' models generally use a so-called multi-G approach, thus dividing the bulk organic 
-carbon pool into a number of compound classes that are characterised by different degradabilities $k_i$. However, their global applicability is limited by the high computation cost of simulating all biogeochemical reactions. 
-The second group of models is less sophisticated and comprehensive than the ``complete'' diagenetic models and is used for the coupling to global Earth System Models 
+MEDIA, \citeauthor{meysman_reactive_2003}, \citeyear{meysman_reactive_2003}; OMEXDIA, \citeauthor{soetaert_model_1996}, \citeyear{soetaert_model_1996}). These ``complete'' models generally use a so-called multi-G approach, 
+thus dividing the bulk organic carbon pool into a number of compound classes that are characterised by different degradabilities $k_i$. However, their global applicability is limited by the high computation cost of simulating 
+all biogeochemical reactions. The second group of models is less sophisticated and comprehensive than the ``complete'' diagenetic models and is used for the coupling to global Earth System Models 
 (e.g. DCESS, \citeauthor{shaffer_presentation_2008}, \citeyear{shaffer_presentation_2008}; HAMOCC, , \citeauthor{heinze_global_1999}, \citeyear{heinze_global_1999}; 
-MEDUSA, \citeauthor{munhoven_glacialinterglacial_2007}, \citeyear{munhoven_glacialinterglacial_2007}). In particular, these models consider fewer biogeochemical reactions and apply the 1G approach, 
-thus just representing a single organic matter pool which is degraded at a constant rate. 
+MEDUSA, \citeauthor{munhoven_glacialinterglacial_2007}, \citeyear{munhoven_glacialinterglacial_2007}). In particular, these models consider fewer biogeochemical reactions and apply the so-called 1G approach, 
+thus just representing a single organic matter pool which is degraded at a constant rate. Obviously, such a simplification can neither account for the observed vast structural complexity in natural organic matter and its resulting 
+different degradation rates nor for the decrease in OM degradability during diagenesis \citep{arndt_quantifying_2013}. 
+A further problem of both approaches (and models in general) are model parameters which implicitly account for processes not explicitly described. These parameters are either derived through profile fitting for a specific site or 
+follow different global relationships with a related, readily available sediment characteristic, such as water depth \citep{middelburg_empirical_1997} or sedimentation rate \citep{tromp_global_1995}. 
+However, also these relationships are mostly based on simple fitting excercises to limited data sets and cannot replace a mechanistic representation of the underlying processes, especially when applying the model 
+for different geological timescales. 
 
-\textcolor{red}{TODO:} Sandra review: large scale of published model parameters illustrates the complex nature of organic matter dynamics! Very difficult to find global relationships to relate model parameters 
-to available environmental characteristics, such as water depth, deposition rate.
-Sentence about: even though there is some potential most ESM use the following:
-
-In most current Earth System models, sediment-water exchange of OM and chemical elements is generally treated in a very simplistic way \citep{soetaert_coupling_2000, huelse_biopump_models_2016}. 
+Even though there is potential to use more appropriate global sediment representations, in most current Earth System models sediment-water exchange of OM and chemical elements is generally treated in a very 
+simplistic way \citep{soetaert_coupling_2000, huelse_biopump_models_2016}. 
 Most Earth system Models of Intermediate Complexity (EMICs) for instance represent the sediment-water interface either as a reflective or a conservative/semi-reflective boundary \citep{huelse_biopump_models_2016}. 
 Thus, all particulate material deposited on the seafloor is either instantaneously consumed (reflective boundary), or a fixed fraction is buried in the sediments (conservative/semi-reflective boundary). 
 Both highly simplified approaches furthermore completely neglect the exchange of solute species through the sediment-water interface and, therefore, cannot resolve the complex benthic-pelagic coupling. 
 However, due to their computational efficiency, both representations are often used in global biogeochemical models \citep[e.g.][]{najjar_impact_2007, ridgwell_marine_2007, goosse_description_2010}
+
+
+\textcolor{red}{TODO:} Sandra review: large scale of published model parameters illustrates the complex nature of organic matter dynamics! Very difficult to find global relationships to relate model parameters 
+to available environmental characteristics, such as water depth, deposition rate. Sentence about: even though there is some potential most ESM use the following:
 
 See e.g. \citep{soetaert_coupling_2000, mackenzie_past_2004}.\\[2ex]
 
@@ -164,16 +170,18 @@ uncertainties when diagenetic models are used to couple benthic and pelagic biog
 
 Alternative Model approaches, e.g. from coastal research\\[2ex]
 
-Here, we present the OrganicMatter ENabled SEDiment model (OMEN-SED 1.0), a new, one-dimensional, numerically efficient reactive transport model (RTM) for the biogeochemical dynamics of organic matter,  
-related chemical elements (\chem{O}, \chem{N}, \chem{S}, \chem{P}) and associated pore water quantities (ALK, DIC) in deep-sea sediments. OMEN-SEDs computational efficiency makes it appropriate for 
-the coupling to Earth System Models and therefore for studying global biogeochemical dynamics over geological timescales.
+Here, we present the OrganicMatter ENabled SEDiment model (OMEN-SED 1.0), a new, one-dimensional, numerically efficient reactive transport model (RTM) 
+that describes OM cycling as well as the associated dynamics of the most important terminal electron acceptors (\chem{O_2,\ NO_3,\ SO_4,\ CH_4}), 
+related reduced substances (\chem{NH_4,\ H_2S}) and macronutrients (\chem{PO_4}). %, DIC and Alkalinity.  
+%for the biogeochemical dynamics of organic matter,  related chemical elements (\chem{O}, \chem{N}, \chem{S}, \chem{P}) and associated pore water quantities (ALK, DIC) in deep-sea sediments. 
+OMEN-SEDs computational efficiency allows its coupling to Earth System Models and therefore the investigation of coupled global biogeochemical dynamics over geological timescales.
 Also mention here presented as a 2G-Model, however OMEN-SED can easily be extended to a Multi-G approach. \\ [2ex]
 
 See Van Cappellen and Wang (1996): ``Metal cycling in surface sediments: Modeling the interplay or transport and reaction'' for some good basic info! 
 
 \section{Model Description}
-This section describes the formulation and solution of the model (see Table \ref{table:reactions_processes} for the implemented processes). 
-A glossary of parameters along with their respective units is provided in Tables \ref{table:sed-charac_transport-parameters} and \ref{table:reaction_parameters}.
+The following section provides a detailed description of the new model. Table \ref{table:reactions_processes} summarizes the biogeochemical reaction network and 
+a glossary of parameters along with their respective units is provided in Tables \ref{table:sed-charac_transport-parameters} and \ref{table:reaction_parameters}.
 
 \subsection {General Model Approach} \label{subsec:GeneralModelApproach}
 The calculation of benthic return/uptake and burial fluxes is based on the vertically resolved conservation equation for solid and dissolved species in porous media is given by 
@@ -186,29 +194,34 @@ The calculation of benthic return/uptake and burial fluxes is based on the verti
 where $C_i$ is the concentration of the biogeochemical species $i$, $\xi$ equals the porosity $\phi$ for solute species and $(1-\phi)$ for solid species, hence represents the partitioning of species $i$ 
 into the solute and dissolved phase. The term $z$ is the sediment depth, $t$ denotes the time, $F$ summarises the transport fluxes and $\sum_j R_i^j$ represents the sum of production/consumption rates $j$ 
 that affect species $i$. The reaction network has to account for the most important primary and secondary redox reactions, equilibrium reactions, mineral dissolution and precipitation, as well as adsorption 
-and desorption processes.\\
-State-of-the-art reaction-transport models generally solve the ordinary differential equation (ODE) (\ref{eq:Eq_generaldiagenetic}) numerically and thus allow to account for transient conditions, depth-varying parameters or a high degree of coupling 
-between different chemical species. Yet, numerical models are computational expensive, thus rendering their application in an Earth System Model framework prohibitive. 
-An analytical solution of Eq. (\ref{eq:Eq_generaldiagenetic}) provides an alternative and computational more efficient approach. Analytical models enjoyed great popularity in the early days of diagenetic modelling 
-due to the low computing power. However, early analytical models were often very problem-specific and only considered one or two coupled species  \textcolor{red}{(e.g. Lehrman, Berner) ?? which pubs?}. 
-A number of more complex analytical models describing the coupled dynamics of ....were developed \citep[e.g.][]{billen1982modelling, goloway1982diagenetic, jahnke1982model}. 
+and desorption processes that affect the explicitly resolved chemical species.\\
+State-of-the-art reaction-transport models generally solve the ordinary differential equation (ODE) (eq. \ref{eq:Eq_generaldiagenetic}) numerically and thus allow to account for transient dynamics, 
+depth-varying parameters or a high degree of coupling between different chemical species. Yet, numerical models are computational expensive, thus rendering their application in an Earth System Model framework prohibitive. 
+An analytical solution of equation \eqref{eq:Eq_generaldiagenetic} provides an alternative and computational more efficient approach. Analytical models enjoyed great popularity in the early days of diagenetic modelling 
+and computer technology due to their low computational demands. However, early analytical models were often very problem-specific and only considered one or two coupled species  \textcolor{red}{(e.g. Lehrman, Berner) ?? which pubs?}. 
+Over the next decades, a number of more complex analytical models describing the coupled dynamics of ....were developed \citep[e.g.][]{billen1982modelling, goloway1982diagenetic, jahnke1982model}, 
+before the boost in computing power enabled the development of fully-coupled, multi-species, numerical models \citep[e.g.][]{van1995metal, soetaert_model_1996}. 
 
 \begin{figure}[htbp]
 \begin{center}
-	\includegraphics[width=0.8\textwidth]{figures/Sediment-model-with-profiles-rotated90.pdf}
+	\includegraphics[width=0.8\textwidth]{figures/Sediment-model-with-profiles.pdf}
 	\caption{Schematic of the different modelled species and layers in our sediment model. Here showing the case $z_{\mathrm{ox}} < z_{\mathrm{bio}} < z_{\chem{NO_3}} < z_{\chem{SO_4}}$.}
 	\label{fig:Sediment_layers}
 	\end{center}
 \end{figure}
 
-Finding an analytical solution to  Eq. (\ref{eq:Eq_generaldiagenetic}), especially when complex reaction networks are to be considered is not straightforward and generally requires the assumption of steady state. 
+Finding an analytical solution to  Eq. (\ref{eq:Eq_generaldiagenetic}), especially when complex reaction networks are to be considered, is not straightforward and generally requires the assumption of steady state. 
+In addition, the complexity of the reaction network can be reduced by dividing the sediment into distinct zones and accounting for the most pertinent biogeochemical processes 
+within each zone, thus increasing the likelihood of finding an analytical solution to Eq. (\ref{eq:Eq_generaldiagenetic}). 
+
+Therefore, OMEN-SED assumes that benthic dynamics can be represented by a series of steady-states. 
 Because the Earth system model relevant variability in boundary conditions and fluxes is generally longer than the characteristic timescales of the reaction-transport processes, the sediment can be described by a 
-series of pseudo steady-states. In addition, the complexity of the reaction network can be reduced by dividing the sediment into distinct zones and accounting for the most pertinent biogeochemical processes 
-within each zone, thus increasing the likelihood of finding an analytical solution to Eq. (\ref{eq:Eq_generaldiagenetic}). The model divides the sediment into a bioturbated and a non-bioturbated zone 
-defined by the constant bioturbation depth $z_{\mathrm{bio}}$. In addition, it accounts for the dynamic redox zonation of marine sediments by dividing the sediment into: 2) an oxic zone situated between the 
-SWI and a dynamically calculated penetration depth of oxygen $z_{\mathrm{ox}}$, 3) a denitrification zone situated between $z_{\mathrm{ox}}$ and a dynamically calculated penetration depth of nitrate $z_{\chem{NO_3}}$, 4) 
-a sulfate reduction zone situated between $z_{\chem{NO_3}}$ and a dynamically calculated penetration depth of sulfate $z_{\chem{SO_4}}$ and 5) a methanic zone situated below $z_{\chem{SO_4}}$ (Figure \ref{fig:Sediment_layers}). 
-Each zone is characterised by a set of diagenetic equations that encapsulate the most pertinent reaction and transport processes in the respective zone (see section \ref{subsec:Transport} and \ref{subsec:ReactionNetwork} 
+series of pseudo steady-states. In addition, it divides the sediment into a bioturbated and a non-bioturbated zone defined by the constant bioturbation depth $z_{\mathrm{bio}}$ (see Fig. \ref{fig:Sediment_layers}). 
+Furthermore, it accounts for the dynamic redox zonation of marine sediments by dividing the sediment into: 2) an oxic zone delineated by the oxygen 
+penetration depth $z_{\mathrm{ox}}$, 3) a denitrification zone situated between $z_{\mathrm{ox}}$ and the nitrate penetration depth $z_{\chem{NO_3}}$, 4) 
+a sulfate reduction zone situated between $z_{\chem{NO_3}}$ and the sulfate penetration depth $z_{\chem{SO_4}}$ and 5) a methanogenic zone situated below $z_{\chem{SO_4}}$ (Fig. \ref{fig:Sediment_layers}). 
+All penetration depths are dynamically calculated by the model. 
+Each zone is characterised by a set of diagenetic equations that encapsulate the most pertinent reaction and transport processes in this zone (see section \ref{subsec:Transport} and \ref{subsec:ReactionNetwork} 
 for more details). 
 
 OMEN calculates and feeds back to the Earth System model the fraction of POC preserved in the sediments and the sediment-water interface fluxes of the dissolved species $C_i$:
@@ -218,26 +231,31 @@ OMEN calculates and feeds back to the Earth System model the fraction of POC pre
 where $w$ is the deposition rate, $D_i$ is the diffusion coefficient and $C_i(0)$ the sediment-water concentration of species $i$. 
 
 \subsection{Transport}\label{subsec:Transport}
-The model accounts for both advection and diffusion of dissolved and solid species, assuming that sediment compaction is negligible ($\frac{\partial \phi}{\partial z}$=0). 
-The diffusion of dissolved species is described via an apparent diffusion coefficient, $D_{i0}$. In addition, the activity of infaunal organisms in the bioturbated zone of the sediment ($z<z_{\mathrm{bio}}$) causes random 
-displacements of sediments and porewaters and is simulated using a diffusive term (e.g. Boudreau,1986), with a constant bioturbation coefficient $D_{\mathrm{bio}}$ in the bioturbated zone. 
-The pumping activity by burrow-dwelling animals and the resulting ventilation of tubes, the so-called bioirrigation, is encapsulated in a factor, $f_{ir}$ that enhances the molecular diffusion coefficient, 
-$D_{\mathrm{mol},i}$ \citep[ hence, $D_{i,0}=D_{\mathrm{mol},i}\cdot f_{ir}$,][]{soetaert1996dynamic}.  The divergence of the flux is thus given by:
+The model accounts for both the advective, as well as the diffusive transport of dissolved and solid species, assuming that sediment compaction is negligible (i.e. $\frac{\partial \phi}{\partial z}=0$). 
+The molecular diffusion of dissolved species is described via a species-specific apparent diffusion coefficient, $D_{\mathrm{mol},i}$. 
+In addition, the activity of infaunal organisms in the bioturbated zone of the sediment ($z<z_{\mathrm{bio}}$) that causes random 
+displacements of sediments and porewaters is simulated using a diffusive term (e.g. Boudreau,1986), with a constant bioturbation coefficient $D_{\mathrm{bio}}$ in the bioturbated zone. 
+The pumping activity by burrow-dwelling animals and the resulting ventilation of tubes, the so-called bioirrigation, is encapsulated in a factor, $f_{ir}$ that enhances the molecular diffusion coefficient 
+\citep[ hence, $D_{i,0}=D_{\mathrm{mol},i}\cdot f_{ir}$,][]{soetaert1996dynamic}. The flux divergence can thus be formulated as:
 \begin{equation}
 \frac{\partial F}{\partial z}=-\frac{\partial}{\partial z}\left( -\xi D_i \frac{\partial C_i}{\partial z} +\xi w C_i\right) \label{Eq_flux_divergence}
 \end{equation}
 where $D_i$ is the diffusion coefficient of species $i$ ($D_i=D_{i,0}+D_{\mathrm{bio}}=D_{\mathrm{mol},i}\cdot f_{ir}+D_{\mathrm{bio}}$ for dissolved species and $D_i=D_{\mathrm{bio}}$ for solid species) and $w$ is the deposition rate. 
-The bioturbation coefficient $D_{\mathrm{bio}}$ is set to zero below $z_{\mathrm{bio}}$. In addition, infaunnal activity ceases ($D_{\mathrm{bio}}=0$) once bottom waters become anoxic (\chem{O_2} = 0.0 mol cm$^{-3}$ ). 
-\textcolor{red}{add if-query in code!!}
+The bioturbation coefficient $D_{\mathrm{bio}}$ is set to zero below $z_{\mathrm{bio}}$. In addition, infaunnal activity ceases ($D_{\mathrm{bio}}=0$) once bottom waters become anoxic ($\chem{O_2} < ???$ mol cm$^{-3}$ ). 
+\textcolor{red}{check for good value + add if-query in code!!}
 
 \subsection{Reaction Network}\label{subsec:ReactionNetwork}
-Earth System models generally track the evolution of the global biogeochemical cycles of organic and inorganic carbon, the essential nutrients (nitrogen, phosphorus) and oxygen with the aim of investigating the evolution 
+Earth System models generally track the biogeochemical dynamics of organic and inorganic carbon, essential nutrients (nitrogen, phosphorus) and oxygen with the aim of investigating the evolution 
 of the ocean's redox structure and carbonate system and its feedbacks on global climate. This general aim thus defines a minimum set of state variables and reaction processes that need to be resolved for an efficient 
-representation of the benthic-pelagic coupling in Earth System Models. The sediment model has to provide robust quantifications of organic and inorganic carbon burial fluxes, growth-limiting nutrient, equilibrium invariant 
-and reduced species return fluxes, and oxygen uptake fluxes. As a consequence, the reaction network must explicitly or implicitly account for the most important primary and secondary redox reactions, equilibrium reactions, 
+representation of the benthic-pelagic coupling in Earth system models. A suitable sediment model must provide a robust quantification of organic (and inorganic) carbon burial fluxes, as well as 
+the benthic return fluxes of growth-limiting nutrients, equilibrium invariant and reduced species, and oxygen uptake fluxes. 
+As a consequence, the reaction network must account for the most important primary and secondary redox reactions, equilibrium reactions, 
 mineral precipitation/dissolution and adsorption/desorption, resulting in a complex set of coupled reaction-transport equations. The following 
 subsections provide a short discussion of the reaction processes included in the model and give an overview of the 
-vertically resolved conservation equations and boundary conditions for solid and dissolved species in each layer. Table \ref{table:reactions_processes} states the reactions and variables considered in the reaction network. 
+vertically resolved conservation equations and boundary conditions for solid and dissolved species in each layer. 
+Table \ref{table:reactions_processes} provides a summary of the reactions and variables considered in the reaction network. Table \ref{table:Reaction_Network} summarises their reaction stoichiometry 
+and Table \ref{table:ReactionOverview} provides an overview of their description in the model.
+
 \begin{table}[tbp]
 \caption{Reactions and variables implemented in the Reaction Network of OMEN-SED (1.0). The primary and secondary redox reactions are listed in the sequence they occur with increasing sediment depth.}
 % title of Table
@@ -267,9 +285,10 @@ Variables & Organic matter, oxygen, nitrate, ammonium, sulfate, sulfide (hydroge
 
 \subsubsection{Organic matter}
 In marine sediments, organic matter (OM) is degraded by heterotrophic activity coupled to the sequential utilisation of terminal electron acceptors (TEAs), typically in the order of \chem{O_2}, \chem{NO_3^-}, Mn(VI), Fe(III) and 
-\chem{SO_4^{2-}} followed by methanogenesis and/or fermentation. Organic matter degradation is described via a multi-G model approach \citep[][and references therein]{arndt_quantifying_2013}, assuming that the bulk OM is divided 
-into discrete compound classes $C_i$ characterised by specific degradation rate constants $k_i$. Such a multi-G approach allows for selective preservation of compound classes according to their degradability, $k_i$ and, thus, 
-accounts for the change in organic matter degradability with burial. Each compound class is degraded according to first-order kinetics. Organic matter dynamics are thus described by:
+\chem{SO_4^{2-}} followed by methanogenesis and/or fermentation. Here, organic matter degradation is described via a multi-G model approach \citep[][and references therein]{arndt_quantifying_2013}, 
+assuming that the bulk OM consists of a number of discrete compound classes $C_i$ characterised by specific degradation rate constants $k_i$. Such a multi-G approach allows for selective preservation of compound 
+classes according to their reactivity, $k_i$ and, thus, accounts for the change in organic matter reactivity during burial. Each compound class is degraded according to first-order kinetics. 
+The conservation equation for organic matter dynamics is thus given by:
 
 \begin{equation}
  \frac{\partial C_i}{\partial t} = 0= D_{C_i} \frac{\partial^2C_i }{\partial z^2} - w\frac{\partial C_i }{\partial z} - k_i\cdot C_{i} \label{eq:ODE_OC}
@@ -279,14 +298,14 @@ accounts for the change in organic matter degradability with burial. Each compou
 %  D_{C_i}&=D_{\mathrm{bio}} 	 &\text{if ($z\leq z_{\mathrm{bio}}$)}\\
 %  D_{C_i}&=0            &\text{if ($z > z_{\mathrm{bio}}$)} 
 % \end{align}
-The solution of Eq. \ref{eq:ODE_OC} (see section \ref{sec:Solution} for details) requires the definition of boundary conditions. The model assumes a known concentration/flux at the sediment-water interface and continuity 
-across the bottom of the bioturbated zone, $z_{\mathrm{bio}}$ (Table \ref{Tab:BC_OM+O2}).
+The analytical solution of Eq. \eqref{eq:ODE_OC} (see section \ref{sec:Solution} for details) requires the definition of a set of boundary conditions (Table \ref{Tab:BC_OM+O2}). 
+The model assumes a known concentration/flux at the sediment-water interface and continuity across the bottom of the bioturbated zone, $z_{\mathrm{bio}}$.
 \begin{table}[tbp]
-\caption{Boundary conditions for organic matter and oxygen.}
+\caption{Boundary conditions for organic matter and oxygen. For the boundaries we define:  $z^-_{\_\_} := \lim_{h\to0} (z_{\_\_}-h)$ and $z^+_{\_\_} := \lim_{h\to0} (z_{\_\_}+h)$.}
 % title of Table
 \centering
 % used for centering table
-\begin{tabular}{ |c| c| c l|}
+\begin{tabular}{ |c| l| c l|}
 \hline
 \textbf{Boundary}& \textbf{Condition}& &\\
 \hline
