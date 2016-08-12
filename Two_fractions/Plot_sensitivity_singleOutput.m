@@ -76,13 +76,15 @@ function [] = Plot_sensitivity_singleOutput(Params, Results, index,NameVar, yaxi
 
     % gammaNH4 gammaH2S
     subplot(3,3,9)
-    plot(Params.gammaNH4, Results(:,index),'.', Params.gammaH2S, Results(:,index),'r.')            
+    plot(Params.gammaNH4, Results(:,index),'.')
+    plot(Params.gammaH2S, Results(:,index),'r.')            
     hold on            
     axis ([Params.range_gammaNH4(1) Params.range_gammaNH4(2) -Inf Inf])
+%    xlabel ('gammaNH4 [-]')
     xlabel ('gammaNH4   gammaH2S [-]')
  %   ylabel(yaxis)
     
 %	ha = axes('Position',[0 0 1 1],'Xlim',[0 1],'Ylim',[0 1],'Box','off','Visible','off','Units','normalized', 'clipping' , 'off');
 %	text(0.5, 1,'\bf Test 4\_1: 500m anoxic (no Mn, Fe)','HorizontalAlignment','center','VerticalAlignment', 'top')
-	print('-dpsc2', ['./Sensitivity/2_' NameVar '_Sensitivity_' str_date '.ps']);
+	print('-depsc2', ['./Sensitivity/2_' NameVar '_Sensitivity_' str_date '.eps']);
 end

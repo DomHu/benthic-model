@@ -2,6 +2,8 @@
 %    
 % http://www2.mae.ufl.edu/mdo/Papers/5176.pdf
 
+% just change one Parameter e.h. k1
+
 clear
 
 % Make/Save Latin hypercube for parameters
@@ -16,7 +18,7 @@ clear
 % KIPO4	P adsorption coeff. oxic
 % KIIPO4	P adsorption coeff. anoxic
 par = 1;    % parameters
-n = 200;     % n values are randomly distributed with one from each interval (0,1/n), (1/n,2/n), ..., (1-1/n,1)
+n = 300;     % n values are randomly distributed with one from each interval (0,1/n), (1/n,2/n), ..., (1-1/n,1)
 % calculate Latin Hypercube: each row is one representations of the variables for an Experiment
 
 Latin_Cube_k_TOC_f = lhsdesign(n,par);
@@ -26,7 +28,7 @@ save Latin_Cube_k_TOC_f.mat Latin_Cube_k_TOC_f
 % Set the parameter Params.ranges
 Params.range_k1 = [log10(1e-4), log10(20)];  % [-4, 1.3010] OM degradation frac 1 (labile) 
 %Params.range_f1 = [0.05, 0.95];              % fraction of labile OM
-%Params.range_wtpc = [log10(0.001), log10(1)];              % POC wtpc adsorption
+%Params.range_wtpc = [log10(0.01), log10(20)];              % POC wtpc adsorption
 
 Para1 = [Params.range_k1(1)]; %[Params.range_wtpc(1), Params.range_f1(1),Params.range_wtpc(1)];
 
@@ -38,15 +40,22 @@ WhichV = bsxfun(@times, Latin_Cube_k_TOC_f, Int);
 % Now get actual values, add element by element
 V = bsxfun(@plus, WhichV, Para1);
 % unlog k1 and kaPO4
-Params.k1 = 10.^V(:,1);
-%Params.f1 = V(:,2);
+
+% p = [0.01:0.002:0.99];
+% q = [0.1:0.1:20];
+% Params.wtpc = [p q];
 %Params.wtpc = 10.^V(:,1);
+Params.k1 = 10.^V(:,1); %ones(1,length(Params.wtpc))/10; %
+Params.f1 = 0.5;
+Params.wtpc = ones(1,length(Params.k1));
 
 % initialize SWI concentrationsn and other parameters
 swi=benthic_test.default_swi();
 % 
 
-swi=benthic_test.sensitivity_swi(swi, Params);
+% % set date-time
+str_date = '0307_Shallow_k1'; %datestr(now,'ddmmyy_HH_MM_SS');
+swi=benthic_test.sensitivity_swi_singleParameter(swi, Params, str_date);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -59,7 +68,9 @@ plot_results_singlePar = true;
 if(plot_results_singlePar)
 %    Results_NaN = load('Results_NaN.txt','ascii');  % TODO: check how to create this file automaticly
 % with created results    Plot_sensitivity_singleParameter(swi.Results, log10(Params.k1), Params.range_k1, 'k1', 'log(k1) [yr^{-1}]')
-    Plot_sensitivity_singleParameter(swi.Results, log10(Params.k1), Params.range_k1, 'k1', 'log(k1) [yr^{-1}]')
+Plot_sensitivity_penetrationdepths_SWIflux(swi.Results, log10(Params.k1), Params.range_k1, 'k1', 'log(k1) [yr^{-1}]', str_date)
+% Dom for TOC load     Plot_sensitivity_penetrationdepths_SWIflux(swi.Results, log10(Params.wtpc), [log10(0.01) log10(20)], 'TOC_load', 'log(TOC wtpc)', str_date)
+   
 %%    Plot_sensitivity_singleParameter(swi.Results, Params.f1, [0, 1], 'f1', 'labile fraction')
 %%    Plot_sensitivity_singleParameter(swi.Results, log10(Params.wtpc), Params.range_wtpc,'TOCwtpc', 'TOC wtpc [%]')
 end

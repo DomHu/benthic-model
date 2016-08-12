@@ -26,6 +26,11 @@ classdef benthic_zSO4
         function r = calc(obj, bsd, swi, r)
            % Iteratively solve for zso4
                   
+           if r.zno3 == bsd.zinf
+               r.zso4 = bsd.zinf;
+               bctype = 2;
+           else                                                 
+                       
             fun=@(zso4)-obj.calcbc(zso4,bsd,swi,r,1) - obj.calcFSO4(zso4,bsd, swi, r);
               
             % try zero flux at zinf and see if we have any SO4 left
@@ -46,6 +51,7 @@ classdef benthic_zSO4
                 r.zso4 = (bctype==1).*zso4 + (bctype==2).*bsd.zinf;
             end
             
+            end
             [flxzso4, conczso4, flxswiSO4, r] = obj.calcbc(r.zso4, bsd, swi, r, bctype);    % Dom18.05.2016: not necessary for bctype 2 (done in line 32 already)
             r.flxzso4 = flxzso4;
             r.conczso4 = conczso4;

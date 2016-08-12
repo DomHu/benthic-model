@@ -9,7 +9,7 @@ classdef benthic_zTOC < handle
     properties
         DC1;                                                   %TOC diffusion coefficient (cm2/yr)
        
-        k1=0.174;    %0.01 0.006;                                                  %TOC degradation rate constnat (1/yr)
+        k1=0.174;    %0.174 0.01 0.006;                                                  %TOC degradation rate constnat (1/yr)
         k2=0.001;   %0.0006;                                                %TOC degradation rate constant (1/yr)  
        
     end
@@ -28,14 +28,14 @@ classdef benthic_zTOC < handle
             rTOC.a11=(bsd.w-sqrt(bsd.w.^2+4.*obj.DC1.*obj.k1))./(2.*obj.DC1);
             rTOC.b11=(bsd.w+sqrt(bsd.w.^2+4.*obj.DC1.*obj.k1))./(2.*obj.DC1);
             rTOC.a21=(-obj.k1./bsd.w);
-            rTOC.A11=-(swi.C01.*rTOC.b11.*exp(rTOC.b11.*bsd.zbio))./(rTOC.a11.*exp(rTOC.a11.*bsd.zbio)-rTOC.b11.*exp(rTOC.b11.*bsd.zbio));
-            rTOC.A21=(rTOC.A11.*(exp(rTOC.a11.*bsd.zbio)-exp(rTOC.b11.*bsd.zbio))+swi.C01.*exp(rTOC.b11.*bsd.zbio))./exp(rTOC.a21.*bsd.zbio);
+            rTOC.A11=-(swi.C01.*rTOC.b11.*exp(rTOC.b11.*bsd.zbio))./(rTOC.a11.*exp(rTOC.a11.*bsd.zbio)-rTOC.b11.*exp(rTOC.b11.*bsd.zbio)+bsd.tol_const);
+            rTOC.A21=(rTOC.A11.*(exp(rTOC.a11.*bsd.zbio)-exp(rTOC.b11.*bsd.zbio))+swi.C01.*exp(rTOC.b11.*bsd.zbio))./(exp(rTOC.a21.*bsd.zbio)+bsd.tol_const);
             
             rTOC.a12=(bsd.w-sqrt(bsd.w.^2+4.*obj.DC1.*obj.k2))./(2.*obj.DC1);
             rTOC.b12=(bsd.w+sqrt(bsd.w.^2+4.*obj.DC1.*obj.k2))./(2.*obj.DC1);
             rTOC.a22=(-obj.k2./bsd.w);
-            rTOC.A12=-(swi.C02.*rTOC.b12.*exp(rTOC.b12.*bsd.zbio))./(rTOC.a12.*exp(rTOC.a12.*bsd.zbio)-rTOC.b12.*exp(rTOC.b12.*bsd.zbio));
-            rTOC.A22=(rTOC.A12.*(exp(rTOC.a12.*bsd.zbio)-exp(rTOC.b12.*bsd.zbio))+swi.C02.*exp(rTOC.b12.*bsd.zbio))./exp(rTOC.a22.*bsd.zbio);
+            rTOC.A12=-(swi.C02.*rTOC.b12.*exp(rTOC.b12.*bsd.zbio))./(rTOC.a12.*exp(rTOC.a12.*bsd.zbio)-rTOC.b12.*exp(rTOC.b12.*bsd.zbio)+bsd.tol_const);
+            rTOC.A22=(rTOC.A12.*(exp(rTOC.a12.*bsd.zbio)-exp(rTOC.b12.*bsd.zbio))+swi.C02.*exp(rTOC.b12.*bsd.zbio))./(exp(rTOC.a22.*bsd.zbio)+bsd.tol_const);
             
             res.rTOC = rTOC;
             

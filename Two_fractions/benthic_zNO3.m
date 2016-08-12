@@ -20,28 +20,35 @@ classdef benthic_zNO3
         
         function r = calc(obj, bsd, swi, r)
            % Iteratively solve for zno3
-                  
-            fun=@(zno3)-obj.calcbc(zno3,bsd,swi,r,1);
-                 
-            % Try zero flux at zinf and see if we have any NO3 left
-            [flxzinf, conczinf, flxswi,rtmp] = obj.calcbc(bsd.zinf, bsd, swi, r,2);
-            
-            if bsd.usescalarcode
-                if conczinf > 0
-                    r.zno3 = bsd.zinf;
-                    bctype = 2;
-                else
-                    r.zno3=fzero(fun, [max(r.zox, 1e-10), bsd.zinf] ,bsd.fzerooptions);
-                    bctype = 1;
+           
+           if r.zox == bsd.zinf
+               r.zno3 = bsd.zinf;
+               bctype = 2;
+           else       
+           
+                fun=@(zno3)-obj.calcbc(zno3,bsd,swi,r,1);
+
+                % Try zero flux at zinf and see if we have any NO3 left - in
+                % the rare case of zox < zinf but zNO3 = zinf
+                [flxzinf, conczinf, flxswi,rtmp] = obj.calcbc(bsd.zinf, bsd, swi, r,2);
+
+                if bsd.usescalarcode
+                    if conczinf > 0     % Dom 30062016: change this as can be neg as well (NO3 different) -> check for zox == zinf
+                        r.zno3 = bsd.zinf;
+                        bctype = 2;
+                    else
+                        r.zno3=fzero(fun, [max(r.zox, 1e-10), bsd.zinf] ,bsd.fzerooptions);
+                        bctype = 1;
+                    end
+                else  % same logic, in vector form
+                    zno3=fzero_vec(fun,max(r.zox, 1e-10), bsd.zinf,bsd.fzerooptions);
+                    bctype =         2*(conczinf>0) +     1*(conczinf<=0);
+                    r.zno3 = bsd.zinf.*(conczinf>0) + zno3.*(conczinf<=0);
                 end
-            else  % same logic, in vector form
-                zno3=fzero_vec(fun,max(r.zox, 1e-10), bsd.zinf,bsd.fzerooptions);
-                bctype =         2*(conczinf>0) +     1*(conczinf<=0);
-                r.zno3 = bsd.zinf.*(conczinf>0) + zno3.*(conczinf<=0);
-            end
             
+            end
             [flxzno3, conczno3, flxswiNO3, r] = obj.calcbc(r.zno3, bsd, swi, r, bctype); 
-            r.flxzno3 = flxzno3;  % should be zero
+            r.flxzno3 = flxzno3;  % should be zero - not if zno3 = zinf
             r.conczno3 = conczno3; % may be non-zero if eg fully oxic sediment
             r.flxswiNO3 = flxswiNO3;
         end

@@ -116,13 +116,23 @@
 
 
 \begin{abstract}
-Here we describe the first version of the OrganicMatter ENabled SEDiment model (OMEN-SED 1.0).
+Here we describe the first version of the Organic Matter ENabled SEDiment model (OMEN-SED 1.0).
 \end{abstract}
 
 
 
 \introduction  %% \introduction[modified heading if necessary]
-%Organic matter (OM) deposition on the sea-floor fuels early diagenetic processes in marine sediments and the resulting fluxes of chemical elements across the sediment-water interface are of considerable importance 
+%>>>
+\marginnote{\textbf{DH}: How to include comments.}[-1cm]%<<<
+Marine surface sediments are key components in the Earth system. They host the largest carbon reservoir within the surficial Earth system, provide the only long term sink for atmospheric \chem{CO_2}, 
+recycle nutrients and represent the most important climate archive. 
+Biogeochemical processes in sediments depend on the water column and vice versa. Benthic processes are mainly donor controlled, as they are fuelled by the external supply of solid material 
+(e.g. organic matter, calcium carbonate, opal) from the water column and are affected by overlying bottom water concentrations of solutes. At the same time, diagenesis in the sediments transforms the deposited 
+material and returns the resulting products (e.g. nutrients, DIC) to the water column. 
+This so-called benthic-pelagic coupling is essential for understanding the global carbon cycle and climate \citep[e.g.][]{archer_effect_1994, mackenzie_sediments_2005, ridgwell_role_2005}. 
+
+\textcolor{red}{TODO:} Give examples when and why important (also in Paleo-context.
+
 Degradation of organic matter (OM) in marine sediments fuels benthic biogeochemical processes and the resulting fluxes across the sediment-water interface are of considerable importance 
 for many global biogeochemical cycles \citep{arndt_quantifying_2013}. Burial of OM represents an important connection between carbon stored in more climate-relevant reservoirs like the oceans, atmosphere, 
 and the marine sediments and carbon that is sequestered for much longer, geological timescales in sedimentary rock or coal \citep{mackenzie_sediments_2005, burdige_preservation_2007}. 
@@ -333,14 +343,20 @@ $z=z_{\mathrm{ox}}$&  \chem{O_2} consumption & 4)&\textbf{IF} $ (\chem{O_2}(z_\i
 
 
 \subsubsection{Oxygen}
-Oxygen serves as the most powerful terminal electron acceptor for the heterotrophic degradation of organic carbon. In addition, the oxidation of reduced species produced through microbial activity throughout the 
-sediment column further contributes to the consumption of oxygen. The model explicitly accounts for the consumption of oxygen by heterotrophic degradation and nitrification of ammonium in the oxic layer of the sediment. 
-The nitrification of 1 mol of ammonium in the oxic layer consumes 2 mol of oxygen. 
+In marine sediments, oxygen is consumed through the aerobic degradation of organic matter and a number of secondary redox reactions. 
+In the oxic layer ($z<z_{ox}$), the model explicitly accounts for the aerobic degradation of OM, which consumes oxygen with a fixed O:C ratio (\chem{OC}, Tab. \ref{table:reaction_parameters}) 
+and produces ammonium, which is partially nitrified to nitrate ($\gamma_\chem{NH_4}$).
+%nitrification of parts of ammonium produced in the oxic layer of the sediment. 
+%Oxygen serves as the most powerful terminal electron acceptor for the heterotrophic degradation of organic carbon. In addition, the oxidation of reduced species produced through microbial activity throughout the 
+%sediment column further contributes to the consumption of oxygen. The model explicitly accounts for the consumption of oxygen by heterotrophic degradation and nitrification of ammonium in the oxic layer of the sediment. 
+%The nitrification of 1 mol of ammonium in the oxic layer consumes 2 mol of oxygen. 
 In addition, the oxygen consumption through the oxidation of reduced species (\chem{Fe^{2+}}, \chem{Mn^{2+}}, \chem{NH_4}, \chem{H_2S}) produced in the suboxic and anoxic layers of the sediment is implicitly taken into account 
 through the flux boundary condition at the dynamic oxygen penetration depth $z_{\mathrm{ox}}$. This simplification can be justified as it has been shown that these secondary redox reactions mainly occur at the oxic/suboxic 
 interface \citep{soetaert_model_1996}.  
-Oxygen is described in mol\,cm$^{-3}$ liquid and conversion from the solid phase of mineralized organic matter (expressed in mol\,cm$^{-3}$ bulk sediment) to consumption of dissolved oxygen (or later nutrients) introduce 
-a factor of $\frac{1-\phi}{\phi}$, where $\phi$ is the sediment porosity. Oxygen dynamics are thus described by:
+The factor $\frac{1-\phi}{\phi}$ accounts for the volume conversion from the solid to the dissolved phase. 
+%Oxygen is described in mol\,cm$^{-3}$ liquid and conversion from the solid phase of mineralized organic matter (expressed in mol\,cm$^{-3}$ bulk sediment) to consumption of dissolved oxygen (or later nutrients) introduce 
+%a factor of $\frac{1-\phi}{\phi}$, where $\phi$ is the sediment porosity. 
+Oxygen dynamics are thus described by:
 \begin{align} 
  \frac{\partial \chem{O_2}}{\partial t} &= 0= D_{\chem{ \chem{O_2}}}\frac{\partial^2  \chem{O_2} }{\partial z^2} - w\frac{\partial  \chem{O_2}}{\partial z} - \frac{1-\phi}{\phi}\sum_i k_i \cdot [ OC + 2 \gamma_{\chem{NH_4}} \chem{NC_i} ]\cdot C_{i}(z) \label{eq:ODE_O2_1}
 \end{align}
@@ -349,7 +365,7 @@ a factor of $\frac{1-\phi}{\phi}$, where $\phi$ is the sediment porosity. Oxygen
 %  D_{ \chem{O_2}}&=D_{ \chem{O_2}, 0}+D_{\mathrm{bio}}  &\text{if ($z\leq z_{\mathrm{bio}}$)}\\
 %  D_{ \chem{O_2}}&=D_{ \chem{O_2}, 0}                &\text{if ($z > z_{\mathrm{bio}}$)} 
 % \end{align}  
-To solve Eq. \ref{eq:ODE_O2_1} analytically (see section \ref{sec:Solution}) boundary conditions at three depths are defined (Table \ref{Tab:BC_OM+O2}). 
+The analytical solution of Eq. \eqref{eq:ODE_O2_1} (see section \ref{sec:Solution}) requires the definition of boundary conditions (Table \ref{Tab:BC_OM+O2}). 
 The model assumes a known bottom water concentration and the complete consumption of oxygen at the oxygen penetration depth (or zero flux if $z_{\mathrm{ox}}=z_\infty$). 
 It considers equal oxygen concentration and diffusive flux above ($z_{\mathrm{bio}}^-$) and 
 below ($z_{\mathrm{bio}}^+$) the bioturbation boundary. In addition, the model imposes a flux of reduced species through the bottom of the oxic zone that is calculated as the reduced substances produced through anoxic mineralization 

@@ -24,7 +24,7 @@ n = 200;     % n values are randomly distributed with one from each interval (0,
 load('Latin_Cube.mat')
 
 % Set the parameter Params.ranges
-Params.range_k1 = [log10(1e-4), log10(20)];  % [-4, 1.3010] OM degradation frac 1 (labile) 
+Params.range_k1 = [log10(1e-4), log10(5)];  %  20 for shallow 10 for deep ocean [-4, 1.3010] OM degradation frac 1 (labile) 
 Params.range_f1 = [0.05, 0.95];              % fraction of labile OM
 Params.range_KNH4 = [0.8, 1.7];              % NH4 adsorption
 Params.range_KPO4ox = [100.0, 400.0];        % P Adsorption coefficient in oxic layer
@@ -61,8 +61,8 @@ swi=benthic_test.default_swi();
 % 
 Params.wtpc = ones(1,n);     % Overall POC wt\% reaching the SWI
 
-% set date-time
-str_date = datestr(now,'ddmmyy_HH_MM_SS');
+% % set date-time
+ str_date = '0307_Shallow'; %datestr(now,'ddmmyy_HH_MM_SS');
 swi=benthic_test.sensitivity_swi(swi, Params, str_date);
 
 
@@ -88,7 +88,7 @@ if(plot_results_singlePar)
     Plot_sensitivity_singleParameter(swi.Results, Params.gammaH2S, Params.range_gammaH2S,'gammaH2S', 'gammaH2S [-]', str_date)
 end
 
-plot_results_singleOut = true;
+plot_results_singleOut = false;
 if(plot_results_singleOut)    
 %    Results_NaN = load('Results_NaN.txt','ascii'); % TODO: check how to create this file automaticly
 
