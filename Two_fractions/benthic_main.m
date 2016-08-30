@@ -15,9 +15,9 @@ classdef benthic_main < handle
         wdepth=250.0;     % Dom was 600.0                       % water depth (m)
         w;                                      % burial velocity  (cm/yr)
         z0  = 0;                                % surface
-        zbio=4.0;                              % bioturbation depth (cm)       
+        zbio=10.0;                              % bioturbation depth (cm)       
         
-        zinf=50;                               %Inifinity (cm)
+        zinf=100;                               %Inifinity (cm)
         %zinf = 1000;
         %zlow=100;                              
         Dbio; % was 29.06.2016 =5.2*(10.0^(0.7624-0.0003972*obj.wdepth)); % Dom was 3;                                 %bioturbation coefficient (cm2/yr)
