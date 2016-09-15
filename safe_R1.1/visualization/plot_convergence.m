@@ -226,7 +226,8 @@ legend(labelinput_new, 'Location','NorthWest')
 
 
 %Tick labels for horizontal axis:
-str=cell(size(NN)); for k=1:R; str{k}=num2str(NN(k)); end
+% Dominik was: str=cell(size(NN)); for k=1:R; str{k}=num2str(NN(k)); end
+str=cell(size(NN)); for k=[2:2:R]; str{k}=num2str(NN(k)); end
 axis([H1,H2,V1,V2])
 set(gca,'XTick',NN,'XTickLabel',str,'FontName',fn,'FontSize',fs)
 grid on

@@ -74,15 +74,14 @@ res.zNO3 = benthic_zNO3(res.bsd, res.swi);
 res.zSO4 = benthic_zSO4(res.bsd, res.swi);
 res.zNH4 = benthic_zNH4(res.bsd, res.swi);
 res.zH2S = benthic_zH2S(res.bsd, res.swi);
-res.zH2S = benthic_zH2S(res.bsd, res.swi);
 res.zPO4_M = benthic_zPO4_M(res.bsd, res.swi);
 
 
 % Define input distribution and ranges:
 M  = 5 ; % number of uncertain parameters [ k1 f1 KNH4 gammaNH4 gammaH2S ]
 DistrFun  = {'unif', 'unif', 'unif', 'unif', 'unif'}; %'unif'  ; % Parameter distribution
-DistrPar  = { [ 1e-4 5 ]; [ 0.05 0.95 ]; [ 0.8 1.7 ]; [ 0.5 1] ; [ 0.5 1 ] } ; % Parameter ranges
-%DistrPar  = { [ log10(1e-4) log10(5) ]; [ 0.05 0.95 ]; [ 0.8 1.7 ]; [ 0.5 1] ; [ 0.5 1 ] } ; % Parameter ranges
+%DistrPar  = { [ 1e-4 5 ]; [ 0.05 0.95 ]; [ 0.8 1.7 ]; [ 0.5 1] ; [ 0.5 1 ] } ; % Parameter ranges
+DistrPar  = { [ log10(1e-4) log10(5) ]; [ 0.05 0.95 ]; [ 0.8 1.7 ]; [ 0.5 1] ; [ 0.5 1 ] } ; % other Parameter range
 
 %% Step 3: Compute first-order and total-order variance-based indices
 
@@ -92,35 +91,46 @@ myfun = 'OMEN_SED_vbsa' ;
 % (Saltelli, 2008; for reference and more details, see help of functions
 % vbsa_resampling and vbsa_indices) 
 SampStrategy = 'lhs' ;
-N = 1000 ; % Base sample size.
+N = 3000 ; % Base sample size.
 % Comment: the base sample size N is not the actual number of input 
 % samples that will be evaluated. In fact, because of the resampling
 % strategy, the total number of model evaluations to compute the two
 % variance-based indices is equal to N*(M+2) 
 X = AAT_sampling(SampStrategy,M,DistrFun,DistrPar,2*N);
 
-%X(:,1)=10.^X(:,1);
+X(:,1)=10.^X(:,1); % other Parameter range
 [ XA, XB, XC ] = vbsa_resampling(X) ;
 
 % Run the model and compute selected model output at sampled parameter
 % sets:
-YA = model_evaluation(myfun,XA,res) ; % size (N,1)
+YA_all = model_evaluation(myfun,XA,res) ; % size (N,1)
+YB_all = model_evaluation(myfun,XB,res) ; % size (N,1)
+YC_all = model_evaluation(myfun,XC,res) ; % size (N*M,1)
 
-if(false)
-YB = model_evaluation(myfun,XB) ; % size (N,1)
-YC = model_evaluation(myfun,XC) ; % size (N*M,1)
+% select the j-th model output:
+%      y(1) = O2 SWI flux
+%      y(2) = NO3 SWI flux
+%      y(3) = SO4 SWI flux
+%      y(4) = NH4 SWI flux
+%      y(5) = H2S SWI flux
+%      y(6)   = P SWI flux
+j = 2 ; 
+YA = YA_all(:,j);
+YB = YB_all(:,j);
+YC = YC_all(:,j);
 
 % Compute main (first-order) and total effects:
 [ Si, STi ] = vbsa_indices(YA,YB,YC);
 
 % Plot results:
-X_Labels = {'Sm','beta','alfa','Rs','Rf'} ;
-figure % plot main and total separately
-subplot(121); boxplot1(Si,X_Labels,'main effects')
-subplot(122); boxplot1(STi,X_Labels,'total effects')
+X_Labels = {'log(k1)','f1','KNH4','gamma NH4','gamma H2S'} ;
+% % figure % plot main and total separately
+% % subplot(121); boxplot1(Si,X_Labels,'main effects')
+% % subplot(122); boxplot1(STi,X_Labels,'total effects')
 figure % plot both in one plot:
 boxplot2([Si; STi],X_Labels)
 legend('main effects','total effects')% add legend
+
 
 % Check the model output distribution (if multi-modal or highly skewed, the
 % variance-based approach may not be adequate):
@@ -132,9 +142,9 @@ figure; plot_pdf(Y,'NSE');
 Nboot = 500 ;
 [ Si, STi, Si_sd, STi_sd, Si_lb, STi_lb, Si_ub, STi_ub ] = vbsa_indices(YA,YB,YC,Nboot);
 % Plot:
-figure % plot main and total separately
-subplot(121); boxplot1(Si,X_Labels,'main effects',Si_lb,Si_ub)
-subplot(122); boxplot1(STi,X_Labels,'total effects',STi_lb,STi_ub)
+% % figure % plot main and total separately
+% % subplot(121); boxplot1(Si,X_Labels,'main effects',Si_lb,Si_ub)
+% % subplot(122); boxplot1(STi,X_Labels,'total effects',STi_lb,STi_ub)
 figure % plot both in one plot:
 boxplot2([Si; STi],X_Labels,[ Si_lb; STi_lb ],[ Si_ub; STi_ub ])
 legend('main effects','total effects')
@@ -142,16 +152,31 @@ legend('main effects','total effects')
 % Analyze convergence of sensitivity indices:
 NN = [N/10:N/10:N] ;
 [ Sic, STic ] = vbsa_convergence([YA;YB;YC],M,NN);
-figure
-subplot(121); plot_convergence(Sic,NN*(M+2),[],[],[],'model evals','main effect',X_Labels)
-subplot(122); plot_convergence(STic,NN*(M+2),[],[],[],'model evals','total effect',X_Labels);
+% % figure
+% % subplot(121); plot_convergence(Sic,NN*(M+2),[],[],[],'model evals','main effect',X_Labels)
+% % subplot(122); plot_convergence(STic,NN*(M+2),[],[],[],'model evals','total effect',X_Labels);
 % With confidence bounds:
 [ Sic, STic, Si_sdc, STi_sdc, Si_lbc, STi_lbc, Si_ubc, STi_ubc  ] = vbsa_convergence([YA;YB;YC],M,NN,Nboot);
 figure
 subplot(121); plot_convergence(Sic,NN*(M+2),Si_lbc,Si_ubc,[],'model evals','main effect',X_Labels)
 subplot(122); plot_convergence(STic,NN*(M+2),STi_lbc,STi_ubc,[],'model evals','total effect',X_Labels);
 
-%% Step 4: Adding up new samples
+
+
+%% Step 4: create coloured scatter plot
+
+XD=XC;
+XD(:,1)=log10(XC(:,1));
+% k1 vs f1
+figure
+scatter_plots_col(XD,YC,1,2,16,X_Labels)
+
+% log(k1) vs SWI flux
+figure
+scatter_plots(log10(XC(:,1)),YC,1,'FO2',{'log(k1)'})
+
+if(false)
+%% Step 5: Adding up new samples
 
 N2 = 500 ; % increase of base sample size
 % (that means: N2*(M+2) new samples that will need to be evaluated)
@@ -162,9 +187,9 @@ Xnew = Xext(2*N+1:end,:) ; % extract the new input samples that need to be evalu
 % Resampling strategy:
 [ XA2, XB2,XC2 ] = vbsa_resampling(Xnew);
 % Evaluate model against new samples:
-YA2 =model_evaluation(myfun,XA2,rain,evap,flow); % should have size (N2,1)
-YB2 =model_evaluation(myfun,XB2,rain,evap,flow); % should have size (N2,1)
-YC2 =model_evaluation(myfun,XC2,rain,evap,flow); % should have size (N2*M,1)
+YA2 =model_evaluation(myfun,XA2,res); % should have size (N2,1)
+YB2 =model_evaluation(myfun,XB2,res); % should have size (N2,1)
+YC2 =model_evaluation(myfun,XC2,res); % should have size (N2*M,1)
 
 % Put new and old results toghether:
 YAn = [ YA; YA2 ] ; % should have size (N+N2,1)
@@ -183,13 +208,14 @@ subplot(122)
 boxplot2([Sin; STin],X_Labels,[ Si_lbn; STi_lbn ],[ Si_ubn; STi_ubn ]); title([ num2str((N+N2)*(M+2)) ' model eval.'])
 legend('main effects','total effects')
 
-%% Step 5: case of multiple outputs 
+%% Step 6: case of multiple outputs 
 % (In this example: RMSE and AME)
 
+
 myfun = 'hymod_MulObj' ;
-YA = model_evaluation(myfun,XA,rain,evap,flow) ; % size (N,P)
-YB = model_evaluation(myfun,XB,rain,evap,flow) ; % size (N,P)
-YC = model_evaluation(myfun,XC,rain,evap,flow) ; % size (N*M,P)
+YA = model_evaluation(myfun,XA,res) ; % size (N,P)
+YB = model_evaluation(myfun,XB,res) ; % size (N,P)
+YC = model_evaluation(myfun,XC,res) ; % size (N*M,P)
 
 % select the j-th model output:
 j = 1 ; 

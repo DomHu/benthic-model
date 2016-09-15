@@ -10,7 +10,12 @@ function [y] = OMEN_SED_vbsa(x,res)
 % x = vector of model parameters (k1, f1,  KNH4, gammaNH4, gammaH2S)  - vector (1,5)
 %
 % Output:
-%      y = O2 SWI flux                     - scalar
+%      y(1) = O2 SWI flux                     - scalar
+%      y(2) = NO3 SWI flux                     - scalar
+%      y(3) = SO4 SWI flux                     - scalar
+%      y(4) = NH4 SWI flux                     - scalar
+%      y(5) = H2S SWI flux                     - scalar
+%      y(6)   = P SWI flux                     - scalar
 %
 
 % how much Corg wtpc at top of sedments:
@@ -47,6 +52,11 @@ res = res.zPO4_M.calc(res.bsd, res.swi, res);
 % % res = res.zDIC.calc(res.bsd, res.swi, res);
 % % res = res.zALK.calc(res.bsd, res.swi, res);
 
-y = res.flxswiO2
+y(1) = res.flxswiO2;
+y(2) = res.flxswiNO3; 
+y(3) = res.flxswiSO4; 
+y(4) = res.flxswiNH4; 
+y(5) = res.flxswiH2S; 
+y(6) = res.flxswi_P;
 
 end

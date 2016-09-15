@@ -104,7 +104,7 @@ plot_convergence(Si_fast_conv,NNfast,[],[],[],'model evals','1st-order sensitivi
 % resampling approach used in Variance-Based SA
 % [see help of 'vbsa_indices.m'].
 
-addpath([ my_dir '/vbsa'])
+addpath([ my_dir '/VBSA'])
 
 % Set the base sample size for VBSA in such a way that
 % the total number of model evaluations be the same as FAST:
