@@ -35,10 +35,10 @@ classdef benthic_zNO3
                 if bsd.usescalarcode
                     if conczinf > 0     % Dom 30062016: change this as can be neg as well (NO3 different) -> check for zox == zinf
                         r.zno3 = bsd.zinf;
-                        bctype = 2;
+                        bctype = 2; % BC: zero flux 
                     else
                         r.zno3=fzero(fun, [max(r.zox, 1e-10), bsd.zinf] ,bsd.fzerooptions);
-                        bctype = 1;
+                        bctype = 1; % BC: zero concentration
                     end
                 else  % same logic, in vector form
                     zno3=fzero_vec(fun,max(r.zox, 1e-10), bsd.zinf,bsd.fzerooptions);

@@ -34,7 +34,7 @@ classdef benthic_zO2
             [flxzox, conczox, flxswi,rtmp] = obj.calcbc(bsd.zinf, bsd, swi, r, 2);
             
             if bsd.usescalarcode
-                if fun0 >= 0   % eg zero oxygen at swi
+                if fun0 >= 0   % i.e. zero oxygen at swi bc O2 flows into sediments (so -)
                     r.zox = 0;
                     bctype = 1;
                 elseif conczox >=0      % still O2 at zinf -> zox = zinf

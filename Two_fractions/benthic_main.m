@@ -12,16 +12,16 @@ classdef benthic_main < handle
         
         %sediment characteristics
         rho_sed=2.6; %was 2.5                           % sediment density (g/cm3)
-        wdepth=3500.0;     % Dom was 600.0                       % water depth (m)
+        wdepth=4000.0;     % Dom was 600.0                       % water depth (m)
         w;                                      % burial velocity  (cm/yr)
         z0  = 0;                                % surface
         zbio=10.0;                              % bioturbation depth (cm)       
         
-        zinf=50;                               %Inifinity (cm)
+        zinf=100;                               %Inifinity (cm)
         %zinf = 1000;
         %zlow=100;                              
         Dbio; % was 29.06.2016 =5.2*(10.0^(0.7624-0.0003972*obj.wdepth)); % Dom was 3;                                 %bioturbation coefficient (cm2/yr)
-        por=0.80;      %was 0.85                          %porosity (-)
+        por=0.85;      %was 0.85                          %porosity (-)
         tort=3.0;                               %tortuosity (-)
         irrigationFactor=1.0;                   %irrigation factor (-)
         dispFactor;                             %dispersion factor (-)

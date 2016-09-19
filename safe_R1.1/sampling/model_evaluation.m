@@ -63,18 +63,22 @@ Y = nan(N,P) ;
 
 if (NumExtraArgIn>0)&&(NumExtraArgOut>0)
     for j=1:N
+%        j
         [Y(j,:),varargout{1:NumExtraArgOut}] = feval(fun_test,X(j,:),varargin{1:NumExtraArgIn}) ;
     end
 elseif (NumExtraArgIn>0)&&(NumExtraArgOut<=0)
     for j=1:N
+%        j
         Y(j,:) = feval(fun_test,X(j,:),varargin{1:NumExtraArgIn}) ;
     end
 elseif (NumExtraArgIn<=0)&&(NumExtraArgOut>0)
     for j=1:N
+%        j
         [Y(j,:),varargout{1:NumExtraArgOut}] = feval(fun_test,X(j,:)) ;
     end
 else
     for j=1:N
+%        j
         Y(j,:) = feval(fun_test,X(j,:)) ;
     end
 end

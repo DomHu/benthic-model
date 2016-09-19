@@ -81,7 +81,7 @@ res.zPO4_M = benthic_zPO4_M(res.bsd, res.swi);
 M  = 5 ; % number of uncertain parameters [ k1 f1 KNH4 gammaNH4 gammaH2S ]
 DistrFun  = {'unif', 'unif', 'unif', 'unif', 'unif'}; %'unif'  ; % Parameter distribution
 %DistrPar  = { [ 1e-4 5 ]; [ 0.05 0.95 ]; [ 0.8 1.7 ]; [ 0.5 1] ; [ 0.5 1 ] } ; % Parameter ranges
-DistrPar  = { [ log10(1e-4) log10(5) ]; [ 0.05 0.95 ]; [ 0.8 1.7 ]; [ 0.5 1] ; [ 0.5 1 ] } ; % other Parameter range
+DistrPar  = { [ log10(1e-4) log10(9) ]; [ 0.05 0.95 ]; [ 0.8 1.7 ]; [ 0.5 1] ; [ 0.5 1 ] } ; % other Parameter range
 
 %% Step 3: Compute first-order and total-order variance-based indices
 
@@ -91,7 +91,7 @@ myfun = 'OMEN_SED_vbsa' ;
 % (Saltelli, 2008; for reference and more details, see help of functions
 % vbsa_resampling and vbsa_indices) 
 SampStrategy = 'lhs' ;
-N = 3000 ; % Base sample size.
+N = 3500 ; % Base sample size.
 % Comment: the base sample size N is not the actual number of input 
 % samples that will be evaluated. In fact, because of the resampling
 % strategy, the total number of model evaluations to compute the two
@@ -114,54 +114,73 @@ YC_all = model_evaluation(myfun,XC,res) ; % size (N*M,1)
 %      y(4) = NH4 SWI flux
 %      y(5) = H2S SWI flux
 %      y(6)   = P SWI flux
-j = 2 ; 
+for j=1:6; 
 YA = YA_all(:,j);
 YB = YB_all(:,j);
 YC = YC_all(:,j);
 
 % Compute main (first-order) and total effects:
-[ Si, STi ] = vbsa_indices(YA,YB,YC);
-
+%was [ Si, STi ] = vbsa_indices(YA,YB,YC);
+[ Si_tmp, STi_tmp ] = vbsa_indices(YA,YB,YC);
+Si(j,:)=Si_tmp;
+STi(j,:)=STi_tmp;
 % Plot results:
 X_Labels = {'log(k1)','f1','KNH4','gamma NH4','gamma H2S'} ;
+Titles = {'O_2', 'NO_3', 'SO_4', 'NH_4', 'H_2S', 'PO_4'}
 % % figure % plot main and total separately
 % % subplot(121); boxplot1(Si,X_Labels,'main effects')
 % % subplot(122); boxplot1(STi,X_Labels,'total effects')
-figure % plot both in one plot:
-boxplot2([Si; STi],X_Labels)
-legend('main effects','total effects')% add legend
 
+if(false)
+    figure % plot both in one plot:
+    boxplot2([Si_tmp; STi_tmp],X_Labels)
+    legend('main effects','total effects')% add legend
+    title(Titles(j))
 
-% Check the model output distribution (if multi-modal or highly skewed, the
-% variance-based approach may not be adequate):
-Y = [ YA; YC ] ;
-figure; plot_cdf(Y,'NSE')
-figure; plot_pdf(Y,'NSE');
+    % Check the model output distribution (if multi-modal or highly skewed, the
+    % variance-based approach may not be adequate):
+    Y = [ YA; YC ] ;
+    figure; plot_cdf(Y,'NSE') ;
+    title(Titles(j))
+    figure; plot_pdf(Y,'NSE') ;
+    title(Titles(j));
+end
 
 % Compute confidence bounds:
 Nboot = 500 ;
-[ Si, STi, Si_sd, STi_sd, Si_lb, STi_lb, Si_ub, STi_ub ] = vbsa_indices(YA,YB,YC,Nboot);
+[ Si_tmp, STi_tmp, Si_sd_tmp, STi_sd_tmp, Si_lb_tmp, STi_lb_tmp, Si_ub_tmp, STi_ub_tmp ] = vbsa_indices(YA,YB,YC,Nboot);
+Si(j,:)=Si_tmp;
+STi(j,:)=STi_tmp;
+Si_sd(j,:)=Si_sd_tmp;
+STi_sd(j,:)=STi_sd_tmp;
+Si_lb(j,:)=Si_lb_tmp;
+STi_lb(j,:)=STi_lb_tmp;
+Si_ub(j,:)=Si_ub_tmp;
+STi_ub(j,:)=STi_ub_tmp;
 % Plot:
 % % figure % plot main and total separately
 % % subplot(121); boxplot1(Si,X_Labels,'main effects',Si_lb,Si_ub)
 % % subplot(122); boxplot1(STi,X_Labels,'total effects',STi_lb,STi_ub)
 figure % plot both in one plot:
-boxplot2([Si; STi],X_Labels,[ Si_lb; STi_lb ],[ Si_ub; STi_ub ])
+boxplot2([Si_tmp; STi_tmp],X_Labels,[ Si_lb_tmp; STi_lb_tmp ],[ Si_ub_tmp; STi_ub_tmp ])
 legend('main effects','total effects')
+title(X_Labels(j))
 
-% Analyze convergence of sensitivity indices:
-NN = [N/10:N/10:N] ;
-[ Sic, STic ] = vbsa_convergence([YA;YB;YC],M,NN);
-% % figure
-% % subplot(121); plot_convergence(Sic,NN*(M+2),[],[],[],'model evals','main effect',X_Labels)
-% % subplot(122); plot_convergence(STic,NN*(M+2),[],[],[],'model evals','total effect',X_Labels);
-% With confidence bounds:
-[ Sic, STic, Si_sdc, STi_sdc, Si_lbc, STi_lbc, Si_ubc, STi_ubc  ] = vbsa_convergence([YA;YB;YC],M,NN,Nboot);
-figure
-subplot(121); plot_convergence(Sic,NN*(M+2),Si_lbc,Si_ubc,[],'model evals','main effect',X_Labels)
-subplot(122); plot_convergence(STic,NN*(M+2),STi_lbc,STi_ubc,[],'model evals','total effect',X_Labels);
-
-
+if(false)
+    % Analyze convergence of sensitivity indices:
+    NN = [N/10:N/10:N] ;
+    [ Sic, STic ] = vbsa_convergence([YA;YB;YC],M,NN);
+    % % figure
+    % % subplot(121); plot_convergence(Sic,NN*(M+2),[],[],[],'model evals','main effect',X_Labels)
+    % % subplot(122); plot_convergence(STic,NN*(M+2),[],[],[],'model evals','total effect',X_Labels);
+    % With confidence bounds:
+    [ Sic, STic, Si_sdc, STi_sdc, Si_lbc, STi_lbc, Si_ubc, STi_ubc  ] = vbsa_convergence([YA;YB;YC],M,NN,Nboot);
+    figure
+    subplot(121); plot_convergence(Sic,NN*(M+2),Si_lbc,Si_ubc,[],'model evals','main effect',X_Labels)
+    subplot(122); plot_convergence(STic,NN*(M+2),STi_lbc,STi_ubc,[],'model evals','total effect',X_Labels);
+    title(X_Labels(j))
+end
+end
 
 %% Step 4: create coloured scatter plot
 
