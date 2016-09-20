@@ -32,6 +32,7 @@ res.swi.C02=(1-x(2))*wtpc*1e-2/12*res.bsd.rho_sed;
 res.zTOC.k1 = x(1);
 res.zTOC.k2 = x(1)*0.01;                
 res.zNO3.KNH4 = x(3);
+res.zNH4.KNH4 = x(3);
 res.bsd.gamma = x(4);
 res.bsd.gammaH2S = x(5);
 

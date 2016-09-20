@@ -80,8 +80,8 @@ res.zPO4_M = benthic_zPO4_M(res.bsd, res.swi);
 % Define input distribution and ranges:
 M  = 5 ; % number of uncertain parameters [ k1 f1 KNH4 gammaNH4 gammaH2S ]
 DistrFun  = {'unif', 'unif', 'unif', 'unif', 'unif'}; %'unif'  ; % Parameter distribution
-%DistrPar  = { [ 1e-4 5 ]; [ 0.05 0.95 ]; [ 0.8 1.7 ]; [ 0.5 1] ; [ 0.5 1 ] } ; % Parameter ranges
-DistrPar  = { [ log10(1e-4) log10(9) ]; [ 0.05 0.95 ]; [ 0.8 1.7 ]; [ 0.5 1] ; [ 0.5 1 ] } ; % other Parameter range
+DistrPar  = { [ 1e-4 5 ]; [ 0.02 0.98 ]; [ 0.8 1.7 ]; [ 0.5 1] ; [ 0.5 1 ] } ; % Parameter ranges
+%DistrPar  = { [ log10(1e-4) log10(9) ]; [ 0.05 0.95 ]; [ 0.8 1.7 ]; [ 0.5 1] ; [ 0.5 1 ] } ; % other Parameter range
 
 %% Step 3: Compute first-order and total-order variance-based indices
 
@@ -98,14 +98,23 @@ N = 3500 ; % Base sample size.
 % variance-based indices is equal to N*(M+2) 
 X = AAT_sampling(SampStrategy,M,DistrFun,DistrPar,2*N);
 
-X(:,1)=10.^X(:,1); % other Parameter range
+%X(:,1)=10.^X(:,1); % other Parameter range
+
 [ XA, XB, XC ] = vbsa_resampling(X) ;
+save('RESULTS/X_5000.mat','X')
+save('RESULTS/XA_5000.mat','XA')
+save('RESULTS/XB_5000.mat','XB')
+save('RESULTS/XC_5000.mat','XC')
+
 
 % Run the model and compute selected model output at sampled parameter
 % sets:
 YA_all = model_evaluation(myfun,XA,res) ; % size (N,1)
 YB_all = model_evaluation(myfun,XB,res) ; % size (N,1)
 YC_all = model_evaluation(myfun,XC,res) ; % size (N*M,1)
+save('RESULTS/YA_all_5000.mat','YA_all')
+save('RESULTS/YB_all_5000.mat','YB_all')
+save('RESULTS/YC_all_5000.mat','YC_all')
 
 % select the j-th model output:
 %      y(1) = O2 SWI flux
@@ -114,7 +123,8 @@ YC_all = model_evaluation(myfun,XC,res) ; % size (N*M,1)
 %      y(4) = NH4 SWI flux
 %      y(5) = H2S SWI flux
 %      y(6)   = P SWI flux
-for j=1:6; 
+
+for j=2:5; 
 YA = YA_all(:,j);
 YB = YB_all(:,j);
 YC = YC_all(:,j);
@@ -125,8 +135,8 @@ YC = YC_all(:,j);
 Si(j,:)=Si_tmp;
 STi(j,:)=STi_tmp;
 % Plot results:
-X_Labels = {'log(k1)','f1','KNH4','gamma NH4','gamma H2S'} ;
-Titles = {'O_2', 'NO_3', 'SO_4', 'NH_4', 'H_2S', 'PO_4'}
+X_Labels = {'k1','f1','KNH4','gamma NH4','gamma H2S'} ;
+Titles = {'O_2', 'NO_3', 'SO_4', 'NH_4', 'H_2S', 'PO_4'};
 % % figure % plot main and total separately
 % % subplot(121); boxplot1(Si,X_Labels,'main effects')
 % % subplot(122); boxplot1(STi,X_Labels,'total effects')
@@ -142,9 +152,13 @@ if(false)
     Y = [ YA; YC ] ;
     figure; plot_cdf(Y,'NSE') ;
     title(Titles(j))
+end    
+    % Check the model output distribution (if multi-modal or highly skewed, the
+    % variance-based approach may not be adequate):
+    Y = [ YA; YC ] ;
     figure; plot_pdf(Y,'NSE') ;
     title(Titles(j));
-end
+    print('-depsc2', ['RESULTS/uniform_k1_5_4000m/PDF_' char(Titles(j)) '.eps']);
 
 % Compute confidence bounds:
 Nboot = 500 ;
@@ -164,7 +178,8 @@ STi_ub(j,:)=STi_ub_tmp;
 figure % plot both in one plot:
 boxplot2([Si_tmp; STi_tmp],X_Labels,[ Si_lb_tmp; STi_lb_tmp ],[ Si_ub_tmp; STi_ub_tmp ])
 legend('main effects','total effects')
-title(X_Labels(j))
+title(Titles(j))
+print('-depsc2', ['RESULTS/uniform_k1_5_4000m/SIndex_' char(Titles(j)) '.eps']);
 
 if(false)
     % Analyze convergence of sensitivity indices:
@@ -180,19 +195,28 @@ if(false)
     subplot(122); plot_convergence(STic,NN*(M+2),STi_lbc,STi_ubc,[],'model evals','total effect',X_Labels);
     title(X_Labels(j))
 end
-end
 
 %% Step 4: create coloured scatter plot
 
-XD=XC;
-XD(:,1)=log10(XC(:,1));
-% k1 vs f1
+% % XD=XC;
+% % XD(:,1)=log10(XC(:,1));
+% k1 vs f1 -> flux 
 figure
-scatter_plots_col(XD,YC,1,2,16,X_Labels)
+scatter_plots_col(XC,YC_all(:,j),1,2,16,X_Labels)
+title(Titles(j))
+print('-depsc2', ['RESULTS/uniform_k1_5_4000m/k1_vs_f1_SWIflux_' char(Titles(j)) '.eps']);
 
-% log(k1) vs SWI flux
+%scatter_plots_col(XD,YC,1,2,16,X_Labels)
+
+% k1 vs SWI flux 
 figure
-scatter_plots(log10(XC(:,1)),YC,1,'FO2',{'log(k1)'})
+scatter_plots(XC(:,1),YC_all(:,j),1,'SWI fluxes',{'k1'})
+title(Titles(j))
+print('-depsc2', ['RESULTS/uniform_k1_5_4000m/k1_SWIflux_' char(Titles(j)) '.eps']);
+
+end
+
+save('RESULTS/STi_all_5000.mat','STi')
 
 if(false)
 %% Step 5: Adding up new samples
