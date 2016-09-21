@@ -108,7 +108,9 @@ save('RESULTS/XC_5000.mat','XC')
 
 
 % Run the model and compute selected model output at sampled parameter
-% sets:
+% sets: 
+% lines: input param sets
+% columns: outputs (see below)
 YA_all = model_evaluation(myfun,XA,res) ; % size (N,1)
 YB_all = model_evaluation(myfun,XB,res) ; % size (N,1)
 YC_all = model_evaluation(myfun,XC,res) ; % size (N*M,1)
@@ -117,12 +119,12 @@ save('RESULTS/YB_all_5000.mat','YB_all')
 save('RESULTS/YC_all_5000.mat','YC_all')
 
 % select the j-th model output:
-%      y(1) = O2 SWI flux
-%      y(2) = NO3 SWI flux
-%      y(3) = SO4 SWI flux
-%      y(4) = NH4 SWI flux
-%      y(5) = H2S SWI flux
-%      y(6)   = P SWI flux
+%      y(:,1) = O2 SWI flux
+%      y(:,2) = NO3 SWI flux
+%      y(:,3) = SO4 SWI flux
+%      y(:,4) = NH4 SWI flux
+%      y(:,5) = H2S SWI flux
+%      y(:,6)   = P SWI flux
 
 for j=2:5; 
 YA = YA_all(:,j);

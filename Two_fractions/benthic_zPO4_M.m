@@ -58,8 +58,6 @@ classdef benthic_zPO4_M
                 obj.Minf=1.0e-10;       % asymptotic concentration in anoxic conditions 
             end
 
-
-            
             % Preparation: for each layer, sort out solution-matching across bioturbation boundary if necessary
             
             % layer 1: 0 < z < zox, OM degradation (-) Sorption to sediment Fe-oxides (ktemp) 

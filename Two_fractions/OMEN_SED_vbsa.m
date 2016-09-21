@@ -31,10 +31,18 @@ res.swi.C01=x(2)*wtpc*1e-2/12*res.bsd.rho_sed;       %TOC concentration at SWI (
 res.swi.C02=(1-x(2))*wtpc*1e-2/12*res.bsd.rho_sed;
 res.zTOC.k1 = x(1);
 res.zTOC.k2 = x(1)*0.01;                
-res.zNO3.KNH4 = x(3);
-res.zNH4.KNH4 = x(3);
-res.bsd.gamma = x(4);
-res.bsd.gammaH2S = x(5);
+% % % O2, NO3, SO4, NH4, H2S
+% % res.zNO3.KNH4 = x(3);
+% % res.zNH4.KNH4 = x(3);
+% % res.bsd.gamma = x(4);
+% % res.bsd.gammaH2S = x(5);
+
+% PO4 use just anoxic 400m setup
+%res.zPO4_M.KPO41 = x(3);
+%res.zPO4_M.KPO42 = x(4);
+res.zPO4_M.ksPO4 = x(3);
+res.zPO4_M.kmPO4 = x(4);
+res.zPO4_M.kaPO4 = x(5);
 
 
 res = res.zTOC.calc(res.bsd,res.swi, res);
@@ -53,6 +61,7 @@ res = res.zPO4_M.calc(res.bsd, res.swi, res);
 % % res = res.zDIC.calc(res.bsd, res.swi, res);
 % % res = res.zALK.calc(res.bsd, res.swi, res);
 
+% % y = res.flxswiO2;
 y(1) = res.flxswiO2;
 y(2) = res.flxswiNO3; 
 y(3) = res.flxswiSO4; 
