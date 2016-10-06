@@ -1,6 +1,6 @@
 function h = imagesc4pdf(C)
-labelparams = {'a', 'nu', 'w0', 'Db0', 'OC0', 'beta', 'por0'} ; % input names
-Titles = {'F1', 'FF10', 'F2', 'FF100', 'F3', 'FF1000', 'F4', 'FF10000', 'dF1', 'dFF10', 'dF2', 'dFF100', 'dF3', 'dFF1000', 'dF4', 'dFF10000'};
+labelparams = { 'k1','k2ord','f1','KNH4','gamma NH4','gamma H2S','K I','K II','ks' 'km' 'ka' } ; % input names
+Titles = {'O_2', 'NO_3', 'SO_4', 'NH_4', 'H_2S', 'PO_4'};
 
 [ny nx] = size(C);
 
@@ -24,4 +24,4 @@ set(gca, 'xticklabel',labelparams);
 colormap autumn
 colormap(flipud(colormap))
 colorbar
-print('-depsc2', ['0_KSIndex_ALL_autumn.eps']);
+print('-depsc2', ['0_KSIndex_ALL_OUTPUT.eps']);

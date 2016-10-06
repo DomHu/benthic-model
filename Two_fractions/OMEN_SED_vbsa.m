@@ -7,7 +7,7 @@ function [y] = OMEN_SED_vbsa(x,res)
 % [y,Q_sim,STATES,FLUXES] = hymod_nse(param,rain,evap,flow)
 % 
 % Input:
-% x = vector of model parameters (k1, f1,  KNH4, gammaNH4, gammaH2S)  - vector (1,5)
+% x = vector of model parameters ('k1','k2ord','f1','KNH4','gamma NH4','gamma H2S','K I','K II','ks' 'km' 'ka' )  - vector (1,11)
 %
 % Output:
 %      y(1) = O2 SWI flux                     - scalar
@@ -19,30 +19,30 @@ function [y] = OMEN_SED_vbsa(x,res)
 %
 
 % how much Corg wtpc at top of sedments:
-wtpc = 1.0;
+wtpc = 2.0;
 
-M = 5 ; % number of model parameters
+M = 11 ; % number of model parameters
 x = x(:);
 if ~isnumeric(x); error('input argument ''param'' must be numeric'); end
 if length(x)~=M; error('input argument ''param'' must have %d components',M); end
 
 
-res.swi.C01=x(2)*wtpc*1e-2/12*res.bsd.rho_sed;       %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-res.swi.C02=(1-x(2))*wtpc*1e-2/12*res.bsd.rho_sed;
+res.swi.C01=x(3)*wtpc*1e-2/12*res.bsd.rho_sed;       %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+res.swi.C02=(1-x(3))*wtpc*1e-2/12*res.bsd.rho_sed;
 res.zTOC.k1 = x(1);
-res.zTOC.k2 = x(1)*0.01;                
-% % % O2, NO3, SO4, NH4, H2S
-% % res.zNO3.KNH4 = x(3);
-% % res.zNH4.KNH4 = x(3);
-% % res.bsd.gamma = x(4);
-% % res.bsd.gammaH2S = x(5);
+res.zTOC.k2 = x(1)*x(2);                
+% O2, NO3, SO4, NH4, H2S
+res.zNO3.KNH4 = x(4);
+res.zNH4.KNH4 = x(4);
+res.bsd.gamma = x(5);
+res.bsd.gammaH2S = x(6);
 
 % PO4 use just anoxic 400m setup
-%res.zPO4_M.KPO41 = x(3);
-%res.zPO4_M.KPO42 = x(4);
-res.zPO4_M.ksPO4 = x(3);
-res.zPO4_M.kmPO4 = x(4);
-res.zPO4_M.kaPO4 = x(5);
+res.zPO4_M.KPO41 = x(7);
+res.zPO4_M.KPO42 = x(8);
+res.zPO4_M.ksPO4 = x(9);
+res.zPO4_M.kmPO4 = x(10);
+res.zPO4_M.kaPO4 = x(11);
 
 
 res = res.zTOC.calc(res.bsd,res.swi, res);
