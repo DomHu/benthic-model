@@ -1,5 +1,6 @@
 function h = imagesc4pdf(C)
-Titles = {'O_2', 'NO_3', 'SO_4', 'NH_4', 'H_2S', 'PO_4'};
+labelparams = {'a', 'nu', 'w0', 'Db0', 'OC0', 'beta', 'por0'} ; % input names
+Titles = {'F1', 'FF10', 'F2', 'FF100', 'F3', 'FF1000', 'F4', 'FF10000', 'dF1', 'dFF10', 'dF2', 'dFF100', 'dF3', 'dFF1000', 'dF4', 'dFF10000'};
 
 [ny nx] = size(C);
 
@@ -17,9 +18,10 @@ h = patch(px, py, reshape(C,1,n), 'linestyle', '-');
 xlim([.5 nx+.5]);
 ylim([.5 ny+.5]);
 set(gca, 'ydir', 'reverse');
-%set(gca, 'yticklabel',{'$NO_3$' 'SO_4' 'NH_4' 'H_2S' 'null' 'O_2' 'NO_3' 'SO_4' 'NH_4' 'H_2S'},'Interpreter','LaTex');
-set(gca, 'xticklabel',[]);
+set(gca,'YTick',[1:1:ny]);
+set(gca, 'yticklabel',Titles);
+set(gca, 'xticklabel',labelparams);
 colormap autumn
 colormap(flipud(colormap))
 colorbar
-print('-depsc2', ['RESULTS_PAWN/KSIndex_ALL_autumn.eps']);
+print('-depsc2', ['0_KSIndex_ALL_autumn.eps']);

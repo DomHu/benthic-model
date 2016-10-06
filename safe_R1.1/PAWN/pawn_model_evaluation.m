@@ -46,17 +46,22 @@ if exist(fun_test,'file')~=2; error('function ''%s'' does not exist',fun_test); 
 %%%%%%%%%%%%%%%%%%
 % Model evaluation
 %%%%%%%%%%%%%%%%%%
-
-if nargin > 2
-    NumExtraArg = length(varargin);
-end
-
 [M,n] = size(XX) ;
 YY    = cell(M,n);
 tic
-for i=1:M
-    for k=1:n
-        YY{i,k} = model_evaluation(fun_test,XX{i,k},varargin{1:NumExtraArg});
+
+if nargin > 2
+    NumExtraArg = length(varargin);
+    for i=1:M
+        for k=1:n
+            YY{i,k} = model_evaluation(fun_test,XX{i,k},varargin{1:NumExtraArg});
+        end
     end
+else
+   for i=1:M
+        for k=1:n
+            YY{i,k} = model_evaluation(fun_test,XX{i,k});
+        end
+   end 
 end
 comp_time=toc;

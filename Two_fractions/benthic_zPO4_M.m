@@ -10,14 +10,14 @@ classdef benthic_zPO4_M
         
         KPO41=200.0;  % was 10.0     %Adsorption coefficient in oxic layer (-) 
         KPO42=1.3;          %Adsorption coefficient in anoxic layer (-)
-        ksPO4=0.26*365;      %Rate constant for kinetic P sorption (1/yr)   0.12 fits 1.CASE; 2.2 fits 2. CASE DOM: was 0.5*365 from Nicolas; Slomp ea 1996 0.26
+        ksPO4=1.0; %0.26*365;      %Rate constant for kinetic P sorption (1/yr)   0.12 fits 1.CASE; 2.2 fits 2. CASE DOM: was 0.5*365 from Nicolas; Slomp ea 1996 0.26
        % ksPO4=1e-15;
         %kmPO4= 1e-15 ;
         kmPO4=2.2e-6*24*365;          % Dom was from Slomp 0.00053*365;	%Rate constant for Fe-bound P release upon Fe oxide reduction   DOM: was 1.8e-6 Slomp ea 1996 0.00053*365 
         %kaPO4 = 0.0;
-        kaPO4=1.0; % Dom was 0.001*365;	%Rate constant for authigenic P formation (1/yr)    DOM: was 0.004*365 from Nicolas; Slomp ea 1996 0.001
+        kaPO4=4.0; % Dom was 0.001*365;	%Rate constant for authigenic P formation (1/yr)    DOM: was 0.004*365 from Nicolas; Slomp ea 1996 0.001
         PO4s=1.0e-9;        %Equilibrium concentration for P sorption (mol/cm3)       was 1.5e-9; ; Slomp ea 1996
-        PO4a= 1e-7; %47e-9;  %was 3.7e-9      %Equilibrium concentration for authigenic P formation (mol/cm3) was 0.7e-9
+        PO4a= 0.5e-8; %47e-9;  %was 3.7e-9      %Equilibrium concentration for authigenic P formation (mol/cm3) was 0.7e-9
         %Minf = 0;
         Minf=1.0e-10;       % asymptotic concentration for Fe-bound P (mol/cm3)      TODO/CHECK: good value? is from Slomp et al. 1996 Dom was 1.99e-6
 

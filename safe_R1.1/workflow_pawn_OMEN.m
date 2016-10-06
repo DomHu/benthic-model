@@ -63,21 +63,21 @@ res.zPO4_M = benthic_zPO4_M(res.bsd, res.swi);
 
 % Define uncertain inputs (parameters):
 
-% % % O2, NO3, SO4, NH4, H2S
-% % M = 5 ; % number of inputs
-% % labelparams={ 'k1','f1','KNH4','gamma NH4','gamma H2S' } ; % input names
-% % xmin = [  1e-4 0.02 0.8 0.5 0.5 ];
-% % xmax = [5 0.98 1.7 1.0 1.0  ];
+% O2, NO3, SO4, NH4, H2S
+M = 5 ; % number of inputs
+labelparams={ 'k1','f1','KNH4','gamma NH4','gamma H2S' } ; % input names
+xmin = [  1e-4 0.02 0.8 0.5 0.5 ];
+xmax = [5 0.98 1.7 1.0 1.0  ];
 
 % PO4 
-M = 5 ; % number of inputs
-labelparams={ 'k1','f1','ks' 'km' 'ka'} ; % input names
-xmin = [  1e-4 0.02  50.0 0.015  0.001];
-xmax = [    5  0.98  850.0 0.02  10.0];
 % M = 7 ; % number of inputs
 % labelparams={ 'k1','f1','K I','K II','ks' 'km' 'ka'} ; % input names
 % xmin = [  1e-4 0.02 100 1.3  50.0 0.015  0.001];
 % xmax = [    5  0.98 400 2.0 850.0 0.02  10.0];
+% % M = 5 ; % number of inputs
+% % labelparams={ 'k1','f1','ks' 'km' 'ka'} ; % input names
+% % xmin = [  1e-4 0.02  50.0 0.015  0.001];
+% % xmax = [    5  0.98  850.0 0.02  10.0];
 
 distrpar=cell(M,1); for i=1:M; distrpar{i}=[xmin(i) xmax(i)]; end
 
@@ -87,7 +87,7 @@ Titles = {'O_2', 'NO_3', 'SO_4', 'NH_4', 'H_2S', 'PO_4'};
 
 %% Step 3: Apply PAWN
 
-NU = 150 ; % number of samples to estimate unconditional CDF
+NU = 200 ; % number of samples to estimate unconditional CDF
 NC = 100 ; % number of samples to estimate conditional CDFs
 n  = 10 ; % number of conditioning points
 out = 6; % number of output from OMEN (e.g. SWI-flux O2, NO3, ...)
