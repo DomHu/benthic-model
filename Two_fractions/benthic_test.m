@@ -15,12 +15,11 @@ classdef benthic_test
             swi.C02= 1.0*1e-2/12*bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;          %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
             %swi.C01=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
             %swi.C02=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-            swi.O20=0.0;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
+            swi.O20=300.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
             swi.NO30=40.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
             swi.Nitrogen=true;
             swi.NH40=0.0e-9;                                                %NH4 concentration at SWI (mol/cm^3)
             swi.SO40=28000.0e-9;                                            %SO4 concentration at SWI (mol/cm^3)
-            %swi.SO40 = 100e-9;
             swi.H2S0=0.0e-13;         %was 0.0e-9                            %H2S concentration at SWI (mol/cm^3)
             swi.PO40=40.0e-9 ;%0.06e-8; % Dom was 1e-9;    % Sandra played with 3e-9                                              %PO4 concentration at SWI (mol/cm^3)
             swi.Mflux0=365*0.2e-10; % Sandra played with 10e-9; ;   % = 7.3e-9    %flux of M to the sediment (mol/(cm2*yr))   TODO/CHECK: good value+right conversion? is from Slomp et al. 1996        
@@ -36,7 +35,8 @@ classdef benthic_test
 %            % set date-time
 %            str_date = datestr(now,'ddmmyy_HH_MM_SS');
             res=benthic_test.test_benthic(1,swi);
-            benthic_test.plot_column(res, false, swi, '1909')
+            res.zso4=100,0;   % for test-case with just TOC & O2
+            benthic_test.plot_column(res, false, swi, '1510')
         end
         
          function run_OMEN_BRNS()
@@ -600,10 +600,9 @@ classdef benthic_test
             res.zSO4 = benthic_zSO4(res.bsd, res.swi);
             res.zNH4 = benthic_zNH4(res.bsd, res.swi);
             res.zH2S = benthic_zH2S(res.bsd, res.swi);
-            res.zH2S = benthic_zH2S(res.bsd, res.swi);
             res.zPO4_M = benthic_zPO4_M(res.bsd, res.swi);
-            res.zDIC = benthic_zDIC(res.bsd, res.swi);
-            res.zALK = benthic_zALK(res.bsd, res.swi);
+%            res.zDIC = benthic_zDIC(res.bsd, res.swi);
+%            res.zALK = benthic_zALK(res.bsd, res.swi);
    
             tic;
             res = res.zTOC.calc(res.bsd,res.swi, res);
@@ -612,15 +611,16 @@ classdef benthic_test
                 res = res.zNO3.calc(res.bsd, res.swi, res);
             else
                 res.zno3=res.zox;
+% %                res.zso4=res.zox;   % for test-case with just TOC & O2
             end
-            res = res.zSO4.calc(res.bsd, res.swi, res);
-            if(swi.Nitrogen)
-                res = res.zNH4.calc(res.bsd, res.swi, res);
-            end
-            res = res.zH2S.calc(res.bsd, res.swi, res);
-            res = res.zPO4_M.calc(res.bsd, res.swi, res);
-            res = res.zDIC.calc(res.bsd, res.swi, res);
-            res = res.zALK.calc(res.bsd, res.swi, res);
+             res = res.zSO4.calc(res.bsd, res.swi, res);
+             if(swi.Nitrogen)
+                 res = res.zNH4.calc(res.bsd, res.swi, res);
+             end
+             res = res.zH2S.calc(res.bsd, res.swi, res);
+             res = res.zPO4_M.calc(res.bsd, res.swi, res);
+%             res = res.zDIC.calc(res.bsd, res.swi, res);
+%             res = res.zALK.calc(res.bsd, res.swi, res);
             toc;
             
             %%%%% WRITE OUTPUT:
@@ -635,9 +635,9 @@ classdef benthic_test
             fprintf('both concentration at swi %g \n',  Cswi);
            
             fprintf('sed preservation of POC %g \n',  Cinf/Cswi);
-            %%% WRITE EXACT FLUX
-            FO2_exact=res.zO2.calcFO2_exact(res.zox,res.bsd, res.swi, res);
-            fprintf('exact F_O2 flux (mol cm^{-2} yr^{-1}) %g \n',  FO2_exact);
+%             %%% WRITE EXACT FLUX
+%             FO2_exact=res.zO2.calcFO2_exact(res.zox,res.bsd, res.swi, res);
+%             fprintf('exact F_O2 flux (mol cm^{-2} yr^{-1}) %g \n',  FO2_exact);
             
         end
 
@@ -1212,7 +1212,7 @@ classdef benthic_test
                 plot(SO4, -zgrid, 'b')
                 hold on
 %                xlim([2.7e-5 swi.SO40])     
-                xlim([2.7e-5 swi.SO40])     
+%                xlim([2.7e-5 swi.SO40])     
                 t=xlim;         % to draw penetration depths the correct lengths
                 plot([0,t(1,2)], [-bsd.zbio,-bsd.zbio], 'k--')     
                 plot([0,t(1,2)], [-res.zox,-res.zox], 'b--')     
@@ -1229,7 +1229,7 @@ classdef benthic_test
                 end
                 plot(H2S, -zgrid, 'b')
                 hold on
-                xlim([0 4e-7])
+%                xlim([0 4e-7])
                 t=xlim;         % to draw penetration depths the correct lengths
                 plot([0,t(1,2)], [-bsd.zbio,-bsd.zbio], 'k--')     
                 plot([0,t(1,2)], [-res.zox,-res.zox], 'b--')     
@@ -1283,6 +1283,7 @@ classdef benthic_test
                 ylabel('Depth (cm)')
     %            title ('O2 (mol/cm^3)')
 
+                % SO4
                 subplot(2,2,2)
                 for i=1:length(zgrid)
                     [SO4(i), flxSO4(i)] = res.zSO4.calcSO4(zgrid(i), bsd, res.swi, res);
@@ -1300,6 +1301,7 @@ classdef benthic_test
                 ylabel('Depth (cm)')
     %            title ('SO4 (mol/cm^3)')
 
+                % H2S
                 subplot(2,2,4)
                 for i=1:length(zgrid)
                     [H2S(i), flxH2S(i)] = res.zH2S.calcH2S(zgrid(i), bsd, res.swi, res);

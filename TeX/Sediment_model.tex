@@ -931,10 +931,74 @@ solution type to use.
 
 
 \section {Test Cases}
+
+\subsection{Sediment profiles}
+
+\begin{figure}[htbp]
+\begin{center}
+	\includegraphics[width=1.0\textwidth]{figures/Profiles/0_ALL_PROFILES_COMBINED.pdf}
+	\caption{Modelled (curves) and measured (filled dots) dissolved and solid phase pore water profiles for four different sediment cores. Note that different 
+	scales are used for different stations. The blue TOC curve represents the sum of the refractory (green) and labile (red) TOC fraction.}
+	\label{fig:Sediment_profiles}
+	\end{center}
+\end{figure}
+
+\begin{table}[btp]
+\caption{Model boundary conditions for the sampling stations in Figure \ref{fig:Sediment_profiles}.} 
+% Note: Constant concentrations at all sites for \chem{SO_4} ($28000 \mu$mol cm$^{-3}$) and \chem{H_2S} (0.0 $\mu$mol cm$^{-3}$).}
+\centering
+% used for centering table
+\begin{tabular}{l c c c c c c c}
+% centered columns (15 columns)
+\hline\hline
+\multicolumn{8}{l}{\textbf{Sediment characteristics:}}\\
+Depth & Temp. & $z_{\mathrm{bio}}$ & $D_{\mathrm{bio}}$  & \chem{TOC_1} & \chem{TOC_2} & \chem{k_1} & \chem{k_2}\\
+ (m) & ($^{\circ}C$) & (cm) & (cm$^2$yr$^{-1}$) &(wt\%) & (wt\%) & (yr$^{-1}$) & (yr$^{-1}$)\\
+\hline
+108 & 12.5 & 1.0 & 0.02 & 2.66 & 1.8 & 0.5 & $1.0e^{-5}$ \\
+585 & 5.85 & 0.01 & 0.02 & 2.0 & 3.5 & 0.035 & $5.0e^{-5}$\\
+2213 & 3.2 & 10.0 & 0.17 & 0.45 & 0.6 & 0.15 & $9.0e^{4}$\\
+4298 & 2.5 & 4.2 & 0.18 & 1.0 & 1.2 & 0.055 & $1e^{-5}$\\
+\hline\hline
+\multicolumn{8}{l}{\textbf{Bottom water concentrations of solutes} (all in $\mu$mol cm$^{-3}$):}\\
+Depth & \chem{O_2} & \chem{NO_3} & \chem{SO_4} & \chem{NH_4} & \chem{H_2O} & \chem{PO_4} & \chem{PO_4^a}\\
+%(m) & ($\frac{\mu mol}{cm^3}$) &  ($\frac{\mu mol}{cm^3}$) &  ($\frac{\mu mol}{cm^3}$) &  ($\frac{\mu mol}{cm^3}$) &  ($\frac{\mu mol}{cm^3}$)  &   ($\frac{\mu mol}{cm^3}$) &   ($\frac{\mu mol}{cm^3}$) \\
+\hline
+108 & 210.0 & 9.6 & 28,000 & 0.4 & 0.0 & 0.0 & 15.0 \\
+585 & 10.0 & 25.0 & 28,000 & 0.0 & 0.0 & 50.0 & 90.0 \\
+2213 & 250 & 25 & 28,000 & 0.6 & 0.0 & 0.0 & 5.0 \\
+4298 & 243 & 30.1 & 28,000 & 0.22 & 0.0 0.0 & 5.0 \\
+% inserts double horizontal lines
+\end{tabular}
+\label{table:Profiles_BC}
+\end{table}
+
+
+\subsection{Sensitivity Analysis}
+
+\begin{figure}[htbp]
+\begin{center}
+	\includegraphics[width=1.0\textwidth]{figures/SA/0_KSIndex_ALL_OUTPUT_WHITE.pdf}
+	\caption{Pattern plot, showing the output sensitivity for each SWI flux (i.e. the chemical compounds on the horizontal axis) and each input factor (i.e. the model parameters 
+	on the vertical axis) for two hypothetical sediment cores. }
+	\label{fig:Sensitivity_Analysis}
+	\end{center}
+\end{figure}
+
+
+\begin{figure}[htbp]
+\begin{center}
+	\includegraphics[width=1.0\textwidth]{figures/SA/400m_k1_vs_f1_SWIflux_COMBINED.pdf}
+	\caption{}
+	\label{fig:SA_Color_ScatterPlots}
+\end{center}
+\end{figure}
+
+
+
+
 \subsection{Benthic fluxes on a global scale}
 Application to Seitert, 2004 OM, burwiczk see rate data and evaluation based on global data (Archer)
-
-\subsection{HILDA-like test}
 
 \subsection{GENIE-Cretaceous test?}
 

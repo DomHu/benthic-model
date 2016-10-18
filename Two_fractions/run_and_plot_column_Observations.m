@@ -16,7 +16,7 @@
             %sediment characteristics
             switch Obs
                     case 1  % OMEXDIA_2809_108m all solutes in Micromoles/litre
-% %         k1= 0.4;                                                %TOC degradation rate constnat (1/yr)
+% %         k1= 0.5;                                                %TOC degradation rate constnat (1/yr)
 % %         k2=0.00001;  
 % %         KPO41=200.0;  %Adsorption coefficient in oxic layer (-) 
 % %         KPO42=1.3;    %Adsorption coefficient in anoxic layer (-)
@@ -36,7 +36,7 @@
 
                         %bottom water concentrations
                         swi.T=12.5; %20.0;                         %temperature (degree C)
-                        swi.C01= 2.66*1e-2/12*bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*bsd.rho_sed; %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+                        swi.C01= 2.64*1e-2/12*bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*bsd.rho_sed; %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
                         swi.C02= 1.8*1e-2/12*bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
                         %swi.C01=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
                         %swi.C02=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
@@ -56,6 +56,15 @@
                     case 2 % OMEXDIA_2809_2213m
 %        k1= 0.15;                                                %TOC degradation rate constnat (1/yr)
 %        k2=0.0009;     
+%         ksPO4=1.0; %0.26*365;      %Rate constant for kinetic P sorption (1/yr)   0.12 fits 1.CASE; 2.2 fits 2. CASE DOM: was 0.5*365 from Nicolas; Slomp ea 1996 0.26
+%        % ksPO4=1e-15;
+%         %kmPO4= 1e-15 ;
+%         kmPO4=2.2e-6*24*365;          % Dom was from Slomp 0.00053*365;	%Rate constant for Fe-bound P release upon Fe oxide reduction   DOM: was 1.8e-6 Slomp ea 1996 0.00053*365 
+%         %kaPO4 = 0.0;
+%         kaPO4=10.0; % Dom was 0.001*365;	%Rate constant for authigenic P formation (1/yr)    DOM: was 0.004*365 from Nicolas; Slomp ea 1996 0.001
+%         PO4s=1.0e-9;        %Equilibrium concentration for P sorption (mol/cm3)       was 1.5e-9; ; Slomp ea 1996
+%         PO4a= 0.5e-8; %47e-9;  %was 3.7e-9      %Equilibrium concentration for authigenic P formation (mol/cm3) was 0.7e-9
+
                         bsd.rho_sed=2.6; %was 2.5                           % sediment density (g/cm3)
                         bsd.wdepth=2213.0;     % Dom was 600.0                       % water depth (m)
                         bsd.zbio=10.0;                              % bioturbation depth (cm)
@@ -269,7 +278,16 @@
                           
                       case 10  % OMEXDIA_4298m does not look nice
 %        k1= 0.055;                                                %TOC degradation rate constnat (1/yr)
-%        k2=0.00001;     
+%        k2=0.00001;  
+%         ksPO4=1.0; %0.26*365;      %Rate constant for kinetic P sorption (1/yr)   0.12 fits 1.CASE; 2.2 fits 2. CASE DOM: was 0.5*365 from Nicolas; Slomp ea 1996 0.26
+%        % ksPO4=1e-15;
+%         %kmPO4= 1e-15 ;
+%         kmPO4=2.2e-6*24*365;          % Dom was from Slomp 0.00053*365;	%Rate constant for Fe-bound P release upon Fe oxide reduction   DOM: was 1.8e-6 Slomp ea 1996 0.00053*365 
+%         %kaPO4 = 0.0;
+%         kaPO4=10.0; % Dom was 0.001*365;	%Rate constant for authigenic P formation (1/yr)    DOM: was 0.004*365 from Nicolas; Slomp ea 1996 0.001
+%         PO4s=1.0e-9;        %Equilibrium concentration for P sorption (mol/cm3)       was 1.5e-9; ; Slomp ea 1996
+%         PO4a= 0.5e-8; %47e-9;  %was 3.7e-9      %Equilibrium concentration for authigenic P formation (mol/cm3) was 0.7e-9
+
                         bsd.rho_sed=2.6; %was 2.5                           % sediment density (g/cm3)
                         bsd.wdepth=4298.0;     % Dom was 600.0                       % water depth (m)
                         bsd.zbio=4.2;                              % bioturbation depth (cm)
@@ -316,7 +334,7 @@
             %            data.H2S=PW_data(:,[1 11]);
                         
                     case 2 % OMEXDIA_2809_2213m
-                        str_date = '2213m_OMEXDIA_2809_';
+                        str_date = '2213m_OMEXDIA_1110_';
                         data.TOC=xlsread('../Observations/OMEXDIA/2_PE121_98-4_2213m.xlsx','Corg','C2:D39');     % in wt%
                         data.O2=xlsread('../Observations/OMEXDIA/2_PE121_98-4_2213m.xlsx','O2','C113:D1352'); % C2:D112
                         data.NO3=xlsread('../Observations/OMEXDIA/2_PE121_98-4_2213m.xlsx','NO3','C2:D18'); 
@@ -401,7 +419,7 @@
                        % data.PO4=load('../Observations/AndyDale/M92_PO4_250m_17MUC5_198MUC34.dat','ascii');                   
 
                     case 10  % OMEXDIA_4298m
-                        str_date = '4298m_OMEXDIA';
+                        str_date = '4298m_OMEXDIA_1110';
                         data.TOC=xlsread('../Observations/OMEXDIA/4_PE138_99-17_4298m.xlsx','Corg','C2:D38');     % in wt%
                         data.O2=xlsread('../Observations/OMEXDIA/4_PE138_99-17_4298m.xlsx','O2','C2:D815'); % C2:D112
                         data.NO3=xlsread('../Observations/OMEXDIA/4_PE138_99-17_4298m.xlsx','NO3','C2:D20'); 
@@ -489,7 +507,7 @@
                 plot([0,t(1,2)], [-res.zox,-res.zox], 'b--')     
                 plot([0,t(1,2)], [-res.zno3,-res.zno3], 'g--')     
                 plot([0,t(1,2)], [-res.zso4,-res.zso4], 'r--')             
-                ylim([-50.0 0.0])
+                ylim([-20.0 0.0])
                 xlabel ('NO_3 (mol/cm^3)')
     %            ylabel('Depth (cm)')
                 box on;
@@ -503,7 +521,7 @@
                 scatter(data.NH4(:,2).*1e-9, -data.NH4(:,1),'k','filled')
                 hold on
                 plot(NH4, -zgrid, 'b')
-    %            xlim([0.0 5e-7])     
+                xlim([0.0 100e-9])     
                 box on;
                 t=xlim;         % to draw penetration depths the correct lengths
                 plot([0,t(1,2)], [-bsd.zbio,-bsd.zbio], 'k--')     
@@ -648,7 +666,7 @@
             
                 
             % CONCENTRATIONS WITHOUT PO4
-    if(true)
+    if(false)
                 figure;
                 % TOC
 %                subplot(3,2,1)

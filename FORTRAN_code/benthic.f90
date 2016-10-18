@@ -1,8 +1,8 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-!!!     Sediment model - to be named (not called SEDGEM ;-) )
-!!!     Authors: Sandra Arndt, Dominik Hülse, Stuart Daines
+!!!     OMEN-SED model
+!!!     Authors: Dominik Hülse, Sandra Arndt, Stuart Daines
 !!!     Date: June 2015
 
 !!!     modelled stuff: (labile, refractory) TOC, O2, Sulfate (SO4), Hydrogen sulfide (H2S),
@@ -59,12 +59,11 @@ MODULE benthic
         real*8 zoxgf                            ! cm, rolloff NH4, H2S oxidation for small zox depth
 
         !bottom water concentrations
-        real*8 T                                                     !temperature (degree C)
-        real*8 C01                                         !TOC concentration at SWI (wt!) -> (mol/cm3 bulk phase)
-        real*8 C02                                        !TOC concentration at SWI (wt!) -> (mol/cm3 bulk phase)
+        real*8 T                           !temperature (degree C)
+        real*8 C01                         !TOC concentration at SWI (wt!) -> (mol/cm3 bulk phase)
+        real*8 C02                         !TOC concentration at SWI (wt!) -> (mol/cm3 bulk phase)
         real*8 O20                                               !O2  concentration at SWI (mol/cm3)
         real*8 SO40                                             !SO4 concentration at SWI (mol/cm3)
-            !SO40 = 2800e-9
         real*8 H2S0                                               !H2S concentration at SWI (mol/cm3)
         real*8 DIC0                                             !DIC concentration at SWI (mol/cm3)
         real*8 ALK0                                             !ALK concentration at SWI (mol/cm3)
@@ -131,51 +130,49 @@ MODULE benthic
         print*, '----------- start initialize --------------'
         print*, ' '
 
-        rho_sed=2.5                           ! sediment density (g/cm3)
-        wdepth=600                            ! water depth (m)
-        z0  = 0.0                               ! surface
+        rho_sed=2.6     	                      ! sediment density (g/cm3)
+        wdepth=600      	                      ! water depth (m)
+        z0  = 0.0	                               ! surface
         zox = 0.0
-        zbio=5.0                                ! bioturbation depth (cm)
+        zbio=10.0                                	! bioturbation depth (cm)
 
-        zinf=100.0                               !Inifinity (cm)
-        !zinf = 1000
-        !zlow=100
-        Dbio=3                                 !bioturbation coefficient (cm2/yr)
-        por=0.8                                !porosity (-) defined as: porewater_vol./(solid_sed_vol.+porewater_vol.)
+        zinf=100.0                               	!Inifinity (cm)
+        Dbio=5.2*(10.0**(0.7624-0.0003972*wdepth)) 	!bioturbation coefficient (cm2/yr) - after Middelburg at al. 1997
+        por=0.85                                !porosity (-) defined as: porewater_vol./(solid_sed_vol.+porewater_vol.)
         tort=3.0                               !tortuosity (-)
         irrigationFactor=1.0
 
-        gamma=1                                !fraction of NH4 that is oxidised in oxic layer
-        gammaH2S=0.8                           !fraction of H2S that is oxidised in oxic layer
-        gammaCH4=0.9                           !fraction of CH4 that is oxidised at SO4
-        satSO4=0                               ! SO4 saturation
+        gamma=0.99                 		!fraction of NH4 that is oxidised in oxic layer
+        gammaH2S=0.95                           !fraction of H2S that is oxidised in oxic layer
+        gammaCH4=0.99	           		!fraction of CH4 that is oxidised at SO4
+        satSO4=0.0	                	! SO4 saturation
 
-        zoxgf = 0.1                            ! cm, rolloff NH4, H2S oxidation for small zox depth
+        zoxgf = 0.1                     	! cm, rolloff NH4, H2S oxidation for small zox depth
 
         !bottom water concentrations
-        T=20.0                                                     ! temperature (degree C)
-        C01=0.2*1e-2/12*rho_sed                                ! TOC concentration at SWI (wt!) -> (mol/cm3 bulk phase)
-        C02=0.2*1e-2/12*rho_sed                                ! TOC concentration at SWI (wt!) -> (mol/cm3 bulk phase)
+        T=8.0                                                     ! temperature (degree C)
+        C01=1.0*1e-2/12*rho_sed                                ! TOC concentration at SWI (wt!) -> (mol/cm3 bulk phase)
+        C02=1.0*1e-2/12*rho_sed                                ! TOC concentration at SWI (wt!) -> (mol/cm3 bulk phase)
         O20=300.0e-9         !was  300.0e-9                                     ! O2  concentration at SWI (mol/cm3)
+        NO30=40.0e-9                                               ! NO3 concentration at SWI (mol/cm3)
+        NH40=0.0e-9                                                ! NH4 concentration at SWI (mol/cm3)
         SO40=28000.0e-9      !  28000.0e-9                                     ! SO4 concentration at SWI (mol/cm3)
         H2S0=0.0e-9           !was 0.0e-9                                 ! H2S concentration at SWI (mol/cm3)
         DIC0=2000.0e-9                                             ! DIC concentration at SWI (mol/cm3)
         ALK0=2400.0e-9                                             ! ALK concentration at SWI (mol/cm3)
-        NO30=30.0e-9                                               ! NO3 concentration at SWI (mol/cm3)
-        NH40=1.0e-9                                                ! NH4 concentration at SWI (mol/cm3)
-        PO40=1e-9                                                  ! PO4 concentration at SWI (mol/cm3)
+        PO40=40e-9                                                  ! PO4 concentration at SWI (mol/cm3)
         S0=35                                                      ! Salinity at SWI
 
 
-        w=10.0**(-0.87478367-0.00043512*wdepth)*3.3             ! sedimentation rate, cm/yr
-        dispFactor=por**(tort-1.0)*irrigationFactor             !dispersion factor (-) - Ausbreitung - type of mixing that accompanies hydrodynamic flows -> ~builds out paths of flow
-        SD=(1-por)/por                                          !volume factor solid->dissolved phase
+        w=10.0**(-0.87478367-0.00043512*wdepth)*3.3             ! sedimentation rate, cm/yr - after Middelburg at al. 1997
+        dispFactor=por**(tort-1.0)*irrigationFactor             ! dispersion factor (-) - Ausbreitung - type of mixing that accompanies hydrodynamic 									! flows -> ~builds out paths of flow
+        SD=(1-por)/por                                          ! volume factor solid->dissolved phase
         OC=1.0*SD                                               ! O2/C (mol/mol)
         NC1=0.1509*SD                                           ! N/C first TOC fraction (mol/mol)
         NC2=0.13333*SD                                          ! N/C second TOC fraction (mol/mol)
-        SO4C=0.5*SD                                             ! SO4/C (mol/mol)
         PC1=0.0094*SD                                          ! P/C first TOC fraction (mol/mol)
         PC2=0.0094*SD                                          ! P/C second TOC fraction (mol/mol)
+        SO4C=0.5*SD                                             ! SO4/C (mol/mol)
         DICC1=1.0*SD                                           ! DIC/C until zSO4 (mol/mol)
         DICC2=0.5*SD                                           ! DIC/C below zSO$ (mol/mol)
         MC=0.5*SD                                              ! CH4/C (mol/mol)
@@ -184,11 +181,11 @@ MODULE benthic
         ! ORGANIC MATTER
         DC1 = Dbio
         k1=0.01
-        k2=0.001
+        k2=0.0001
 
         ! O2
-        qdispO2=348.5750
-        adispO2=14.0890
+        qdispO2=348.62172
+        adispO2=14.08608
 
         DO21=(qdispO2+adispO2*T)*dispFactor+Dbio
         DO22=(qdispO2+adispO2*T)*dispFactor
@@ -196,7 +193,7 @@ MODULE benthic
         r_zxf=0.0
 
         ! Nitrate (NO3)
-        qdispNO3=308.4221
+        qdispNO3=308.42208
         adispNO3=12.2640
         DN1=(qdispNO3+adispNO3*T)*dispFactor+Dbio
         DN2=(qdispNO3+adispNO3*T)*dispFactor
@@ -239,7 +236,7 @@ MODULE benthic
 !   calculate benthic burial/recycling fluxes (see documentation for details!)
 !   __________________________________________________________
 
-!   organic matter burial
+!   organic matter burial - 2 fractions
 
 ! local variables
 
