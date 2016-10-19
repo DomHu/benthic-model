@@ -505,8 +505,8 @@ classdef benthic_zTOC < handle
                             p_zbio_l2_M, dpdz_zbio_l2_M, q_zbio_l2_M, dqdz_zbio_l2_M, a2_M] ...
                             = obj.calcfg_l2_M(bsd.zbio, bsd, swi, res, ktempM, QtempM, a2_P, b2_P, Phi2_P, alphaM);
 
-                    else
-                           % anoxic layer -> call M first 
+                    else        % anoxic layer -> call M first
+                            
                         [e_zbio_l1_M, dedz_zbio_l1_M, f_zbio_l1_M, dfdz_zbio_l1_M, g_zbio_l1_M, dgdz_zbio_l1_M, ...
                             p_zbio_l1_M, dpdz_zbio_l1_M, q_zbio_l1_M, dqdz_zbio_l1_M, a1_M, b1_M] ...
                             = obj.calcfg_l1_M(bsd.zbio, bsd, swi, res, ls.D1M, ktempM, QtempM, 0, 0, 0, alphaM);
@@ -634,8 +634,7 @@ classdef benthic_zTOC < handle
             %pfac=1./bsd.por;   % assume org matter already .*(1-bsd.por)
 %            pfac = 1;          % in fact, already has (1-por)/por                
            
-            if(alpha ~= 0) % oxic layer: was z<=res.zox BUT problems at boundary. M is dependent on PO4 
-                  
+            if(alpha ~= 0) % oxic layer: was z<=res.zox BUT problems at boundary. M is dependent on PO4                   
                 c1=0;
                 d1=0;
                 % Dominik Dec 2015: Change 2 added -1 to existing alpha

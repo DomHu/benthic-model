@@ -92,10 +92,10 @@ MODULE benthic
         ! Nitrate (NO3)
         real*8 qdispNO3                 ! NO3 diffusion coefficient in water (cm2/yr)
         real*8 adispNO3                 ! NO3 linear coefficient for temperature dependence (cm2/yr/oC)
-        real *8 DN1                     ! NO3 diffusion coefficient in bioturbated layer (cm2/yr)
+        real*8 DN1                     ! NO3 diffusion coefficient in bioturbated layer (cm2/yr)
         real*8 DN2                      ! NO3 diffusion coefficient in non-bioturbated layer (cm2/yr)
         real*8 zno3
-        real*8 KNH4
+        real*8 KNH4                     ! Adsorption coefficient (same in ocix and anoxic layer) (-)
 
         ! Sulfate (SO4)
         real*8 qdispSO4                 ! SO4 diffusion coefficient in water (cm2/yr)
@@ -115,6 +115,20 @@ MODULE benthic
         real*8 adispH2S                 ! H2S linear coefficient for temperature dependence (cm2/yr/oC)
         real*8 DH2S1                    ! H2S diffusion coefficient in bioturbated layer (cm2/yr)
         real*8 DH2S2                    ! H2S diffusion coefficient in non-bioturbated layer (cm2/yr)
+
+        ! Phosphate (PO4)
+        real*8 qdispPO4                 ! PO4 diffusion coefficient in water (cm2/yr)
+        real*8 adispPO4                 ! PO4 linear coefficient for temperature dependence (cm2/yr/oC)
+        real*8 DPO41                    ! PO4 diffusion coefficient in bioturbated layer (cm2/yr)
+        real*8 DPO42                    ! PO4 diffusion coefficient in non-bioturbated layer (cm2/yr)
+        real*8 KPO4_ox                    ! Adsorption coefficient in oxic layer (-)
+        real*8 KPO4_anox                    ! Adsorption coefficient in anoxic layer (-)
+        real*8 ksPO4                    ! Rate constant for kinetic P sorption (1/yr)
+        real*8 kmPO4                    ! Rate constant for Fe-bound P release upon Fe oxide reduction
+        real*8 kaPO4                    ! Rate constant for authigenic P formation (1/yr)
+        real*8 PO4s                     ! Equilibrium concentration for P sorption (mol/cm3)
+        real*8 PO4a                     ! Equilibrium concentration for authigenic P formation (mol/cm3)
+        real*8 Minf                     ! asymptotic concentration for Fe-bound P (mol/cm3)
 
     CONTAINS
 
@@ -220,6 +234,21 @@ MODULE benthic
         DH2S1=(qdispH2S+adispH2S*T)*dispFactor+Dbio
         DH2S2=(qdispH2S+adispH2S*T)*dispFactor
 
+        ! Phosphate (PO4)
+        qdispPO4=112.90764
+        adispPO4=5.586252
+        DPO41=((qdispPO4+adispPO4*T)*dispFactor+Dbio)               ! PO4 diffusion coefficient in bioturbated layer (cm2/yr)
+        DPO42=((qdispPO4+adispPO4*T)*dispFactor);                   ! PO4 diffusion coefficient in non-bioturbated layer (cm2/yr)
+        KPO4_ox = 200.0                    ! Adsorption coefficient in oxic layer (-)
+        KPO4_anox = 1.3                   ! Adsorption coefficient in anoxic layer (-)
+        ksPO4 = 1.0                   ! Rate constant for kinetic P sorption (1/yr)
+        kmPO4 = 2.2e-6*24*365                   ! Rate constant for Fe-bound P release upon Fe oxide reduction
+        kaPO4 = 10.0                   ! Rate constant for authigenic P formation (1/yr)
+        PO4s = 1.0e-9                    ! Equilibrium concentration for P sorption (mol/cm3)
+        PO4a = 0.5e-8                    ! Equilibrium concentration for authigenic P formation (mol/cm3)
+        Minf = 1.0e-10                    ! asymptotic concentration for Fe-bound P (mol/cm3)
+
+
     end SUBROUTINE initialize
 
 !------------------------------------------------------------------------------------
@@ -322,14 +351,14 @@ MODULE benthic
     ! multiplied by stoichiometric factors reac1, reac2 (for the two OC phases)
 
     ! Vector-friendly way of handling 3 cases:
-    ! 1) wholly within bioturbated layer:    calcReac_l1(zU,zL)     + (0 =) calcReac_l2(bsd.zbio, bsd.zbio)
+    ! 1) wholly within bioturbated layer:    calcReac_l1(zU,zL)     + (0 =) calcReac_l2(zbio, zbio)
     ! 2) wholly within non-bio     layer:  (0=) calcReac_l1(zbio, zbio) +   calcReac_l2(zU, zL)
     ! 3) crossing zbio                       calcRead_l1(zU,zbio)   +       calcReac_l2(zbio, zL)
 
     calcReac = calcReac_l1(min(zU,zbio), min(zL,zbio), reac1, reac2) &
            & + calcReac_l2(max(zU,zbio), max(zL, zbio), reac1, reac2)
 
-   ! TODO confirm (1-bsd.por)*  has been added (to k1 & k2 ?)
+   ! TODO confirm (1-por)*  has been added (to k1 & k2 ?)
 
     END FUNCTION calcReac
 
@@ -512,7 +541,7 @@ MODULE benthic
             f=exp(z*b2)
             dfdz = b2*exp(z*b2)
 
-            !pfac=1./bsd.por;   ! assume org matter already *(1-bsd.por)
+            !pfac=1./por;   ! assume org matter already *(1-por)
             pfac = 1            !in fact, already has (1-por)/por
 
 
@@ -561,6 +590,355 @@ MODULE benthic
 
     END SUBROUTINE prepfg_l12
 
+!------------------------------------------------------------------------------------
+!   *****************************************************************
+!   *****************************************************************
+
+!                               Utility subroutines for PO4/Fe-bound P
+
+!   *****************************************************************
+!   *****************************************************************
+!------------------------------------------------------------------------------------
+
+
+    SUBROUTINE calcfg_l1_PO4(z, reac1, reac2, Dtemp, ktemp, Qtemp, a1_M, b1_M, alpha, e, dedz, f, dfdz, g, dgdz, &
+                                & p, dpdz, q, dqdz, a1, b1, Phi1)
+            ! Basis functions for solutes, case z <= zbio
+            !
+            ! reac1, reac2        - mol./mol S released per organic carbon C
+            ! depend1,   depend2 coming from other species
+            !
+            ! General solution for solute S is given by
+            !  S(z) = A * e(z) + B * f(z) + g(z)
+            ! and for dependent species
+            !       S(z) = A .* e(z) + B .* f(z) + C .* p(z) +  D.* q(z) + g(z)
+
+            real*8 z, reac1, reac2, Dtemp, ktemp, Qtemp, a1_M, b1_M, alpha              ! in from SUBROUTINE before
+            real*8,INTENT(inout)::  e, dedz, f, dfdz, g, dgdz, p, dpdz, q, dqdz, a1, b1 ! out
+            real, dimension (1:6), intent (inout) :: Phi1                               ! out
+
+            ! local variables
+            real*8 pfac, PhiI1, PhiII1, PhiIII1, PhiI2, PhiII2, PhiIII2
+            real*8 ea11z, eb11z, ea12z, eb12z
+
+
+            a1=(w-sqrt(w**2+4.0*Dtemp*ktemp))/(2.0*Dtemp)
+            e=exp(z*a1)
+            dedz = a1*exp(z*a1)
+
+            b1=(w+sqrt(w**2+4.0*Dtemp*ktemp))/(2.0*Dtemp)
+            f=exp(z*b1)
+            dfdz = b1*exp(z*b1);
+
+            pfac = 1                    ! in fact, already has (1-por)/por
+
+            ! NOW to OM reaction terms!
+            ! save all Phis in one variable to pass back
+            Phi1(1) = -pfac*k1*(reac1)*A11/(Dtemp*aa11**2-w*aa11-ktemp)
+            Phi1(2)  = pfac*k1*(reac1)*A11/(Dtemp*bb11**2-w*bb11-ktemp)
+            Phi1(3) =-pfac*k1*(reac1)*C01/(Dtemp*bb11**2-w*bb11-ktemp)
+            Phi1(4)   =-pfac*k2*(reac2)*A12/(Dtemp*aa12**2-w*aa12-ktemp)
+            Phi1(5)  = pfac*k2*(reac2)*A12/(Dtemp*bb12**2-w*bb12-ktemp)
+            Phi1(6) =-pfac*k2*(reac2)*C02/(Dtemp*bb12**2-w*bb12-ktemp)
+
+
+            ea11z = exp(aa11*z);
+            eb11z = exp(bb11*z);
+            ea12z = exp(aa12*z);
+            eb12z = exp(bb12*z);
+
+            if(ktemp==0)then        !CHECK: actually no need as ktemp always <> 0
+                g =  Phi1(1)*ea11z + Phi1(2)*eb11z + Phi1(3)*eb11z + &
+                & Phi1(4)*ea12z + Phi1(5)*eb12z + Phi1(6)*eb12z
+            else
+                g =  Phi1(1)*ea11z + Phi1(2)*eb11z + Phi1(3)*eb11z + &
+                    & Phi1(4)*ea12z + Phi1(5)*eb12z + Phi1(6)*eb12z + Qtemp/ktemp   ! here problem if ktemp=0
+            end if
+
+            dgdz = PhiI1(1)*aa11*ea11z + Phi1(2)*bb11*eb11z + Phi1(3)*bb11*eb11z + &
+                  & Phi1(4)*aa12*ea12z + Phi1(5)*bb12*eb12z + Phi1(6)*bb12*eb12z
+
+            if(alpha == 0)then      ! was z<=res.zox PO4 is independent of M (no info in alpha)
+                p = 0
+                dpdz = 0
+                q = 0
+                dqdz = 0
+            else                    ! PO4 is dependent on M
+                p = -alpha/(Dtemp*a1_M**2-w*a1_M-ktemp)*exp(z*a1_M)
+                dpdz = a1_M*p
+                q = -alpha/(Dtemp*b1_M**2-w*b1_M-ktemp)*exp(z*b1_M)
+                dqdz = b1_M*q
+            end if
+
+!            print*, 'INPUT calcfg_l1', z, reac1, reac2, Dtemp, ktemp
+!            print*, 'IN  calcfg_l1 g', g
+!            print*, 'IN  calcfg_l1 dgdz', dgdz
+
+        end SUBROUTINE calcfg_l1_PO4
+
+!------------------------------------------------------------------------------------
+!   *****************************************************************
+!   *****************************************************************
+!------------------------------------------------------------------------------------
+
+        SUBROUTINE calcfg_l2_PO4(z, reac1, reac2, Dtemp, ktemp, Qtemp, a2_M, alpha, e, dedz, f, dfdz, g, dgdz, p, dpdz, q, dqdz, a2, b2, Phi2)
+            ! Basis functions for solutes, case z > zbio
+            ! reac1, reac2        - mol/mol S released per organic carbon C
+            !
+            ! General solution for solute S is given by
+            !  S(z) = A * e(z) + B * f(z) + g(z)
+
+            real*8 z, reac1, reac2, Dtemp, ktemp, Qtemp , a2_M, alpha                           ! in from SUBROUTINE before
+            real*8,INTENT(inout)::  e, dedz, f, dfdz, g, dgdz, p, dpdz, q, dqdz, a2, b2         ! out
+            real, dimension (1:2), intent (inout) :: Phi2                                       ! out
+
+            ! local variables
+            real*8 b2, pfac, PhiI1, PhiI2
+            real*8 ea11z, eb11z, ea12z, eb12z
+
+            a2=(w-sqrt(w**2+4.0*Dtemp*ktemp))/(2.0*Dtemp)
+            e=exp(z*a2)
+            dedz = a2*exp(z*a2)
+
+            b2=(w+sqrt(w**2+4.0*Dtemp*ktemp))/(2.0*Dtemp)
+            f=exp(z*b2)
+            dfdz = b2*exp(z*b2)
+
+            !pfac=1./por;   ! assume org matter already *(1-por)
+            pfac = 1            !in fact, already has (1-por)/por
+
+            Phi2(1) = -pfac*k1*(reac1)*A21/(Dtemp*aa21**2-w*aa21-ktemp)
+            Phi2(2) = -pfac*k2*(reac2)*A22/(Dtemp*aa22**2-w*aa22-ktemp)
+
+
+            if(ktemp==0)then            ! CHECK: think no need for this as always ktemp <> 0
+                g = Phi2(1)*exp(aa21*z) + Phi2(2)*exp(aa22*z)
+            else
+                g = Phi2(1)*exp(aa21*z) + Phi2(2)*exp(aa22*z) + Qtemp/ktemp
+            end if
+            dgdz = Phi2(1)*aa21*exp(aa21*z) + Phi2(2)*aa22*exp(aa22*z)
+
+            if(alpha==0)then            ! was z<=res.zox PO4 is independent of M (no info in alpha)
+                p = 0
+                dpdz = 0
+                q = 0
+                dqdz = 0
+            else                        ! PO4 is dependent on M
+                p = -alpha/(Dtemp*a2_M**2-w*a2_M-ktemp)*exp(a2_M*z)
+                dpdz = a2_M*p
+                q=0
+                dqdz=0
+            end if
+
+!            print*, 'IN  calcfg_l2 g', g
+!            print*, 'IN  calcfg_l1 dgdz', dgdz
+
+        end SUBROUTINE calcfg_l2_PO4
+
+
+!------------------------------------------------------------------------------------
+!   *****************************************************************
+!   *****************************************************************
+!------------------------------------------------------------------------------------
+
+    SUBROUTINE calcfg_l1_M(z, Dtemp, ktemp, Qtemp, a1_P, b1_P, Phi1_P, alpha, e, dedz, f, dfdz, g, dgdz, p, dpdz, q, dqdz, c1, d1)
+            ! Basis functions for solutes, case z <= zbio
+            !
+            ! reac1, reac2        - mol./mol S released per organic carbon C
+            ! depend1,   depend2 coming from other species
+            !
+            ! General solution for solute S is given by
+            !  S(z) = A * e(z) + B * f(z) + g(z)
+            ! and for dependent species
+            !       S(z) = A .* e(z) + B .* f(z) + C .* p(z) +  D.* q(z) + g(z)
+
+            real*8 z, Dtemp, ktemp, Qtemp, a1_P, b1_P, Phi1_P, alpha                                ! in from SUBROUTINE before
+            real, dimension (1:6), intent (in) :: Phi1_P                                            ! in from SUBROUTINE before
+            real*8,INTENT(inout)::  e, dedz, f, dfdz, g, dgdz, p, dpdz, q, dqdz, c1, d1             ! out
+
+            ! local variables
+
+
+            c1=(w-sqrt(w**2+4.0*Dtemp*ktemp))/(2.0*Dtemp)
+            p=exp(z*c1)
+            dpdz = c1*exp(z*c1)
+
+            d1=(w+sqrt(w**2+4.0*Dtemp*ktemp))/(2.0*Dtemp)
+            q=exp(z*d1)
+            dqdz = d1*exp(z*d1);
+
+            if(alpha .NE. 0)then      ! oxic layer: was z<=res.zox BUT problems at boundary. M is dependent on PO4
+                c1=0
+                d1=0
+                e = -alpha/(Dtemp*a1_P**2-w*a1_P-ktemp)*exp(z*a1_P)
+                dedz = a1_P*e
+                f = -alpha/(Dtemp*b1_P**2-w*b1_P-ktemp)*exp(z*b1_P)
+                dfdz = b1_P*f
+                g = -alpha*(Phi1_P(1)/(Dtemp*aa11**2-w*aa11-ktemp)*exp(z*aa11) + Phi1_P(2)/(Dtemp*bb11**2-w*bb11-ktemp)*exp(z*bb11) + &
+                    Phi1_P(3)/(Dtemp*bb11**2-w*bb11-ktemp)*exp(z*bb11) + &
+                    Phi1_P(4)/(Dtemp*aa12**2-w*aa12-ktemp)*exp(z*aa12) + Phi1_P(5)/(Dtemp*bb12**2-w*bb12-ktemp)*exp(z*bb12) + &
+                    Phi1_P(6)/(Dtemp*bb12**2-w*bb12-ktemp)*exp(z*bb12))
+                dgdz = -alpha*(Phi1_P(1)/(Dtemp*aa11**2-w*aa11-ktemp)*exp(z*aa11)*aa11 + Phi1_P(2)/(Dtemp*bb11**2-w*bb11-ktemp)*exp(z*bb11)*bb11 + &
+                    Phi1_P(3)/(Dtemp*bb11**2-w*bb11-ktemp)*exp(z*bb11)*bb11 + &
+                    Phi1_P(4)/(Dtemp*aa12**2-w*aa12-ktemp)*exp(z*aa12)*aa12 + Phi1_P(5)/(Dtemp*bb12**2-w*bb12-ktemp)*exp(z*bb12)*bb12 + &
+                    Phi1_P(6)/(Dtemp*bb12**2-w*bb12-ktemp)*exp(z*bb12)*bb12)
+
+            else                    ! anoxic layer: M is independent of PO4 (no value in alpha!)
+                g = Qtemp/ktemp
+                dgdz = 0
+                e = 0
+                dedz = 0
+                f = 0
+                dfdz = 0
+            end if
+
+!            print*, 'INPUT calcfg_l1_M', z, reac1, reac2, Dtemp, ktemp
+!            print*, 'IN  calcfg_l1 g', g
+!            print*, 'IN  calcfg_l1 dgdz', dgdz
+
+        end SUBROUTINE calcfg_l1_M
+
+
+!------------------------------------------------------------------------------------
+!   *****************************************************************
+!   *****************************************************************
+!------------------------------------------------------------------------------------
+
+        SUBROUTINE calcfg_l2_M(z, ktemp, Qtemp, a2_P, b2_P, Phi2_P, alpha, e, dedz, f, dfdz, g, dgdz, p, dpdz, q, dqdz, c2)
+            ! Basis functions for solutes, case z > zbio
+            ! reac1, reac2        - mol/mol S released per organic carbon C
+            !
+            ! General solution for solute S is given by
+            !  S(z) = A * e(z) + B * f(z) + g(z)
+
+            real*8 z, ktemp, Qtemp, a2_P, b2_P, alpha                                           ! in from SUBROUTINE before
+            real*8,INTENT(inout)::  e, dedz, f, dfdz, g, dgdz, p, dpdz, q, dqdz, c2             ! out
+            real, dimension (1:2), intent (in) :: Phi2_P                                        ! out
+
+            ! local variables
+
+            c2=0
+
+            if(alpha .NE. 0)then            ! M is dependent of PO4, was z<=res.zox
+                e=alpha/(w*a2_P)*exp(z*a2_P)
+                dedz = a2_P*e
+                f=alpha/(w*b2_P)*exp(z*b2_P)
+                dfdz = b2_P*f
+                p = 1                       ! DH CHECK/TODO: integration constant just C
+                dpdz = 0
+                q=0
+                dqdz=0
+                g = alpha/(w)*(Phi2_P(1)/(aa21)*exp(aa21*z) + &
+                    & Phi2_P(2)/(aa22)*exp(aa22*z))
+                dgdz = alpha/(w)*(Phi2_P(1)*exp(aa21*z) + &
+                    Phi2_P(2)*exp(aa22*z))
+            else                        ! M is independent of PO4 - z > res.zox
+                c2=-ktemp/w
+                p=exp(c2*z)
+                dpdz = c2*exp(c2*z)
+                q=0
+                dqdz=0
+                g = Qtemp/ktemp
+                dgdz = 0
+                e=0
+                dedz=0
+                f=0
+                dfdz=0
+
+            end if
+
+        end SUBROUTINE calcfg_l2_M
+
+!------------------------------------------------------------------------------------
+!   *****************************************************************
+!   *****************************************************************
+!------------------------------------------------------------------------------------
+
+    SUBROUTINE prepfg_l12_PO4_M(reac1, reac2, ktempP, QtempP, zU, zL, D1P, D2P, alphaP, &
+                                & ktempM, QtempM, D1M, D2M, alphaM, ls_C, ls_D, ltype)
+        real*8 reac1, reac2, ktempP, QtempP, zU, zL, D1P, D2P, alphaP, ktempM, QtempM, D1M, D2M, alphaM
+        real, dimension (4, 4), intent (inout) :: ls_C, ls_D
+        INTEGER,INTENT(inout):: ltype
+
+        ! local variables
+        real*8 e_zbio_l1_P, dedz_zbio_l1_P, f_zbio_l1_P, dfdz_zbio_l1_P, g_zbio_l1_P, dgdz_zbio_l1_P
+        real*8 p_zbio_l1_P, dpdz_zbio_l1_P, q_zbio_l1_P, dqdz_zbio_l1_P, a1_P, b1_P
+        real*8 e_zbio_l2_P, dedz_zbio_l2_P, f_zbio_l2_P, dfdz_zbio_l2_P, g_zbio_l2_P, dgdz_zbio_l2_P
+        real*8 p_zbio_l2_P, dpdz_zbio_l2_P, q_zbio_l2_P, dqdz_zbio_l2_P, a2_P, b2_P
+        real*8 e_zbio_l1_M, dedz_zbio_l1_M, f_zbio_l1_M, dfdz_zbio_l1_M, g_zbio_l1_M, dgdz_zbio_l1_M
+        real*8 p_zbio_l1_M, dpdz_zbio_l1_M, q_zbio_l1_M, dqdz_zbio_l1_M, a1_M, b1_M
+        real*8 e_zbio_l2_M, dedz_zbio_l2_M, f_zbio_l2_M, dfdz_zbio_l2_M, g_zbio_l2_M, dgdz_zbio_l2_M
+        real*8 p_zbio_l2_M, dpdz_zbio_l2_M, q_zbio_l2_M, dqdz_zbio_l2_M, a2_M
+        real*8 Vb, Fb
+        real, dimension (1:6) :: Phi1_P, Phi2_P
+        real, dimension (1:4,1:4) :: mat_X, mat_Y
+        real, dimension (1:4) ::  vec_Z
+
+
+        if(zL <= zbio)then  ! wholly within bioturbated layer
+            ltype = 1
+        elseif(zU >= zbio) then ! wholly within non-bioturbated layer
+            ltype = 2
+        else             ! crossing boundary - sort out solution matching at zbio
+!            print*, 'IN  CROSS BOUNDARY CASE '
+            ltype = 3
+
+            if(zL <= zox)then       ! oxic layer -> call PO4 first
+                call calcfg_l1_PO4(zbio, reac1, reac2, D1P, ktempP, Qtemp, 0.0D00, 0.0D00, alphaP, e_zbio_l1_P, dedz_zbio_l1_P, f_zbio_l1_P, dfdz_zbio_l1_P, g_zbio_l1_P, &
+                        & dgdz_zbio_l1_P, p_zbio_l1_P, dpdz_zbio_l1_P, q_zbio_l1_P, dqdz_zbio_l1_P, a1_P, b1_P, Phi1_P)
+                call calcfg_l2_PO4(zbio, reac1, reac2, D2P, ktempP, Qtemp, 0.0D00, alphaP, e_zbio_l2_P, dedz_zbio_l2_P, f_zbio_l2_P, dfdz_zbio_l2_P, g_zbio_l2_P, &
+                        & dgdz_zbio_l2_P, p_zbio_l2_P, dpdz_zbio_l2_P, q_zbio_l2_P, dqdz_zbio_l2_P, a2_P, b2_P, Phi2_P)
+                call calcfg_l1_M(zbio, D1M, ktempM, QtempM, a1_P, b1_P, Phi1_P, alphaM, &
+                                    & e_zbio_l1_M, dedz_zbio_l1_M, f_zbio_l1_M, dfdz_zbio_l1_M, g_zbio_l1_M, dgdz_zbio_l1_M, &
+                                    & p_zbio_l1_M, dpdz_zbio_l1_M, q_zbio_l1_M, dqdz_zbio_l1_M, a1_M, b1_M)
+                call calcfg_l2_M(zbio, ktempM, QtempM, a2_P, b2_P, Phi2_P, alphaM, &
+                                    & e_zbio_l2_M, dedz_zbio_l2_M, f_zbio_l2_M, dfdz_zbio_l2_M, g_zbio_l2_M, dgdz_zbio_l2_M, &
+                                    & p_zbio_l2_M, dpdz_zbio_l2_M, q_zbio_l2_M, dqdz_zbio_l2_M, a2_M)
+
+            else                ! anoxic layer -> call M first
+                call calcfg_l1_M(zbio, D1M, ktempM, QtempM, 0.0D00, 0.0D00, 0.0D00, alphaM, &
+                                    & e_zbio_l1_M, dedz_zbio_l1_M, f_zbio_l1_M, dfdz_zbio_l1_M, g_zbio_l1_M, dgdz_zbio_l1_M, &
+                                    & p_zbio_l1_M, dpdz_zbio_l1_M, q_zbio_l1_M, dqdz_zbio_l1_M, a1_M, b1_M)
+                call calcfg_l2_M(zbio, ktempM, QtempM, 0.0D00, 0.0D00, 0.0D00, alphaM, &
+                                    & e_zbio_l2_M, dedz_zbio_l2_M, f_zbio_l2_M, dfdz_zbio_l2_M, g_zbio_l2_M, dgdz_zbio_l2_M, &
+                                    & p_zbio_l2_M, dpdz_zbio_l2_M, q_zbio_l2_M, dqdz_zbio_l2_M, a2_M)
+                call calcfg_l1_PO4(zbio, reac1, reac2, D1P, ktempP, Qtemp, a1_M, b1_M, alphaP, e_zbio_l1_P, dedz_zbio_l1_P, f_zbio_l1_P, dfdz_zbio_l1_P, g_zbio_l1_P, &
+                        & dgdz_zbio_l1_P, p_zbio_l1_P, dpdz_zbio_l1_P, q_zbio_l1_P, dqdz_zbio_l1_P, a1_P, b1_P, Phi1_P)
+                call calcfg_l2_PO4(zbio, reac1, reac2, D2P, ktempP, Qtemp, a2_M, alphaP, e_zbio_l2_P, dedz_zbio_l2_P, f_zbio_l2_P, dfdz_zbio_l2_P, g_zbio_l2_P, &
+                        & dgdz_zbio_l2_P, p_zbio_l2_P, dpdz_zbio_l2_P, q_zbio_l2_P, dqdz_zbio_l2_P, a2_P, b2_P, Phi2_P)
+            end if
+
+            ! match solutions at zbio - continuous concentration and flux
+            ! organize the data in matrices, makes the calculation later bit easier
+
+            !  |x1        |   | A_l |      | y1        | | A_r|    |z1|    always PO4 continuity
+            !  |    .     |   | B_l |      |    .      | | B_r|    |z2|    always PO4 flux
+            !  |      .   |   | C_l |   =  |      .    | | C_r|  + |z3|    always M continuity
+            !  |       x16|   | D_l |      |        y16| | D_r|    |z4|    SD always M _diffusive_ flux  = 0 (cf org C)
+
+            ! discontinuity constants
+            Vb = 0
+            Fb = 0
+
+            ! weird FORTRAN matrixes make the transpose necessary
+            mat_X = transpose(reshape((/ e_zbio_l1_P, f_zbio_l1_P, p_zbio_l1_P, q_zbio_l1_P, &
+                                        & D1P*dedz_zbio_l1_P, D1P*dfdz_zbio_l1_P, D1P*dpdz_zbio_l1_P, D1P*dqdz_zbio_l1_P, &
+                                        & e_zbio_l1_M, f_zbio_l1_M, p_zbio_l1_M, q_zbio_l1_M &
+                                        & D1M*dedz_zbio_l1_M, D1M*dfdz_zbio_l1_M, D1M*dpdz_zbio_l1_M, D1M*dqdz_zbio_l1_M/), shape(mat_X)))
+            mat_Y = transpose(reshape((/ e_zbio_l2_P, f_zbio_l2_P, p_zbio_l2_P, q_zbio_l2_P, &
+                                        & D2P*dedz_zbio_l2_P, D2P*dfdz_zbio_l2_P, D2P*dpdz_zbio_l2_P, D2P*dqdz_zbio_l2_P, &
+                                        & e_zbio_l2_M, f_zbio_l2_M, p_zbio_l2_M, q_zbio_l2_M, &
+                                        & D2M*dedz_zbio_l2_M, D2M*dfdz_zbio_l2_M, D2M*dpdz_zbio_l2_M, D2M*dqdz_zbio_l2_M/), shape(mat_Y)))
+            vec_Z = (/ g_zbio_l2_P-g_zbio_l1_P + Vb, &
+                         D2P*dgdz_zbio_l2_P - D1P*dgdz_zbio_l1_P + Fb - w*Vb, &
+                         g_zbio_l2_M-g_zbio_l1_M + Vb, &
+                         D2M*dgdz_zbio_l2_M - D1M*dgdz_zbio_l1_M + Fb - w*Vb /)
+
+
+!                    [C, D] = benthic_utils.matchsoln_PO4_M(X, Y, Z, 1);
+        end if
+
+    END SUBROUTINE prepfg_l12_PO4_M
 
 
 !------------------------------------------------------------------------------------
@@ -579,7 +957,6 @@ MODULE benthic
     integer bctype
     real*8 FO2
 
-!    print*, ''
 !    print*, ''
 !    print*, '---------------------- START zO2 ------------------------ '
 
@@ -756,8 +1133,8 @@ MODULE benthic
 
     ! Oxydation of reduced species at zox (NEED A RATIO for ODU! and add NH4
     ! adsporption!
-    !tmpreac1=0.5*bsd.OC+2*bsd.gamma*bsd.NC1;
-    !tmpreac2=0.5*bsd.OC+2*bsd.gamma*bsd.NC2;
+    !tmpreac1=0.5*OC+2*gamma*NC1;
+    !tmpreac2=0.5*OC+2*gamma*NC2;
 
 !    print*,' '
 !    print*,'..... START calcFO2'
@@ -789,29 +1166,34 @@ MODULE benthic
     integer bctype
     real*8 FNO3
 
-!    print*, ''
-!    print*, '------------------------------------------------------------------'
-!    print*, '---------------------- START zNO3 ------------------------------- '
+    !    print*, ''
+    !    print*, '------------------------------------------------------------------'
+    !    print*, '---------------------- START zNO3 ------------------------------- '
 
-    bctype = 2
-    ! Try zero flux at zinf and see if we have any NO3 left
-!    print*,'Try zero flux at zinf and see if we have any NO3 left'
-    call zNO3_calcbc(zinf, bctype, flxzinf, conczinf, flxswi)
-
-!    print*,'RESULTS Try zero flux at zinf zNO3_calcbc flxzinf, conczinf, flxswi', flxzinf, conczinf, flxswi
-
-    IF (conczinf > 0.0) THEN
+    IF(zox == zinf)THEN
         zno3 = zinf
-        bctype = 2;
+        bctype = 2
     ELSE
-        zL=1e-10
-        tol=1e-16
-        zno3 = zbrent(FUN_zNO3, max(zL,zox), zinf, tol)
-!        print*,'$$$$ calculated zno3 =', zno3
-!        zno3 = 7.4319         ! use qualifier d0 fuer double: 7.4319d0
-        bctype = 1;
-    END IF
 
+        bctype = 2
+        ! Try zero flux at zinf and see if we have any NO3 left
+        !    print*,'Try zero flux at zinf and see if we have any NO3 left'
+        call zNO3_calcbc(zinf, bctype, flxzinf, conczinf, flxswi)
+
+        !    print*,'RESULTS Try zero flux at zinf zNO3_calcbc flxzinf, conczinf, flxswi', flxzinf, conczinf, flxswi
+
+        IF (conczinf > 0.0) THEN
+            zno3 = zinf
+            bctype = 2;
+        ELSE
+            zL=1e-10
+            tol=1e-16
+            zno3 = zbrent(FUN_zNO3, max(zL,zox), zinf, tol)
+            !        print*,'$$$$ calculated zno3 =', zno3
+            !        zno3 = 7.4319         ! use qualifier d0 fuer double: 7.4319d0
+            bctype = 1;
+        END IF
+    END IF
     call zNO3_calcbc(zno3, bctype, flxzno3, conczno3, flxswiNO3)
 
 !    print*,' ---- FINAL RESULTS zNO3: ----'
@@ -988,37 +1370,41 @@ MODULE benthic
     integer bctype
 
 
-!    print*, ''
-!    print*, '------------------------------------------------------------------'
-!    print*, '---------------------- START zSO4 ------------------------------- '
+    !    print*, ''
+    !    print*, '------------------------------------------------------------------'
+    !    print*, '---------------------- START zSO4 ------------------------------- '
 
 
     ! Iteratively solve for zso4
 
-
-    ! try zero flux at zinf and see if we have any SO4 left
-!    print*, ''
-!    print*, '-----try zero flux at zinf and see if we have any SO4 left------'
-    bctype = 2
-
-    call zSO4_calcbc(zinf, bctype, flxzso4, conczso4, flxswiso4)
-
-    IF(conczso4 .ge.0)THEN
+    IF(zno3 == zinf)THEN
         zso4 = zinf
         bctype = 2
     ELSE
-        bctype = 1
-        zL=1e-10
-        tol=1e-16
-        zso4 = zbrent(FUN_zSO4, max(zno3,zL), zinf, tol)
-!        print*,'$$$$$$$$$$$$$4   CALCULATE zso4 = ', zso4
-    END IF
-!    print*,'bctype, zso4 ', bctype, zso4
 
+        ! try zero flux at zinf and see if we have any SO4 left
+        !    print*, ''
+        !    print*, '-----try zero flux at zinf and see if we have any SO4 left------'
+        bctype = 2
+
+        call zSO4_calcbc(zinf, bctype, flxzso4, conczso4, flxswiso4)
+
+        IF(conczso4 .ge.0)THEN
+            zso4 = zinf
+            bctype = 2
+        ELSE
+            bctype = 1
+            zL=1e-10
+            tol=1e-16
+            zso4 = zbrent(FUN_zSO4, max(zno3,zL), zinf, tol)
+        !        print*,'$$$$$$$$$$$$$4   CALCULATE zso4 = ', zso4
+        END IF
+    !    print*,'bctype, zso4 ', bctype, zso4
+    END IF
     call zSO4_calcbc(zso4, bctype, flxzso4, conczso4, flxswiso4)
 
-!    print*,' '
-!    print*,'-------------------------------- FINAL RESULTS zSO4 --------------------------------'
+    !    print*,' '
+    !    print*,'-------------------------------- FINAL RESULTS zSO4 --------------------------------'
     print*,'zso4', char(9), zso4
     print*,' '
     print*,'flxzso4', char(9), flxzso4
@@ -1098,9 +1484,6 @@ MODULE benthic
             &e3_zno3, dedz3_zno3, f3_zno3, dfdz3_zno3, g3_zno3, dgdz3_zno3)
 
     ! match solutions at zno3 - continuous concentration and flux
-!    [zno3.a, zno3.b, zno3.c, zno3.d, zno3.e, zno3.f] = benthic_utils.matchsoln(e2_zno3, f2_zno3, g2_zno3, dedz2_zno3, dfdz2_zno3, dgdz2_zno3, ...
-!                                                                e3_zno3, f3_zno3, g3_zno3, dedz3_zno3, dfdz3_zno3, dgdz3_zno3, ...
-!                                                                0, 0);
     call matchsoln(e2_zno3, f2_zno3, g2_zno3, dedz2_zno3, dfdz2_zno3, dgdz2_zno3, &
                            & e3_zno3, f3_zno3, g3_zno3, dedz3_zno3, dfdz3_zno3, dgdz3_zno3, &
                            & 0.0D00, 0.0D00, zno3_a, zno3_b, zno3_c, zno3_d, zno3_e, zno3_f)
@@ -1177,7 +1560,7 @@ MODULE benthic
 
     ! calculate conc and flux at zso4
     conczso4 = rSO4_A3*e3_zso4+rSO4_B3*f3_zso4 + g3_zso4
-    !D = (zso4 <= bsd.zbio).*obj.DSO41 + (zso4 > bsd.zbio).*obj.DSO42
+    !D = (zso4 <= zbio).*obj.DSO41 + (zso4 > zbio).*obj.DSO42
     IF(zso4 .le. zbio)THEN
         flxzso4 = DSO41*(rSO4_A3*dedz3_zso4+rSO4_B3*dfdz3_zso4 + dgdz3_zso4)        ! includes 1/por ie flux per (cm^2 pore area)
     ELSE
@@ -1220,7 +1603,7 @@ MODULE benthic
     tmpreac2    = MC*gammaCH4
 
     calcFSO4 = calcReac(z, zinf, tmpreac1, tmpreac2)
-    ! TODO confirm (1-bsd.por)*  has been added (to k1 & k2 ?)
+    ! TODO confirm (1-por)*  has been added (to k1 & k2 ?)
 !    print*,'=============== IN calcFSO4 =====', calcFSO4
 
     END FUNCTION calcFSO4
@@ -1557,7 +1940,53 @@ MODULE benthic
 
     END SUBROUTINE benthic_zH2S
 
+!------------------------------------------------------------------------------------
+!   *****************************************************************
+!   *****************************************************************
 
+!                           Phosphate and Fe-bound P
+
+!   *****************************************************************
+!   *****************************************************************
+!------------------------------------------------------------------------------------
+
+    SUBROUTINE benthic_zPO4_M()
+!    real*8, intent(in)::zox, zno3
+!    real*8, intent(inout)::zso4
+
+    ! local variables
+    real*8 reac1_po4_ox, reac2_po4_ox, reac1_po4_anox, reac2_po4_anox                 ! reactive terms: OM degradation
+
+    real*8 flxzpo4, conczpo4, flxswipo4, zL, tol
+    integer bctype
+
+    reac1_po4_ox = 1/(1+KPO4_ox)*PC1
+    reac2_po4_ox = 1/(1+KPO4_ox)*PC2
+    reac1_po4_anox = 1/(1+KPO4_anox)*PC1
+    reac2_po4_anox = 1/(1+KPO4_anox)*PC2
+
+
+!    print*, ''
+!    print*, '------------------------------------------------------------------'
+!    print*, '---------------------- START zPO4_M ------------------------------- '
+
+!   Preparation: for each layer, sort out solution-matching across bioturbation boundary if necessary
+
+!   layer 1: 0 < z < zox, OM degradation (-) Sorption to sediment Fe-oxides (ktemp)
+!                       ls =  prepfg_l12_PO4M(   bsd, swi, r, reac1P,        reac2P,        ktempP                 ,     QP,                         zU,   zL,      D1P,                      D2P , alphaP
+!!            rPO4_M.ls1 = r.zTOC.prepfg_l12_PO4_M(bsd, swi, r, obj.reac1_ox, obj.reac2_ox, obj.ksPO4/(1+obj.KPO4_ox), obj.PO4s*obj.ksPO4/(1+obj.KPO4_ox),0, r.zox, obj.DPO41/(1+obj.KPO4_ox), obj.DPO42/(1+obj.KPO4_ox), 0, ...
+!!                                                0, 0, Dbio, 0, (1/SD)*obj.ksPO4);
+    call prepfg_l12_PO4_M(reac1_po4_ox, reac2_po4_ox, ksPO4/(1+KPO4_ox), PO4s*ksPO4/(1+KPO4_ox), 0.0D00, zox, DPO41, DPO42, ls_a1, ls_b1, ls_c1, ls_d1, ls_e1, ls_f1, ltype1)
+   !    SUBROUTINE prepfg_l12(reac1,        reac2,      ktemp, zU, zL, D1, D2, ls_a, ls_b, ls_c, ls_d, ls_e, ls_f, ltype)
+
+!   layer 2: zox < z < zinf,
+!   OM degradation (-) authigenic P formation (ktemp) (+) P desorption due to Fe-bound P release upon Fe oxide reduction
+
+!!            rPO4_M.ls2 = r.zTOC.prepfg_l12_PO4_M(bsd, swi, r, obj.reac1_anox, obj.reac2_anox, obj.kaPO4/(1+obj.KPO4_anox), obj.PO4a*obj.kaPO4/(1+obj.KPO4_anox), r.zox, zinf, obj.DPO41/(1+obj.KPO4_anox), obj.DPO42/(1+obj.KPO4_anox), SD*obj.kmPO4/(1+obj.KPO4_anox), ...
+!!                                                obj.kmPO4, obj.kmPO4.*obj.Minf, Dbio, 0, 0);
+
+
+    END SUBROUTINE benthic_zPO4
 
 ! *******************************************************************
 !   *****************************************************************
