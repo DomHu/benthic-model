@@ -61,7 +61,7 @@ classdef benthic_zPO4_M
             % Preparation: for each layer, sort out solution-matching across bioturbation boundary if necessary
             
             % layer 1: 0 < z < zox, OM degradation (-) Sorption to sediment Fe-oxides (ktemp) 
-            %           ls =  prepfg_l12_PO4M(   bsd, swi, r, reac1P,        reac2P,        ktempP                 ,     QP,                        zU, zL,    D1P,        D2P , alphaP
+            %           ls =  prepfg_l12_PO4M(   bsd, swi, r, reac1P,        reac2P,        ktempP                 ,     QP,                             zU, zL,            D1P,                 D2P ,                alphaP
             rPO4_M.ls1 = r.zTOC.prepfg_l12_PO4_M(bsd, swi, r, obj.reac1_ox, obj.reac2_ox, obj.ksPO4/(1+obj.KPO4_ox), obj.PO4s*obj.ksPO4/(1+obj.KPO4_ox),0, r.zox, obj.DPO41/(1+obj.KPO4_ox), obj.DPO42/(1+obj.KPO4_ox), 0, ...
                                                 0, 0, bsd.Dbio, 0, (1/bsd.SD)*obj.ksPO4);
                                   % for M  ktempM, QM, D1M,   D2M,  alphaM
@@ -76,12 +76,10 @@ classdef benthic_zPO4_M
                                   
             % Work up from the bottom, matching solutions at boundaries
             % Basis functions at bottom of layer 2 zinf
-        %           calcfg_l12_PO4_M(obj, z, bsd, swi, res,     reac1P,        reac2P,              ktempP,                   QtempP,                          alphaP,                 ls , ....
-        %    arguments for M              ktempM,        QM,           alphaM)               
             [ e2_zinf_P, dedz2_zinf_P, f2_zinf_P, dfdz2_zinf_P, g2_zinf_P, dgdz2_zinf_P, p2_zinf_P, dpdz2_zinf_P, q2_zinf_P, dqdz2_zinf_P, ...
                 e2_zinf_M, dedz2_zinf_M, f2_zinf_M, dfdz2_zinf_M, g2_zinf_M, dgdz2_zinf_M, p2_zinf_M, dpdz2_zinf_M, q2_zinf_M, dqdz2_zinf_M] ...
                 = r.zTOC.calcfg_l12_PO4_M(bsd.zinf, bsd, swi, r, obj.reac1_anox, obj.reac2_anox, obj.kaPO4/(1+obj.KPO4_anox), obj.PO4a*obj.kaPO4/(1+obj.KPO4_anox), bsd.SD*obj.kmPO4/(1+obj.KPO4_anox), rPO4_M.ls2, obj.kmPO4, obj.kmPO4.*obj.Minf, 0);
-            % calcfg_l12_PO4_M(obj,            z,   bsd, swi, res,     reac1P,         reac2P,          ktempP,                        QtempP,                     alphaP,               ls,      ktempM,           QtempM,    alphaM)
+            % calcfg_l12_PO4_M(obj,            z,   bsd, swi, res,     reac1P,         reac2P,          ktempP,                        QtempP,                     alphaP,                                  ls,      ktempM,           QtempM,    alphaM)
                         
             % Match at zox, layer 1 - layer 2 (continuity and flux)                        
             % basis functions at bottom of layer 1

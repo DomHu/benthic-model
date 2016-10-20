@@ -347,7 +347,7 @@ classdef benthic_zTOC < handle
                         else    % anoxic layer -> call M first
                             [e_M, dedz_M, f_M, dfdz_M, g_M, dgdz_M, p_M, dpdz_M, q_M, dqdz_M, a1_M, b1_M] ...
                                 = obj.calcfg_l1_M(z, bsd, swi, res, ls.D1M, ktempM, QtempM, 0, 0, 0, alphaM);
-                            [e_P, dedz_P, f_P, dfdz_P, g_P, dgdz_P, p_P, dpdz_P, q_P, dqdz_P, a1_M, b1_P, Phi1_P] ...
+                            [e_P, dedz_P, f_P, dfdz_P, g_P, dgdz_P, p_P, dpdz_P, q_P, dqdz_P, a1_P, b1_P, Phi1_P] ...
                             = obj.calcfg_l1_PO4(z, bsd, swi, res, reac1P, reac2P, ls.D1P, ktempP, QtempP, a1_M, b1_M, alphaP);
                         end
                         
@@ -395,7 +395,8 @@ classdef benthic_zTOC < handle
                                     = obj.calcfg_l1_PO4(z, bsd, swi, res, reac1P, reac2P, ls.D1P, ktempP, QtempP, a1_M, b1_M, alphaP);                                
                             end
                             
-                            % Now find 'transformed' basis functions such that in layer 1, O2 = A_2*et + B_2*ft + gt  (ie layer 1 soln written in terms of layer 2 coeffs A_2, B_2)
+                            % Now find 'transformed' basis functions such that in layer 1, 
+                            % O2 = A_2*et + B_2*ft + gt  (ie layer 1 soln written in terms of layer 2 coeffs A_2, B_2)
                             % DOMINIK: TODO: don't clculate B (or rather F) like this:
                             EFPQ_P = [e_P_1; f_P_1; p_P_1; q_P_1];   
                             dEFPQdz_P = [dedz_P_1; dfdz_P_1; dpdz_P_1; dqdz_P_1];
