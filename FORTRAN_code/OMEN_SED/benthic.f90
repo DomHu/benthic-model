@@ -147,18 +147,18 @@ CONTAINS
         print*, ' '
 
         rho_sed=2.6                               ! sediment density (g/cm3)
-        wdepth=600                                ! water depth (m)
+        wdepth=108.0                                ! water depth (m)
         z0  = 0.0                                  ! surface
         zox = 0.0
-        zbio=10.0                                   ! bioturbation depth (cm)
+        zbio=1.0                                   ! bioturbation depth (cm)
 
-        zinf=100.0                                  !Inifinity (cm)
-        Dbio=5.2*(10.0**(0.7624-0.0003972*wdepth))  !bioturbation coefficient (cm2/yr) - after Middelburg at al. 1997
+        zinf=50.0                                  !Inifinity (cm)
+        Dbio=0.02 !5.2*(10.0**(0.7624-0.0003972*wdepth))  !bioturbation coefficient (cm2/yr) - after Middelburg at al. 1997
         por=0.85                                !porosity (-) defined as: porewater_vol./(solid_sed_vol.+porewater_vol.)
         tort=3.0                               !tortuosity (-)
         irrigationFactor=1.0
 
-        gamma=0.99                      !fraction of NH4 that is oxidised in oxic layer
+        gamma=0.95                      !fraction of NH4 that is oxidised in oxic layer
         gammaH2S=0.95                           !fraction of H2S that is oxidised in oxic layer
         gammaCH4=0.99                   !fraction of CH4 that is oxidised at SO4
         satSO4=0.0                      ! SO4 saturation
@@ -166,19 +166,16 @@ CONTAINS
         zoxgf = 0.1                         ! cm, rolloff NH4, H2S oxidation for small zox depth
 
         !bottom water concentrations
-        T=8.0                                                     ! temperature (degree C)
-        C01=1.0*1e-2/12*rho_sed                                ! TOC concentration at SWI (wt!) -> (mol/cm3 bulk phase)
-        C02=1.0*1e-2/12*rho_sed                                ! TOC concentration at SWI (wt!) -> (mol/cm3 bulk phase)
-        O20=300.0e-9         !was  300.0e-9                                     ! O2  concentration at SWI (mol/cm3)
-        NO30=40.0e-9                                               ! NO3 concentration at SWI (mol/cm3)
-        NH40=0.0e-9                                                ! NH4 concentration at SWI (mol/cm3)
+        T=12.5                                                     ! temperature (degree C)
+        C01=2.64*1e-2/12*rho_sed                                ! TOC concentration at SWI (wt!) -> (mol/cm3 bulk phase)
+        C02=1.8*1e-2/12*rho_sed                                ! TOC concentration at SWI (wt!) -> (mol/cm3 bulk phase)
+        O20=210.0e-9         !was  300.0e-9                                     ! O2  concentration at SWI (mol/cm3)
+        NO30=9.6e-9                                               ! NO3 concentration at SWI (mol/cm3)
+        NH40=0.4e-9                                                ! NH4 concentration at SWI (mol/cm3)
         SO40=28000.0e-9      !  28000.0e-9                                     ! SO4 concentration at SWI (mol/cm3)
-        H2S0=0.0e-9           !was 0.0e-9                                 ! H2S concentration at SWI (mol/cm3)
-        DIC0=2000.0e-9                                             ! DIC concentration at SWI (mol/cm3)
-        ALK0=2400.0e-9                                             ! ALK concentration at SWI (mol/cm3)
-        PO40=40e-9                                                  ! PO4 concentration at SWI (mol/cm3)
+        H2S0=0.0e-13           !was 0.0e-9                                 ! H2S concentration at SWI (mol/cm3)
+        PO40=0.0e-9                                                  ! PO4 concentration at SWI (mol/cm3)
         Mflux0=365*0.2e-10                                          ! flux of M to the sediment (mol/(cm2*yr))
-        S0=35                                                      ! Salinity at SWI
 
 
         w=10.0**(-0.87478367-0.00043512*wdepth)*3.3             ! sedimentation rate, cm/yr - after Middelburg at al. 1997
@@ -197,8 +194,8 @@ CONTAINS
 
         ! ORGANIC MATTER
         DC1 = Dbio
-        k1=0.01
-        k2=0.0001
+        k1=0.65
+        k2=0.00001
 
         ! O2
         qdispO2=348.62172
@@ -767,20 +764,20 @@ CONTAINS
                 STOP
         end select
 
-        print*, ' '
-        print*, 'IN  calcfg_l2_PO4 --------'
-        print*, ' z = ', z
-        print*,'e_P, dedz_P ', char(9), e_P, dedz_P
-        print*,'f_P, dfdz_P', char(9), f_P, dfdz_P
-        print*,'g_P, dgdz_P', char(9), g_P, dgdz_P
-        print*,'p_P, dpdz_P', char(9), p_P, dpdz_P
-        print*,' q_P, dqdz_P ', char(9), q_P, dqdz_P
-        print*, ' '
-        print*,'e_M, dedz_M ', char(9), e_M, dedz_M
-        print*,'f_M, dfdz_M', char(9), f_M, dfdz_M
-        print*,'g_M, dgdz_M', char(9), g_M, dgdz_M
-        print*,'p_M, dpdz_M', char(9), p_M, dpdz_M
-        print*,' q_M, dqdz_M ', char(9), q_M, dqdz_M
+!        print*, ' '
+!        print*, 'IN  calcfg_l12_PO4 --------'
+!        print*, ' z = ', z
+!        print*,'e_P, dedz_P ', char(9), e_P, dedz_P
+!        print*,'f_P, dfdz_P', char(9), f_P, dfdz_P
+!        print*,'g_P, dgdz_P', char(9), g_P, dgdz_P
+!        print*,'p_P, dpdz_P', char(9), p_P, dpdz_P
+!        print*,' q_P, dqdz_P ', char(9), q_P, dqdz_P
+!        print*, ' '
+!        print*,'e_M, dedz_M ', char(9), e_M, dedz_M
+!        print*,'f_M, dfdz_M', char(9), f_M, dfdz_M
+!        print*,'g_M, dgdz_M', char(9), g_M, dgdz_M
+!        print*,'p_M, dpdz_M', char(9), p_M, dpdz_M
+!        print*,' q_M, dqdz_M ', char(9), q_M, dqdz_M
 
 
     END SUBROUTINE calcfg_l12_PO4_M
@@ -2187,7 +2184,6 @@ CONTAINS
 
         ! local variables
         ! Integration constants
-        real*8 rPO4_M_A3, rPO4_M_B3, rPO4_M_C3, rPO4_M_D3
         real*8 rPO4_M_A2, rPO4_M_B2, rPO4_M_C2, rPO4_M_D2
         real*8 rPO4_M_A1, rPO4_M_B1, rPO4_M_C1, rPO4_M_D1
 
@@ -2243,9 +2239,10 @@ CONTAINS
         ! the transformed ODE solutions coming from xformsoln_PO4_M
         real*8, dimension (1:4) :: loc_EFPQ_P_t, loc_dEFPQdz_P_t, loc_EFPQ_M_t, loc_dEFPQdz_M_t
 
-
-        real*8 flxzpo4, conczpo4, flxswipo4, zL, tol
-        integer bctype
+        ! the final SWI fluxes
+        real*8 loc_flxswipo4, loc_flxswiM
+        ! calculated integration constants for Layer 1 & 2 - in case we want to calculate profiles later - calculated first as vector to save code
+        real*8, dimension (1:4) :: loc_Layer1_IC, loc_Layer2_IC
 
         reac1_po4_ox = 1/(1+KPO4_ox)*PC1
         reac2_po4_ox = 1/(1+KPO4_ox)*PC2
@@ -2255,7 +2252,7 @@ CONTAINS
         loc_Vb = 0.0
         loc_Fb = 0.0
 
-! Initialize loc_mat_C_4x4 & loc_vec_D_4 with zeros as, so I don't need to add them manually later...
+        ! Initialize loc_mat_C_4x4 & loc_vec_D_4 with zeros as, so I don't need to add them later manually ...
         loc_mat_C_4x4 = 0.0D00
         loc_vec_D_4 = 0.0D00
 
@@ -2399,10 +2396,30 @@ CONTAINS
                             PO40 - g_P, &
                            Mflux0 - w*g_M  /)
 
-        ! just need it once, so actually no need for subroutine, bu tmaybe for later
+        ! calculate the integration conctants for Layer 2
+        ! just need it once, so actually no need for subroutine, but maybe for later
         loc_dim = 3
         call solve2eqn_PO4_M(loc_mat_X_3x3, loc_vec_Z_3, rPO4_M_A2, rPO4_M_B2, rPO4_M_C2, loc_dim)
+        rPO4_M_D2 = 0.0D00
+        ! save IC in a vector for a later calculation
+        loc_Layer2_IC = (/ rPO4_M_A2, rPO4_M_B2, rPO4_M_C2, rPO4_M_D2 /)
 
+        ! CALCULATE FINAL SWI fluxes and save the coefficients for
+        ! DH: use A2, B2, C2, D2 as these are _xformed_ layer 1 basis functions
+        loc_flxswipo4 = por*(DPO41/(1+KPO4_ox)*(rPO4_M_A2*loc_dEFPQdz_P_t(1)+rPO4_M_B2*loc_dEFPQdz_P_t(2) &
+                    + rPO4_M_C2*loc_dEFPQdz_P_t(3)+rPO4_M_D2*loc_dEFPQdz_P_t(4) + dgdz_P) - w*PO40)
+        ! Does actually not exist, as it is a solid, just calculate for debugging
+        loc_flxswiM = por*Dbio*(rPO4_M_A2*loc_dEFPQdz_M_t(1)+rPO4_M_B2*loc_dEFPQdz_M_t(2) + &
+                        rPO4_M_C2*loc_dEFPQdz_M_t(3) + rPO4_M_D2*loc_dEFPQdz_M_t(4) + dgdz_M)
+
+        ! save coeffs for layer 1 - in case I want to calculate a profile later
+        loc_Layer1_IC = matmul(loc_mat_C_4x4, loc_Layer2_IC) + loc_vec_D_4
+
+        print*,' '
+        print*,'loc_flxswipo4 ', char(9), loc_flxswipo4
+        print*,'loc_flxswiM ', char(9), loc_flxswiM
+!        print*,'loc_Layer1_IC ', char(9), loc_Layer1_IC
+!        print*,'loc_Layer2_IC ', char(9), loc_Layer2_IC
 
     END SUBROUTINE benthic_zPO4_M
 
@@ -2563,17 +2580,17 @@ CONTAINS
         loc_G_M_t = dot_product(dum_vec_D, dum_EFPQ_M) + dum_g_M
         loc_dG_M_t = dot_product(dum_vec_D,dum_dEFPQdz_M) + dum_dgdz_M
 
-        print*,' '
-        print*, 'IN xformsoln_PO4_M '
-        print*, 'loc_EFPQ_P_t', loc_EFPQ_P_t
-        print*, 'loc_dEFPQ_P_t', loc_dEFPQ_P_t
-        print*, 'loc_G_P_t', loc_G_P_t
-        print*, 'loc_dG_P_t', loc_dG_P_t
-        print*,' '
-        print*, 'loc_EFPQ_M_t', loc_EFPQ_M_t
-        print*, 'loc_dEFPQ_M_t', loc_dEFPQ_M_t
-        print*, 'loc_G_M_t', loc_G_M_t
-        print*, 'loc_dG_M_t', loc_dG_M_t
+!        print*,' '
+!        print*, 'IN xformsoln_PO4_M '
+!        print*, 'loc_EFPQ_P_t', loc_EFPQ_P_t
+!        print*, 'loc_dEFPQ_P_t', loc_dEFPQ_P_t
+!        print*, 'loc_G_P_t', loc_G_P_t
+!        print*, 'loc_dG_P_t', loc_dG_P_t
+!        print*,' '
+!        print*, 'loc_EFPQ_M_t', loc_EFPQ_M_t
+!        print*, 'loc_dEFPQ_M_t', loc_dEFPQ_M_t
+!        print*, 'loc_G_M_t', loc_G_M_t
+!        print*, 'loc_dG_M_t', loc_dG_M_t
 
     END SUBROUTINE xformsoln_PO4_M
 
@@ -2635,10 +2652,10 @@ CONTAINS
         dum_B = loc_vec_Z(2)
         dum_C = loc_vec_Z(3)
 
-        print*,' IN SOLVE2EQN_PO4_M '
-        print*,'dum_A ', dum_A
-        print*,'dum_B', dum_B
-        print*,'dum_C', dum_C
+!        print*,' IN SOLVE2EQN_PO4_M '
+!        print*,'dum_A ', dum_A
+!        print*,'dum_B', dum_B
+!        print*,'dum_C', dum_C
 
     END SUBROUTINE solve2eqn_PO4_M
 

@@ -7,16 +7,19 @@
              
              
             clear
-            
+%         gamma=0.95                                %fraction of NH4 that is oxidised in oxic layer
+%         gammaH2S=0.95;                           %fraction of H2S that is oxidised in oxic layer
+%         gammaCH4=0.99;                           %fraction of CH4 that is oxidised at SO4
+           
             
             % was here: swi=benthic_test.default_swi()
 %% Step 1:  initialise main model parameters with standard values & run model
             bsd = benthic_main();
-            Obs = 10;       
+            Obs = 1;       
             %sediment characteristics
             switch Obs
                     case 1  % OMEXDIA_2809_108m all solutes in Micromoles/litre
-% %         k1= 0.5;                                                %TOC degradation rate constnat (1/yr)
+% %         k1= 0.65;                                                %TOC degradation rate constnat (1/yr)
 % %         k2=0.00001;  
 % %         KPO41=200.0;  %Adsorption coefficient in oxic layer (-) 
 % %         KPO42=1.3;    %Adsorption coefficient in anoxic layer (-)
@@ -200,7 +203,7 @@
                         %bottom water concentrations
                         swi.T=5.85; %20.0;                         %temperature (degree C)
                         swi.C01= 2.0*1e-2/12*bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*bsd.rho_sed; %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-                        swi.C02= 3.5*1e-2/12*bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+                        swi.C02= 3.5*1e-2/12*bsd.rho_se4000d; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
                         %swi.C01=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
                         %swi.C02=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
                         swi.O20=10.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
@@ -324,7 +327,7 @@
 
            switch Obs
                     case 1  % OMEXDIA_2809_108m all solutes in Micromoles/litre
-                        str_date = '108m_OMEXDIA_';
+                        str_date = '108m_OMEXDIA_2110_';
                         data.TOC=xlsread('../Observations/OMEXDIA/5_PE138_99-06_108m.xlsx','Corg','C2:D24');     % in wt%
                         data.O2=xlsread('../Observations/OMEXDIA/5_PE138_99-06_108m.xlsx','O2','C2:D126'); 
                         data.NO3=xlsread('../Observations/OMEXDIA/5_PE138_99-06_108m.xlsx','NO3','C2:D25'); 
@@ -334,7 +337,7 @@
             %            data.H2S=PW_data(:,[1 11]);
                         
                     case 2 % OMEXDIA_2809_2213m
-                        str_date = '2213m_OMEXDIA_1110_';
+                        str_date = '2213m_OMEXDIA_2110_';
                         data.TOC=xlsread('../Observations/OMEXDIA/2_PE121_98-4_2213m.xlsx','Corg','C2:D39');     % in wt%
                         data.O2=xlsread('../Observations/OMEXDIA/2_PE121_98-4_2213m.xlsx','O2','C113:D1352'); % C2:D112
                         data.NO3=xlsread('../Observations/OMEXDIA/2_PE121_98-4_2213m.xlsx','NO3','C2:D18'); 
@@ -344,7 +347,7 @@
             %            data.H2S=PW_data(:,[1 11]);
             
                     case 3  % OMEXDIA_2809_3097m
-                         str_date = '3097m_OMEXDIA';
+                         str_date = '3097m_OMEXDIA_2110_';
                         data.TOC=xlsread('../Observations/OMEXDIA/3_PE138_99-14.xlsx','Corg','C2:D31');     % in wt%
                         data.O2=xlsread('../Observations/OMEXDIA/3_PE138_99-14.xlsx','O2','C2:D391'); % C2:D112
                         data.NO3=xlsread('../Observations/OMEXDIA/3_PE138_99-14.xlsx','NO3','C2:D26'); 
@@ -354,7 +357,7 @@
             %            data.H2S=PW_data(:,[1 11]);
             
                      case 4  % OMEXDIA_3371m
-                        str_date = '3371m_OMEXDIA';
+                        str_date = '3371m_OMEXDIA_2110_';
                         data.TOC=xlsread('../Observations/OMEXDIA/9_PE121_98-02_3371m.xlsx','Corg','C2:D29');     % in wt%
                         data.O2=xlsread('../Observations/OMEXDIA/9_PE121_98-02_3371m.xlsx','O2','C2:D130'); % C2:D112
                         data.NO3=xlsread('../Observations/OMEXDIA/9_PE121_98-02_3371m.xlsx','NO3','C2:D18'); 
@@ -364,7 +367,7 @@
             %            data.H2S=PW_data(:,[1 11]);                        
                       
                     case 5  % OMEXDIA_4941m
-                        str_date = '4941m_OMEXDIA';
+                        str_date = '4941m_OMEXDIA_2110_';
                         data.TOC=xlsread('../Observations/OMEXDIA/8_PE121_98-01_4941m.xlsx','Corg','C2:D21');     % in wt%
                         data.O2=xlsread('../Observations/OMEXDIA/8_PE121_98-01_4941m.xlsx','O2','C2:D87'); % C2:D112
                         data.NO3=xlsread('../Observations/OMEXDIA/8_PE121_98-01_4941m.xlsx','NO3','C2:D24'); 
@@ -374,7 +377,7 @@
             %            data.H2S=PW_data(:,[1 11]);                        
                         
                     case 6  % Reimers et al. 1996   NOT really clear which measurements fit together -> leave out!
-                        str_date = '585m_Reimers_BC68';
+                        str_date = '585m_Reimers_BC68_2110_';
                         data.TOC=load('../Observations/Reimers_SantaBarbara/BC68_Corg.dat','ascii');
             %            TOC2=load('../Observations/Reimers_SantaBarbara/BC21_Corg.dat','ascii');
                         data.O2=load('../Observations/Reimers_SantaBarbara/IMP_O2.dat','ascii');
@@ -390,7 +393,7 @@
                        % data.PO4=PW_data(:,[1 2]);
                         
                     case 7  % 
-                        str_date = '4908m_OMEXDIA';
+                        str_date = '4908m_OMEXDIA_2110_';
                         data.TOC=xlsread('../Observations/OMEXDIA/7_PE121_98-06_4908m.xlsx','Corg','C2:D38');     % in wt%
                         data.O2=xlsread('../Observations/OMEXDIA/7_PE121_98-06_4908m.xlsx','O2','C2:D87'); % C2:D112
                         data.NO3=xlsread('../Observations/OMEXDIA/7_PE121_98-06_4908m.xlsx','NO3','C2:D20'); 
@@ -401,7 +404,7 @@
 
                        
                     case 8  % OMEXDIA_2809_343m all solutes in Micromoles/litre
-                        str_date = '343m_OMEXDIA_';
+                        str_date = '343m_OMEXDIA_2110_';
                         data.TOC=xlsread('../Observations/OMEXDIA/1_PE138_99-12.xlsx','Corg','C2:D25');     % in wt%
                         data.O2=xlsread('../Observations/OMEXDIA/1_PE138_99-12.xlsx','O2','C2:D249'); 
                         data.NO3=xlsread('../Observations/OMEXDIA/1_PE138_99-12.xlsx','NO3','C2:D27'); 
@@ -419,7 +422,7 @@
                        % data.PO4=load('../Observations/AndyDale/M92_PO4_250m_17MUC5_198MUC34.dat','ascii');                   
 
                     case 10  % OMEXDIA_4298m
-                        str_date = '4298m_OMEXDIA_1110';
+                        str_date = '4298m_OMEXDIA_2110_';
                         data.TOC=xlsread('../Observations/OMEXDIA/4_PE138_99-17_4298m.xlsx','Corg','C2:D38');     % in wt%
                         data.O2=xlsread('../Observations/OMEXDIA/4_PE138_99-17_4298m.xlsx','O2','C2:D815'); % C2:D112
                         data.NO3=xlsread('../Observations/OMEXDIA/4_PE138_99-17_4298m.xlsx','NO3','C2:D20'); 
@@ -507,7 +510,7 @@
                 plot([0,t(1,2)], [-res.zox,-res.zox], 'b--')     
                 plot([0,t(1,2)], [-res.zno3,-res.zno3], 'g--')     
                 plot([0,t(1,2)], [-res.zso4,-res.zso4], 'r--')             
-                ylim([-20.0 0.0])
+                ylim([-10.0 0.0])
                 xlabel ('NO_3 (mol/cm^3)')
     %            ylabel('Depth (cm)')
                 box on;
@@ -521,7 +524,7 @@
                 scatter(data.NH4(:,2).*1e-9, -data.NH4(:,1),'k','filled')
                 hold on
                 plot(NH4, -zgrid, 'b')
-                xlim([0.0 100e-9])     
+                xlim([0.0 500e-9])     
                 box on;
                 t=xlim;         % to draw penetration depths the correct lengths
                 plot([0,t(1,2)], [-bsd.zbio,-bsd.zbio], 'k--')     
@@ -567,7 +570,7 @@
                 end
                 hold on
                 plot(H2S, -zgrid, 'b')
-%                xlim([0 4e-7])
+                xlim([0 4e-7])
                 box on;
                 t=xlim;         % to draw penetration depths the correct lengths
                 plot([0,t(1,2)], [-bsd.zbio,-bsd.zbio], 'k--')     
@@ -589,7 +592,7 @@
             hold on            
             plot(PO4, -zgrid, 'b')
             box on;
-            xlim([0.0 1e-8])
+            xlim([0.0 2e-8])
             t=xlim;         % to draw penetration depths the correct lengths
             plot([0,t(1,2)], [-bsd.zbio,-bsd.zbio], 'k--')     
             plot([0,t(1,2)], [-res.zox,-res.zox], 'b--')     
