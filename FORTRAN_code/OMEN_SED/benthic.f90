@@ -70,6 +70,7 @@ MODULE benthic
     real*8 NO30                                               !NO3 concentration at SWI (mol/cm3)
     real*8 NH40                                               !NH4 concentration at SWI (mol/cm3)
     real*8 PO40                                                  !PO4 concentration at SWI (mol/cm3)
+    real*8 Mflux0                       ! flux of M to the sediment (mol/(cm2*yr))
     real*8 S0                                                     !Salinity at SWI
 
 
@@ -176,6 +177,7 @@ CONTAINS
         DIC0=2000.0e-9                                             ! DIC concentration at SWI (mol/cm3)
         ALK0=2400.0e-9                                             ! ALK concentration at SWI (mol/cm3)
         PO40=40e-9                                                  ! PO4 concentration at SWI (mol/cm3)
+        Mflux0=365*0.2e-10                                          ! flux of M to the sediment (mol/(cm2*yr))
         S0=35                                                      ! Salinity at SWI
 
 
@@ -600,9 +602,10 @@ CONTAINS
     !   *****************************************************************
     !------------------------------------------------------------------------------------
 
-    SUBROUTINE calcfg_l12_PO4_M(z, reac1P, reac2P, dum_ktempP, dum_QtempP, dum_D1P, dum_D2P, dum_alphaP, dum_ltype, &
-                    dum_ktempM, dum_QtempM, dum_D1M, dum_D2M, dum_alphaM, e_P, dedz_P, f_P, dfdz_P, g_P, dgdz_P, &
-                    p_P, dpdz_P, q_P, dqdz_P, e_M, dedz_M, f_M, dfdz_M, g_M, dgdz_M, p_M, dpdz_M, q_M, dqdz_M)
+    SUBROUTINE calcfg_l12_PO4_M(z, reac1P, reac2P, dum_ktempP, dum_QtempP, &
+    dum_D1P, dum_D2P, dum_alphaP, dum_mat_C, dum_vec_D, dum_ltype, &
+    dum_ktempM, dum_QtempM, dum_D1M, dum_D2M, dum_alphaM, e_P, dedz_P, f_P, dfdz_P, g_P, dgdz_P, &
+    p_P, dpdz_P, q_P, dqdz_P, e_M, dedz_M, f_M, dfdz_M, g_M, dgdz_M, p_M, dpdz_M, q_M, dqdz_M)
             ! calculate solution basis functions, for layer which may cross bioturbation boundary
             !
             ! reac1, reac2        - mol/mol S released per organic carbon C
@@ -617,91 +620,168 @@ CONTAINS
         real*8,intent(in):: z, reac1P, reac2P, dum_ktempP, dum_QtempP, dum_alphaP, dum_D1P, dum_D2P
         real*8,intent(in):: dum_ktempM, dum_QtempM, dum_alphaM, dum_D1M, dum_D2M
         INTEGER, INTENT(in):: dum_ltype
+        real*8, dimension (4, 4), INTENT(in) :: dum_mat_C
+        real*8, dimension (1:4), INTENT(in) ::  dum_vec_D
+
         ! ODE solutions (E, F, P, Q) and the particulat integral (G) and their derivatives
         real*8,intent(inout):: e_P, dedz_P, f_P, dfdz_P, g_P, dgdz_P, p_P, dpdz_P, q_P, dqdz_P
-        real*8 e_M, dedz_M, f_M, dfdz_M, g_M, dgdz_M, p_M, dpdz_M, q_M, dqdz_M
+        real*8,intent(inout):: e_M, dedz_M, f_M, dfdz_M, g_M, dgdz_M, p_M, dpdz_M, q_M, dqdz_M
 
         ! local variables
-        real*8 a1_P, b1_P, a1_M, b1_M, a2_M, a2_P, b2_P
-        real*8, dimension (1:6) :: Phi1_P, Phi2_P
-        real*8 e_P_1, dedz_P_1, f_P_1, dfdz_P_1, g_P_1, dgdz_P_1, p_P_1, dpdz_P_1, q_P_1, dqdz_P_1
-        real*8 e_M_1, dedz_M_1, f_M_1, dfdz_M_1, g_M_1, dgdz_M_1, p_M_1, dpdz_M_1, q_M_1, dqdz_M_1
+        real*8 loc_a1_P, loc_b1_P, loc_a1_M, loc_b1_M, loc_a2_M, loc_a2_P, loc_b2_P
+        real*8, dimension (1:6) :: loc_Phi1_P, loc_Phi2_P
+        real*8 loc_e_P_1, loc_dedz_P_1, loc_f_P_1, loc_dfdz_P_1, loc_g_P_1, loc_dgdz_P_1
+        real*8 loc_p_P_1, loc_dpdz_P_1, loc_q_P_1, loc_dqdz_P_1
+        real*8 loc_e_M_1, loc_dedz_M_1, loc_f_M_1, loc_dfdz_M_1, loc_g_M_1, loc_dgdz_M_1
+        real*8 loc_p_M_1, loc_dpdz_M_1, loc_q_M_1, loc_dqdz_M_1
         ! save the ODE solutions in vectors to make calculation easier (DH?: however, is this faster?)
-        real*8, dimension (1:4) :: EFPQ_P, dEFPQdz_P, EFPQ_M, dEFPQdz_M
+        real*8, dimension (1:4) :: loc_EFPQ_P, loc_dEFPQdz_P, loc_EFPQ_M, loc_dEFPQdz_M
+        ! the transformed ODE solutions coming from xformsoln_PO4_M
+        real*8, dimension (1:4) :: loc_EFPQ_P_t, loc_dEFPQdz_P_t, loc_EFPQ_M_t, loc_dEFPQdz_M_t
 
-        Phi1_P = (/ 0, 0, 0, 0, 0, 0 /)
-        Phi2_P = (/ 0, 0, 0, 0, 0, 0 /)
+        loc_Phi1_P = (/ 0, 0, 0, 0, 0, 0 /)
+        loc_Phi2_P = (/ 0, 0, 0, 0, 0, 0 /)
 
         select case (dum_ltype)
             case (1)    ! bioturbated
                 if(dum_alphaP==0)then   ! oxic layer -> call PO4 first
                     call calcfg_l1_PO4(z, reac1P, reac2P, dum_D1P, dum_ktempP, dum_QtempP, 0.0D00, 0.0D00, dum_alphaP, &
-                            e_P, dedz_P, f_P, dfdz_P, g_P, dgdz_P, p_P, dpdz_P, q_P, dqdz_P, a1_P, b1_P, Phi1_P)
-                    call calcfg_l1_M(z, dum_D1M, dum_ktempM, dum_QtempM, a1_P, b1_P, Phi1_P, dum_alphaM, &
-                            e_M, dedz_M, f_M, dfdz_M, g_M, dgdz_M, p_M, dpdz_M, q_M, dqdz_M, a1_M, b1_M)
+                    e_P, dedz_P, f_P, dfdz_P, g_P, dgdz_P, p_P, dpdz_P, q_P, dqdz_P, loc_a1_P, loc_b1_P, loc_Phi1_P)
+                    call calcfg_l1_M(z, dum_D1M, dum_ktempM, dum_QtempM, loc_a1_P, loc_b1_P, loc_Phi1_P, dum_alphaM, &
+                    e_M, dedz_M, f_M, dfdz_M, g_M, dgdz_M, p_M, dpdz_M, q_M, dqdz_M, loc_a1_M, loc_b1_M)
                 else        ! anoxic layer -> call M first
-                    call calcfg_l1_M(z, dum_D1M, dum_ktempM, dum_QtempM, 0.0D00, 0.0D00, Phi1_P, dum_alphaM, &
-                            e_M, dedz_M, f_M, dfdz_M, g_M, dgdz_M, p_M, dpdz_M, q_M, dqdz_M, a1_M, b1_M)
-                    call calcfg_l1_PO4(z, reac1P, reac2P, dum_D1P, dum_ktempP, dum_QtempP, a1_M, b1_M, dum_alphaP, &
-                            e_P, dedz_P, f_P, dfdz_P, g_P, dgdz_P, p_P, dpdz_P, q_P, dqdz_P, a1_P, b1_P, Phi1_P)
+                    call calcfg_l1_M(z, dum_D1M, dum_ktempM, dum_QtempM, 0.0D00, 0.0D00, loc_Phi1_P, dum_alphaM, &
+                    e_M, dedz_M, f_M, dfdz_M, g_M, dgdz_M, p_M, dpdz_M, q_M, dqdz_M, loc_a1_M, loc_b1_M)
+                    call calcfg_l1_PO4(z, reac1P, reac2P, dum_D1P, dum_ktempP, dum_QtempP, loc_a1_M, loc_b1_M, dum_alphaP, &
+                    e_P, dedz_P, f_P, dfdz_P, g_P, dgdz_P, p_P, dpdz_P, q_P, dqdz_P, loc_a1_P, loc_b1_P, loc_Phi1_P)
                 end if
 
             case (2)    ! not bioturbated
                 if(dum_alphaP==0)then   ! oxic layer -> call PO4 first
                     call calcfg_l2_PO4(z, reac1P, reac2P, dum_D2P, dum_ktempP, dum_QtempP, 0.0D00, dum_alphaP, &
-                                e_P, dedz_P, f_P, dfdz_P, g_P, dgdz_P, p_P, dpdz_P, q_P, dqdz_P, a2_P, b2_P, Phi2_P)
-                    call calcfg_l2_M(z, dum_ktempM, dum_QtempM, a2_P, b2_P, Phi2_P, dum_alphaM, &
-                                e_M, dedz_M, f_M, dfdz_M, g_M, dgdz_M, p_M, dpdz_M, q_M, dqdz_M, a2_M)
+                    e_P, dedz_P, f_P, dfdz_P, g_P, dgdz_P, p_P, dpdz_P, q_P, dqdz_P, loc_a2_P, loc_b2_P, loc_Phi2_P)
+                    call calcfg_l2_M(z, dum_ktempM, dum_QtempM, loc_a2_P, loc_b2_P, loc_Phi2_P, dum_alphaM, &
+                    e_M, dedz_M, f_M, dfdz_M, g_M, dgdz_M, p_M, dpdz_M, q_M, dqdz_M, loc_a2_M)
                 else    ! anoxic layer -> call M first
-                    call calcfg_l2_M(z, dum_ktempM, dum_QtempM, 0.0D00, 0.0D00, Phi2_P, dum_alphaM, &
-                                e_M, dedz_M, f_M, dfdz_M, g_M, dgdz_M, p_M, dpdz_M, q_M, dqdz_M, a2_M)
-                    call calcfg_l2_PO4(z, reac1P, reac2P, dum_D2P, dum_ktempP, dum_QtempP, a2_M, dum_alphaP, &
-                                e_P, dedz_P, f_P, dfdz_P, g_P, dgdz_P, p_P, dpdz_P, q_P, dqdz_P, a2_P, b2_P, Phi2_P)
+                    call calcfg_l2_M(z, dum_ktempM, dum_QtempM, 0.0D00, 0.0D00, loc_Phi2_P, dum_alphaM, &
+                    e_M, dedz_M, f_M, dfdz_M, g_M, dgdz_M, p_M, dpdz_M, q_M, dqdz_M, loc_a2_M)
+                    call calcfg_l2_PO4(z, reac1P, reac2P, dum_D2P, dum_ktempP, dum_QtempP, loc_a2_M, dum_alphaP, &
+                    e_P, dedz_P, f_P, dfdz_P, g_P, dgdz_P, p_P, dpdz_P, q_P, dqdz_P, loc_a2_P, loc_b2_P, loc_Phi2_P)
                 end if
 
             case (3)    ! crossing boundary
                 IF(z > zbio) THEN      ! not bioturbated region
                     if(dum_alphaP==0)then   ! oxic layer -> call PO4 first NOTE: BUT DECIDE VIA ALPHA_M NOT WITH <= ZOX!!! DOESN't WORK FOR BOUNDARY ZOX
                         call calcfg_l2_PO4(z, reac1P, reac2P, dum_D2P, dum_ktempP, dum_QtempP, 0.0D00, dum_alphaP, &
-                                    e_P, dedz_P, f_P, dfdz_P, g_P, dgdz_P, p_P, dpdz_P, q_P, dqdz_P, a2_P, b2_P, Phi2_P)
-                        call calcfg_l2_M(z, dum_ktempM, dum_QtempM, a2_P, b2_P, Phi2_P, dum_alphaM, &
-                                   e_M, dedz_M, f_M, dfdz_M, g_M, dgdz_M, p_M, dpdz_M, q_M, dqdz_M, a2_M)
+                        e_P, dedz_P, f_P, dfdz_P, g_P, dgdz_P, p_P, dpdz_P, q_P, dqdz_P, loc_a2_P, loc_b2_P, loc_Phi2_P)
+                        call calcfg_l2_M(z, dum_ktempM, dum_QtempM, loc_a2_P, loc_b2_P, loc_Phi2_P, dum_alphaM, &
+                        e_M, dedz_M, f_M, dfdz_M, g_M, dgdz_M, p_M, dpdz_M, q_M, dqdz_M, loc_a2_M)
                     else ! anoxic layer -> call M first
-                        call calcfg_l2_M(z, dum_ktempM, dum_QtempM, 0.0D00, 0.0D00, Phi2_P, dum_alphaM, &
-                                    e_M, dedz_M, f_M, dfdz_M, g_M, dgdz_M, p_M, dpdz_M, q_M, dqdz_M, a2_M)
-                        call calcfg_l2_PO4(z, reac1P, reac2P, dum_D2P, dum_ktempP, dum_QtempP, a2_M, dum_alphaP, &
-                                    e_P, dedz_P, f_P, dfdz_P, g_P, dgdz_P, p_P, dpdz_P, q_P, dqdz_P, a2_P, b2_P, Phi2_P)
+                        call calcfg_l2_M(z, dum_ktempM, dum_QtempM, 0.0D00, 0.0D00, loc_Phi2_P, dum_alphaM, &
+                        e_M, dedz_M, f_M, dfdz_M, g_M, dgdz_M, p_M, dpdz_M, q_M, dqdz_M, loc_a2_M)
+                        call calcfg_l2_PO4(z, reac1P, reac2P, dum_D2P, dum_ktempP, dum_QtempP, loc_a2_M, dum_alphaP, &
+                        e_P, dedz_P, f_P, dfdz_P, g_P, dgdz_P, p_P, dpdz_P, q_P, dqdz_P, loc_a2_P, loc_b2_P, loc_Phi2_P)
                     end if ! (dum_alphaP==0)
                 ELSE    ! bioturbated region z <= zbio
                     if(dum_alphaP==0)then   ! oxic layer -> call PO4 first
                         ! CASE 1 & 2: LAYER 1: have 4 int. const.
                         call calcfg_l1_PO4(z, reac1P, reac2P, dum_D1P, dum_ktempP, dum_QtempP, 0.0D00, 0.0D00, dum_alphaP, &
-                            e_P_1, dedz_P_1, f_P_1, dfdz_P_1, g_P_1, dgdz_P_1, p_P_1, dpdz_P_1, q_P_1, dqdz_P_1, a1_P, b1_P, Phi1_P)
-                        call calcfg_l1_M(z, dum_D1M, dum_ktempM, dum_QtempM, a1_P, b1_P, Phi1_P, dum_alphaM, &
-                            e_M_1, dedz_M_1, f_M_1, dfdz_M_1, g_M_1, dgdz_M_1, p_M_1, dpdz_M_1, q_M_1, dqdz_M_1, a1_M, b1_M)
+                        loc_e_P_1, loc_dedz_P_1, loc_f_P_1, loc_dfdz_P_1, loc_g_P_1, loc_dgdz_P_1, loc_p_P_1, loc_dpdz_P_1, &
+                        loc_q_P_1, loc_dqdz_P_1, loc_a1_P, loc_b1_P, loc_Phi1_P)
+                        call calcfg_l1_M(z, dum_D1M, dum_ktempM, dum_QtempM, loc_a1_P, loc_b1_P, loc_Phi1_P, dum_alphaM, &
+                        loc_e_M_1, loc_dedz_M_1, loc_f_M_1, loc_dfdz_M_1, loc_g_M_1, loc_dgdz_M_1, loc_p_M_1, loc_dpdz_M_1, &
+                        loc_q_M_1, loc_dqdz_M_1, loc_a1_M, loc_b1_M)
                         ! DH: FOR CASE 2: DON'T HAVE D FROM LAYER 2
                     else    ! anoxic layer -> call M first
                         ! DH: CASE 1: LAYER 2: have 4 int. const.
-                        call calcfg_l1_M(z, dum_D1M, dum_ktempM, dum_QtempM, 0.0D00, 0.0D00, Phi1_P, dum_alphaM, &
-                                e_M_1, dedz_M_1, f_M_1, dfdz_M_1, g_M_1, dgdz_M_1, p_M_1, dpdz_M_1, q_M_1, dqdz_M_1, a1_M, b1_M)
-                        call calcfg_l1_PO4(z, reac1P, reac2P, dum_D1P, dum_ktempP, dum_QtempP, a1_M, b1_M, dum_alphaP, &
-                                e_P_1, dedz_P_1, f_P_1, dfdz_P_1, g_P_1, dgdz_P_1, p_P_1, dpdz_P_1, q_P_1, dqdz_P_1, &
-                                a1_P, b1_P, Phi1_P)
+                        call calcfg_l1_M(z, dum_D1M, dum_ktempM, dum_QtempM, 0.0D00, 0.0D00, loc_Phi1_P, dum_alphaM, &
+                        loc_e_M_1, loc_dedz_M_1, loc_f_M_1, loc_dfdz_M_1, loc_g_M_1, loc_dgdz_M_1, loc_p_M_1, loc_dpdz_M_1, &
+                        loc_q_M_1, loc_dqdz_M_1, loc_a1_M, loc_b1_M)
+                        call calcfg_l1_PO4(z, reac1P, reac2P, dum_D1P, dum_ktempP, dum_QtempP, loc_a1_M, loc_b1_M, dum_alphaP, &
+                        loc_e_P_1, loc_dedz_P_1, loc_f_P_1, loc_dfdz_P_1, loc_g_P_1, loc_dgdz_P_1, loc_p_P_1, loc_dpdz_P_1, &
+                        loc_q_P_1, loc_dqdz_P_1, loc_a1_P, loc_b1_P, loc_Phi1_P)
                     end if  ! (dum_alphaP==0)
 
                     ! Now find 'transformed' basis functions such that in layer 1,
                     ! O2 = A_2*et + B_2*ft + gt  (ie layer 1 solution written in terms of layer 2 coeffs A_2, B_2)
 
-                    EFPQ_P = (/ e_P_1, f_P_1, p_P_1, q_P_1 /)
-                    dEFPQdz_P = (/ dedz_P_1, dfdz_P_1, dpdz_P_1, dqdz_P_1 /)
-                    EFPQ_M = (/ e_M_1, f_M_1, p_M_1, q_M_1 /)
-                    dEFPQdz_M = (/dedz_M_1, dfdz_M_1, dpdz_M_1, dqdz_M_1/)
+                    loc_EFPQ_P = (/ loc_e_P_1, loc_f_P_1, loc_p_P_1, loc_q_P_1 /)
+                    loc_dEFPQdz_P = (/ loc_dedz_P_1, loc_dfdz_P_1, loc_dpdz_P_1, loc_dqdz_P_1 /)
+                    loc_EFPQ_M = (/ loc_e_M_1, loc_f_M_1, loc_p_M_1, loc_q_M_1 /)
+                    loc_dEFPQdz_M = (/loc_dedz_M_1, loc_dfdz_M_1, loc_dpdz_M_1, loc_dqdz_M_1/)
 
-                    ! DH TODO: go on from here
+                    call xformsoln_PO4_M(loc_EFPQ_P, loc_EFPQ_M, loc_dEFPQdz_P, loc_dEFPQdz_M, &
+                    loc_g_P_1, loc_g_M_1,loc_dgdz_P_1, loc_dgdz_M_1, dum_mat_C, dum_vec_D, &
+                    loc_EFPQ_P_t, g_P, loc_dEFPQdz_P_t, dgdz_P, loc_EFPQ_M_t, &
+                    g_M, loc_dEFPQdz_M_t, dgdz_M)
+
+                    ! WHEN lTYPE=3 - DEAL WITH ONE VARIABLE SHORT FROM LAYER BELOW
+                    ! FOR CASE 1 & 2: deal with missing values from layer below
+                    if(zox .LE. zbio)then   ! CASE 1: no F from layer below - DH: no e_M & f_M as well !? but 0 anyway at the moment
+                        e_P = loc_EFPQ_P_t(1)
+                        f_P = loc_EFPQ_P_t(2)
+                        p_P = loc_EFPQ_P_t(3)
+                        q_P = loc_q_P_1
+
+                        dedz_P = loc_dEFPQdz_P_t(1)
+                        dfdz_P = loc_dEFPQdz_P_t(2)
+                        dpdz_P = loc_dEFPQdz_P_t(3)
+                        dqdz_P = loc_dqdz_P_1
+
+                        e_M = loc_EFPQ_M_t(1)
+                        f_M = loc_EFPQ_M_t(2)
+                        p_M = loc_EFPQ_M_t(3)
+                        q_M = loc_q_M_1
+
+                        dedz_M = loc_dEFPQdz_M_t(1)
+                        dfdz_M = loc_dEFPQdz_M_t(2)
+                        dpdz_M = loc_dEFPQdz_M_t(3)
+                        dqdz_M = loc_dqdz_M_1
+
+                    else            ! CASE 2: no Q from layer below - DH: no p_P as well !?
+                        e_P = loc_EFPQ_P_t(1)
+                        f_P = loc_EFPQ_P_t(2)
+                        p_P = loc_p_P_1             ! DH:  was = EFPQ_P_t(3);
+                        q_P = loc_q_P_1
+
+                        dedz_P = loc_dEFPQdz_P_t(1)
+                        dfdz_P = loc_dEFPQdz_P_t(2)
+                        dpdz_P = loc_dpdz_P_1       !DH: was = dEFPQ_P_t(3);
+                        dqdz_P = loc_dqdz_P_1
+
+                        e_M = loc_EFPQ_M_t(1)
+                        f_M = loc_EFPQ_M_t(2)
+                        p_M = loc_EFPQ_M_t(3)
+                        q_M = loc_q_M_1
+
+                        dedz_M = loc_dEFPQdz_M_t(1)
+                        dfdz_M = loc_dEFPQdz_M_t(2)
+                        dpdz_M = loc_dEFPQdz_M_t(3)
+                        dqdz_M = loc_dqdz_M_1
+
+                    end if ! (zox .LE. zbio)
+
                 END IF  ! (z > zbio)
             case default
+            print*, ' unrecognized ltype in  calcfg_l2_PO4 ', dum_ltype
                 STOP
         end select
+
+        print*, ' '
+        print*, 'IN  calcfg_l2_PO4 --------'
+        print*, ' z = ', z
+        print*,'e_P, dedz_P ', char(9), e_P, dedz_P
+        print*,'f_P, dfdz_P', char(9), f_P, dfdz_P
+        print*,'g_P, dgdz_P', char(9), g_P, dgdz_P
+        print*,'p_P, dpdz_P', char(9), p_P, dpdz_P
+        print*,' q_P, dqdz_P ', char(9), q_P, dqdz_P
+        print*, ' '
+        print*,'e_M, dedz_M ', char(9), e_M, dedz_M
+        print*,'f_M, dfdz_M', char(9), f_M, dfdz_M
+        print*,'g_M, dgdz_M', char(9), g_M, dgdz_M
+        print*,'p_M, dpdz_M', char(9), p_M, dpdz_M
+        print*,' q_M, dqdz_M ', char(9), q_M, dqdz_M
+
 
     END SUBROUTINE calcfg_l12_PO4_M
 
@@ -810,6 +890,7 @@ CONTAINS
         ! local variables
         real*8 pfac
         real*8 ea11z, eb11z, ea12z, eb12z
+
 
         a2=(w-sqrt(w**2+4.0*Dtemp*ktemp))/(2.0*Dtemp)
         e=exp(z*a2)
@@ -989,7 +1070,7 @@ CONTAINS
         real*8, dimension (1:6) :: Phi1_P, Phi2_P
         real*8, dimension (1:4,1:4) :: mat_X, mat_Y
         real*8, dimension (1:4) ::  vec_Z
-        integer :: loc_i, loc_j
+        integer :: loc_dim, loc_i, loc_j
 
         Phi1_P = (/ 0, 0, 0, 0, 0, 0 /)
         Phi2_P = (/ 0, 0, 0, 0, 0, 0 /)
@@ -1032,7 +1113,8 @@ CONTAINS
             end if
 
             ! match solutions at zbio - continuous concentration and flux
-            ! organize the data in matrices, makes the calculation later bit easier
+            ! organize the data in matrices, and use the intrinsic fortran fct.
+            ! DH: Maybe more efficient when written out !?
 
             !  |x1        |   | A_l |      | y1        | | A_r|    |z1|    always PO4 continuity
             !  |    .     |   | B_l |      |    .      | | B_r|    |z2|    always PO4 flux
@@ -1069,20 +1151,21 @@ CONTAINS
             g_zbio_l2_M-g_zbio_l1_M + Vb, &
             D2M*dgdz_zbio_l2_M - D1M*dgdz_zbio_l1_M + Fb - w*Vb /)
 
-!            !    print*,'mat_X ', char(9), mat_X
-!201         format (6f12.6)
-!            print*,'mat_X '
-!            do loc_i=1,4
-!                write (*,201) (mat_X(loc_i,loc_j),loc_j=1,4)
-!            end do
-!            print*,'mat_Y '
-!            do loc_i=1,4
-!                write (*,201) (mat_Y(loc_i,loc_j),loc_j=1,4)
-!            end do
-!            print*,'vec_Z ', char(9), vec_Z
-!            print*,' '
 
-            call matchsoln_PO4_M_4x4(mat_X, mat_Y, vec_Z, loc_mat_C, loc_vec_D)
+!            201         format (6f12.6)
+!                        print*,'mat_X '
+!                        do loc_i=1,4
+!                            write (*,201) (mat_X(loc_i,loc_j),loc_j=1,4)
+!                        end do
+!                        print*,'mat_Y '
+!                        do loc_i=1,4
+!                            write (*,201) (mat_Y(loc_i,loc_j),loc_j=1,4)
+!                        end do
+!                        print*,'vec_Z ', char(9), vec_Z
+!                        print*,' '
+
+            loc_dim = 4
+            call matchsoln_PO4_M(mat_X, mat_Y, vec_Z, loc_dim, loc_mat_C, loc_vec_D)
         end if
 
     END SUBROUTINE prepfg_l12_PO4_M
@@ -2103,6 +2186,11 @@ CONTAINS
         !    real*8, intent(inout)::zso4
 
         ! local variables
+        ! Integration constants
+        real*8 rPO4_M_A3, rPO4_M_B3, rPO4_M_C3, rPO4_M_D3
+        real*8 rPO4_M_A2, rPO4_M_B2, rPO4_M_C2, rPO4_M_D2
+        real*8 rPO4_M_A1, rPO4_M_B1, rPO4_M_C1, rPO4_M_D1
+
         integer dum_ltype1, dum_ltype2
         real*8, dimension (4, 4) :: dum_mat_C1, dum_mat_C2
         real*8, dimension (1:4) ::  dum_vec_D1, dum_vec_D2
@@ -2111,10 +2199,49 @@ CONTAINS
         real*8 reac1_po4_ox, reac2_po4_ox, reac1_po4_anox, reac2_po4_anox                 ! reactive terms: OM degradation
 
         ! all the base functions for boundary matching
+        ! i.e. ODE solutions (E, F, P, Q) and the particulat integral (G) and their derivatives
+        ! at zinf
         real*8 e2_zinf_P, dedz2_zinf_P, f2_zinf_P, dfdz2_zinf_P, g2_zinf_P, dgdz2_zinf_P
         real*8 p2_zinf_P, dpdz2_zinf_P, q2_zinf_P, dqdz2_zinf_P
         real*8 e2_zinf_M, dedz2_zinf_M, f2_zinf_M, dfdz2_zinf_M, g2_zinf_M, dgdz2_zinf_M
         real*8 p2_zinf_M, dpdz2_zinf_M, q2_zinf_M, dqdz2_zinf_M
+        ! at zox (above)
+        real*8 e1_zox_P, dedz1_zox_P, f1_zox_P, dfdz1_zox_P, g1_zox_P, dgdz1_zox_P
+        real*8 p1_zox_P, dpdz1_zox_P, q1_zox_P, dqdz1_zox_P
+        real*8 e1_zox_M, dedz1_zox_M, f1_zox_M, dfdz1_zox_M, g1_zox_M, dgdz1_zox_M
+        real*8 p1_zox_M, dpdz1_zox_M, q1_zox_M, dqdz1_zox_M
+        ! at zox (below)
+        real*8 e2_zox_P, dedz2_zox_P, f2_zox_P, dfdz2_zox_P, g2_zox_P, dgdz2_zox_P
+        real*8 p2_zox_P, dpdz2_zox_P, q2_zox_P, dqdz2_zox_P
+        real*8 e2_zox_M, dedz2_zox_M, f2_zox_M, dfdz2_zox_M, g2_zox_M, dgdz2_zox_M
+        real*8 p2_zox_M, dpdz2_zox_M, q2_zox_M, dqdz2_zox_M
+        ! at SWI (z0)
+        real*8 e1_z0_P, dedz1_z0_P, f1_z0_P, dfdz1_z0_P, g1_z0_P, dgdz1_z0_P
+        real*8 p1_z0_P, dpdz1_z0_P, q1_z0_P, dqdz1_z0_P
+        real*8 e1_z0_M, dedz1_z0_M, f1_z0_M, dfdz1_z0_M, g1_z0_M, dgdz1_z0_M
+        real*8 p1_z0_M, dpdz1_z0_M, q1_z0_M, dqdz1_z0_M
+        ! the final g's (other are saved in matrices, e.g. loc_EFPQ_P_t, ...)
+        real*8 g_P, dgdz_P
+        real*8 g_M, dgdz_M
+
+
+        real*8 loc_Vb, loc_Fb                                   ! discontinuity constants
+        real*8, dimension (1:4,1:4) :: loc_mat_X_4x4, loc_mat_Y_4x4
+        real*8, dimension (1:4) ::  loc_vec_Z_4
+        real*8, dimension (1:3,1:3) :: loc_mat_X_3x3, loc_mat_Y_3x3
+        real*8, dimension (1:3) ::  loc_vec_Z_3
+
+        ! Matrix/Vector calculated by matchsoln_PO4_M
+        real*8, dimension (4, 4) :: loc_mat_C_4x4
+        real*8, dimension (1:4) ::  loc_vec_D_4
+        real*8, dimension (3, 3) :: loc_mat_C_3x3
+        real*8, dimension (1:3) ::  loc_vec_D_3
+        integer loc_dim
+
+        ! save the ODE solutions in vectors to make calculation easier (DH?: however, is this faster?)
+        real*8, dimension (1:4) :: loc_EFPQ_P, loc_dEFPQdz_P, loc_EFPQ_M, loc_dEFPQdz_M
+        ! the transformed ODE solutions coming from xformsoln_PO4_M
+        real*8, dimension (1:4) :: loc_EFPQ_P_t, loc_dEFPQdz_P_t, loc_EFPQ_M_t, loc_dEFPQdz_M_t
 
 
         real*8 flxzpo4, conczpo4, flxswipo4, zL, tol
@@ -2125,6 +2252,12 @@ CONTAINS
         reac1_po4_anox = 1/(1+KPO4_anox)*PC1
         reac2_po4_anox = 1/(1+KPO4_anox)*PC2
 
+        loc_Vb = 0.0
+        loc_Fb = 0.0
+
+! Initialize loc_mat_C_4x4 & loc_vec_D_4 with zeros as, so I don't need to add them manually later...
+        loc_mat_C_4x4 = 0.0D00
+        loc_vec_D_4 = 0.0D00
 
         !    print*, ''
         !    print*, '------------------------------------------------------------------'
@@ -2135,37 +2268,141 @@ CONTAINS
         !   layer 1: 0 < z < zox, OM degradation (-) Sorption to sediment Fe-oxides (ktemp)
 
         call prepfg_l12_PO4_M(reac1_po4_ox, reac2_po4_ox, ksPO4/(1+KPO4_ox), PO4s*ksPO4/(1+KPO4_ox), 0.0D00, zox, &
-        DPO41/(1+KPO4_ox), DPO42/(1+KPO4_ox), 0.0D00, 0.0D00, 0.0D00, Dbio, 0.0D00, (1/SD)*ksPO4, &
-        dum_mat_C1, dum_vec_D1, dum_ltype1)
+                                DPO41/(1+KPO4_ox), DPO42/(1+KPO4_ox), 0.0D00, 0.0D00, 0.0D00, Dbio, 0.0D00, (1/SD)*ksPO4, &
+                                dum_mat_C1, dum_vec_D1, dum_ltype1)
 
         !   layer 2: zox < z < zinf,
         !   OM degradation (-) authigenic P formation (ktemp) (+) P desorption due to Fe-bound P release upon Fe oxide reduction
         !       rPO4_M.ls2 = r.zTOC.prepfg_l12_PO4_M(bsd, swi, r, obj.reac1_anox, obj.reac2_anox, obj.kaPO4/(1+obj.KPO4_anox), obj.PO4a*obj.kaPO4/(1+obj.KPO4_anox), r.zox, bsd.zinf, obj.DPO41/(1+obj.KPO4_anox), obj.DPO42/(1+obj.KPO4_anox), bsd.SD*obj.kmPO4/(1+obj.KPO4_anox), ...
         !                                           obj.kmPO4, obj.kmPO4.*obj.Minf, bsd.Dbio, 0, 0);
         call prepfg_l12_PO4_M(reac1_po4_anox, reac2_po4_anox, kaPO4/(1+KPO4_anox), PO4a*kaPO4/(1+KPO4_anox), zox, zinf, &
-        DPO41/(1+KPO4_anox), DPO42/(1+KPO4_anox), SD*kmPO4/(1+KPO4_anox), kmPO4, kmPO4*Minf, Dbio, &
-        0.0D00, 0.0D00, dum_mat_C2, dum_vec_D2, dum_ltype2)
+                                DPO41/(1+KPO4_anox), DPO42/(1+KPO4_anox), SD*kmPO4/(1+KPO4_anox), kmPO4, kmPO4*Minf, Dbio, &
+                                0.0D00, 0.0D00, dum_mat_C2, dum_vec_D2, dum_ltype2)
 
             ! Work up from the bottom, matching solutions at boundaries
             ! Basis functions at bottom of layer 2 zinf
-! DH TODO here make call correct - pass over the diffusion coeff from above
-    ! SUBROUTINE calcfg_l12_PO4_M(z,    reac1P,        reac2P,        dum_ktempP,            dum_QtempP,
-    !                              dum_alphaP,              dum_D1P,            dum_D2P,          dum_ltype, &
-    !                  dum_ktempM, dum_QtempM, dum_D1M, dum_D2M, dum_alphaM, ...
         call calcfg_l12_PO4_M(zinf, reac1_po4_anox, reac2_po4_anox, kaPO4/(1+KPO4_anox), PO4a*kaPO4/(1+KPO4_anox), &
-                                DPO41/(1+KPO4_anox), DPO42/(1+KPO4_anox), SD*kmPO4/(1+KPO4_anox), dum_ltype2, &
-                            kmPO4, kmPO4*Minf, Dbio, 0.0D00, 00.D00, e2_zinf_P, dedz2_zinf_P, f2_zinf_P, dfdz2_zinf_P, &
-                            g2_zinf_P, dgdz2_zinf_P, p2_zinf_P, dpdz2_zinf_P, q2_zinf_P, dqdz2_zinf_P, &
-                            e2_zinf_M, dedz2_zinf_M, f2_zinf_M, dfdz2_zinf_M, g2_zinf_M, dgdz2_zinf_M, &
-                            p2_zinf_M, dpdz2_zinf_M, q2_zinf_M, dqdz2_zinf_M)
+                                DPO41/(1+KPO4_anox), DPO42/(1+KPO4_anox), SD*kmPO4/(1+KPO4_anox), dum_mat_C2, dum_vec_D2, &
+                                dum_ltype2, kmPO4, kmPO4*Minf, Dbio, 0.0D00, 0.D00, e2_zinf_P, dedz2_zinf_P, f2_zinf_P, &
+                                dfdz2_zinf_P, g2_zinf_P, dgdz2_zinf_P, p2_zinf_P, dpdz2_zinf_P, q2_zinf_P, dqdz2_zinf_P, &
+                                e2_zinf_M, dedz2_zinf_M, f2_zinf_M, dfdz2_zinf_M, g2_zinf_M, dgdz2_zinf_M, &
+                                p2_zinf_M, dpdz2_zinf_M, q2_zinf_M, dqdz2_zinf_M)
 
-201         format (6f12.6)
-            print*,'dum_mat_C2 '
-            do loc_i=1,4
-                write (*,201) (dum_mat_C2(loc_i,loc_j),loc_j=1,4)
+        ! Match at zox, layer 1 - layer 2 (continuity and flux)
+        ! basis functions at bottom of layer 1
+        call calcfg_l12_PO4_M(zox, reac1_po4_ox, reac2_po4_ox, ksPO4/(1+KPO4_ox), PO4s*ksPO4/(1+KPO4_ox), &
+                                DPO41/(1+KPO4_ox), DPO42/(1+KPO4_ox), 0.0D00, dum_mat_C1, dum_vec_D1, &
+                                dum_ltype1, 0.0D00, 0.0D00, Dbio, 0.0D00, (1/SD)*ksPO4, e1_zox_P, dedz1_zox_P, f1_zox_P, &
+                                dfdz1_zox_P, g1_zox_P, dgdz1_zox_P, p1_zox_P, dpdz1_zox_P, q1_zox_P, dqdz1_zox_P, &
+                                e1_zox_M, dedz1_zox_M, f1_zox_M, dfdz1_zox_M, g1_zox_M, dgdz1_zox_M, &
+                                p1_zox_M, dpdz1_zox_M, q1_zox_M, dqdz1_zox_M)
+
+        !  and top of layer 2
+         call calcfg_l12_PO4_M(zox, reac1_po4_anox, reac2_po4_anox, kaPO4/(1+KPO4_anox), PO4a*kaPO4/(1+KPO4_anox), &
+                                DPO41/(1+KPO4_anox), DPO42/(1+KPO4_anox), SD*kmPO4/(1+KPO4_anox), dum_mat_C2, dum_vec_D2, &
+                                dum_ltype2, kmPO4, kmPO4*Minf, Dbio, 0.0D00, 0.0D00, e2_zox_P, dedz2_zox_P, f2_zox_P, &
+                                dfdz2_zox_P, g2_zox_P, dgdz2_zox_P, p2_zox_P, dpdz2_zox_P, q2_zox_P, dqdz2_zox_P, &
+                                e2_zox_M, dedz2_zox_M, f2_zox_M, dfdz2_zox_M, g2_zox_M, dgdz2_zox_M, &
+                                p2_zox_M, dpdz2_zox_M, q2_zox_M, dqdz2_zox_M)
+
+        ! match solutions at zox - continuous concentration and flux
+        ! organize the data in matrices and let the intrinsic fortran function do the calculation
+        ! DH: Maybe this could be done more efficiently !?
+        !  |x1        |   | A_l |      | y1        | | A_r|    |z1|    always PO4 continuity
+        !  |    .     |   | B_l |      |    .      | | B_r|    |z2|    always PO4 flux
+        !  |      .   |   | C_l |   =  |      .    | | C_r|  + |z3|    always M continuity
+        !  |       x16|   | D_l |      |        y16| | D_r|    |z4|    SD M flux only in bioturbated case, otherwise not an independent constraint
+
+        if(zox < zbio)then  ! 1. CASE: 4 int const. in each layer
+            ! weird FORTRAN matrices makes the transpose necessary
+            loc_mat_X_4x4 = transpose(reshape((/ e1_zox_P, f1_zox_P, p1_zox_P, q1_zox_P, &
+            dedz1_zox_P, dfdz1_zox_P, dpdz1_zox_P, dqdz1_zox_P, &
+            e1_zox_M, f1_zox_M, p1_zox_M, q1_zox_M, &
+            dedz1_zox_M, dfdz1_zox_M, dpdz1_zox_M, dqdz1_zox_M /), shape(loc_mat_X_4x4)))
+
+            loc_mat_Y_4x4 = transpose(reshape((/ e2_zox_P, f2_zox_P, p2_zox_P, q2_zox_P, &
+            dedz2_zox_P, dfdz2_zox_P, dpdz2_zox_P, dqdz2_zox_P, &
+            e2_zox_M, f2_zox_M, p2_zox_M, q2_zox_M, &
+            dedz2_zox_M, dfdz2_zox_M, dpdz2_zox_M, dqdz2_zox_M /), shape(loc_mat_Y_4x4)))
+
+            loc_vec_Z_4 = (/ g2_zox_P-g1_zox_P + loc_Vb, &
+            dgdz2_zox_P - dgdz1_zox_P + loc_Fb - w*loc_Vb, &
+            g2_zox_M-g1_zox_M + loc_Vb, &
+            dgdz2_zox_M - dgdz1_zox_M + loc_Fb - w*loc_Vb /)
+
+            loc_dim = 4
+            call matchsoln_PO4_M(loc_mat_X_4x4, loc_mat_Y_4x4, loc_vec_Z_4, loc_dim, loc_mat_C_4x4, loc_vec_D_4)
+
+
+        else    ! 2. CASE: 3 int const. in each layer
+                ! DH: zox non-bioturbated
+                ! DH: this should generate 3x3 matrices as no M flux boundary condition (and then 4x4 C with zeros)
+
+            loc_mat_X_3x3 = transpose(reshape((/ e1_zox_P, f1_zox_P, p1_zox_P, &
+            dedz1_zox_P, dfdz1_zox_P, dpdz1_zox_P, &
+            e1_zox_M, f1_zox_M, p1_zox_M /), shape(loc_mat_X_3x3)))
+
+            loc_mat_Y_3x3 = transpose(reshape((/ e2_zox_P, f2_zox_P, p2_zox_P, &
+            dedz2_zox_P, dfdz2_zox_P, dpdz2_zox_P, &
+            e2_zox_M, f2_zox_M, p2_zox_M /), shape(loc_mat_Y_3x3)))
+
+            loc_vec_Z_3 = (/ g2_zox_P-g1_zox_P + loc_Vb, &
+            dgdz2_zox_P - dgdz1_zox_P + loc_Fb - w*loc_Vb, &
+            g2_zox_M-g1_zox_M + loc_Vb /)
+            loc_dim = 3
+
+            call matchsoln_PO4_M(loc_mat_X_3x3, loc_mat_Y_3x3, loc_vec_Z_3, loc_dim, loc_mat_C_3x3, loc_vec_D_3)
+
+! integrate the 3x3 matrix in the 4x4 matrix
+            do loc_i = 1,3
+                do loc_j = 1,3
+                    loc_mat_C_4x4(loc_i, loc_j) = loc_mat_C_3x3(loc_i, loc_j)
+                end do
+                loc_vec_D_4(loc_i)  = loc_vec_D_3(loc_i)
             end do
-            write (*,201) dum_vec_D2
-            print*,'dum_ltype2 ', char(9), dum_ltype2
+
+        end if !(zox < zbio)
+
+!201     format (6f12.6)
+!        print*,'final loc_mat_C_4x4 '
+!        do loc_i=1,4
+!            write (*,201) (loc_mat_C_4x4(loc_i,loc_j),loc_j=1,4)
+!        end do
+!        print*,'loc_vec_D_4 ', char(9), loc_vec_D_4
+
+        ! Solution at SWI, top of layer 1
+        call calcfg_l12_PO4_M(z0, reac1_po4_ox, reac2_po4_ox, ksPO4/(1+KPO4_ox), PO4s*ksPO4/(1+KPO4_ox), &
+                                DPO41/(1+KPO4_ox), DPO42/(1+KPO4_ox), 0.0D00, dum_mat_C1, dum_vec_D1, &
+                                dum_ltype1, 0.0D00, 0.0D00, Dbio, 0.0D00, (1/SD)*ksPO4, e1_z0_P, dedz1_z0_P, f1_z0_P, &
+                                dfdz1_z0_P, g1_z0_P, dgdz1_z0_P, p1_z0_P, dpdz1_z0_P, q1_z0_P, dqdz1_z0_P, &
+                                e1_z0_M, dedz1_z0_M, f1_z0_M, dfdz1_z0_M, g1_z0_M, dgdz1_z0_M, &
+                                p1_z0_M, dpdz1_z0_M, q1_z0_M, dqdz1_z0_M)
+
+        ! transform to use coeffs from l2
+        ! Now find 'transformed' basis functions such that in layer 1 (here for O2, PO4 is a bit more complex)
+        ! O2 = A_2*et + B_2*ft + gt  (ie layer 1 soln written in terms of layer 2 coeffs A_2, B_2)
+        loc_EFPQ_P = (/ e1_z0_P, f1_z0_P, p1_z0_P, q1_z0_P /)
+        loc_dEFPQdz_P = (/ dedz1_z0_P, dfdz1_z0_P, dpdz1_z0_P, dqdz1_z0_P /)
+        loc_EFPQ_M = (/ e1_z0_M, f1_z0_M, p1_z0_M, q1_z0_M /)
+        loc_dEFPQdz_M = (/dedz1_z0_M, dfdz1_z0_M, dpdz1_z0_M, dqdz1_z0_M /)
+
+        call xformsoln_PO4_M(loc_EFPQ_P, loc_EFPQ_M, loc_dEFPQdz_P, loc_dEFPQdz_M, &
+                g1_z0_P, g1_z0_M, dgdz1_z0_P, dgdz1_z0_M, loc_mat_C_4x4, loc_vec_D_4, &
+                loc_EFPQ_P_t, g_P, loc_dEFPQdz_P_t, dgdz_P, loc_EFPQ_M_t, &
+                g_M, loc_dEFPQdz_M_t, dgdz_M)
+
+        ! SD assume D2 == 0 (as q, dqdz2_zinf = 0 ) and solve for 3 unknowns
+        loc_mat_X_3x3 =  transpose(reshape((/ dedz2_zinf_P, dfdz2_zinf_P, dpdz2_zinf_P, &
+            loc_EFPQ_P_t(1), loc_EFPQ_P_t(2), loc_EFPQ_P_t(3), &
+            w*loc_EFPQ_M_t(1), w*loc_EFPQ_M_t(2), w*loc_EFPQ_M_t(3) /), shape(loc_mat_X_3x3)))
+        loc_vec_Z_3= (/ -dgdz2_zinf_P, &
+                            PO40 - g_P, &
+                           Mflux0 - w*g_M  /)
+
+        ! just need it once, so actually no need for subroutine, bu tmaybe for later
+        loc_dim = 3
+        call solve2eqn_PO4_M(loc_mat_X_3x3, loc_vec_Z_3, rPO4_M_A2, rPO4_M_B2, rPO4_M_C2, loc_dim)
+
 
     END SUBROUTINE benthic_zPO4_M
 
@@ -2217,17 +2454,17 @@ CONTAINS
     !   *****************************************************************
     !------------------------------------------------------------------------------------
 
-    SUBROUTINE matchsoln_PO4_M_4x4(dum_mat_X, dum_mat_Y, dum_vec_Z, loc_mat_C, loc_vec_D)
+    SUBROUTINE matchsoln_PO4_M(dum_mat_X, dum_mat_Y, dum_vec_Z, dum_dim, loc_mat_C, loc_vec_D)
 
-        integer, parameter :: n=4               ! dimension of the matrices
-        real*8, dimension (1:n,1:n), intent (in) :: dum_mat_X, dum_mat_Y
-        real*8, dimension (1:n), intent (in) ::  dum_vec_Z
-        real*8, dimension (1:n,1:n), intent (inout) :: loc_mat_C
-        real*8, dimension (1:n), intent (inout) ::  loc_vec_D
+        integer dum_dim                      ! dimension of the matrices
+        real*8, dimension (1:dum_dim,1:dum_dim), intent (in) :: dum_mat_X, dum_mat_Y
+        real*8, dimension (1:dum_dim), intent (in) ::  dum_vec_Z
+        real*8, dimension (1:dum_dim,1:dum_dim), intent (inout) :: loc_mat_C
+        real*8, dimension (1:dum_dim), intent (inout) ::  loc_vec_D
 
         ! local variables
-        real*8, dimension (1:n,1:n) :: loc_mat_X, loc_inv_mat_X
-!        integer :: loc_i, loc_j
+        real*8, dimension (1:dum_dim,1:dum_dim) :: loc_mat_X, loc_inv_mat_X
+        !        integer :: loc_i, loc_j
 
         ! Match four solutions at a boundary:
         !  for PO4
@@ -2255,12 +2492,12 @@ CONTAINS
         ! save matrix locally, as the original matrix loc_mat_X(4,4) will be destroyed during the calculation
         loc_mat_X = dum_mat_X
         ! calculate loc_mat_X^{-1}
-        call inverse(loc_mat_X,loc_inv_mat_X,n)
+        call inverse(loc_mat_X,loc_inv_mat_X,dum_dim)
         loc_mat_C = matmul(loc_inv_mat_X, dum_mat_Y)
         loc_vec_D = matmul(loc_inv_mat_X, dum_vec_Z)
 
 
-    END SUBROUTINE matchsoln_PO4_M_4x4
+    END SUBROUTINE matchsoln_PO4_M
 
 
     ! ****************************************************************************************************************************** !
@@ -2296,6 +2533,55 @@ CONTAINS
     !   *****************************************************************
     !------------------------------------------------------------------------------------
 
+    SUBROUTINE xformsoln_PO4_M(dum_EFPQ_P, dum_EFPQ_M, dum_dEFPQdz_P, dum_dEFPQdz_M, &
+    dum_g_P, dum_g_M, dum_dgdz_P, dum_dgdz_M, dum_mat_C, dum_vec_D, &
+    loc_EFPQ_P_t, loc_G_P_t, loc_dEFPQ_P_t, loc_dG_P_t, loc_EFPQ_M_t, loc_G_M_t, &
+    loc_dEFPQ_M_t, loc_dG_M_t)
+
+        real*8, dimension (1:4), intent(in) :: dum_EFPQ_P, dum_dEFPQdz_P, dum_EFPQ_M, dum_dEFPQdz_M
+        real*8,INTENT(IN):: dum_g_P, dum_g_M, dum_dgdz_P, dum_dgdz_M
+        real*8, dimension (4, 4), INTENT(in) :: dum_mat_C
+        real*8, dimension (1:4), INTENT(in) ::  dum_vec_D
+
+        ! output variables
+        real*8, dimension (1:4), intent(inout) :: loc_EFPQ_P_t, loc_dEFPQ_P_t, loc_EFPQ_M_t, loc_dEFPQ_M_t
+        real*8,intent(inout):: loc_G_P_t, loc_dG_P_t, loc_G_M_t, loc_dG_M_t
+
+        ! Find 'transformed' soln such that in layer l,
+        !    y_l = A_r*et + B_r*ft + gt
+        ! (ie l soln written in terms of r solution coefficents A_r, B_r)
+        !
+        ! here save values in matrices - as this saves a lot of code
+
+        loc_EFPQ_P_t = matmul(transpose(dum_mat_C), dum_EFPQ_P)     ! DH TODO: check multiplication with transpose, especially if vector*vector
+        loc_dEFPQ_P_t = matmul(transpose(dum_mat_C), dum_dEFPQdz_P)
+        loc_G_P_t = dot_product(dum_vec_D, dum_EFPQ_P)+dum_g_P
+        loc_dG_P_t = dot_product(dum_vec_D,dum_dEFPQdz_P)+dum_dgdz_P
+
+        loc_EFPQ_M_t = matmul(transpose(dum_mat_C), dum_EFPQ_M)
+        loc_dEFPQ_M_t = matmul(transpose(dum_mat_C), dum_dEFPQdz_M)
+        loc_G_M_t = dot_product(dum_vec_D, dum_EFPQ_M) + dum_g_M
+        loc_dG_M_t = dot_product(dum_vec_D,dum_dEFPQdz_M) + dum_dgdz_M
+
+        print*,' '
+        print*, 'IN xformsoln_PO4_M '
+        print*, 'loc_EFPQ_P_t', loc_EFPQ_P_t
+        print*, 'loc_dEFPQ_P_t', loc_dEFPQ_P_t
+        print*, 'loc_G_P_t', loc_G_P_t
+        print*, 'loc_dG_P_t', loc_dG_P_t
+        print*,' '
+        print*, 'loc_EFPQ_M_t', loc_EFPQ_M_t
+        print*, 'loc_dEFPQ_M_t', loc_dEFPQ_M_t
+        print*, 'loc_G_M_t', loc_G_M_t
+        print*, 'loc_dG_M_t', loc_dG_M_t
+
+    END SUBROUTINE xformsoln_PO4_M
+
+    ! ****************************************************************************************************************************** !
+    !   *****************************************************************
+    !   *****************************************************************
+    !------------------------------------------------------------------------------------
+
     SUBROUTINE solve2eqn(a, b, c, d, e, f, x, y)
 
         ! Find soln of
@@ -2318,6 +2604,43 @@ CONTAINS
     !    print*,'y', y
 
     END SUBROUTINE solve2eqn
+
+    ! ****************************************************************************************************************************** !
+    !   *****************************************************************
+    !   *****************************************************************
+    !------------------------------------------------------------------------------------
+
+    SUBROUTINE solve2eqn_PO4_M(dum_mat_X, dum_vec_Y, dum_A, dum_B, dum_C, dum_dim)
+
+        ! Find solution of
+        ! | x1  .  . x4|  |A|     | y1 |
+        ! |     .      |  |B|     | y2 |
+        ! |       .    |  |C|   = | y3 |
+        ! | .       x16|  |D|     | y4 |
+        integer, intent(in) :: dum_dim                             ! dim of input matrix to inverse
+        real*8, dimension (1:dum_dim,1:dum_dim), intent(in) :: dum_mat_X
+        real*8, dimension (1:dum_dim), intent(in) ::  dum_vec_Y
+        real*8,INTENT(INOUT) :: dum_A, dum_B, dum_C
+
+        ! local variable
+        real*8, dimension (1:dum_dim,1:dum_dim) :: loc_mat_X, loc_inv_mat_X
+        real*8, dimension (1:dum_dim) :: loc_vec_Z
+        ! save matrix locally, as the original matrix dum_mat_X(4,4) will be destroyed during the calculation
+        loc_mat_X = dum_mat_X
+        ! calculate loc_mat_X^{-1}
+        call inverse(loc_mat_X,loc_inv_mat_X,dum_dim)
+        loc_vec_Z = matmul(loc_inv_mat_X, dum_vec_Y)
+
+        dum_A = loc_vec_Z(1)
+        dum_B = loc_vec_Z(2)
+        dum_C = loc_vec_Z(3)
+
+        print*,' IN SOLVE2EQN_PO4_M '
+        print*,'dum_A ', dum_A
+        print*,'dum_B', dum_B
+        print*,'dum_C', dum_C
+
+    END SUBROUTINE solve2eqn_PO4_M
 
 
     ! ****************************************************************************************************************************** !

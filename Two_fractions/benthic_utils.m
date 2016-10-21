@@ -151,7 +151,7 @@ classdef benthic_utils
 % % % %         end
         
 
-        function [ A, B, C, D]      = solve2eqn_PO4_M(X, Y)
+        function [ A, B, C]      = solve2eqn_PO4_M(X, Y)
             % Find soln of
             % | x1  .  . x4|  |A|     | y1 |
             % |     .      |  |B|     | y2 |

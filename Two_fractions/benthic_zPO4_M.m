@@ -86,13 +86,13 @@ classdef benthic_zPO4_M
             [ e1_zox_P, dedz1_zox_P, f1_zox_P, dfdz1_zox_P, g1_zox_P, dgdz1_zox_P, p1_zox_P, dpdz1_zox_P, q1_zox_P, dqdz1_zox_P, ...
                 e1_zox_M, dedz1_zox_M, f1_zox_M, dfdz1_zox_M, g1_zox_M, dgdz1_zox_M, p1_zox_M, dpdz1_zox_M, q1_zox_M, dqdz1_zox_M]...
                 = r.zTOC.calcfg_l12_PO4_M(r.zox, bsd, swi, r,  obj.reac1_ox, obj.reac2_ox, obj.ksPO4/(1+obj.KPO4_ox), obj.PO4s*obj.ksPO4/(1+obj.KPO4_ox), 0, rPO4_M.ls1, 0, 0, (1/bsd.SD)*obj.ksPO4);
-                % calcfg_l12_PO4_M(obj, z, bsd, swi, res,   reac1P,       reac2P,               ktempP,                     QtempP,                alphaP,  ls,  ktempM, QtempM, alphaM)
+                % calcfg_l12_PO4_M(obj, z, bsd, swi, res,   reac1P,       reac2P,               ktempP,                     QtempP,                alphaP,       ls,  ktempM, QtempM, alphaM)
             
             % ... and top of layer 2
             [ e2_zox_P, dedz2_zox_P, f2_zox_P, dfdz2_zox_P, g2_zox_P, dgdz2_zox_P, p2_zox_P, dpdz2_zox_P, q2_zox_P, dqdz2_zox_P, ...
                 e2_zox_M, dedz2_zox_M, f2_zox_M, dfdz2_zox_M, g2_zox_M, dgdz2_zox_M, p2_zox_M, dpdz2_zox_M, q2_zox_M, dqdz2_zox_M] ...
                 = r.zTOC.calcfg_l12_PO4_M(r.zox, bsd, swi, r, obj.reac1_anox, obj.reac2_anox, obj.kaPO4/(1+obj.KPO4_anox), obj.PO4a*obj.kaPO4/(1+obj.KPO4_anox), bsd.SD*obj.kmPO4/(1+obj.KPO4_anox), rPO4_M.ls2, obj.kmPO4, obj.kmPO4.*obj.Minf, 0);
-              % calcfg_l12_PO4_M(obj, z, bsd, swi, res,     reac1P,         reac2P,          ktempP,                        QtempP,                     alphaP,                           ls,         ktempM,           QtempM,    alphaM)
+              % calcfg_l12_PO4_M(obj, z, bsd, swi, res,     reac1P,         reac2P,                ktempP,                        QtempP,                          alphaP,                           ls,         ktempM,           QtempM,    alphaM)
             
             % match solutions at zox - continuous concentration and flux
             % organize the data in matrices and let matlab do the calculation
@@ -156,7 +156,7 @@ classdef benthic_zPO4_M
             [ e1_0_P, dedz1_0_P, f1_0_P, dfdz1_0_P, g1_0_P, dgdz1_0_P, p1_0_P, dpdz1_0_P, q1_0_P, dqdz1_0_P, ...
                 e1_0_M, dedz1_0_M, f1_0_M, dfdz1_0_M, g1_0_M, dgdz1_0_M, p1_0_M, dpdz1_0_M, q1_0_M, dqdz1_0_M]...
                 = r.zTOC.calcfg_l12_PO4_M(0, bsd, swi, r, obj.reac1_ox, obj.reac2_ox, obj.ksPO4/(1+obj.KPO4_ox), obj.PO4s*obj.ksPO4/(1+obj.KPO4_ox), 0,  rPO4_M.ls1, 0, 0, (1/bsd.SD)*obj.ksPO4);
-            % calcfg_l12_PO4_M(obj, z, bsd, swi, res, reac1P,              reac2P,          ktempP,                       QtempP,             alphaP,   ls,    ktempM, QtempM, alphaM)
+            % calcfg_l12_PO4_M(obj, z, bsd, swi, res, reac1P,              reac2P,          ktempP,                       QtempP,             alphaP,   ls,       tempM, QtempM, alphaM)
           
             % transform to use coeffs from l2
             % Now find 'transformed' basis functions such that in layer 1, O2 = A_2*et + B_2*ft + gt  (ie layer 1 soln written in terms of layer 2 coeffs A_2, B_2)
