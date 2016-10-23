@@ -7,7 +7,7 @@
              
              
             clear
-%         gamma=0.95                                %fraction of NH4 that is oxidised in oxic layer
+%         gamma=0.95   except 4298m: 0.9                             %fraction of NH4 that is oxidised in oxic layer
 %         gammaH2S=0.95;                           %fraction of H2S that is oxidised in oxic layer
 %         gammaCH4=0.99;                           %fraction of CH4 that is oxidised at SO4
            
@@ -15,7 +15,7 @@
             % was here: swi=benthic_test.default_swi()
 %% Step 1:  initialise main model parameters with standard values & run model
             bsd = benthic_main();
-            Obs = 1;       
+            Obs = 10;       
             %sediment characteristics
             switch Obs
                     case 1  % OMEXDIA_2809_108m all solutes in Micromoles/litre
@@ -182,15 +182,15 @@
                         swi.S0=35;                                                      %Salinity at SWI
                         
                     case 6  % Reimers et al. 1996
-% %         k1= 0.035;                                                %TOC degradation rate constnat (1/yr)
-% %         k2=0.0005;  
+% %         k1= 0.1;                                                %TOC degradation rate constnat (1/yr)
+% %         k2=0.001;  
 % %         KPO41=200.0;  %Adsorption coefficient in oxic layer (-) 
 % %         KPO42=1.3;    %Adsorption coefficient in anoxic layer (-)
 % %         ksPO4=1.0;    %Rate constant for kinetic P sorption (1/yr)   0.12 fits 1.CASE; 2.2 fits 2. CASE DOM: was 0.5*365 from Nicolas; Slomp ea 1996 0.26
 % %         kmPO4=2.2e-6*24*365;          %Rate constant for Fe-bound P release upon Fe oxide reduction   DOM: was 1.8e-6 Slomp ea 1996 0.00053*365 
 % %         kaPO4=10.0; %Rate constant for authigenic P formation (1/yr)    DOM: was 0.004*365 from Nicolas; Slomp ea 1996 0.001
 % %         PO4s=1.0e-9;        %Equilibrium concentration for P sorption (mol/cm3)       was 1.5e-9; ; Slomp ea 1996
-% %         PO4a= 1.5e-8; % %Equilibrium concentration for authigenic P formation (mol/cm3) was 0.7e-9
+% %         PO4a= 9.0e-8; % %Equilibrium concentration for authigenic P formation (mol/cm3) was 0.7e-9
 % %         Minf=1.0e-10;       % asymptotic concentration for Fe-bound P (mol/cm3)      TODO/CHECK: good value? is from Slomp et al. 1996 Dom was 1.99e-6
 
                         bsd.rho_sed=2.6; %was 2.5                           % sediment density (g/cm3)
@@ -198,12 +198,12 @@
                         bsd.zbio=0.01;                              % bioturbation depth (cm)
                         bsd.zinf=50;                               %Inifinity (cm)
                         bsd.Dbio=0.02; %5.2*(10.0^(0.7624-0.0003972*bsd.wdepth)); %0.5;
-                        bsd.w = 10.0.^(-0.87478367-0.00043512*bsd.wdepth)*3.3; % or check 0.42 for Reimers et al. 1996 as stated in the paper
+                        bsd.w = 0.42; % 10.0.^(-0.87478367-0.00043512*bsd.wdepth)*3.3; % or check 0.42 for Reimers et al. 1996 as stated in the paper
 
                         %bottom water concentrations
                         swi.T=5.85; %20.0;                         %temperature (degree C)
                         swi.C01= 2.0*1e-2/12*bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*bsd.rho_sed; %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-                        swi.C02= 3.5*1e-2/12*bsd.rho_se4000d; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+                        swi.C02= 3.5*1e-2/12*bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
                         %swi.C01=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
                         %swi.C02=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
                         swi.O20=10.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
@@ -290,7 +290,7 @@
 %         kaPO4=10.0; % Dom was 0.001*365;	%Rate constant for authigenic P formation (1/yr)    DOM: was 0.004*365 from Nicolas; Slomp ea 1996 0.001
 %         PO4s=1.0e-9;        %Equilibrium concentration for P sorption (mol/cm3)       was 1.5e-9; ; Slomp ea 1996
 %         PO4a= 0.5e-8; %47e-9;  %was 3.7e-9      %Equilibrium concentration for authigenic P formation (mol/cm3) was 0.7e-9
-
+% gamma=0.9;                                %fraction of NH4 that is oxidised in oxic layer
                         bsd.rho_sed=2.6; %was 2.5                           % sediment density (g/cm3)
                         bsd.wdepth=4298.0;     % Dom was 600.0                       % water depth (m)
                         bsd.zbio=4.2;                              % bioturbation depth (cm)
@@ -510,7 +510,7 @@
                 plot([0,t(1,2)], [-res.zox,-res.zox], 'b--')     
                 plot([0,t(1,2)], [-res.zno3,-res.zno3], 'g--')     
                 plot([0,t(1,2)], [-res.zso4,-res.zso4], 'r--')             
-                ylim([-10.0 0.0])
+                ylim([-50.0 0.0])
                 xlabel ('NO_3 (mol/cm^3)')
     %            ylabel('Depth (cm)')
                 box on;
@@ -524,7 +524,7 @@
                 scatter(data.NH4(:,2).*1e-9, -data.NH4(:,1),'k','filled')
                 hold on
                 plot(NH4, -zgrid, 'b')
-                xlim([0.0 500e-9])     
+                xlim([0.0 100e-9])     
                 box on;
                 t=xlim;         % to draw penetration depths the correct lengths
                 plot([0,t(1,2)], [-bsd.zbio,-bsd.zbio], 'k--')     
@@ -570,7 +570,7 @@
                 end
                 hold on
                 plot(H2S, -zgrid, 'b')
-                xlim([0 4e-7])
+                xlim([0 10e-9])
                 box on;
                 t=xlim;         % to draw penetration depths the correct lengths
                 plot([0,t(1,2)], [-bsd.zbio,-bsd.zbio], 'k--')     
@@ -592,7 +592,7 @@
             hold on            
             plot(PO4, -zgrid, 'b')
             box on;
-            xlim([0.0 2e-8])
+            xlim([0.0 10e-9])
             t=xlim;         % to draw penetration depths the correct lengths
             plot([0,t(1,2)], [-bsd.zbio,-bsd.zbio], 'k--')     
             plot([0,t(1,2)], [-res.zox,-res.zox], 'b--')     

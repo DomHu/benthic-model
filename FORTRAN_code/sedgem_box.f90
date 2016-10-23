@@ -88,7 +88,6 @@ CONTAINS
     loc_new_sed(:) = 0.0
     loc_dis_sed(:) = 0.0
     loc_exe_sed(:) = 0.0
-    loc_exe_ocn(:) = 0.0
     ! initialize relevant location in global sediment dissolution results array
     sed_fdis(:,dum_i,dum_j) = 0.0
     ! initialize flags recording growing or shrinking of sediment stack (i.e., new layers being added or removed, respectively)
@@ -143,7 +142,7 @@ CONTAINS
             & /),.TRUE. &
             & )
     END IF
-!    print*,'loc_new_sed_vol = ', loc_new_sed_vol 
+
     IF (ctrl_misc_debug3) print*,'(d) estimate dissolution/remineralization from sediment top (mixed) sedimentary layer'
     ! *** (d) estimate dissolution/remineralization from sediment top ('well mixed') sedimentary layer
     !         NOTE: material is represented and stored as cm3 of SOILDs (i.e., zero porosity) in the sediment layers
@@ -232,11 +231,12 @@ CONTAINS
           end if
        end DO
     case ('huelse2016')
+       print*,' ------------------ in HUELSE ---------------------'
        ! Huelse et al. [2016]
        ! NOTE: 'new sed' is not adjusted within sub_huelseetal2016_main and eneds modifying externally
-       CALL sub_huelseetal2016_main( &
-            & dum_dtyr,dum_D,loc_new_sed(:),dum_sfcsumocn(:),loc_sed_pres_fracC,loc_exe_ocn(:) &
-            & )
+!       CALL sub_huelseetal2016_main( &
+!            & dum_dtyr,dum_D,loc_new_sed(:),dum_sfcsumocn(:),loc_sed_pres_fracC,loc_exe_ocn(:) &
+!            & )
        ! calculate the return rain flux back to ocean
        ! NOTE: diagenetic function calculates all (dissolved) exchange fluxes
        !       => 'sed' dissolution is effectively zero
@@ -254,6 +254,7 @@ CONTAINS
        ! correct dissovled flux units (WAT UNITS??? -> mol cm-2 per time-step) and set output array
        sedocn_fnet(:,dum_i,dum_j) = sedocn_fnet(:,dum_i,dum_j) + dum_dtyr*loc_exe_ocn(:)
     case default
+       print*,' ------------------ in DEFAULT ---------------------'
        loc_sed_diagen_fracC = 1.0
        DO l=1,n_l_sed
           is = conv_iselected_is(l)
@@ -924,10 +925,18 @@ CONTAINS
     ! NOTE: treat POC d13C as a fixed offset compared to the d13C of CaCO3
     if (par_sed_Corgburial > const_real_nullsmall) then
        sed_fsed(is_POC,dum_i,dum_j) = par_sed_Corgburial
+       if (ctrl_sed_Corgburial_fixedD13C) then
        loc_delta_Corg = par_sed_Corgburial_Dd13C + 15.10 - 4232.0/dum_sfcsumocn(io_T)
        loc_alpha = 1.0 + loc_delta_Corg/1000.0
        loc_R = sed_carbisor(ici_HCO3_r13C,dum_i,dum_j)/(1.0 - sed_carbisor(ici_HCO3_r13C,dum_i,dum_j))
        sed_fsed(is_POC_13C,dum_i,dum_j) = sed_fsed(is_POC,dum_i,dum_j)*(loc_alpha*loc_R/(1.0 + loc_alpha*loc_R))
+       else
+       loc_R = fun_Corg_Rfrac( &
+            & dum_sfcsumocn(io_T),sed_carb(ic_conc_CO2,dum_i,dum_j), &
+            & sed_carbisor(ici_CO2_r13C,dum_i,dum_j),par_d13C_DIC_Corg_ef,.false. &
+            & )
+       sed_fsed(is_POC_13C,dum_i,dum_j) = loc_R*sed_fsed(is_POC,dum_i,dum_j)
+       end if     
     end if
 
     ! *** CALCULATE OCEAN-SEDIMENT EXCHANGE ***************************************************************************************
@@ -1345,11 +1354,12 @@ CONTAINS
           end if
        end DO
     case ('huelse2016')
+       print*,' ------------------ in HUELSE ---------------------'
        ! Huelse et al. [2016]
        ! NOTE: 'new sed' is not adjusted within sub_huelseetal2016_main and eneds modifying externally
-       CALL sub_huelseetal2016_main( &
-            & dum_dtyr,dum_D,loc_new_sed(:),dum_sfcsumocn(:),loc_sed_pres_fracC,loc_exe_ocn(:) &
-            & )
+!       CALL sub_huelseetal2016_main( &
+!            & dum_dtyr,dum_D,loc_new_sed(:),dum_sfcsumocn(:),loc_sed_pres_fracC,loc_exe_ocn(:) &
+!            & )
        ! calculate the return rain flux back to ocean
        ! NOTE: diagenetic function calculates all (dissolved) exchange fluxes
        !       => 'sed' dissolution is effectively zero
@@ -1367,6 +1377,7 @@ CONTAINS
        ! correct dissovled flux units (WHAT UNITS??? -> mol cm-2 per time-step) and set output array
        sedocn_fnet(:,dum_i,dum_j) = sedocn_fnet(:,dum_i,dum_j) + dum_dtyr*loc_exe_ocn(:)
     case default
+       print*,' ------------------ in DEFAULT ---------------------'
        DO l=1,n_l_sed
           is = conv_iselected_is(l)
           if ( &

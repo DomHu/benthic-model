@@ -147,18 +147,18 @@ CONTAINS
         print*, ' '
 
         rho_sed=2.6                               ! sediment density (g/cm3)
-        wdepth=108.0                                ! water depth (m)
+        wdepth=4298.0                                ! water depth (m)
         z0  = 0.0                                  ! surface
         zox = 0.0
-        zbio=1.0                                   ! bioturbation depth (cm)
+        zbio=4.20                                  ! bioturbation depth (cm)
 
         zinf=50.0                                  !Inifinity (cm)
-        Dbio=0.02 !5.2*(10.0**(0.7624-0.0003972*wdepth))  !bioturbation coefficient (cm2/yr) - after Middelburg at al. 1997
+        Dbio=0.18 !5.2*(10.0**(0.7624-0.0003972*wdepth))  !bioturbation coefficient (cm2/yr) - after Middelburg at al. 1997
         por=0.85                                !porosity (-) defined as: porewater_vol./(solid_sed_vol.+porewater_vol.)
         tort=3.0                               !tortuosity (-)
         irrigationFactor=1.0
 
-        gamma=0.95                      !fraction of NH4 that is oxidised in oxic layer
+        gamma=0.9                      !fraction of NH4 that is oxidised in oxic layer
         gammaH2S=0.95                           !fraction of H2S that is oxidised in oxic layer
         gammaCH4=0.99                   !fraction of CH4 that is oxidised at SO4
         satSO4=0.0                      ! SO4 saturation
@@ -166,12 +166,12 @@ CONTAINS
         zoxgf = 0.1                         ! cm, rolloff NH4, H2S oxidation for small zox depth
 
         !bottom water concentrations
-        T=12.5                                                     ! temperature (degree C)
-        C01=2.64*1e-2/12*rho_sed                                ! TOC concentration at SWI (wt!) -> (mol/cm3 bulk phase)
-        C02=1.8*1e-2/12*rho_sed                                ! TOC concentration at SWI (wt!) -> (mol/cm3 bulk phase)
-        O20=210.0e-9         !was  300.0e-9                                     ! O2  concentration at SWI (mol/cm3)
-        NO30=9.6e-9                                               ! NO3 concentration at SWI (mol/cm3)
-        NH40=0.4e-9                                                ! NH4 concentration at SWI (mol/cm3)
+        T=2.5                                                     ! temperature (degree C)
+        C01=1.0*1e-2/12*rho_sed                                ! TOC concentration at SWI (wt!) -> (mol/cm3 bulk phase)
+        C02=1.2*1e-2/12*rho_sed                                ! TOC concentration at SWI (wt!) -> (mol/cm3 bulk phase)
+        O20=243.0e-9         !was  300.0e-9                                     ! O2  concentration at SWI (mol/cm3)
+        NO30=30.1e-9                                               ! NO3 concentration at SWI (mol/cm3)
+        NH40=0.22e-9                                                ! NH4 concentration at SWI (mol/cm3)
         SO40=28000.0e-9      !  28000.0e-9                                     ! SO4 concentration at SWI (mol/cm3)
         H2S0=0.0e-13           !was 0.0e-9                                 ! H2S concentration at SWI (mol/cm3)
         PO40=0.0e-9                                                  ! PO4 concentration at SWI (mol/cm3)
@@ -194,7 +194,7 @@ CONTAINS
 
         ! ORGANIC MATTER
         DC1 = Dbio
-        k1=0.65
+        k1=0.055
         k2=0.00001
 
         ! O2
@@ -547,12 +547,12 @@ CONTAINS
 
         PhiI1 = -pfac*k1*(reac1)*A21/(Dtemp*aa21**2-w*aa21-ktemp)
         PhiI2 = -pfac*k2*(reac2)*A22/(Dtemp*aa22**2-w*aa22-ktemp)
-
+!                print*, 'IN  calcfg_l2 z, PhiI1', z, PhiI1
+!                print*, ' pfac, k1, reac1, A21, Dtemp, aa21, w, aa21, ktemp ',  pfac, k1, reac1, A21, Dtemp, aa21, w, aa21, ktemp
+!                print*, ' A22', A22
         g = PhiI1*exp(aa21*z) + PhiI2*exp(aa22*z)
         dgdz = PhiI1*aa21*exp(aa21*z) + PhiI2*aa22*exp(aa22*z)
 
-    !            print*, 'IN  calcfg_l2 g', g
-    !            print*, 'IN  calcfg_l1 dgdz', dgdz
 
     end SUBROUTINE calcfg_l2
 
@@ -575,10 +575,13 @@ CONTAINS
         elseif(zU >= zbio) then ! wholly within non-bioturbated layer
             ltype = 2
         else             ! crossing boundary - sort out solution matching at zbio
-            !            print*, 'IN  CROSS BOUNDARY CASE '
+!            print*, 'IN  CROSS BOUNDARY CASE: zL ', zL
             ltype = 3
             call calcfg_l1(zbio, reac1, reac2, D1, ktemp, e_zbio_l1, dedz_zbio_l1, f_zbio_l1, dfdz_zbio_l1, g_zbio_l1, dgdz_zbio_l1)
             call calcfg_l2(zbio, reac1, reac2, D2, ktemp, e_zbio_l2, dedz_zbio_l2, f_zbio_l2, dfdz_zbio_l2, g_zbio_l2, dgdz_zbio_l2)
+!             print*, ' '
+!            print*, 'e_zbio_l2, dedz_zbio_l2, f_zbio_l2, dfdz_zbio_l2, g_zbio_l2, dgdz_zbio_l2 ', &
+!                        e_zbio_l2, dedz_zbio_l2, f_zbio_l2, dfdz_zbio_l2, g_zbio_l2, dgdz_zbio_l2
 
             ! match solutions at zbio - continuous concentration and flux
             call matchsoln(e_zbio_l1, f_zbio_l1, g_zbio_l1, D1*dedz_zbio_l1, D1*dfdz_zbio_l1, D1*dgdz_zbio_l1, &
@@ -1184,8 +1187,8 @@ CONTAINS
         integer bctype
         real*8 FO2
 
-        !    print*, ''
-        !    print*, '---------------------- START zO2 ------------------------ '
+!            print*, ''
+!            print*, '---------------------- START zO2 ------------------------ '
 
         zox = 1e-10
         bctype = 1
@@ -1205,9 +1208,9 @@ CONTAINS
         !    print*,'Try zero flux at zinf and see if we have any O2 left'
         ! Try zero flux at zinf and see if we have any O2 left
         call zO2_calcbc(zinf, 2, flxzox, conczox, flxswi, r_zxf);
-        !    print*,'flxzox', flxzox
-        !    print*,'conczox', conczox
-        !    print*,'flxswi', flxswi
+!            print*,'flxzox', flxzox
+!            print*,'conczox', conczox
+!            print*,'flxswi', flxswi
 
         if (fun0 .ge. 0)then   ! eg zero oxygen at swi
             zox = 0
@@ -1276,18 +1279,22 @@ CONTAINS
         reac1=-OC-2*gamma*NC1
         reac2=-OC-2*gamma*NC2
 
-        !    print*, ''
-        !    print*, '------- START zO2_calcbc ----- zox:', zox
+!            print*, ''
+!            print*, '------- START zO2_calcbc ----- zox:', zox
 
         ! calculate solution for given zox
 
         !    print*, 'Preparation: sort out solution-matching across bioturbation boundary (if necessary)'
         ! Preparation: sort out solution-matching across bioturbation boundary (if necessary)
         call prepfg_l12(reac1, reac2, 0.0D00, z0, zox, DO21, DO22, ls_a, ls_b, ls_c, ls_d, ls_e, ls_f, ltype)
+!        print*, ''
+!        print*, ' result prepfg_l12: ls_a, ls_b, ls_c, ls_d, ls_e, ls_f, ltype', ls_a, ls_b, ls_c, ls_d, ls_e, ls_f, ltype
+!        print*, 'e_0, dedz_0, f_0, dfdz_0, g_0, dgdz_0:', e_0, dedz_0, f_0, dfdz_0, g_0, dgdz_0
 
         ! basis functions at upper boundary
         call calcfg_l12(z0, reac1, reac2, 0.0D00, ls_a, ls_b, ls_c, ls_d, ls_e, ls_f, DO21, DO22, ltype, &
         e_0, dedz_0, f_0, dfdz_0, g_0, dgdz_0)
+
 
         ! ... and lower boundary
         call calcfg_l12(zox, reac1, reac2, 0.0D00, ls_a, ls_b, ls_c, ls_d, ls_e, ls_f, DO21, DO22, ltype, e_zox, dedz_zox,&
