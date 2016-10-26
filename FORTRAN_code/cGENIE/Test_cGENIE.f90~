@@ -1,0 +1,27 @@
+    SUBROUTINE sub_prepfg_l12(reac1, reac2, ktemp, zU, zL, D1, D2, ls_a, ls_b, ls_c, ls_d, ls_e, ls_f, ltype)
+        real reac1, reac2, ktemp, zU, zL, D1, D2
+        real e_zbio_l1, dedz_zbio_l1, f_zbio_l1, dfdz_zbio_l1, g_zbio_l1, dgdz_zbio_l1
+        real e_zbio_l2, dedz_zbio_l2, f_zbio_l2, dfdz_zbio_l2, g_zbio_l2, dgdz_zbio_l2
+        real ls_a, ls_b, ls_c, ls_d, ls_e, ls_f
+
+        INTEGER,INTENT(inout):: ltype
+
+        if(zL <= zbio)then  ! wholly within bioturbated layer
+            ltype = 1
+        elseif(zU >= zbio) then ! wholly within non-bioturbated layer
+            ltype = 2
+        else             ! crossing boundary - sort out solution matching at zbio
+            !            print*, 'IN  CROSS BOUNDARY CASE '
+            ltype = 3
+            call sub_calcfg_l1(zbio, reac1, reac2, D1, ktemp, e_zbio_l1, dedz_zbio_l1, f_zbio_l1, dfdz_zbio_l1, g_zbio_l1, dgdz_zbio_l1)
+            call sub_calcfg_l2(zbio, reac1, reac2, D2, ktemp, e_zbio_l2, dedz_zbio_l2, f_zbio_l2, dfdz_zbio_l2, g_zbio_l2, dgdz_zbio_l2)
+
+            ! match solutions at zbio - continuous concentration and flux
+            call sub_matchsoln(e_zbio_l1, f_zbio_l1, g_zbio_l1, D1*dedz_zbio_l1, D1*dfdz_zbio_l1, D1*dgdz_zbio_l1, &
+            e_zbio_l2, f_zbio_l2, g_zbio_l2, D2*dedz_zbio_l2, D2*dfdz_zbio_l2, D2*dgdz_zbio_l2, &
+            0.0, 0.0, ls_a, ls_b, ls_c, ls_d, ls_e, ls_f)
+        !           print*, 'in sub_prepfg_l12 AFTER sub_matchsoln:  ls_a, ls_b, ls_c, ls_d, ls_e, ls_f', ls_a, ls_b, ls_c, ls_d, ls_e, ls_f
+        end if
+
+    END SUBROUTINE sub_prepfg_l12
+

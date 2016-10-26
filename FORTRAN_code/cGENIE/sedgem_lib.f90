@@ -621,7 +621,7 @@ CONTAINS
         ! -------------------------------------------------------- !
         ! DUMMY ARGUMENTS
         ! -------------------------------------------------------- !
-        real,INTENT(in)::dum_FPOC                                  ! POC flux (mol cm-2 yr-1)
+        real,INTENT(in)::dum_FPOC                                  ! POC flux (cm^3 cm-2) or as timestep is yr (cm^3 cm-2 yr-1)
         real,INTENT(in)::loc_sed_w                                 ! sediment accumulation rate - burial velocity [cm yr^-1] (Middelburg et al., Deep Sea Res. 1, 1997)
         real,INTENT(in)::dum_por                                   ! sediment porosity (cm3 cm-3)
         real,INTENT(in)::dum_den                                   ! sediment density (g cm-3)
@@ -639,8 +639,9 @@ CONTAINS
         !        print*, '----------- IN fun_sed_calcCorgwt --------------'
         !        print*, ' '
 
-        ! C = F / [(1-por)*w] units: mol cm-3 = mol cm-2y r-1 / [cm yr-1]
-        fun_sed_calcCorg = dum_FPOC/((1-dum_por)*loc_sed_w)
+        ! C = (1-por)*Corg/Sed_accumulation units: conv_POC_cm3_mol* cm3 cm-2 / (cm3 cm-2) = mol cm-3
+        ! Note: units of concentration must be changed from (cm3 cm-3) to (mol cm-3)
+        fun_sed_calcCorg = conv_POC_cm3_mol*(1-dum_por)*dum_FPOC/loc_sed_w
        
         ! calculate wt%: g/g = mol cm-3 * g/mol * cm3/g
         fun_sed_calcCorgwt = 100*fun_sed_calcCorg*12/dum_den
@@ -653,6 +654,7 @@ CONTAINS
 !        loc_sed_Fdet = loc_sed_w*(1.0 - dum_por)*dum_den/12.0
 !        ! calculate Corg wt%
 !        ! NOTE: 100% scale
+!here 100*mass_POC/fun_calc_sed_mass (or sum(densityCaCO3*totalmasCaCO3+densitydetrital*totalmasdetirtal+densityPOC*totalmassPOC))
 !        fun_sed_calcCorgwt = 100.0*dum_FPOC/(dum_FPOC+loc_sed_Fdet)
 
         ! -------------------------------------------------------- !

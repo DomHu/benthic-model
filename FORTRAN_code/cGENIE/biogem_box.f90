@@ -1409,6 +1409,7 @@ CONTAINS
     end if
     bio_part(is_CaCO3_frac2,dum_i,dum_j,loc_k_mld:n_k) = par_bio_remin_CaCO3_frac2
     bio_part(is_opal_frac2,dum_i,dum_j,loc_k_mld:n_k)  = par_bio_remin_opal_frac2
+    
     ! set 'b' exponent in the Martin curve (if selected)
     if (par_bio_remin_fun == 'Henson2012') then
        par_bio_remin_b(dum_i,dum_j) = (0.024 * loc_TC) - 1.06
@@ -1558,7 +1559,6 @@ CONTAINS
           end do
        end if
     end if
-
   end SUBROUTINE sub_calc_bio_uptake
   ! ****************************************************************************************************************************** !
 

@@ -147,13 +147,13 @@ CONTAINS
         print*, ' '
 
         rho_sed=2.6                               ! sediment density (g/cm3)
-        wdepth=4298.0                                ! water depth (m)
+        wdepth=600.0                                ! water depth (m)
         z0  = 0.0                                  ! surface
         zox = 0.0
-        zbio=4.20                                  ! bioturbation depth (cm)
+        zbio=10.0                                  ! bioturbation depth (cm)
 
-        zinf=50.0                                  !Inifinity (cm)
-        Dbio=0.18 !5.2*(10.0**(0.7624-0.0003972*wdepth))  !bioturbation coefficient (cm2/yr) - after Middelburg at al. 1997
+        zinf=100.0                                  !Inifinity (cm)
+        Dbio = 5.2*(10.0**(0.7624-0.0003972*wdepth))  !bioturbation coefficient (cm2/yr) - after Middelburg at al. 1997
         por=0.85                                !porosity (-) defined as: porewater_vol./(solid_sed_vol.+porewater_vol.)
         tort=3.0                               !tortuosity (-)
         irrigationFactor=1.0
@@ -166,15 +166,15 @@ CONTAINS
         zoxgf = 0.1                         ! cm, rolloff NH4, H2S oxidation for small zox depth
 
         !bottom water concentrations
-        T=2.5                                                     ! temperature (degree C)
+        T=8.0                                                     ! temperature (degree C)
         C01=1.0*1e-2/12*rho_sed                                ! TOC concentration at SWI (wt!) -> (mol/cm3 bulk phase)
-        C02=1.2*1e-2/12*rho_sed                                ! TOC concentration at SWI (wt!) -> (mol/cm3 bulk phase)
-        O20=243.0e-9         !was  300.0e-9                                     ! O2  concentration at SWI (mol/cm3)
-        NO30=30.1e-9                                               ! NO3 concentration at SWI (mol/cm3)
-        NH40=0.22e-9                                                ! NH4 concentration at SWI (mol/cm3)
+        C02=1.0*1e-2/12*rho_sed                                ! TOC concentration at SWI (wt!) -> (mol/cm3 bulk phase)
+        O20=300.0e-9         !was  300.0e-9                                     ! O2  concentration at SWI (mol/cm3)
+        NO30=40.0e-9                                               ! NO3 concentration at SWI (mol/cm3)
+        NH40=0.0e-9                                                ! NH4 concentration at SWI (mol/cm3)
         SO40=28000.0e-9      !  28000.0e-9                                     ! SO4 concentration at SWI (mol/cm3)
         H2S0=0.0e-13           !was 0.0e-9                                 ! H2S concentration at SWI (mol/cm3)
-        PO40=0.0e-9                                                  ! PO4 concentration at SWI (mol/cm3)
+        PO40=40.0e-9                                                  ! PO4 concentration at SWI (mol/cm3)
         Mflux0=365*0.2e-10                                          ! flux of M to the sediment (mol/(cm2*yr))
 
 
@@ -194,8 +194,8 @@ CONTAINS
 
         ! ORGANIC MATTER
         DC1 = Dbio
-        k1=0.055
-        k2=0.00001
+        k1=0.01
+        k2=0.0001
 
         ! O2
         qdispO2=348.62172
@@ -269,7 +269,7 @@ CONTAINS
         !   organic matter burial - 2 fractions
 
         ! local variables
-
+        real loc_POC1_conc_zinf, loc_POC2_conc_zinf, dum_sed_pres_fracC
         !    real*8 aa11, bb11, aa21, A11, A21, aa12, bb12, aa22, A12, A22
         real*8 dC1dz, C1flx, dC2dz, C2flx, Cflx             ! Cflx: Sed input flux to upper boundary, per cm^2 water column
         real*8 F_TOC1, F_TOC2, F_TOC                        ! Flux through lower boundary zinf, per cm^2 water-column
@@ -329,7 +329,22 @@ CONTAINS
         print*, 'F_TOC2', char(9), F_TOC2
         print*, 'F_TOC', char(9), F_TOC
 
-    ! DH: need to give back fraction buried of initially deposited (so fraction of the input values to this subroutine)
+        ! Concentration at lower boundary zinf
+        if(zinf<zbio) then
+            loc_POC1_conc_zinf=A11*(exp(aa11*zinf)-exp(bb11*zinf))+C1*exp(bb11*zinf)
+            loc_POC2_conc_zinf=A12*(exp(aa12*zinf)-exp(bb12*zinf))+C2*exp(bb12*zinf)
+        else
+            loc_POC1_conc_zinf=A21*exp(aa21*zinf)
+            loc_POC2_conc_zinf=A22*exp(aa22*zinf)
+        end if
+
+        ! DH: need to give back fraction buried of initially deposited (so fraction of the input values to this subroutine)
+        !        print*, 'loc_POC1_conc_zinf ', char(9), loc_POC1_conc_zinf
+        !        print*, 'loc_POC2_conc_zinf ', char(9), loc_POC2_conc_zinf
+
+        dum_sed_pres_fracC = (loc_POC1_conc_zinf+loc_POC2_conc_zinf)/(C1+C2)
+        print*,'Fraction POC-preserved/POC-deposited =' , dum_sed_pres_fracC
+        print*,' '
 
     end SUBROUTINE zTOC
 
@@ -2056,7 +2071,7 @@ CONTAINS
 
         ! Work up from the bottom, matching solutions at boundaries
         ! Basis functions at bottom of layer 4 zinf
-        call calcfg_l12(zso4, 0.0D00, 0.0D00, 0.0D00, ls_a3, ls_b3, ls_c3, ls_d3, ls_e3, ls_f3, DH2S1, DH2S2, ltype3, &
+        call calcfg_l12(zinf, 0.0D00, 0.0D00, 0.0D00, ls_a4, ls_b4, ls_c4, ls_d4, ls_e4, ls_f4, DH2S1, DH2S2, ltype4, &
         e4_zinf, dedz4_zinf, f4_zinf, dfdz4_zinf, g4_zinf, dgdz4_zinf)
 
         ! Match at zso4, layer 3 - layer 4 (continuity and flux with AOM production)
