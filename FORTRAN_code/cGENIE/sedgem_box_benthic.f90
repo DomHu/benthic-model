@@ -133,7 +133,8 @@ CONTAINS
     !------------------------------------------------------------------------------------
 
     !    SUBROUTINE sub_huelseetal2016_main(dum_POC1_wtpct_swi, dum_POC2_wtpct_swi, dum_sfcsumocn, dum_sed_pres_fracC, dum_new_swifluxes)
-    SUBROUTINE sub_huelseetal2016_main(dum_dtyr, dum_D, loc_new_sed, dum_sfcsumocn, dum_sed_pres_fracC, dum_new_swifluxes)
+    SUBROUTINE sub_huelseetal2016_main(dum_i, dum_j, dum_dtyr, dum_D, loc_new_sed, dum_sfcsumocn, dum_sed_pres_fracC, dum_new_swifluxes)
+!    SUBROUTINE sub_huelseetal2016_main(dum_dtyr, dum_D, loc_new_sed, dum_sfcsumocn, dum_sed_pres_fracC, dum_new_swifluxes)
         !   __________________________________________________________
         !
         !   Main subroutine: 
@@ -145,7 +146,8 @@ CONTAINS
         
         IMPLICIT NONE
         ! dummy arguments
-        REAL,INTENT(in)::dum_dtyr                                  ! time-step             
+        REAL,INTENT(in)::dum_dtyr                               ! time-step
+        integer,intent(in) :: dum_i, dum_j                      ! grid point (i,j)
         REAL,INTENT(in)::dum_D                                     ! depth        
         REAL,DIMENSION(n_sed),intent(in)::loc_new_sed                         ! new (sedimenting) top layer material
         real,DIMENSION(n_ocn),intent(in)::dum_sfcsumocn                     ! ocean composition interface array
@@ -176,35 +178,36 @@ CONTAINS
         ! *****************************************************************
 
         ! dum_sfcsumocn mol/kg -> SEDIMENT MODEL needs mol/cm^3
-!        dum_swiconc_O2 = dum_sfcsumocn(io_O2)*1e-3
-!        dum_swiconc_NO3 = dum_sfcsumocn(io_NO3)*1e-3
-!        dum_swiconc_SO4 = dum_sfcsumocn(io_SO4)*1e-3
-!        dum_swiconc_NH4 = dum_sfcsumocn(io_NH4)*1e-3
-!        dum_swiconc_H2S = dum_sfcsumocn(io_H2S)*1e-3
-!        dum_swiconc_PO4 = dum_sfcsumocn(io_PO4)*1e-3
+        dum_swiconc_O2 = dum_sfcsumocn(io_O2)*1e-3
+        if(ocn_select(io_NO3))then
+            dum_swiconc_NO3 = dum_sfcsumocn(io_NO3)*1e-3
+            dum_swiconc_NH4 = dum_sfcsumocn(io_NH4)*1e-3
+        end if
+        dum_swiconc_SO4 = dum_sfcsumocn(io_SO4)*1e-3
+        dum_swiconc_H2S = dum_sfcsumocn(io_H2S)*1e-3
+        dum_swiconc_PO4 = dum_sfcsumocn(io_PO4)*1e-3
         dum_swiflux_M = 365*0.2e-10
 
-        !        if(dum_swiconc_O2 < 0.0) then
-        !            dum_swiconc_O2 = 0.0
-        !        end if
-
-        ! DH Change for comparison
-        dum_swiconc_O2 = 300.0e-9
-        dum_swiconc_NO3 = 40e-9
-        dum_swiconc_SO4 = 28000e-9
-        dum_swiconc_NH4 = 0.0
-        dum_swiconc_H2S = 0.0e-9
-        dum_swiconc_PO4 = 40e-9
-        loc_depth_comparison = 600.0
 
         ! calculate wt% of mol from POC flux (both fractions)
         ! NOTE: the units of the Corg flux are in (cm3 cm-2)
         loc_fPOC = loc_new_sed(is_POC)
         ! calculate sediment accumulation in (cm3 cm-2)
         loc_new_sed_vol = fun_calc_sed_vol(loc_new_sed(:))
+
+        ! DH Change for comparison
+!        dum_swiconc_O2 = 300.0e-9
+!        dum_swiconc_NO3 = 40.0e-9
+!        dum_swiconc_SO4 = 28000.0e-9
+!        dum_swiconc_NH4 = 0.0
+!        dum_swiconc_H2S = 0.0e-9
+!        dum_swiconc_PO4 = 40.0e-9
+!        loc_depth_comparison = 600.0
         
         ! DH TODO: some of initialize should be called just once, not for every grid point
-        call sub_huelseetal2016_initialize(loc_depth_comparison, dum_sfcsumocn(io_T), loc_new_sed_vol/dum_dtyr)
+        call sub_huelseetal2016_initialize(dum_D, dum_sfcsumocn(io_T), loc_new_sed_vol/dum_dtyr)
+!        call sub_huelseetal2016_initialize(loc_depth_comparison, dum_sfcsumocn(io_T), loc_new_sed_vol/dum_dtyr)
+
         ! below test with specific temperature to compare with matlab
         !!!!        call sub_huelseetal2016_initialize(600.0, 293.15)
         !        print*,'loc_new_sed(is_POC_frac2) ', loc_new_sed(is_POC_frac2)
@@ -216,15 +219,45 @@ CONTAINS
         loc_POC1_wtpct_swi = (1-loc_new_sed(is_POC_frac2))*loc_wtpct
         loc_POC2_wtpct_swi = loc_new_sed(is_POC_frac2)*loc_wtpct         
 
+        if(loc_new_sed_vol .LE. 2.0e-4)then
+                    print*,'dum_D = ', dum_D
+                    print*,' grid point (i,j)', dum_i, dum_j
+                    print*,'GENIE loc_new_sed_vol (or deposition rate) = ', loc_new_sed_vol
+                    print*,'loc_new_sed(is_POC)= ', loc_new_sed(is_POC)
+                    print*,'wt% POC frac 1 2 at SWI ', loc_POC1_wtpct_swi, loc_POC2_wtpct_swi
+                    print*,' '
+        end if
+
         ! DH Change for comparison
-        loc_POC1_wtpct_swi = 1.0
-        loc_POC2_wtpct_swi = 1.0
+!        loc_POC1_wtpct_swi = 1.0
+!        loc_POC2_wtpct_swi = 1.0
         !        print*,'loc_new_sed(is_POC) = ', loc_new_sed(is_POC)
         !        print*,'loc_fPOC = ', loc_fPOC
         !        print*,'loc_wtpct = ', loc_wtpct
         !        print*,'loc_POC1_wtpct_swi = ', loc_POC1_wtpct_swi
         !        print*,'loc_POC2_wtpct_swi = ', loc_POC2_wtpct_swi
 
+        loc_print_results = .false.
+        if(loc_print_results) then
+            print*,' '
+!            print*,' NO3 selected? ', ocn_select(io_NO3)
+            print*,'dum_D = ', dum_D
+            print*,' grid point (i,j)', dum_i, dum_j
+            print*,'dum_sfcsumocn(io_T) =', dum_sfcsumocn(io_T)
+            print*,'loc_new_sed(is_POC) (cm3 cm-2) = ', loc_new_sed(is_POC)
+            print*,'loc_new_sed_vol (deposition rate) (cm3 cm-2) = ', loc_new_sed_vol
+            !            print*,'loc_new_sed(is_CaCO3)= ', loc_new_sed(is_CaCO3)
+            !            print*,'loc_new_sed(is_opal)= ', loc_new_sed(is_opal)
+            print*,'loc_wtpct = ', loc_wtpct 
+            print*,'wt% POC frac 1 2 at SWI ', loc_POC1_wtpct_swi, loc_POC2_wtpct_swi
+            print*,'dum_swiconc_O2 = ', dum_swiconc_O2      
+            print*,'dum_swiconc_SO4 = ', dum_swiconc_SO4       
+            print*,'dum_swiconc_H2S = ', dum_swiconc_H2S
+            print*,'dum_swiconc_PO4 = ', dum_swiconc_PO4
+            print*,'dum_swiflux_M = ', dum_swiflux_M
+            !            print*, 'grid-point depth',dum_D
+            print*,' '
+        end if
 
         
         ! Check for no POC deposited -> nothing preserved
@@ -237,39 +270,21 @@ CONTAINS
         !!!!            call sub_huelseetal2016_zTOC(0.006, 0.002, dum_sed_pres_fracC)
         !        print*,'loc_sed_pres_fracC FIX', loc_sed_pres_fracC
         end if
-                
-        loc_print_results = .true.
-        if(loc_print_results) then
-            print*,' '
-            print*,' NO3 selected? ', ocn_select(io_NO3)
-            print*,'loc_depth_comparison = ', loc_depth_comparison
-            print*,'dum_sfcsumocn(io_T) =', dum_sfcsumocn(io_T)
-            print*,'loc_new_sed(is_POC)= ', loc_new_sed(is_POC)
-            print*,'GENIE loc_new_sed_vol (or deposition rate) = ', loc_new_sed_vol 
-            !            print*,'loc_new_sed(is_CaCO3)= ', loc_new_sed(is_CaCO3)
-            !            print*,'loc_new_sed(is_opal)= ', loc_new_sed(is_opal)
-            print*,'loc_wtpct = ', loc_wtpct 
-            print*,'POC frac 1 2 at SWI [wt% in mol] ', loc_POC1_wtpct_swi, loc_POC2_wtpct_swi
-            print*,'dum_swiconc_O2 = ', dum_swiconc_O2      
-            print*,'dum_swiconc_SO4 = ', dum_swiconc_SO4       
-            print*,'dum_swiconc_H2S = ', dum_swiconc_H2S
-            print*,'dum_swiconc_PO4 = ', dum_swiconc_PO4
-            print*,'dum_swiflux_M = ', dum_swiflux_M
-            !            print*, 'grid-point depth',dum_D
-            print*,' '
+        
+        if(dum_swiconc_O2 < 0.0) then
+            loc_O2_swiflux = 0.0            ! if negative [O2] -> no SWI flux
+        else
+            ! Dom TODO: can do it as a function as don't need to give values. BW-O2 is global variable
+            call sub_huelseetal2016_zO2(dum_D, dum_swiconc_O2, loc_O2_swiflux)
         end if
-        
-        
-        ! Dom TODO: can do it as a function as don't need to give values. BW-O2 is global variable
-        call sub_huelseetal2016_zO2(loc_depth_comparison, dum_swiconc_O2, loc_O2_swiflux)
         dum_new_swifluxes(io_O2) = loc_O2_swiflux                                   ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
         
-!        if(ocn_select(io_NO3))then
+        if(ocn_select(io_NO3))then
             call sub_huelseetal2016_zNO3(dum_swiconc_NO3, loc_NO3_swiflux)
-!            dum_new_swifluxes(io_NO3) = loc_NO3_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
-!        else
-!            zno3 = zox
-!        end if
+            dum_new_swifluxes(io_NO3) = loc_NO3_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
+        else
+            zno3 = zox
+        end if
 
         ! here check for SWI concentration, as problem with root-finding
         ! when is zero. And as no SO4 produced no need to call subroutine anyway        
@@ -284,12 +299,12 @@ CONTAINS
             zso4 = zno3
         end if              
 
-!        if(ocn_select(io_NH4))then
+        if(ocn_select(io_NH4))then
             call sub_huelseetal2016_zNH4(dum_swiconc_NH4, loc_NH4_swiflux)
-!            dum_new_swifluxes(io_NH4) = loc_NH4_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
-!        else
-!            ! If not selected nothing needs to be done
-!        end if
+            dum_new_swifluxes(io_NH4) = loc_NH4_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
+        else
+            ! If not selected nothing needs to be done
+        end if
 
         if(ocn_select(io_H2S))then                     
             call sub_huelseetal2016_zH2S(dum_swiconc_H2S, loc_H2S_swiflux)
@@ -298,12 +313,12 @@ CONTAINS
             ! If not selected nothing needs to be done
         end if
 
-        if(ocn_select(io_PO4))then
-            call sub_huelseetal2016_zPO4_M(dum_swiconc_PO4, loc_PO4_swiflux, dum_swiflux_M, loc_M_swiflux)
-            dum_new_swifluxes(io_PO4) = loc_PO4_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
-        else
-            ! If not selected nothing needs to be done
-        end if
+!        if(ocn_select(io_PO4))then
+!            call sub_huelseetal2016_zPO4_M(dum_swiconc_PO4, loc_PO4_swiflux, dum_swiflux_M, loc_M_swiflux)
+!            dum_new_swifluxes(io_PO4) = loc_PO4_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
+!        else
+!            ! If not selected nothing needs to be done
+!        end if
 
         if(loc_print_results) then
             !            loc_new_sed_vol = fun_calc_sed_vol(loc_new_sed(:))
@@ -390,7 +405,7 @@ CONTAINS
         zno3 = 0.0
         zso4 = 0.0
         zinf = 100.0                                        ! Inifinity - bottom of the sediments (cm)
-        zbio = 10.0                                         ! bioturbation depth (cm)
+        zbio = 10.0                                        ! bioturbation depth (cm)
 
         Dbio = 5.2*(10.0**(0.7624-0.0003972*dum_D))        !bioturbation coefficient (cm2/yr) - after Middelburg at al. 1997
         por = 0.85                                           ! porosity (-) defined as: porewater_vol./(solid_sed_vol.+porewater_vol.)
@@ -458,9 +473,9 @@ CONTAINS
         w = dum_depos_rate                          ! sedimentation rate, cm/yr / burial velocity / advection
         !        w=10.0**(-0.87478367-0.00043512*dum_D)*3.3              ! sedimentation rate, cm/yr / burial velocity / advection (Middelburg et al., Deep Sea Res. 1, 1997)
 
-        ! DH Change for comparison
-        loc_TempC = 8.0
-        w = 10.0**(-0.87478367-0.00043512*dum_D)*3.3              ! sedimentation rate, cm/yr / burial velocity / advection (Middelburg et al., Deep Sea Res. 1, 1997)
+        ! DH Change for comparison (i.e. use the above)
+!        loc_TempC = 8.0
+!        w = 10.0**(-0.87478367-0.00043512*dum_D)*3.3              ! sedimentation rate, cm/yr / burial velocity / advection (Middelburg et al., Deep Sea Res. 1, 1997)
 
 
         ! Diffusion coefficients
@@ -3143,9 +3158,13 @@ CONTAINS
         !===========================================================
         implicit none
         integer n
-        double precision a(n,n), c(n,n)
-        double precision L(n,n), U(n,n), b(n), d(n), x(n)
-        double precision coeff
+        real, dimension (1:n,1:n) :: a, c
+        real, dimension (1:n,1:n) :: L, U
+        real, dimension (1:n) :: b, d, x
+        real coeff
+!        double precision a(n,n), c(n,n)
+!        double precision L(n,n), U(n,n), b(n), d(n), x(n)
+!        double precision coeff
         integer i, j, k
 
         ! step 0: initialization for matrices L and U and b

@@ -12,7 +12,7 @@ classdef benthic_main < handle
         
         %sediment characteristics
         rho_sed=2.6; %was 2.5                           % sediment density (g/cm3)
-        wdepth=600.0;     % Dom was 600.0                       % water depth (m)
+        wdepth=4000.0;     % Dom was 600.0                       % water depth (m)
         w;                                      % burial velocity  (cm/yr)
         z0  = 0;                                % surface
         zbio=10.0;                              % bioturbation depth (cm)       
@@ -118,7 +118,7 @@ classdef benthic_main < handle
          function Dbio = biorate(wdepth)
             % bioturbation coeff, cm^2/yr
             Dbio= 5.2*(10.0^(0.7624-0.0003972*wdepth)); %5.2*(10.0^(0.7624-0.0003972*wdepth)); % Dom was 3.0;                                 %bioturbation coefficient (cm2/yr)
-            % Dbio=0.18; %0.08; %10.0;
+            %Dbio=1.0; %0.08; %10.0;
         end       
         
         
