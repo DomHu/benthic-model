@@ -203,7 +203,18 @@ CONTAINS
 !        dum_swiconc_H2S = 0.0e-9
 !        dum_swiconc_PO4 = 40.0e-9
 !        loc_depth_comparison = 600.0
-        
+
+        loc_print_results = .true.
+        if(loc_print_results) then
+            if(loc_new_sed_vol .LE. 4.0e-4)then
+                        print*,'dum_D = ', dum_D
+                        print*,' grid point (i,j)', dum_i, dum_j
+                        print*,'GENIE loc_new_sed_vol (or deposition rate) = ', loc_new_sed_vol
+                        print*,'loc_new_sed(is_POC)= ', loc_new_sed(is_POC)
+                         print*,' '
+                        loc_new_sed_vol =  4.0e-4
+            end if
+        end if
         ! DH TODO: some of initialize should be called just once, not for every grid point
         call sub_huelseetal2016_initialize(dum_D, dum_sfcsumocn(io_T), loc_new_sed_vol/dum_dtyr)
 !        call sub_huelseetal2016_initialize(loc_depth_comparison, dum_sfcsumocn(io_T), loc_new_sed_vol/dum_dtyr)
@@ -219,14 +230,6 @@ CONTAINS
         loc_POC1_wtpct_swi = (1-loc_new_sed(is_POC_frac2))*loc_wtpct
         loc_POC2_wtpct_swi = loc_new_sed(is_POC_frac2)*loc_wtpct         
 
-        if(loc_new_sed_vol .LE. 2.0e-4)then
-                    print*,'dum_D = ', dum_D
-                    print*,' grid point (i,j)', dum_i, dum_j
-                    print*,'GENIE loc_new_sed_vol (or deposition rate) = ', loc_new_sed_vol
-                    print*,'loc_new_sed(is_POC)= ', loc_new_sed(is_POC)
-                    print*,'wt% POC frac 1 2 at SWI ', loc_POC1_wtpct_swi, loc_POC2_wtpct_swi
-                    print*,' '
-        end if
 
         ! DH Change for comparison
 !        loc_POC1_wtpct_swi = 1.0
@@ -237,19 +240,19 @@ CONTAINS
         !        print*,'loc_POC1_wtpct_swi = ', loc_POC1_wtpct_swi
         !        print*,'loc_POC2_wtpct_swi = ', loc_POC2_wtpct_swi
 
-        loc_print_results = .false.
         if(loc_print_results) then
             print*,' '
 !            print*,' NO3 selected? ', ocn_select(io_NO3)
             print*,'dum_D = ', dum_D
-            print*,' grid point (i,j)', dum_i, dum_j
-            print*,'dum_sfcsumocn(io_T) =', dum_sfcsumocn(io_T)
+            print*,' grid point (i,j) = ', dum_i, dum_j
+            print*,'Temp C =', dum_sfcsumocn(io_T) - 273.15
             print*,'loc_new_sed(is_POC) (cm3 cm-2) = ', loc_new_sed(is_POC)
             print*,'loc_new_sed_vol (deposition rate) (cm3 cm-2) = ', loc_new_sed_vol
             !            print*,'loc_new_sed(is_CaCO3)= ', loc_new_sed(is_CaCO3)
             !            print*,'loc_new_sed(is_opal)= ', loc_new_sed(is_opal)
             print*,'loc_wtpct = ', loc_wtpct 
-            print*,'wt% POC frac 1 2 at SWI ', loc_POC1_wtpct_swi, loc_POC2_wtpct_swi
+            print*,'SWI wt% POC frac 1 = ', loc_POC1_wtpct_swi
+            print*,'SWI wt% POC frac 2 = ', loc_POC2_wtpct_swi
             print*,'dum_swiconc_O2 = ', dum_swiconc_O2      
             print*,'dum_swiconc_SO4 = ', dum_swiconc_SO4       
             print*,'dum_swiconc_H2S = ', dum_swiconc_H2S
@@ -313,12 +316,12 @@ CONTAINS
             ! If not selected nothing needs to be done
         end if
 
-!        if(ocn_select(io_PO4))then
-!            call sub_huelseetal2016_zPO4_M(dum_swiconc_PO4, loc_PO4_swiflux, dum_swiflux_M, loc_M_swiflux)
-!            dum_new_swifluxes(io_PO4) = loc_PO4_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
-!        else
-!            ! If not selected nothing needs to be done
-!        end if
+        if(ocn_select(io_PO4))then
+            call sub_huelseetal2016_zPO4_M(dum_swiconc_PO4, loc_PO4_swiflux, dum_swiflux_M, loc_M_swiflux)
+            dum_new_swifluxes(io_PO4) = loc_PO4_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
+        else
+            ! If not selected nothing needs to be done
+        end if
 
         if(loc_print_results) then
             !            loc_new_sed_vol = fun_calc_sed_vol(loc_new_sed(:))
@@ -3141,7 +3144,7 @@ CONTAINS
     !------------------------------------------------------------------------------------
 
 
-    subroutine sub_inverse(a,c,n)
+    subroutine sub_inverse(a, c,n)
         !============================================================
         ! Inverse matrix
         ! Method: Based on Doolittle LU factorization for Ax=b
@@ -3159,6 +3162,9 @@ CONTAINS
         implicit none
         integer n
         real, dimension (1:n,1:n) :: a, c
+
+!        ! local variables
+!        double precision a(n,n), c(n,n)
         real, dimension (1:n,1:n) :: L, U
         real, dimension (1:n) :: b, d, x
         real coeff
@@ -3166,6 +3172,10 @@ CONTAINS
 !        double precision L(n,n), U(n,n), b(n), d(n), x(n)
 !        double precision coeff
         integer i, j, k
+
+!        ! DH: Cast input real to double precision
+!        a = dble(dum_a)
+!        c = dble(dum_c)
 
         ! step 0: initialization for matrices L and U and b
         ! Fortran 90/95 aloows such operations on matrices
@@ -3209,7 +3219,13 @@ CONTAINS
                 end do
             end do
             ! Step 3b: Solve Ux=d using the back substitution
-            x(n)=d(n)/U(n,n)
+            ! DH: check for division by zero
+            if(U(n,n) > const_real_nullsmall) then
+                x(n)=d(n)/U(n,n)
+            else
+!                print*,'U(n,n) small ', U(n,n)
+                x(n)=d(n)/const_real_nullsmall
+            end if
             do i = n-1,1,-1
                 x(i) = d(i)
                 do j=n,i+1,-1
@@ -3223,6 +3239,9 @@ CONTAINS
             end do
             b(k)=0.0
         end do
+
+!        ! DH cast back to real
+!        dum_c = real(c)
     end subroutine sub_inverse
     
     

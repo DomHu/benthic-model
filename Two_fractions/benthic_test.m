@@ -9,19 +9,19 @@ classdef benthic_test
         function swi = default_swi()
             bsd = benthic_main();
             %bottom water concentrations
-            swi.T = 2.0; %20.0;                         %temperature (degree C)
+            swi.T = 1.8066564552051432; %20.0;                         %temperature (degree C)
             % see caption for Fig 1.2 - two equal TOC fractions 0.02 0.2 2
-            swi.C01= 5.49e-4*1e-2/12*bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*bsd.rho_sed;         %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-            swi.C02= 1.03e-4*1e-2/12*bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;          %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+            swi.C01= 8.50605872143690239E-005*1e-2/12*bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*bsd.rho_sed;         %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+            swi.C02= 1.60606028103883255E-005*1e-2/12*bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;          %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
             %swi.C01=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
             %swi.C02=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-            swi.O20=300.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
-            swi.NO30=20.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
-            swi.Nitrogen=true;
+            swi.O20=2.82526350577094741E-007;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
+            swi.NO30=0.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
+            swi.Nitrogen=false;
             swi.NH40=0.0e-9;                                                %NH4 concentration at SWI (mol/cm^3)
-            swi.SO40=28000.0e-9;                                            %SO4 concentration at SWI (mol/cm^3)
-            swi.H2S0=0.0e-13;         %was 0.0e-9                            %H2S concentration at SWI (mol/cm^3)
-            swi.PO40=40.0e-9 ;%0.06e-8; % Dom was 1e-9;    % Sandra played with 3e-9                                              %PO4 concentration at SWI (mol/cm^3)
+            swi.SO40=2.91573486678483492E-005;                                            %SO4 concentration at SWI (mol/cm^3)
+            swi.H2S0=8.50068298718578542E-018;         %was 0.0e-9                            %H2S concentration at SWI (mol/cm^3)
+            swi.PO40=1.17108149523213769E-009; %0.06e-8; % Dom was 1e-9;    % Sandra played with 3e-9                                              %PO4 concentration at SWI (mol/cm^3)
             swi.Mflux0=365*0.2e-10; % Sandra played with 10e-9; ;   % = 7.3e-9    %flux of M to the sediment (mol/(cm2*yr))   TODO/CHECK: good value+right conversion? is from Slomp et al. 1996        
 
             swi.DIC0=2000.0e-9;                                             %DIC concentration at SWI (mol/cm^3)
@@ -1295,7 +1295,7 @@ classdef benthic_test
                 plot([0,t(1,2)], [-res.zno3,-res.zno3], 'g--')     
                 plot([0,t(1,2)], [-res.zso4,-res.zso4], 'r--')     
                 hold off
-                xlim([2.7e-5 SO40])
+                xlim([2.7e-5 swi.SO40])
                 xlabel ('SO_4 (mol/cm^3)')
                 ylabel('Depth (cm)')
     %            title ('SO4 (mol/cm^3)')
