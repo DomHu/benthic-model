@@ -170,6 +170,7 @@ CONTAINS
         logical :: loc_print_results  = .FALSE.
         REAL::loc_new_sed_vol                                      ! new sediment volume (as SOLID material)
         REAL::loc_depth_comparison
+        integer:: loc_k = 0
 
         !        print*,'---------- IN OMEN MAIN -----------  '
         
@@ -367,6 +368,13 @@ CONTAINS
         !CALL check_iostat(ios,__LINE__,__FILE__)
         end if
 
+!        if(dum_i == 33 .AND. dum_j ==36)then
+!        loc_k = loc_k+1
+!            if(loc_k==3) then
+!                STOP
+!            end if
+!        end if
+
     end SUBROUTINE sub_huelseetal2016_main
     
     !------------------------------------------------------------------------------------
@@ -558,14 +566,18 @@ CONTAINS
         aa11 = (w-sqrt(w**2+4*DC1*k1))/(2*DC1)
         bb11 = (w+sqrt(w**2+4*DC1*k1))/(2*DC1)
         aa21 = (-k1/w)
-        A11 = -(dum_POC1_conc_swi*bb11*exp(bb11*zbio))/(aa11*exp(aa11*zbio)-bb11*exp(bb11*zbio))
-        A21=(A11*(exp(aa11*zbio)-exp(bb11*zbio))+dum_POC1_conc_swi*exp(bb11*zbio))/exp(aa21*zbio)
-
+        A11 = -(dum_POC1_conc_swi*bb11*exp(bb11*zbio))/(aa11*exp(aa11*zbio)-bb11*exp(bb11*zbio)+const_real_nullsmall)
+!        if(exp(aa21*zbio) > const_real_nullsmall) then
+        A21=(A11*(exp(aa11*zbio)-exp(bb11*zbio))+dum_POC1_conc_swi*exp(bb11*zbio))/(exp(aa21*zbio)+const_real_nullsmall)
+!        else
+!            A21=(A11*(exp(aa11*zbio)-exp(bb11*zbio))+dum_POC1_conc_swi*exp(bb11*zbio))/const_real_nullsmall
+!            print*,'in small exp(aa21*zbio)', +exp(aa21*zbio)
+!        end if
         aa12 = (w-sqrt(w**2+4*DC1*k2))/(2*DC1)
         bb12 = (w+sqrt(w**2+4*DC1*k2))/(2*DC1)
         aa22 = (-k2/w)
-        A12=-(dum_POC2_conc_swi*bb12*exp(bb12*zbio))/(aa12*exp(aa12*zbio)-bb12*exp(bb12*zbio))
-        A22=(A12*(exp(aa12*zbio)-exp(bb12*zbio))+dum_POC2_conc_swi*exp(bb12*zbio))/exp(aa22*zbio)
+        A12=-(dum_POC2_conc_swi*bb12*exp(bb12*zbio))/(aa12*exp(aa12*zbio)-bb12*exp(bb12*zbio)+const_real_nullsmall)
+        A22=(A12*(exp(aa12*zbio)-exp(bb12*zbio))+dum_POC2_conc_swi*exp(bb12*zbio))/(exp(aa22*zbio)+const_real_nullsmall)
 
         !!! no need for this as this is SWI concentration for z0 = 0!
         !!!    ! % Calculate concentration at z0
@@ -2990,7 +3002,10 @@ CONTAINS
         ! local variable
         real::det
 
-        det = a*d-b*c
+        det = a*d-b*c+const_real_nullsmall
+        if(det == 0.0) then
+            print*,'det too small ', det
+        end if
         x    =  (e*d-b*f)/det
         y    =  (a*f-e*c)/det
 
@@ -3220,12 +3235,12 @@ CONTAINS
             end do
             ! Step 3b: Solve Ux=d using the back substitution
             ! DH: check for division by zero
-            if(U(n,n) > const_real_nullsmall) then
-                x(n)=d(n)/U(n,n)
-            else
+!            if(U(n,n) > const_real_nullsmall) then
+            x(n)=d(n)/(U(n,n)+const_real_nullsmall)
+!            else
 !                print*,'U(n,n) small ', U(n,n)
-                x(n)=d(n)/const_real_nullsmall
-            end if
+!                x(n)=d(n)/const_real_nullsmall
+!            end if
             do i = n-1,1,-1
                 x(i) = d(i)
                 do j=n,i+1,-1
