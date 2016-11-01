@@ -126,52 +126,53 @@ Here we describe the first version of the Organic Matter ENabled SEDiment model 
 \marginnote{\textbf{DH}: How to include comments.}[-1cm]%<<<
 Marine surface sediments are key components in the Earth system. They host the largest carbon reservoir within the surficial Earth system, provide the only long term sink for atmospheric \chem{CO_2}, 
 recycle nutrients and represent the most important geochemical archive used for deciphering past changes in biogeochemical cycles and climate. 
-Physical and chemical processes in sediments (diagenesis) depend on the water column and vice versa: Diagenesis is mainly donor controlled, as it is fuelled by the external supply of solid material 
+Physical and chemical (or diagenetic) processes in sediments depend on the water column and vice versa: Diagenesis is mainly donor controlled, as it is fuelled by the external supply of solid material 
 (e.g. organic matter, calcium carbonate, opal) from the water column and is affected by overlying bottom water concentrations of solutes. 
-At the same time, diagenesis in the sediments transforms the deposited material and returns the resulting products (e.g. nutrients, DIC) to the water column. 
-This so-called benthic-pelagic coupling is essential for understanding global biogeochemical cycles and climate \citep[e.g.][]{archer_effect_1994, archer_what_2000, mackenzie_sediments_2005, ridgwell_role_2005}. 
+At the same time, diagenesis in the sediments transforms the deposited material and returns some of the resulting products (e.g. nutrients, DIC) to the water column. 
+This so-called benthic-pelagic coupling is essential for understanding global biogeochemical cycles and climate \citep[e.g.][]{archer_effect_1994, soetaert_coupling_2000, archer_what_2000, mackenzie_sediments_2005}. 
 
-In the marine sediments, most biogeochemical reactions can be related either directly or indirectly to the degradation of organic matter (OM) \citep[e.g][]{boudreau_reactive_1991, arndt_quantifying_2013}. 
-Organic matter degradation, for instance, releases metabolic \chem{CO_2} to the pore water, causing it to have a lower pH and provoking the dissolution of \chem{CaCO_3} \citep{emerson_carbon_1981}.
-\textcolor{red}{TODO: which cycles are affected!?}\\
-%However, the interrelation of these processes is rather complicated and furthermore depends on the prevailing sediment redox chemistry \citep{canfield_sulfate_1989}. 
-
-\textcolor{red}{TODO: next paragr. think about better logical structure!}\\
-On the other hand, over long timescales production of OM is generally greater than degradation which results in some organic matter being buried in marine sediments and oxygen accumulating in the atmosphere. 
-Thus burial of OM leads to net oxygen input to, and \chem{CO_2} removal from, the atmosphere \citep{berner_phanerozoic_2004}. Furthermore, the sedimenst form an important sink for organic phosphorus and nitrogen. 
-Therefore, changes in the burial rate of OM can profoundly affect the oxygen and nutrient inventory of the ocean and thus marine biogeochemical cycling and primary productivity \citep[e.g.][]{lenton_redfield_2000, ???}. 
-Furthermore, burial of OM represents an important connection between carbon stored in more climate-relevant reservoirs like oceans, atmosphere, 
-and surficial sediments and carbon that is sequestered for much longer, geological timescales in sedimentary rock or coal \citep{mackenzie_sediments_2005, burdige_preservation_2007}. 
-
-Furthermore, nutrient recycling from the sediments has been used by modelling and data studies to explain the occurance of extreme events in Earth history, for instance Oceanic Anoxic Events (OAEs) 
-\citep{bjerrum_modeling_2006, mort_phosphorus_2007, tsandev_modeling_2009}. OAEs represent severe disturbances of the global carbon, oxygen and nutrient cycles of the ocean and are usually characterized 
-by widespread bottom water anoxia and photic zone euxinia (occurance of free hydrogen sulfide) \citep{?}. 
-One possible mechanism to explain the genesis and persistence of OAEs is increased oxygen demand due to enhanced primary productivity (PP). Increased nutrient inputs to fuel PP may have come from marine sediments as the 
-burial efficiency of phosphorus declines when bottom waters become anoxic \citep[e.g.][]{ingall_evidence_1994, van_cappellen_benthic_1994}. 
- 
-
-Difference for oxic vs. anoxic sediments and impacts on atmospheric \chem{CO_2}. 
-
-
-\textcolor{red}{TODO:} Give examples when and why important (also in Paleo-context.\\
-
-
-- general dynamics: first e.g. \chem{CaCO_3} then nutrients and the OM! \\
-- then more focus on paleo!\\
-- glacial/interglacial atmospheric p\chem{CO_2} cycles\\ 
-- maybe important for OMZ (see Kriest + Oschlies 2013)\\
-- \\
-- Carbon burial events 
-
-Degradation of organic matter (OM) in marine sediments fuels benthic biogeochemical processes and the resulting fluxes across the sediment-water interface are of considerable importance 
-for many global biogeochemical cycles \citep{arndt_quantifying_2013}. Burial of OM represents an important connection between carbon stored in more climate-relevant reservoirs like the oceans, atmosphere, 
-and the marine sediments and carbon that is sequestered for much longer, geological timescales in sedimentary rock or coal \citep{mackenzie_sediments_2005, burdige_preservation_2007}. 
-Biological primary production of organic matter (\chem{CH_2O} in equation \ref{eq:photosynthesis}) and the reverse process of degradation can be written in a greatly simplified reaction as:
+Biological primary production of organic matter (OM, \chem{CH_2O} in equation \ref{eq:photosynthesis}) and the reverse process of degradation can be written in a greatly simplified reaction as:
 \begin{reaction}
 \chem{CO_2}+\chem{H_2O} \rightleftharpoons \chem{CH_2O} + \chem{O_2}.\label{eq:photosynthesis}
 \end{reaction}
-On long timescales production of OM is generally greater than degradation which results in some organic matter being buried in marine sediments and oxygen accumulating in the atmosphere. 
-Thus burial of OM leads to net oxygen input to, and \chem{CO_2} removal from, the atmosphere \citep{berner_phanerozoic_2004}. 
+On geological timescales production of OM is generally greater than degradation which results in some organic matter being buried in marine sediments and oxygen accumulating in the atmosphere. 
+Thus burial of OM leads to net oxygen input to, and \chem{CO_2} removal from the atmosphere \citep{berner_phanerozoic_2004}. 
+On shorter timescales, the upper few meters of the sediments (i.e. early diagenesis) are specifically important as it is decided here if a substance is recycled to the water column or buried for a longer period of time in the 
+deeper sediments \citep{hensen_benthic_2006}. 
+Most biogeochemical cycles and reactions in this part of marine sediments can be related either directly or indirectly to the degradation of organic matter \citep[e.g][]{boudreau_reactive_1991, arndt_quantifying_2013}. 
+Organic matter degradation releases metabolic \chem{CO_2} to the pore water, causing it to have a lower pH and provoking the dissolution of \chem{CaCO_3} \citep{emerson_carbon_1981}.
+Oxygen and nitrate for instance, the most powerful electron acceptors, are consumed in the course of the degradation of organic matter, resulting in the release of ammonium and phosphate to the pore water. 
+As such, changes in the degradation rate of OM can profoundly affect the oxygen and nutrient inventory of the ocean and thus primary productivity \citep{van_cappellen_benthic_1994, lenton_redfield_2000}. 
+%From Soetart-review: As such, marine sediments can affect the nutrient inventory of the ocean, hence, primary productivity \citep{van_cappellen_benthic_1994}. 
+
+% DH: more facts on sediments
+%Furthermore, the sedimenst form an important sink for organic phosphorus and nitrogen. 
+%Furthermore, burial of OM represents an important connection between carbon stored in more climate-relevant reservoirs like oceans, atmosphere, 
+%and surficial sediments and carbon that is sequestered for much longer, geological timescales in sedimentary rock or coal \citep{mackenzie_sediments_2005, burdige_preservation_2007}. 
+
+\textcolor{red}{TODO:} Something on: Role of marine sediments for another time period , e.g. glacial/interglacial atmospheric p\chem{CO_2} cycles
+
+Nutrient recycling from the sediments has been invoked by modelling and data studies to explain the occurance of extreme events in Earth history, for instance Oceanic Anoxic Events (OAEs) 
+\citep[e.g.][]{mort_phosphorus_2007, tsandev_modeling_2009}. OAEs represent severe disturbances of the global carbon, oxygen and nutrient cycles of the ocean and are usually characterized 
+by widespread bottom water anoxia and photic zone euxinia \citep{jenkyns_geochemistry_2010}. 
+One way to explain the genesis and retention of OAEs is increased oxygen demand due to enhanced primary productivity (PP). Increased nutrient inputs to fuel PP may have come from marine sediments as the 
+burial efficiency of phosphorus declines when bottom waters become anoxic \citep{ingall_evidence_1994, van_cappellen_benthic_1994}. 
+The recovery from OAE like conditions is thought to involve the permanent removal of excess \chem{CO_2} from the atmosphere and ocean by burying carbon in the form of organic matter in marine sediments 
+\citep[e.g.][]{arthur_geochemical_1988, jarvis_black_2011}, which is consistent with the geological record of widespread black shale formation \citep{stein_accumulation_1986}. 
+However, the overall amount, exact timing and the rate of organic matter burial remain a topic of intense debate. 
+
+% % Difference for oxic vs. anoxic sediments and impacts on atmospheric \chem{CO_2}. 
+% % 
+% % \textcolor{red}{TODO:} Give examples when and why important (also in Paleo-context).\\
+% % 
+% % - general dynamics: first e.g. \chem{CaCO_3} then nutrients and the OM! \\
+% % - then more focus on paleo!\\
+% % - glacial/interglacial atmospheric p\chem{CO_2} cycles\\ 
+% % - maybe important for OMZ (see Kriest + Oschlies 2013)\\
+% % - \\
+% % - Carbon burial events 
+
+\textbf{Diagenetic Models:}\\
 Therefore, globally quantifying the degradation of organic matter in marine sediments and related biogeochemical dynamics is important for understanding climate and the cycling of many chemical elements on various timescales.
 Such studies and quantifications are possible through the application of idealised mathematical representations of diagenesis, or so-called diagenetic models \citep[e.g.][]{berner_early_1980, boudreau1997diagenetic}.
 The number of research questions that can be addressed with diagenetic models is infinite and a plethora of different approaches have been developed, mainly following two distinct directions \citep{arndt_quantifying_2013}. 
@@ -180,36 +181,38 @@ First, state-of-the art diagenetic models simulating all of the essential couple
 MEDIA, \citeauthor{meysman_reactive_2003}, \citeyear{meysman_reactive_2003}; OMEXDIA, \citeauthor{soetaert_model_1996}, \citeyear{soetaert_model_1996}). These ``complete'' models generally use a so-called multi-G approach, 
 thus dividing the bulk organic carbon pool into a number of compound classes that are characterised by different degradabilities $k_i$. However, their global applicability is limited by the high computation cost of simulating 
 all biogeochemical reactions. The second group of models is less sophisticated and comprehensive than the ``complete'' diagenetic models and is used for the coupling to global Earth System Models 
-(e.g. DCESS, \citeauthor{shaffer_presentation_2008}, \citeyear{shaffer_presentation_2008}; HAMOCC, , \citeauthor{heinze_global_1999}, \citeyear{heinze_global_1999}; 
+(e.g. DCESS, \citeauthor{shaffer_presentation_2008}, \citeyear{shaffer_presentation_2008}; HAMOCC, \citeauthor{heinze_global_1999}, \citeyear{heinze_global_1999}; 
 MEDUSA, \citeauthor{munhoven_glacialinterglacial_2007}, \citeyear{munhoven_glacialinterglacial_2007}). In particular, these models consider fewer biogeochemical reactions and apply the so-called 1G approach, 
 thus just representing a single organic matter pool which is degraded at a constant rate. Obviously, such a simplification can neither account for the observed vast structural complexity in natural organic matter and its resulting 
 different degradation rates nor for the decrease in OM degradability during diagenesis \citep{arndt_quantifying_2013}. 
 A further problem of both approaches (and models in general) are model parameters which implicitly account for processes not explicitly described. These parameters are either derived through profile fitting for a specific site or 
 follow different global relationships with a related, readily available sediment characteristic, such as water depth \citep{middelburg_empirical_1997} or sedimentation rate \citep{tromp_global_1995}. 
 However, also these relationships are mostly based on simple fitting excercises to limited data sets and cannot replace a mechanistic representation of the underlying processes, especially when applying the model 
-for different geological timescales. 
+for different geological timescales. \\[2ex]
 
-Even though there is potential to use more appropriate global sediment representations, in most current Earth System models sediment-water exchange of OM and chemical elements is generally treated in a very 
+% From Soetart-review:  this evidence of mutual interaction between the water column and the sediment
+% beneath, most biogeochemical models for water column processes either neglect the sediments or apply
+% a rather crude approximation for the benthic response.
+\textbf{How are sediments resolved in Earth System models:}\\
+Even though there is potential to use more appropriate global sediment representations, in most current Earth System models sediment-water exchange of OM and chemical elements is either neglected or treated in a very 
 simplistic way \citep{soetaert_coupling_2000, huelse_biopump_models_2016}. 
-Most Earth system Models of Intermediate Complexity (EMICs) for instance represent the sediment-water interface either as a reflective or a conservative/semi-reflective boundary \citep{huelse_biopump_models_2016}. 
+Most Earth system Models of Intermediate Complexity (EMICs), for instance, represent the sediment-water interface either as a reflective or a conservative/semi-reflective boundary \citep{huelse_biopump_models_2016}. 
 Thus, all particulate material deposited on the seafloor is either instantaneously consumed (reflective boundary), or a fixed fraction is buried in the sediments (conservative/semi-reflective boundary). 
 Both highly simplified approaches furthermore completely neglect the exchange of solute species through the sediment-water interface and, therefore, cannot resolve the complex benthic-pelagic coupling. 
 However, due to their computational efficiency, both representations are often used in global biogeochemical models \citep[e.g.][]{najjar_impact_2007, ridgwell_marine_2007, goosse_description_2010}
-
-
-\textcolor{red}{TODO:} Sandra review: large scale of published model parameters illustrates the complex nature of organic matter dynamics! Very difficult to find global relationships to relate model parameters 
-to available environmental characteristics, such as water depth, deposition rate. Sentence about: even though there is some potential most ESM use the following:
-
+\textcolor{red}{TODO: } Talk about other two representations (i.e. vertically integrated and resolved models) and how they usually quantify the rate of OM degradation (see Stolpovsky et al. 2015). 
 See e.g. \citep{soetaert_coupling_2000, mackenzie_past_2004}.\\[2ex]
 
-How are sediment resolved in Earth System models\\
-See e.g. \citep{soetaert_coupling_2000}\\[2ex]
-Problem with that: \\
+% \textcolor{red}{TODO:} Sandra review: large scale of published model parameters illustrates the complex nature of organic matter dynamics! Very difficult to find global relationships to relate model parameters 
+% to available environmental characteristics, such as water depth, deposition rate. 
+
+\textbf{Problem with that:} \\
 The spatial variability in e.g. benthic particulate organic carbon (POC) mineralization kinetics throughout the ocean is currently unknown. This creates considerable 
-uncertainties when diagenetic models are used to couple benthic and pelagic biogeochemical cycles in global models. \citep{kriest_numerical_2011} \\[2ex]
+uncertainties when diagenetic models are used to couple benthic and pelagic biogeochemical cycles in global models. see: https://goldschmidtabstracts.info/2013/2270.pdf \\[2ex]
 
-Alternative Model approaches, e.g. from coastal research\\[2ex]
+\textbf{Alternative Model approaches} e.g. from coastal research\\[2ex]
 
+\textbf{Solution presented here:}
 Here, we present the OrganicMatter ENabled SEDiment model (OMEN-SED 1.0), a new, one-dimensional, numerically efficient reactive transport model (RTM) 
 that describes OM cycling as well as the associated dynamics of the most important terminal electron acceptors (\chem{O_2,\ NO_3,\ SO_4,\ CH_4}), 
 related reduced substances (\chem{NH_4,\ H_2S}) and macronutrients (\chem{PO_4}). %, DIC and Alkalinity.  
