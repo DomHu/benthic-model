@@ -167,7 +167,7 @@ CONTAINS
         real::loc_M_swiflux                                         ! SWI return fluxes of M - DOES NOT EXIST, JUST FOR DEBUGGING
         real::loc_fPOC                                              ! Corg flux to the sediment [cm3 cm-2]
         !        real::dum_POC1_wtpct_swi, dum_POC2_wtpct_swi             ! POC concentrations at SWI [wt%]
-        logical :: loc_print_results  = .FALSE.
+        logical :: loc_print_results
         REAL::loc_new_sed_vol                                      ! new sediment volume (as SOLID material)
         REAL::loc_depth_comparison
         integer:: loc_k = 0
@@ -184,10 +184,14 @@ CONTAINS
             dum_swiconc_NO3 = dum_sfcsumocn(io_NO3)*1e-3
             dum_swiconc_NH4 = dum_sfcsumocn(io_NH4)*1e-3
         end if
+        if(ocn_select(io_SO4))then
         dum_swiconc_SO4 = dum_sfcsumocn(io_SO4)*1e-3
         dum_swiconc_H2S = dum_sfcsumocn(io_H2S)*1e-3
-        dum_swiconc_PO4 = dum_sfcsumocn(io_PO4)*1e-3
-        dum_swiflux_M = 365*0.2e-10
+        end if
+        if(ocn_select(io_PO4))then
+            dum_swiconc_PO4 = dum_sfcsumocn(io_PO4)*1e-3
+            dum_swiflux_M = 365*0.2e-10
+        end if
 
 
         ! calculate wt% of mol from POC flux (both fractions)
@@ -205,7 +209,7 @@ CONTAINS
 !        dum_swiconc_PO4 = 40.0e-9
 !        loc_depth_comparison = 600.0
 
-        loc_print_results = .true.
+        loc_print_results = .false.
         if(loc_print_results) then
             if(loc_new_sed_vol .LE. 4.0e-4)then
                         print*,'dum_D = ', dum_D
@@ -229,7 +233,7 @@ CONTAINS
         !        loc_wtpct_Middel = fun_sed_calcCorgwt(loc_fPOC, w, por, rho_sed)
         
         loc_POC1_wtpct_swi = (1-loc_new_sed(is_POC_frac2))*loc_wtpct
-        loc_POC2_wtpct_swi = loc_new_sed(is_POC_frac2)*loc_wtpct         
+        loc_POC2_wtpct_swi = loc_new_sed(is_POC_frac2)*loc_wtpct
 
 
         ! DH Change for comparison
@@ -265,64 +269,82 @@ CONTAINS
 
         
         ! Check for no POC deposited -> nothing preserved
-        if(loc_POC1_wtpct_swi==0.0 .AND. loc_POC2_wtpct_swi ==0)then
-            dum_sed_pres_fracC=0.0
-            ! what TODO when no POC, still call sediment model for solutes?
+        if(loc_POC1_wtpct_swi .LE. const_real_nullsmall .AND. loc_POC2_wtpct_swi .LE. const_real_nullsmall)then
+            dum_sed_pres_fracC = 0.0
+            ! what TODO when no POC, still call sediment model for solutes - no, set everything to zero
+            loc_O2_swiflux = 0.0
+            loc_NO3_swiflux = 0.0
+            loc_SO4_swiflux = 0.0
+            loc_NH4_swiflux = 0.0
+            loc_H2S_swiflux = 0.0
         else
             call sub_huelseetal2016_zTOC(loc_POC1_wtpct_swi, loc_POC2_wtpct_swi, dum_sed_pres_fracC)
-        ! below test with specific wt% to compare with matlab
-        !!!!            call sub_huelseetal2016_zTOC(0.006, 0.002, dum_sed_pres_fracC)
-        !        print*,'loc_sed_pres_fracC FIX', loc_sed_pres_fracC
-        end if
-        
-        if(dum_swiconc_O2 < 0.0) then
-            loc_O2_swiflux = 0.0            ! if negative [O2] -> no SWI flux
-        else
-            ! Dom TODO: can do it as a function as don't need to give values. BW-O2 is global variable
-            call sub_huelseetal2016_zO2(dum_D, dum_swiconc_O2, loc_O2_swiflux)
-        end if
-        dum_new_swifluxes(io_O2) = loc_O2_swiflux                                   ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
-        
-        if(ocn_select(io_NO3))then
-            call sub_huelseetal2016_zNO3(dum_swiconc_NO3, loc_NO3_swiflux)
-            dum_new_swifluxes(io_NO3) = loc_NO3_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
-        else
-            zno3 = zox
-        end if
+            ! below test with specific wt% to compare with matlab
+            !!!!            call sub_huelseetal2016_zTOC(0.006, 0.002, dum_sed_pres_fracC)
+            !        print*,'loc_sed_pres_fracC FIX', loc_sed_pres_fracC
 
-        ! here check for SWI concentration, as problem with root-finding
-        ! when is zero. And as no SO4 produced no need to call subroutine anyway        
-        if(ocn_select(io_SO4))then        
-            if(dum_swiconc_SO4 > 0.0)then
-                call sub_huelseetal2016_zSO4(dum_swiconc_SO4, loc_SO4_swiflux)
-                dum_new_swifluxes(io_SO4) = loc_SO4_swiflux                         ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
-            else        
-                zso4 = zno3
+            if(dum_swiconc_O2 .LE. const_real_nullsmall) then
+                loc_O2_swiflux = 0.0            ! if negative [O2] -> no SWI flux
+            else
+                ! Dom TODO: can do it as a function as don't need to give values. BW-O2 is global variable
+                call sub_huelseetal2016_zO2(dum_D, dum_swiconc_O2, loc_O2_swiflux)
+!                if(abs(loc_O2_swiflux) .LE. const_real_nullsmall)then
+!                    print*,'loc_O2_swiflux too small ', loc_O2_swiflux
+!    !                STOP
+!                end if
+
             end if
-        else
-            zso4 = zno3
-        end if              
 
-        if(ocn_select(io_NH4))then
-            call sub_huelseetal2016_zNH4(dum_swiconc_NH4, loc_NH4_swiflux)
-            dum_new_swifluxes(io_NH4) = loc_NH4_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
-        else
-            ! If not selected nothing needs to be done
-        end if
+!            if(ocn_select(io_NO3))then
+!                call sub_huelseetal2016_zNO3(dum_swiconc_NO3, loc_NO3_swiflux)
+!            else
+!                zno3 = zox
+!            end if
+!
+!            ! here check for SWI concentration, as problem with root-finding
+!            ! when is zero. And as no SO4 produced no need to call subroutine anyway
+!            if(ocn_select(io_SO4))then
+!                if(dum_swiconc_SO4 > const_real_nullsmall)then
+!                    call sub_huelseetal2016_zSO4(dum_swiconc_SO4, loc_SO4_swiflux)
+!                else
+!                    zso4 = zno3
+!                end if
+!            else
+!                zso4 = zno3
+!            end if
+!
+!            if(ocn_select(io_NH4))then
+!                call sub_huelseetal2016_zNH4(dum_swiconc_NH4, loc_NH4_swiflux)
+!            else
+!                ! If not selected nothing needs to be done
+!            end if
+!
+!            if(ocn_select(io_H2S))then
+!                call sub_huelseetal2016_zH2S(dum_swiconc_H2S, loc_H2S_swiflux)
+!            else
+!                ! If not selected nothing needs to be done
+!            end if
+!
+!            if(ocn_select(io_PO4))then
+!                call sub_huelseetal2016_zPO4_M(dum_swiconc_PO4, loc_PO4_swiflux, dum_swiflux_M, loc_M_swiflux)
+!            else
+!                ! If not selected nothing needs to be done
+!            end if
+        end if  ! loc_POC1/2_wtpct_swi .LE. const_real_nullsmall
 
-        if(ocn_select(io_H2S))then                     
-            call sub_huelseetal2016_zH2S(dum_swiconc_H2S, loc_H2S_swiflux)
-            dum_new_swifluxes(io_H2S) = loc_H2S_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
-        else
-            ! If not selected nothing needs to be done
-        end if
-
-        if(ocn_select(io_PO4))then
-            call sub_huelseetal2016_zPO4_M(dum_swiconc_PO4, loc_PO4_swiflux, dum_swiflux_M, loc_M_swiflux)
-            dum_new_swifluxes(io_PO4) = loc_PO4_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
-        else
-            ! If not selected nothing needs to be done
-        end if
+        ! Now pass back the values to the global field
+        dum_new_swifluxes(io_O2) = loc_O2_swiflux                                   ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
+!        if(ocn_select(io_NO3))then
+!            dum_new_swifluxes(io_NO3) = loc_NO3_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
+!            dum_new_swifluxes(io_NH4) = loc_NH4_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
+!        end if
+!        if(ocn_select(io_SO4))then
+!            dum_new_swifluxes(io_SO4) = loc_SO4_swiflux                         ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
+!            dum_new_swifluxes(io_H2S) = loc_H2S_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
+!        end if
+!        if(ocn_select(io_PO4))then
+!            dum_new_swifluxes(io_PO4) = loc_PO4_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
+!        end if
 
         if(loc_print_results) then
             !            loc_new_sed_vol = fun_calc_sed_vol(loc_new_sed(:))
@@ -631,7 +653,7 @@ CONTAINS
         !        print*, 'loc_POC1_conc_zinf ', char(9), loc_POC1_conc_zinf
         !        print*, 'loc_POC2_conc_zinf ', char(9), loc_POC2_conc_zinf
 
-        dum_sed_pres_fracC = (loc_POC1_conc_zinf+loc_POC2_conc_zinf)/(dum_POC1_conc_swi+dum_POC2_conc_swi)
+        dum_sed_pres_fracC = (loc_POC1_conc_zinf+loc_POC2_conc_zinf)/(dum_POC1_conc_swi+dum_POC2_conc_swi+const_real_nullsmall)
 
     !    print*, ' '
     !    print*, 'F_TOC1', char(9), F_TOC1
@@ -667,10 +689,12 @@ CONTAINS
         !        print*, '---------------------- START zO2 ------------------------ '
         !        print*,'--- SWI O2 =', dum_swiconc_O2
         zox = 1e-10
-        bctype = 1
         flxzox = 0.0
         conczox = 0.0
         loc_new_swiflux_O2 = 0.0
+        fun0 = 0.0
+        zL = 0.0
+        tol = 0.0
         !        flxswi = 0.0
 
         !    call sub_huelseetal2016_zO2_calcbc(zox, bctype, flxzox, conczox, flxswi, r_zxf)
@@ -684,15 +708,16 @@ CONTAINS
         !    print*,' '
         !    print*,'Try zero flux at zinf and see if we have any O2 left'
         ! Try zero flux at zinf and see if we have any O2 left
-        call sub_huelseetal2016_zO2_calcbc(dum_D, zinf, 2, flxzox, conczox, loc_new_swiflux_O2, r_zxf);
+        bctype = 2
+        call sub_huelseetal2016_zO2_calcbc(dum_D, zinf, bctype, flxzox, conczox, loc_new_swiflux_O2, r_zxf);
         !    print*,'flxzox', flxzox
         !    print*,'conczox at zinf ', conczox
         !    print*,'flxswi', flxswi
 
-        if (fun0 .ge. 0)then   ! eg zero oxygen at swi
+        if (fun0 .ge. 0.0)then   ! eg zero oxygen at swi
             zox = 0.0   ! DH 241016 was 1e-10
             bctype = 1
-        elseif (conczox .ge. 0)then      ! still O2 at zinf -> zox = zinf
+        elseif (conczox .ge. 0.0)then      ! still O2 at zinf -> zox = zinf
             zox = zinf
             bctype = 2
         else                        ! search zox in the interval
@@ -812,7 +837,7 @@ CONTAINS
 
         flxswi = por*(Dswi*(rO2_AO2*dedz_0+rO2_BO2*dfdz_0 + dgdz_0) - w*dum_swiconc_O2)   ! por fac so this is per cm^2 water column
 
-        r_zxf = zox/(zoxgf + zox)   ! roll off oxidation at low zox
+        r_zxf = zox/(zoxgf + zox + const_real_nullsmall)   ! roll off oxidation at low zox
         
                 ! TODO: ASK STUART or ANDY
         if( &
@@ -875,6 +900,7 @@ CONTAINS
 
         real FUN_huelseetal2016_calcFO2, z, tmpreac1, tmpreac2
 
+        FUN_huelseetal2016_calcFO2 = 0.0
         ! Oxydation of reduced species at zox (NEED A RATIO for ODU! and add NH4
         ! adsporption!
         tmpreac1=gammaH2S*1.0*SO4C+2.0*gamma*NC1
@@ -887,8 +913,7 @@ CONTAINS
         !tmpreac2=OC+2*gamma*NC2
         !FLUX of NH4 and Reduced species from ZOX to ZINF
 
-
-        FUN_huelseetal2016_calcFO2 = z/(zoxgf + z) * FUN_calcReac(z, zinf, tmpreac1, tmpreac2)
+        FUN_huelseetal2016_calcFO2 = z/(zoxgf + z + const_real_nullsmall) * FUN_calcReac(z, zinf, tmpreac1, tmpreac2)
 
     !    print*,'calcFO2', calcFO2
 
@@ -902,14 +927,14 @@ CONTAINS
     FUNCTION FUN_zO2(z)
 
         real FUN_zO2, z, flxzox, conczox, flxswi, r_zxf
-
+        integer bctype
         flxzox = 0.0
         conczox = 0.0
         flxswi = 0.0
         !    print*,' '
         !    print*,'..... START FUN_zO2'
-
-        call sub_huelseetal2016_zO2_calcbc(9999.9, z, 1, flxzox, conczox, flxswi, r_zxf)
+        bctype = 1
+        call sub_huelseetal2016_zO2_calcbc(9999.9, z, bctype, flxzox, conczox, flxswi, r_zxf)
 
         FUN_zO2 = flxzox + FUN_huelseetal2016_calcFO2(z)
 
@@ -2072,9 +2097,9 @@ CONTAINS
         reacf1 = k1*reac1
         reacf2 = k2*reac2
         FUN_calcReac_l1 = -reacf1*(A11*(exp(aa11*zU)*bb11 - exp(bb11*zU)*aa11 - exp(aa11*zL)*bb11 + exp(bb11*zL)*aa11) &
-        + dum_POC1_conc_swi*exp(bb11*zU)*aa11 - dum_POC1_conc_swi*exp(bb11*zL)*aa11)/(aa11*bb11) &
+        + dum_POC1_conc_swi*exp(bb11*zU)*aa11 - dum_POC1_conc_swi*exp(bb11*zL)*aa11)/(aa11*bb11 + const_real_nullsmall) &
         -reacf2*(A12*(exp(aa12*zU)*bb12 - exp(bb12*zU)*aa12 - exp(aa12*zL)*bb12 + exp(bb12*zL)*aa12) &
-        + dum_POC2_conc_swi*exp(bb12*zU)*aa12 - dum_POC2_conc_swi*exp(bb12*zL)*aa12)/(aa12*bb12)
+        + dum_POC2_conc_swi*exp(bb12*zU)*aa12 - dum_POC2_conc_swi*exp(bb12*zL)*aa12)/(aa12*bb12 + const_real_nullsmall)
     !    print*,'in FUN_calcReac_l1 dum_POC1_conc_swi = ', dum_POC1_conc_swi
     !    print*,'in FUN_calcReac_l1 dum_POC2_conc_swi = ', dum_POC2_conc_swi
     
@@ -2094,8 +2119,8 @@ CONTAINS
         reacf1 = k1*reac1
         reacf2 = k2*reac2
 
-        FUN_calcReac_l2 = -reacf1*A21*(exp(aa21*zU) - exp(aa21*zL))/aa21 &
-        -reacf2*A22*(exp(aa22*zU) - exp(aa22*zL))/aa22
+        FUN_calcReac_l2 = -reacf1*A21*(exp(aa21*zU) - exp(aa21*zL))/(aa21 + const_real_nullsmall) &
+        -reacf2*A22*(exp(aa22*zU) - exp(aa22*zL))/(aa22 + const_real_nullsmall)
 
     !    print*,'FUN_calcReac_l2', FUN_calcReac_l2
 
@@ -2182,18 +2207,18 @@ CONTAINS
 
         e = 1.0
         dedz = 0.0
-        b1=w/Dtemp
+        b1=w/(Dtemp + const_real_nullsmall)
         f=exp(z*b1)
         dfdz = b1*exp(z*b1)
 
         pfac = 1                    ! in fact, already has (1-por)/por
 
-        PhiI1 = -pfac*k1*(reac1)*A11/(Dtemp*aa11**2-w*aa11-ktemp)
-        PhiII1  = pfac*k1*(reac1)*A11/(Dtemp*bb11**2-w*bb11-ktemp)
-        PhiIII1 =-pfac*k1*(reac1)*dum_POC1_conc_swi/(Dtemp*bb11**2-w*bb11-ktemp)
-        PhiI2   =-pfac*k2*(reac2)*A12/(Dtemp*aa12**2-w*aa12-ktemp)
-        PhiII2  = pfac*k2*(reac2)*A12/(Dtemp*bb12**2-w*bb12-ktemp)
-        PhiIII2 =-pfac*k2*(reac2)*dum_POC2_conc_swi/(Dtemp*bb12**2-w*bb12-ktemp)
+        PhiI1 = -pfac*k1*(reac1)*A11/(Dtemp*aa11**2-w*aa11-ktemp + const_real_nullsmall)
+        PhiII1  = pfac*k1*(reac1)*A11/(Dtemp*bb11**2-w*bb11-ktemp + const_real_nullsmall)
+        PhiIII1 =-pfac*k1*(reac1)*dum_POC1_conc_swi/(Dtemp*bb11**2-w*bb11-ktemp + const_real_nullsmall)
+        PhiI2   =-pfac*k2*(reac2)*A12/(Dtemp*aa12**2-w*aa12-ktemp + const_real_nullsmall)
+        PhiII2  = pfac*k2*(reac2)*A12/(Dtemp*bb12**2-w*bb12-ktemp + const_real_nullsmall)
+        PhiIII2 =-pfac*k2*(reac2)*dum_POC2_conc_swi/(Dtemp*bb12**2-w*bb12-ktemp + const_real_nullsmall)
 
 
         ea11z = exp(aa11*z)
@@ -2235,7 +2260,7 @@ CONTAINS
 
         e = 1.0
         dedz = 0.0
-        b2 = w/Dtemp
+        b2 = w/(Dtemp + const_real_nullsmall)
         f=exp(z*b2)
         dfdz = b2*exp(z*b2)
 
@@ -2244,8 +2269,8 @@ CONTAINS
 
 
 
-        PhiI1 = -pfac*k1*(reac1)*A21/(Dtemp*aa21**2-w*aa21-ktemp)
-        PhiI2 = -pfac*k2*(reac2)*A22/(Dtemp*aa22**2-w*aa22-ktemp)
+        PhiI1 = -pfac*k1*(reac1)*A21/(Dtemp*aa21**2-w*aa21-ktemp + const_real_nullsmall)
+        PhiI2 = -pfac*k2*(reac2)*A22/(Dtemp*aa22**2-w*aa22-ktemp + const_real_nullsmall)
 
         g = PhiI1*exp(aa21*z) + PhiI2*exp(aa22*z)
         dgdz = PhiI1*aa21*exp(aa21*z) + PhiI2*aa22*exp(aa22*z)
@@ -2397,12 +2422,12 @@ CONTAINS
         select case (dum_ltype)
             case (1)    ! bioturbated
                 if(dum_alphaP==0)then   ! oxic layer -> call PO4 first
-                    call sub_calcfg_l1_PO4(z, reac1P, reac2P, dum_D1P, dum_ktempP, dum_QtempP, 0.0D00, 0.0D00, dum_alphaP, &
+                    call sub_calcfg_l1_PO4(z, reac1P, reac2P, dum_D1P, dum_ktempP, dum_QtempP, 0.0, 0.0, dum_alphaP, &
                     e_P, dedz_P, f_P, dfdz_P, g_P, dgdz_P, p_P, dpdz_P, q_P, dqdz_P, loc_a1_P, loc_b1_P, loc_Phi1_P)
                     call sub_calcfg_l1_M(z, dum_D1M, dum_ktempM, dum_QtempM, loc_a1_P, loc_b1_P, loc_Phi1_P, dum_alphaM, &
                     e_M, dedz_M, f_M, dfdz_M, g_M, dgdz_M, p_M, dpdz_M, q_M, dqdz_M, loc_a1_M, loc_b1_M)
                 else        ! anoxic layer -> call M first
-                    call sub_calcfg_l1_M(z, dum_D1M, dum_ktempM, dum_QtempM, 0.0D00, 0.0D00, loc_Phi1_P, dum_alphaM, &
+                    call sub_calcfg_l1_M(z, dum_D1M, dum_ktempM, dum_QtempM, 0.0, 0.0, loc_Phi1_P, dum_alphaM, &
                     e_M, dedz_M, f_M, dfdz_M, g_M, dgdz_M, p_M, dpdz_M, q_M, dqdz_M, loc_a1_M, loc_b1_M)
                     call sub_calcfg_l1_PO4(z, reac1P, reac2P, dum_D1P, dum_ktempP, dum_QtempP, loc_a1_M, loc_b1_M, dum_alphaP, &
                     e_P, dedz_P, f_P, dfdz_P, g_P, dgdz_P, p_P, dpdz_P, q_P, dqdz_P, loc_a1_P, loc_b1_P, loc_Phi1_P)
@@ -2410,12 +2435,12 @@ CONTAINS
 
             case (2)    ! not bioturbated
                 if(dum_alphaP==0)then   ! oxic layer -> call PO4 first
-                    call sub_calcfg_l2_PO4(z, reac1P, reac2P, dum_D2P, dum_ktempP, dum_QtempP, 0.0D00, dum_alphaP, &
+                    call sub_calcfg_l2_PO4(z, reac1P, reac2P, dum_D2P, dum_ktempP, dum_QtempP, 0.0, dum_alphaP, &
                     e_P, dedz_P, f_P, dfdz_P, g_P, dgdz_P, p_P, dpdz_P, q_P, dqdz_P, loc_a2_P, loc_b2_P, loc_Phi2_P)
                     call sub_calcfg_l2_M(z, dum_ktempM, dum_QtempM, loc_a2_P, loc_b2_P, loc_Phi2_P, dum_alphaM, &
                     e_M, dedz_M, f_M, dfdz_M, g_M, dgdz_M, p_M, dpdz_M, q_M, dqdz_M, loc_a2_M)
                 else    ! anoxic layer -> call M first
-                    call sub_calcfg_l2_M(z, dum_ktempM, dum_QtempM, 0.0D00, 0.0D00, loc_Phi2_P, dum_alphaM, &
+                    call sub_calcfg_l2_M(z, dum_ktempM, dum_QtempM, 0.0, 0.0, loc_Phi2_P, dum_alphaM, &
                     e_M, dedz_M, f_M, dfdz_M, g_M, dgdz_M, p_M, dpdz_M, q_M, dqdz_M, loc_a2_M)
                     call sub_calcfg_l2_PO4(z, reac1P, reac2P, dum_D2P, dum_ktempP, dum_QtempP, loc_a2_M, dum_alphaP, &
                     e_P, dedz_P, f_P, dfdz_P, g_P, dgdz_P, p_P, dpdz_P, q_P, dqdz_P, loc_a2_P, loc_b2_P, loc_Phi2_P)
@@ -2424,12 +2449,12 @@ CONTAINS
             case (3)    ! crossing boundary
                 IF(z > zbio) THEN      ! not bioturbated region
                     if(dum_alphaP==0)then   ! oxic layer -> call PO4 first NOTE: BUT DECIDE VIA ALPHA_M NOT WITH <= ZOX!!! DOESN't WORK FOR BOUNDARY ZOX
-                        call sub_calcfg_l2_PO4(z, reac1P, reac2P, dum_D2P, dum_ktempP, dum_QtempP, 0.0D00, dum_alphaP, &
+                        call sub_calcfg_l2_PO4(z, reac1P, reac2P, dum_D2P, dum_ktempP, dum_QtempP, 0.0, dum_alphaP, &
                         e_P, dedz_P, f_P, dfdz_P, g_P, dgdz_P, p_P, dpdz_P, q_P, dqdz_P, loc_a2_P, loc_b2_P, loc_Phi2_P)
                         call sub_calcfg_l2_M(z, dum_ktempM, dum_QtempM, loc_a2_P, loc_b2_P, loc_Phi2_P, dum_alphaM, &
                         e_M, dedz_M, f_M, dfdz_M, g_M, dgdz_M, p_M, dpdz_M, q_M, dqdz_M, loc_a2_M)
                     else ! anoxic layer -> call M first
-                        call sub_calcfg_l2_M(z, dum_ktempM, dum_QtempM, 0.0D00, 0.0D00, loc_Phi2_P, dum_alphaM, &
+                        call sub_calcfg_l2_M(z, dum_ktempM, dum_QtempM, 0.0, 0.0, loc_Phi2_P, dum_alphaM, &
                         e_M, dedz_M, f_M, dfdz_M, g_M, dgdz_M, p_M, dpdz_M, q_M, dqdz_M, loc_a2_M)
                         call sub_calcfg_l2_PO4(z, reac1P, reac2P, dum_D2P, dum_ktempP, dum_QtempP, loc_a2_M, dum_alphaP, &
                         e_P, dedz_P, f_P, dfdz_P, g_P, dgdz_P, p_P, dpdz_P, q_P, dqdz_P, loc_a2_P, loc_b2_P, loc_Phi2_P)
@@ -2437,7 +2462,7 @@ CONTAINS
                 ELSE    ! bioturbated region z <= zbio
                     if(dum_alphaP==0)then   ! oxic layer -> call PO4 first
                         ! CASE 1 & 2: LAYER 1: have 4 int. const.
-                        call sub_calcfg_l1_PO4(z, reac1P, reac2P, dum_D1P, dum_ktempP, dum_QtempP, 0.0D00, 0.0D00, dum_alphaP, &
+                        call sub_calcfg_l1_PO4(z, reac1P, reac2P, dum_D1P, dum_ktempP, dum_QtempP, 0.0, 0.0, dum_alphaP, &
                         loc_e_P_1, loc_dedz_P_1, loc_f_P_1, loc_dfdz_P_1, loc_g_P_1, loc_dgdz_P_1, loc_p_P_1, loc_dpdz_P_1, &
                         loc_q_P_1, loc_dqdz_P_1, loc_a1_P, loc_b1_P, loc_Phi1_P)
                         call sub_calcfg_l1_M(z, dum_D1M, dum_ktempM, dum_QtempM, loc_a1_P, loc_b1_P, loc_Phi1_P, dum_alphaM, &
@@ -2446,7 +2471,7 @@ CONTAINS
                         ! DH: FOR CASE 2: DON'T HAVE D FROM LAYER 2
                     else    ! anoxic layer -> call M first
                         ! DH: CASE 1: LAYER 2: have 4 int. const.
-                        call sub_calcfg_l1_M(z, dum_D1M, dum_ktempM, dum_QtempM, 0.0D00, 0.0D00, loc_Phi1_P, dum_alphaM, &
+                        call sub_calcfg_l1_M(z, dum_D1M, dum_ktempM, dum_QtempM, 0.0, 0.0, loc_Phi1_P, dum_alphaM, &
                         loc_e_M_1, loc_dedz_M_1, loc_f_M_1, loc_dfdz_M_1, loc_g_M_1, loc_dgdz_M_1, loc_p_M_1, loc_dpdz_M_1, &
                         loc_q_M_1, loc_dqdz_M_1, loc_a1_M, loc_b1_M)
                         call sub_calcfg_l1_PO4(z, reac1P, reac2P, dum_D1P, dum_ktempP, dum_QtempP, loc_a1_M, loc_b1_M, dum_alphaP, &
@@ -2566,11 +2591,11 @@ CONTAINS
         real ea11z, eb11z, ea12z, eb12z
 
 
-        a1=(w-sqrt(w**2+4.0*Dtemp*ktemp))/(2.0*Dtemp)
+        a1=(w-sqrt(w**2+4.0*Dtemp*ktemp))/(2.0*Dtemp + const_real_nullsmall)
         e=exp(z*a1)
         dedz = a1*exp(z*a1)
 
-        b1=(w+sqrt(w**2+4.0*Dtemp*ktemp))/(2.0*Dtemp)
+        b1=(w+sqrt(w**2+4.0*Dtemp*ktemp))/(2.0*Dtemp + const_real_nullsmall)
         f=exp(z*b1)
         dfdz = b1*exp(z*b1);
 
@@ -2578,12 +2603,12 @@ CONTAINS
 
         ! NOW to OM reaction terms!
         ! save all Phis in one variable to pass back
-        Phi1(1) = -pfac*k1*(reac1)*A11/(Dtemp*aa11**2-w*aa11-ktemp)
-        Phi1(2)  = pfac*k1*(reac1)*A11/(Dtemp*bb11**2-w*bb11-ktemp)
-        Phi1(3) =-pfac*k1*(reac1)*dum_POC1_conc_swi/(Dtemp*bb11**2-w*bb11-ktemp)
-        Phi1(4)   =-pfac*k2*(reac2)*A12/(Dtemp*aa12**2-w*aa12-ktemp)
-        Phi1(5)  = pfac*k2*(reac2)*A12/(Dtemp*bb12**2-w*bb12-ktemp)
-        Phi1(6) =-pfac*k2*(reac2)*dum_POC2_conc_swi/(Dtemp*bb12**2-w*bb12-ktemp)
+        Phi1(1) = -pfac*k1*(reac1)*A11/(Dtemp*aa11**2-w*aa11-ktemp + const_real_nullsmall)
+        Phi1(2)  = pfac*k1*(reac1)*A11/(Dtemp*bb11**2-w*bb11-ktemp + const_real_nullsmall)
+        Phi1(3) =-pfac*k1*(reac1)*dum_POC1_conc_swi/(Dtemp*bb11**2-w*bb11-ktemp + const_real_nullsmall)
+        Phi1(4)   =-pfac*k2*(reac2)*A12/(Dtemp*aa12**2-w*aa12-ktemp + const_real_nullsmall)
+        Phi1(5)  = pfac*k2*(reac2)*A12/(Dtemp*bb12**2-w*bb12-ktemp + const_real_nullsmall)
+        Phi1(6) =-pfac*k2*(reac2)*dum_POC2_conc_swi/(Dtemp*bb12**2-w*bb12-ktemp + const_real_nullsmall)
 
 
         ea11z = exp(aa11*z);
@@ -2596,7 +2621,7 @@ CONTAINS
             Phi1(4)*ea12z + Phi1(5)*eb12z + Phi1(6)*eb12z
         else
             g =  Phi1(1)*ea11z + Phi1(2)*eb11z + Phi1(3)*eb11z + &
-            Phi1(4)*ea12z + Phi1(5)*eb12z + Phi1(6)*eb12z + Qtemp/ktemp   ! here problem if ktemp=0
+            Phi1(4)*ea12z + Phi1(5)*eb12z + Phi1(6)*eb12z + Qtemp/(ktemp + const_real_nullsmall)   ! here problem if ktemp=0
         end if
 
         dgdz = Phi1(1)*aa11*ea11z + Phi1(2)*bb11*eb11z + Phi1(3)*bb11*eb11z + &
@@ -2608,9 +2633,9 @@ CONTAINS
             q = 0
             dqdz = 0
         else                    ! PO4 is dependent on M
-            p = -alpha/(Dtemp*a1_M**2-w*a1_M-ktemp)*exp(z*a1_M)
+            p = -alpha/(Dtemp*a1_M**2-w*a1_M-ktemp + const_real_nullsmall)*exp(z*a1_M)
             dpdz = a1_M*p
-            q = -alpha/(Dtemp*b1_M**2-w*b1_M-ktemp)*exp(z*b1_M)
+            q = -alpha/(Dtemp*b1_M**2-w*b1_M-ktemp + const_real_nullsmall)*exp(z*b1_M)
             dqdz = b1_M*q
         end if
 
@@ -2644,25 +2669,25 @@ CONTAINS
         real ea11z, eb11z, ea12z, eb12z
 
 
-        a2=(w-sqrt(w**2+4.0*Dtemp*ktemp))/(2.0*Dtemp)
+        a2=(w-sqrt(w**2+4.0*Dtemp*ktemp))/(2.0*Dtemp + const_real_nullsmall)
         e=exp(z*a2)
         dedz = a2*exp(z*a2)
 
-        b2=(w+sqrt(w**2+4.0*Dtemp*ktemp))/(2.0*Dtemp)
+        b2=(w+sqrt(w**2+4.0*Dtemp*ktemp))/(2.0*Dtemp + const_real_nullsmall)
         f=exp(z*b2)
         dfdz = b2*exp(z*b2)
 
         !pfac=1./por;   ! assume org matter already *(1-por)
         pfac = 1            !in fact, already has (1-por)/por
 
-        Phi2(1) = -pfac*k1*(reac1)*A21/(Dtemp*aa21**2-w*aa21-ktemp)
-        Phi2(2) = -pfac*k2*(reac2)*A22/(Dtemp*aa22**2-w*aa22-ktemp)
+        Phi2(1) = -pfac*k1*(reac1)*A21/(Dtemp*aa21**2-w*aa21-ktemp + const_real_nullsmall)
+        Phi2(2) = -pfac*k2*(reac2)*A22/(Dtemp*aa22**2-w*aa22-ktemp + const_real_nullsmall)
 
 
         if(ktemp==0)then            ! CHECK: think no need for this as always ktemp <> 0
             g = Phi2(1)*exp(aa21*z) + Phi2(2)*exp(aa22*z)
         else
-            g = Phi2(1)*exp(aa21*z) + Phi2(2)*exp(aa22*z) + Qtemp/ktemp
+            g = Phi2(1)*exp(aa21*z) + Phi2(2)*exp(aa22*z) + Qtemp/(ktemp + const_real_nullsmall)
         end if
         dgdz = Phi2(1)*aa21*exp(aa21*z) + Phi2(2)*aa22*exp(aa22*z)
 
@@ -2672,7 +2697,7 @@ CONTAINS
             q = 0
             dqdz = 0
         else                        ! PO4 is dependent on M
-            p = -alpha/(Dtemp*a2_M**2-w*a2_M-ktemp)*exp(a2_M*z)
+            p = -alpha/(Dtemp*a2_M**2-w*a2_M-ktemp + const_real_nullsmall)*exp(a2_M*z)
             dpdz = a2_M*p
             q=0
             dqdz=0
@@ -2707,32 +2732,32 @@ CONTAINS
         ! local variables
 
 
-        c1=(w-sqrt(w**2+4.0*Dtemp*ktemp))/(2.0*Dtemp)
+        c1=(w-sqrt(w**2+4.0*Dtemp*ktemp))/(2.0*Dtemp + const_real_nullsmall)
         p=exp(z*c1)
         dpdz = c1*exp(z*c1)
 
-        d1=(w+sqrt(w**2+4.0*Dtemp*ktemp))/(2.0*Dtemp)
+        d1=(w+sqrt(w**2+4.0*Dtemp*ktemp))/(2.0*Dtemp + const_real_nullsmall)
         q=exp(z*d1)
         dqdz = d1*exp(z*d1);
 
         if(alpha .NE. 0)then      ! oxic layer: was z<=res.zox BUT problems at boundary. M is dependent on PO4
             c1=0
             d1=0
-            e = -alpha/(Dtemp*a1_P**2-w*a1_P-ktemp)*exp(z*a1_P)
+            e = -alpha/(Dtemp*a1_P**2-w*a1_P-ktemp + const_real_nullsmall)*exp(z*a1_P)
             dedz = a1_P*e
-            f = -alpha/(Dtemp*b1_P**2-w*b1_P-ktemp)*exp(z*b1_P)
+            f = -alpha/(Dtemp*b1_P**2-w*b1_P-ktemp + const_real_nullsmall)*exp(z*b1_P)
             dfdz = b1_P*f
-            g = -alpha*(Phi1_P(1)/(Dtemp*aa11**2-w*aa11-ktemp)*exp(z*aa11) + Phi1_P(2)/(Dtemp*bb11**2-w*bb11-ktemp)*exp(z*bb11) + &
-            Phi1_P(3)/(Dtemp*bb11**2-w*bb11-ktemp)*exp(z*bb11) + &
-            Phi1_P(4)/(Dtemp*aa12**2-w*aa12-ktemp)*exp(z*aa12) + Phi1_P(5)/(Dtemp*bb12**2-w*bb12-ktemp)*exp(z*bb12) + &
-            Phi1_P(6)/(Dtemp*bb12**2-w*bb12-ktemp)*exp(z*bb12))
-            dgdz = -alpha*(Phi1_P(1)/(Dtemp*aa11**2-w*aa11-ktemp)*exp(z*aa11)*aa11 + Phi1_P(2)/(Dtemp*bb11**2-w*bb11-ktemp) &
-            *exp(z*bb11)*bb11 + Phi1_P(3)/(Dtemp*bb11**2-w*bb11-ktemp)*exp(z*bb11)*bb11 + &
-            Phi1_P(4)/(Dtemp*aa12**2-w*aa12-ktemp)*exp(z*aa12)*aa12 + Phi1_P(5)/(Dtemp*bb12**2-w*bb12-ktemp)*exp(z*bb12)*bb12 + &
-            Phi1_P(6)/(Dtemp*bb12**2-w*bb12-ktemp)*exp(z*bb12)*bb12)
+            g = -alpha*(Phi1_P(1)/(Dtemp*aa11**2-w*aa11-ktemp + const_real_nullsmall)*exp(z*aa11) + Phi1_P(2)/(Dtemp*bb11**2-w*bb11-ktemp + const_real_nullsmall)*exp(z*bb11) + &
+            Phi1_P(3)/(Dtemp*bb11**2-w*bb11-ktemp + const_real_nullsmall)*exp(z*bb11) + &
+            Phi1_P(4)/(Dtemp*aa12**2-w*aa12-ktemp + const_real_nullsmall)*exp(z*aa12) + Phi1_P(5)/(Dtemp*bb12**2-w*bb12-ktemp + const_real_nullsmall)*exp(z*bb12) + &
+            Phi1_P(6)/(Dtemp*bb12**2-w*bb12-ktemp + const_real_nullsmall)*exp(z*bb12))
+            dgdz = -alpha*(Phi1_P(1)/(Dtemp*aa11**2-w*aa11-ktemp + const_real_nullsmall)*exp(z*aa11)*aa11 + Phi1_P(2)/(Dtemp*bb11**2-w*bb11-ktemp + const_real_nullsmall) &
+            *exp(z*bb11)*bb11 + Phi1_P(3)/(Dtemp*bb11**2-w*bb11-ktemp + const_real_nullsmall)*exp(z*bb11)*bb11 + &
+            Phi1_P(4)/(Dtemp*aa12**2-w*aa12-ktemp + const_real_nullsmall)*exp(z*aa12)*aa12 + Phi1_P(5)/(Dtemp*bb12**2-w*bb12-ktemp + const_real_nullsmall)*exp(z*bb12)*bb12 + &
+            Phi1_P(6)/(Dtemp*bb12**2-w*bb12-ktemp + const_real_nullsmall)*exp(z*bb12)*bb12)
 
         else                    ! anoxic layer: M is independent of PO4 (no value in alpha!)
-            g = Qtemp/ktemp
+            g = Qtemp/(ktemp + const_real_nullsmall)
             dgdz = 0
             e = 0
             dedz = 0
@@ -2768,25 +2793,25 @@ CONTAINS
         c2=0
 
         if(alpha .NE. 0)then            ! M is dependent of PO4, was z<=res.zox
-            e=alpha/(w*a2_P)*exp(z*a2_P)
+            e=alpha/(w*a2_P + const_real_nullsmall)*exp(z*a2_P)
             dedz = a2_P*e
-            f=alpha/(w*b2_P)*exp(z*b2_P)
+            f=alpha/(w*b2_P + const_real_nullsmall)*exp(z*b2_P)
             dfdz = b2_P*f
             p = 1                       ! DH CHECK/TODO: integration constant just C
             dpdz = 0
             q=0
             dqdz=0
-            g = alpha/(w)*(Phi2_P(1)/(aa21)*exp(aa21*z) + &
-            Phi2_P(2)/(aa22)*exp(aa22*z))
-            dgdz = alpha/(w)*(Phi2_P(1)*exp(aa21*z) + &
+            g = alpha/(w + const_real_nullsmall)*(Phi2_P(1)/(aa21 + const_real_nullsmall)*exp(aa21*z) + &
+            Phi2_P(2)/(aa22 + const_real_nullsmall)*exp(aa22*z))
+            dgdz = alpha/(w + const_real_nullsmall)*(Phi2_P(1)*exp(aa21*z) + &
             Phi2_P(2)*exp(aa22*z))
         else                        ! M is independent of PO4 - z > res.zox
-            c2=-ktemp/w
+            c2=-ktemp/(w + const_real_nullsmall)
             p=exp(c2*z)
             dpdz = c2*exp(c2*z)
             q=0
             dqdz=0
-            g = Qtemp/ktemp
+            g = Qtemp/(ktemp + const_real_nullsmall)
             dgdz = 0
             e=0
             dedz=0
@@ -2836,10 +2861,10 @@ CONTAINS
             ltype = 3
 
             if(zL <= zox)then       ! oxic layer -> call PO4 first
-                call sub_calcfg_l1_PO4(zbio, reac1, reac2, D1P, ktempP, QtempP, 0.0D00, 0.0D00, alphaP, &
+                call sub_calcfg_l1_PO4(zbio, reac1, reac2, D1P, ktempP, QtempP, 0.0, 0.0, alphaP, &
                 e_zbio_l1_P, dedz_zbio_l1_P, f_zbio_l1_P, dfdz_zbio_l1_P, g_zbio_l1_P, &
                 dgdz_zbio_l1_P, p_zbio_l1_P, dpdz_zbio_l1_P, q_zbio_l1_P, dqdz_zbio_l1_P, a1_P, b1_P, Phi1_P)
-                call sub_calcfg_l2_PO4(zbio, reac1, reac2, D2P, ktempP, QtempP, 0.0D00, alphaP, &
+                call sub_calcfg_l2_PO4(zbio, reac1, reac2, D2P, ktempP, QtempP, 0.0, alphaP, &
                 e_zbio_l2_P, dedz_zbio_l2_P, f_zbio_l2_P, dfdz_zbio_l2_P, g_zbio_l2_P, &
                 dgdz_zbio_l2_P, p_zbio_l2_P, dpdz_zbio_l2_P, q_zbio_l2_P, dqdz_zbio_l2_P, a2_P, b2_P, Phi2_P)
                 call sub_calcfg_l1_M(zbio, D1M, ktempM, QtempM, a1_P, b1_P, Phi1_P, alphaM, &
@@ -2850,10 +2875,10 @@ CONTAINS
                 p_zbio_l2_M, dpdz_zbio_l2_M, q_zbio_l2_M, dqdz_zbio_l2_M, a2_M)
 
             else                ! anoxic layer -> call M first
-                call sub_calcfg_l1_M(zbio, D1M, ktempM, QtempM, 0.0D00, 0.0D00, Phi1_P, alphaM, &
+                call sub_calcfg_l1_M(zbio, D1M, ktempM, QtempM, 0.0, 0.0, Phi1_P, alphaM, &
                 e_zbio_l1_M, dedz_zbio_l1_M, f_zbio_l1_M, dfdz_zbio_l1_M, g_zbio_l1_M, dgdz_zbio_l1_M, &
                 p_zbio_l1_M, dpdz_zbio_l1_M, q_zbio_l1_M, dqdz_zbio_l1_M, a1_M, b1_M)
-                call sub_calcfg_l2_M(zbio, ktempM, QtempM, 0.0D00, 0.0D00, Phi2_P, alphaM, &
+                call sub_calcfg_l2_M(zbio, ktempM, QtempM, 0.0, 0.0, Phi2_P, alphaM, &
                 e_zbio_l2_M, dedz_zbio_l2_M, f_zbio_l2_M, dfdz_zbio_l2_M, g_zbio_l2_M, dgdz_zbio_l2_M, &
                 p_zbio_l2_M, dpdz_zbio_l2_M, q_zbio_l2_M, dqdz_zbio_l2_M, a2_M)
                 call sub_calcfg_l1_PO4(zbio, reac1, reac2, D1P, ktempP, QtempP, a1_M, b1_M, alphaP, &
@@ -2944,12 +2969,12 @@ CONTAINS
         !         | A_l |   =  | a  b | | A_r|  + |e|
         !         | B_l |      | c  d | | B_r|    |f|
 
-        alden = dFdx_l*E_l - F_l*dEdx_l
+        alden = dFdx_l*E_l - F_l*dEdx_l + const_real_nullsmall
         ls_a     = (dFdx_l*E_r - F_l*dEdx_r)/alden
         ls_b     = (dFdx_l*F_r - F_l*dFdx_r)/alden
         ls_e     = (F_l*(dGdx_l - dGdx_r + Db) + dFdx_l*(-G_l + G_r - Vb))/alden
 
-        blden = dEdx_l*F_l - E_l*dFdx_l
+        blden = dEdx_l*F_l - E_l*dFdx_l + const_real_nullsmall
         ls_c     = (dEdx_l*E_r - E_l*dEdx_r)/blden
         ls_d     = (dEdx_l*F_r - E_l*dFdx_r)/blden;
         ls_f     = (E_l*(dGdx_l - dGdx_r + Db) + dEdx_l*(-G_l+G_r - Vb))/blden
@@ -2963,25 +2988,25 @@ CONTAINS
     !------------------------------------------------------------------------------------
 
 
-    SUBROUTINE sub_xformsoln(E, F, G, dEdx, dFdx, dGdx, ls_a , ls_b , ls_c , ls_d , ls_e ,ls_f, Et, Ft, Gt, dEtdx, dFtdx, dGtdx)
+    SUBROUTINE sub_xformsoln(E, F, G, dEdx, dFdx, dGdx, ls_a , ls_b , ls_c , ls_d , ls_e ,ls_f, Etr, Ftr, Gtr, dEtdx, dFtdx, dGtdx)
 
         real, INTENT(in):: E, F, G, dEdx, dFdx, dGdx, ls_a , ls_b , ls_c , ls_d , ls_e ,ls_f
-        real, INTENT(inout):: Et, Ft, Gt, dEtdx, dFtdx, dGtdx
+        real, INTENT(inout):: Etr, Ftr, Gtr, dEtdx, dFtdx, dGtdx
 
         ! Find 'transformed' soln such that in layer l,
         !    y_l = A_r*et + B_r*ft + gt
         ! (ie l soln written in terms of r solution coefficents A_r, B_r)
 
-        Et      = ls_a*E    + ls_c*F
+        Etr      = ls_a*E    + ls_c*F
         dEtdx   = ls_a*dEdx + ls_c*dFdx
-        Ft      = ls_b*E    + ls_d*F
+        Ftr      = ls_b*E    + ls_d*F
         dFtdx   = ls_b*dEdx + ls_d*dFdx
-        Gt      = G       + ls_e*E      + ls_f*F
+        Gtr      = G       + ls_e*E      + ls_f*F
         dGtdx   = dGdx    + ls_e*dEdx   + ls_f*dFdx
 
     !            print*, 'IN sub_xformsoln E, F, G, dEdx, dFdx, dGdx, ls_a , ls_b , ls_c , ls_d , ls_e ,ls_f', &
     !                    & E, F, G, dEdx, dFdx, dGdx, ls_a , ls_b , ls_c , ls_d , ls_e ,ls_f
-    !            print*, 'OUT sub_xformsoln Et, Ft, Gt, dEtdx, dFtdx, dGtdx', Et, Ft, Gt, dEtdx, dFtdx, dGtdx
+    !            print*, 'OUT sub_xformsoln Etr, Ftr, Gtr, dEtdx, dFtdx, dGtdx', Etr, Ft, Gt, dEtdx, dFtdx, dGtdx
 
     END SUBROUTINE sub_xformsoln
 
@@ -3201,7 +3226,7 @@ CONTAINS
         ! step 1: forward elimination
         do k=1, n-1
             do i=k+1,n
-                coeff=a(i,k)/a(k,k)
+                coeff=a(i,k)/(a(k,k) + const_real_nullsmall)
                 L(i,k) = coeff
                 do j=k+1,n
                     a(i,j) = a(i,j)-coeff*a(k,j)
@@ -3246,7 +3271,7 @@ CONTAINS
                 do j=n,i+1,-1
                     x(i)=x(i)-U(i,j)*x(j)
                 end do
-                x(i) = x(i)/u(i,i)
+                x(i) = x(i)/(u(i,i) + const_real_nullsmall)
             end do
             ! Step 3c: fill the solutions x(n) into column k of C
             do i=1,n

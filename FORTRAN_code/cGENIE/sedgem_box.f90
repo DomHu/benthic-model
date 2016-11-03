@@ -88,6 +88,8 @@ CONTAINS
     loc_new_sed(:) = 0.0
     loc_dis_sed(:) = 0.0
     loc_exe_sed(:) = 0.0
+    loc_exe_ocn(:) = 0.0
+    loc_sed_pres_fracC = 0.0
     ! initialize relevant location in global sediment dissolution results array
     sed_fdis(:,dum_i,dum_j) = 0.0
     ! initialize flags recording growing or shrinking of sediment stack (i.e., new layers being added or removed, respectively)
@@ -252,6 +254,9 @@ CONTAINS
        end DO
        ! correct dissovled flux units (WAT UNITS??? -> mol cm-2 per time-step) and set output array
        sedocn_fnet(:,dum_i,dum_j) = sedocn_fnet(:,dum_i,dum_j) + dum_dtyr*loc_exe_ocn(:)
+       print*,' loc_exe_ocn(io_O2)', loc_exe_ocn(io_O2)
+       print*,' dum_sfcsumocn(io_O2)', dum_sfcsumocn(io_O2)
+       print*,' '
     case default
        loc_sed_diagen_fracC = 1.0
        DO l=1,n_l_sed
@@ -1236,6 +1241,8 @@ CONTAINS
     loc_new_sed(:) = 0.0
     loc_dis_sed(:) = 0.0
     loc_exe_sed(:) = 0.0
+    loc_exe_ocn(:) = 0.0
+    loc_sed_pres_fracC = 0.0
     ! initialize relevant location in global sediment dissolution results array
     sed_fdis(:,dum_i,dum_j) = 0.0
 
@@ -1355,7 +1362,7 @@ CONTAINS
        ! Huelse et al. [2016]
        ! NOTE: 'new sed' is not adjusted within sub_huelseetal2016_main and eneds modifying externally
        CALL sub_huelseetal2016_main( &
-            & dum_i, dum_j, dum_dtyr,dum_D,loc_new_sed(:),dum_sfcsumocn(:),loc_sed_pres_fracC,loc_exe_ocn(:) &
+            & dum_i, dum_j, dum_dtyr,dum_D,loc_new_sed(:),dum_sfcsumocn(:),loc_sed_pres_fracC, loc_exe_ocn(:) &
             & )
        ! calculate the return rain flux back to ocean
        ! NOTE: diagenetic function calculates all (dissolved) exchange fluxes
