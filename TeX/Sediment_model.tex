@@ -179,15 +179,16 @@ Such studies and quantifications are possible through the application of idealis
 The number of research questions that can be addressed with diagenetic models is infinite and a plethora of different approaches have been developed, mainly following two distinct directions \citep{arndt_quantifying_2013}. 
 First, state-of-the art vertically resolved diagenetic models simulating all of the essential coupled redox and equilibrium reactions within marine sediments that control carbon burial and benthic recycling fluxes 
 (e.g. BRNS, \citeauthor{aguilera_knowledge-based_2005}, \citeyear{aguilera_knowledge-based_2005}; 
-MEDIA, \citeauthor{meysman_reactive_2003}, \citeyear{meysman_reactive_2003}; OMEXDIA, \citeauthor{soetaert_model_1996}, \citeyear{soetaert_model_1996}). These ``complete'' models generally use a so-called multi-G approach, 
-thus dividing the bulk organic carbon pool into a number of compound classes that are characterised by different degradabilities $k_i$. However, their global applicability is limited by the high computation cost of simulating 
-all biogeochemical reactions. The second group of models is less sophisticated and comprehensive than the ``complete'' diagenetic models and is used for the coupling to global Earth System Models 
-(e.g. DCESS, \citeauthor{shaffer_presentation_2008}, \citeyear{shaffer_presentation_2008}; HAMOCC, \citeauthor{heinze_global_1999}, \citeyear{heinze_global_1999}; 
-MEDUSA, \citeauthor{munhoven_glacialinterglacial_2007}, \citeyear{munhoven_glacialinterglacial_2007}). In particular, these models consider fewer biogeochemical reactions and assume that the sedimentary organic matter pool is composed 
-of just a single or two discrete compound classes. % apply the so-called 1G approach, thus just representing a single organic matter pool which is degraded at a constant rate. 
+MEDIA, \citeauthor{meysman_reactive_2003}, \citeyear{meysman_reactive_2003}; OMEXDIA, \citeauthor{soetaert_model_1996}, \citeyear{soetaert_model_1996}). These ``complete'',non-steady-state models generally use a so-called multi-G approach, 
+thus dividing the bulk organic carbon pool into a number of compound classes that are characterised by different degradabilities $k_i$. Combining such a complex diagenetic model with an ocean biogeochemical model results in 
+the most realistic benthic-pelagic coupling. However, the global applicability of this set-up is limited by the high computation cost of simulating all biogeochemical reactions in the sediments. 
+The second group of models is less sophisticated and comprehensive than the ``complete'',non-steady-state diagenetic models and is used for the coupling to global Earth System Models 
+(e.g. DCESS, \citeauthor{shaffer_presentation_2008}, \citeyear{shaffer_presentation_2008}; MEDUSA, \citeauthor{munhoven_glacialinterglacial_2007}, \citeyear{munhoven_glacialinterglacial_2007} or the model of \citet{heinze_global_1999}). 
+In particular, these analytic models consider fewer biogeochemical reactions and assume that the sedimentary organic matter pool is composed 
+of just a single or two discrete compound classes (1G or 2G approach respectively). % apply the so-called 1G approach, thus just representing a single organic matter pool which is degraded at a constant rate. 
 \textcolor{red}{TODO: rest somewhere else} 
 Obviously, such a simplification can neither account for the observed vast structural complexity in natural organic matter and its resulting 
-different degradation rates \textit{nor for the decrease in OM degradability during diagenesis - holds just for 1-G} \citep{arndt_quantifying_2013}. 
+different degradation rates \textit{nor for the decrease in OM degradability during diagenesis - holds just for 1G} \citep{arndt_quantifying_2013}. 
 A further problem of both approaches (and models in general) are model parameters which implicitly account for processes not explicitly described. These parameters are either derived through profile fitting for a specific site or 
 follow different global relationships with a related, readily available sediment characteristic, such as water depth \citep{middelburg_empirical_1997} or sedimentation rate \citep{tromp_global_1995}. 
 However, also these relationships are mostly based on simple fitting exercises to limited data sets and cannot replace a mechanistic representation of the underlying processes, especially when applying the model 
@@ -212,13 +213,14 @@ considering oxic-only sediment degradation of organic matter \citep{huelse_biopu
 The most complex description of marine sediments in Earth System models are vertically resolved diagenetic models, solving the one-dimensional, fully coupled reaction-transport equation for multiple solid and dissolved species 
 \citep[e.g.][]{berner_early_1980, boudreau1997diagenetic}. These models account for important transport processes (e.g. bioturbation, molecular diffusion and bioirrigation), resolve the coupled biogeochemical dynamics of dissolved species
 and usually at least a part of the resulting characteristic redox-zonation of marine sediments \citep{soetaert_coupling_2000, huelse_biopump_models_2016}. Examples of global carbon cycle models employing a vertically resolved diagenetic model are 
-PISCES \citep{gehlen_reconciling_2006} and CLIMBER 3$\alpha$ \citep{ilyina_global_2013}, both using a version of \citet{heinze_global_1999}. % and NORESM \citep{tjiputra_evaluation_2013} does not say anything if they just use the original oxic-only
-None of the reviewed EMICs in \citet{huelse_biopump_models_2016} uses such a sediment representation. 
+PISCES \citep{gehlen_reconciling_2006} and CLIMBER 3$\alpha$ \citep{ilyina_global_2013}, both using a version of \citet{heinze_global_1999} utilizing a 1G approach with a constant degradation rate constant. % and NORESM \citep{tjiputra_evaluation_2013} does not say anything if they just use the original oxic-only
+None of the EMICs reviewed by \citet{huelse_biopump_models_2016} use such a sediment representation. 
 
 % \textcolor{red}{TODO:} Sandra review: large scale of published model parameters illustrates the complex nature of organic matter dynamics! Very difficult to find global relationships to relate model parameters 
 % to available environmental characteristics, such as water depth, deposition rate. 
 
 \textbf{Problem with that:} \\
+Say how diverse the OM stuff is and how variable it is spatially (move stuff from above down here). Need actually at least 3G approach...
 Vertically integrated and resolved sediment models of organic matter degradation need to be properly initialise (i.e. get realistic POC degradation rates, from \citep{soetaert_coupling_2000})
 \textcolor{red}{TODO:} How they usually quantify the rate of OM degradation (see Stolpovsky et al. 2015 or/and \citep{soetaert_coupling_2000, mackenzie_past_2004}.\\
 The spatial variability in e.g. benthic particulate organic carbon (POC) mineralization kinetics throughout the ocean is currently unknown. This creates considerable 

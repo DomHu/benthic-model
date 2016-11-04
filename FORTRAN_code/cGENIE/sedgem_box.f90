@@ -248,15 +248,21 @@ CONTAINS
                & (sed_type(is) == par_sed_type_POM) .OR. &
                & (sed_type(sed_dep(is)) == par_sed_type_POM) &
                & ) then
-             loc_new_sed(is) = loc_sed_pres_fracC*loc_new_sed(is)
-             loc_dis_sed(is) = 0.0
+!             loc_new_sed(is) = loc_sed_pres_fracC*loc_new_sed(is)  ! DH: was like this, that's wrong, right?
+!             loc_dis_sed(is) = 0.0
+             if (sed_type(is) == par_sed_type_scavenged) then
+                loc_dis_sed(is) = 0.0
+             else
+                loc_sed_dis_frac     = 1.0 - loc_sed_pres_fracC
+                loc_dis_sed(is) = loc_sed_dis_frac*loc_new_sed(is)
+             end if
           end if
        end DO
        ! correct dissovled flux units (WAT UNITS??? -> mol cm-2 per time-step) and set output array
        sedocn_fnet(:,dum_i,dum_j) = sedocn_fnet(:,dum_i,dum_j) + dum_dtyr*loc_exe_ocn(:)
-       print*,' loc_exe_ocn(io_O2)', loc_exe_ocn(io_O2)
-       print*,' dum_sfcsumocn(io_O2)', dum_sfcsumocn(io_O2)
-       print*,' '
+!       print*,' loc_exe_ocn(io_O2)', loc_exe_ocn(io_O2)
+!       print*,' dum_sfcsumocn(io_O2)', dum_sfcsumocn(io_O2)
+!       print*,' '
     case default
        loc_sed_diagen_fracC = 1.0
        DO l=1,n_l_sed
@@ -1374,8 +1380,14 @@ CONTAINS
                & (sed_type(is) == par_sed_type_POM) .OR. &
                & (sed_type(sed_dep(is)) == par_sed_type_POM) &
                & ) then
-             loc_new_sed(is) = loc_sed_pres_fracC*loc_new_sed(is)
-             loc_dis_sed(is) = 0.0
+!             loc_new_sed(is) = loc_sed_pres_fracC*loc_new_sed(is)  ! DH: was like this, that's wrong, right?
+!             loc_dis_sed(is) = 0.0
+             if (sed_type(is) == par_sed_type_scavenged) then
+                loc_dis_sed(is) = 0.0
+             else
+                loc_sed_dis_frac     = 1.0 - loc_sed_pres_fracC
+                loc_dis_sed(is) = loc_sed_dis_frac*loc_new_sed(is)
+             end if
           end if
        end DO
        ! correct dissovled flux units (WHAT UNITS??? -> mol cm-2 per time-step) and set output array

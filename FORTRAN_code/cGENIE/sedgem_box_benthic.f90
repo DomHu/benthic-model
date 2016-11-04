@@ -199,7 +199,9 @@ CONTAINS
         loc_fPOC = loc_new_sed(is_POC)
         ! calculate sediment accumulation in (cm3 cm-2)
         loc_new_sed_vol = fun_calc_sed_vol(loc_new_sed(:))
-
+        if(loc_new_sed_vol .LE. 4.0e-4)then
+            loc_new_sed_vol =  4.0e-4
+        end if
         ! DH Change for comparison
 !        dum_swiconc_O2 = 300.0e-9
 !        dum_swiconc_NO3 = 40.0e-9
@@ -470,8 +472,8 @@ CONTAINS
         
         ! ORGANIC MATTER
         DC1 = Dbio
-        k1=0.01
-        k2=0.0001
+        k1=0.1
+        k2=0.01
 
         ! GLOBAL DIFFUSION COEFFICIENTS
         ! O2
