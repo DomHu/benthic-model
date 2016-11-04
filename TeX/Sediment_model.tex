@@ -127,7 +127,7 @@ Here we describe the first version of the Organic Matter ENabled SEDiment model 
 \textbf{Role of marine sediments for climate and global biogeochemical cycles:}\\
 Marine surface sediments are key components in the Earth system. They host the largest carbon reservoir within the surficial Earth system, provide the only long term sink for atmospheric \chem{CO_2}, 
 recycle nutrients and represent the most important geochemical archive used for deciphering past changes in biogeochemical cycles and climate. 
-Physical and chemical (or diagenetic) processes in sediments depend on the water column and vice versa: Diagenesis is mainly donor controlled, as it is fuelled by the external supply of solid material 
+Physical and chemical processes in sediments (i.e. diagenetic processes) depend on the water column and vice versa: Diagenesis is mainly donor controlled, as it is fuelled by the external supply of solid material 
 (e.g. organic matter, calcium carbonate, opal) from the water column and is affected by overlying bottom water concentrations of solutes. 
 At the same time, diagenesis in the sediments transforms the deposited material and returns some of the resulting products (e.g. nutrients, DIC) to the water column. 
 This so-called benthic-pelagic coupling is essential for understanding global biogeochemical cycles and climate \citep[e.g.][]{archer_effect_1994, soetaert_coupling_2000, archer_what_2000, mackenzie_sediments_2005}. 
@@ -160,7 +160,7 @@ One way to explain the genesis and retention of OAEs is increased oxygen demand 
 burial efficiency of phosphorus declines when bottom waters become anoxic \citep{ingall_evidence_1994, van_cappellen_benthic_1994}. 
 The recovery from OAE like conditions is thought to involve the permanent removal of excess \chem{CO_2} from the atmosphere and ocean by burying carbon in the form of organic matter in marine sediments 
 \citep[e.g.][]{arthur_geochemical_1988, jarvis_black_2011}, which is consistent with the geological record of widespread black shale formation \citep{stein_accumulation_1986}. 
-However, the overall amount, exact timing and the rate of organic matter burial remain a topic of intense debate. 
+However, the overall amount, exact timing and the rate of organic matter burial remain a topic of an ongoing debate. 
 
 % % Difference for oxic vs. anoxic sediments and impacts on atmospheric \chem{CO_2}. 
 % % 
@@ -185,14 +185,8 @@ the most realistic benthic-pelagic coupling. However, the global applicability o
 The second group of models is less sophisticated and comprehensive than the ``complete'',non-steady-state diagenetic models and is used for the coupling to global Earth System Models 
 (e.g. DCESS, \citeauthor{shaffer_presentation_2008}, \citeyear{shaffer_presentation_2008}; MEDUSA, \citeauthor{munhoven_glacialinterglacial_2007}, \citeyear{munhoven_glacialinterglacial_2007} or the model of \citet{heinze_global_1999}). 
 In particular, these analytic models consider fewer biogeochemical reactions and assume that the sedimentary organic matter pool is composed 
-of just a single or two discrete compound classes (1G or 2G approach respectively). % apply the so-called 1G approach, thus just representing a single organic matter pool which is degraded at a constant rate. 
-\textcolor{red}{TODO: rest somewhere else} 
-Obviously, such a simplification can neither account for the observed vast structural complexity in natural organic matter and its resulting 
-different degradation rates \textit{nor for the decrease in OM degradability during diagenesis - holds just for 1G} \citep{arndt_quantifying_2013}. 
-A further problem of both approaches (and models in general) are model parameters which implicitly account for processes not explicitly described. These parameters are either derived through profile fitting for a specific site or 
-follow different global relationships with a related, readily available sediment characteristic, such as water depth \citep{middelburg_empirical_1997} or sedimentation rate \citep{tromp_global_1995}. 
-However, also these relationships are mostly based on simple fitting exercises to limited data sets and cannot replace a mechanistic representation of the underlying processes, especially when applying the model 
-for different geological timescales. \\[2ex]
+of just a single or two discrete compound classes (1G or 2G approach respectively). \\[2ex]% apply the so-called 1G approach, thus just representing a single organic matter pool which is degraded at a constant rate. 
+
 
 % From Soetart-review:  this evidence of mutual interaction between the water column and the sediment
 % beneath, most biogeochemical models for water column processes either neglect the sediments or apply
@@ -207,19 +201,29 @@ Both highly simplified approaches furthermore completely neglect the exchange of
 However, due to their computational efficiency, both representations are often used in global biogeochemical models \citep[e.g.][]{najjar_impact_2007, ridgwell_marine_2007, goosse_description_2010}. 
 A superior approach is the vertically integrated dynamic model, which represents the whole sediment column as a single box \citep{huelse_biopump_models_2016}. Here, OM deposited on the seafloor is added 
 to the sediment box where it gets degraded and dissolved species diffuse through the sediment-water interface in accordance with these transformations. 
-This approach thus ignores the vertical extent of the sediments and the temporary storage of dissolved species \citep{soetaert_coupling_2000}. However, it is computationally efficient and 
+This approach thus ignores the vertical extent of the sediments and the temporary storage of dissolved species \citep{soetaert_coupling_2000}. Yet, it is computationally efficient and 
 also allows differentiating between various fractions of organic matter. Most EMICs incorporate a vertically integrated dynamic model for particulate inorganic carbon only (i.e. mainly \chem{CaCO_3}) and just a few are 
 considering oxic-only sediment degradation of organic matter \citep{huelse_biopump_models_2016}. 
 The most complex description of marine sediments in Earth System models are vertically resolved diagenetic models, solving the one-dimensional, fully coupled reaction-transport equation for multiple solid and dissolved species 
 \citep[e.g.][]{berner_early_1980, boudreau1997diagenetic}. These models account for important transport processes (e.g. bioturbation, molecular diffusion and bioirrigation), resolve the coupled biogeochemical dynamics of dissolved species
 and usually at least a part of the resulting characteristic redox-zonation of marine sediments \citep{soetaert_coupling_2000, huelse_biopump_models_2016}. Examples of global carbon cycle models employing a vertically resolved diagenetic model are 
-PISCES \citep{gehlen_reconciling_2006} and CLIMBER 3$\alpha$ \citep{ilyina_global_2013}, both using a version of \citet{heinze_global_1999} utilizing a 1G approach with a constant degradation rate constant. % and NORESM \citep{tjiputra_evaluation_2013} does not say anything if they just use the original oxic-only
+PISCES \citep{gehlen_reconciling_2006} and CLIMBER 3$\alpha$ \citep{ilyina_global_2013}, both using a version of \citet{heinze_global_1999}, however, just utilizing a 1G approach with a constant degradation rate constant. % and NORESM \citep{tjiputra_evaluation_2013} does not say anything if they just use the original oxic-only
 None of the EMICs reviewed by \citet{huelse_biopump_models_2016} use such a sediment representation. 
 
 % \textcolor{red}{TODO:} Sandra review: large scale of published model parameters illustrates the complex nature of organic matter dynamics! Very difficult to find global relationships to relate model parameters 
 % to available environmental characteristics, such as water depth, deposition rate. 
 
 \textbf{Problem with that:} \\
+Obviously, such simplifications can neither account for the observed vast structural complexity in natural organic matter and its resulting different degradation rates nor for the rapid decrease in 
+OM degradability in the uppermost centimeters of the sediments \citep{arndt_quantifying_2013}. At least a 3G approach is necessary to accurately represent organic matter dynamics in this part of the sediments where most OM is 
+degraded \citep[e.g.][]{soetaert_model_1996}. \textcolor{red}{TODO: Go on from here!}
+
+A further problem of both approaches (and models in general) are model parameters which implicitly account for processes not explicitly described. These parameters are either derived through profile fitting for a specific site or 
+follow different global relationships with a related, readily available sediment characteristic, such as water depth \citep{middelburg_empirical_1997} or sedimentation rate \citep{tromp_global_1995}. 
+However, also these relationships are mostly based on simple fitting exercises to limited data sets and cannot replace a mechanistic representation of the underlying processes, especially when applying the model 
+for different geological timescales. 
+
+Start with OM is composed of loads of different compound classes. 1G approach can't account for that. Need at least 3 different fractions. Then problem of defining degradation rate constants especially on a global scale. 
 Say how diverse the OM stuff is and how variable it is spatially (move stuff from above down here). Need actually at least 3G approach...
 Vertically integrated and resolved sediment models of organic matter degradation need to be properly initialise (i.e. get realistic POC degradation rates, from \citep{soetaert_coupling_2000})
 \textcolor{red}{TODO:} How they usually quantify the rate of OM degradation (see Stolpovsky et al. 2015 or/and \citep{soetaert_coupling_2000, mackenzie_past_2004}.\\
@@ -234,7 +238,7 @@ that describes OM cycling as well as the associated dynamics of the most importa
 related reduced substances (\chem{NH_4,\ H_2S}) and macronutrients (\chem{PO_4}). %, DIC and Alkalinity.  
 %for the biogeochemical dynamics of organic matter,  related chemical elements (\chem{O}, \chem{N}, \chem{S}, \chem{P}) and associated pore water quantities (ALK, DIC) in deep-sea sediments. 
 OMEN-SEDs computational efficiency allows its coupling to Earth System Models and therefore the investigation of coupled global biogeochemical dynamics over geological timescales.
-Also mention here presented as a 2G-Model, however OMEN-SED can easily be extended to a Multi-G approach. \\ [2ex]
+Also mention here presented as a 3G-Model (including one ``refractory'' OM pool, whose degradability is not relevant for the timescales considered), however OMEN-SED can easily be extended to a Multi-G approach. \\ [2ex]
 
 See Van Cappellen and Wang (1996): ``Metal cycling in surface sediments: Modeling the interplay or transport and reaction'' for some good basic info! 
 
