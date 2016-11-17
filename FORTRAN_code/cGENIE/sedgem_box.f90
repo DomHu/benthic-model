@@ -248,7 +248,8 @@ CONTAINS
                & (sed_type(is) == par_sed_type_POM) .OR. &
                & (sed_type(sed_dep(is)) == par_sed_type_POM) &
                & ) then
-!             loc_new_sed(is) = loc_sed_pres_fracC*loc_new_sed(is)  ! DH: was like this, that's wrong, right?
+    ! DH: was like this, that's wrong, right?
+!             loc_new_sed(is) = loc_sed_pres_fracC*loc_new_sed(is)
 !             loc_dis_sed(is) = 0.0
              if (sed_type(is) == par_sed_type_scavenged) then
                 loc_dis_sed(is) = 0.0
@@ -260,9 +261,6 @@ CONTAINS
        end DO
        ! correct dissovled flux units (WAT UNITS??? -> mol cm-2 per time-step) and set output array
        sedocn_fnet(:,dum_i,dum_j) = sedocn_fnet(:,dum_i,dum_j) + dum_dtyr*loc_exe_ocn(:)
-!       print*,' loc_exe_ocn(io_O2)', loc_exe_ocn(io_O2)
-!       print*,' dum_sfcsumocn(io_O2)', dum_sfcsumocn(io_O2)
-!       print*,' '
     case default
        loc_sed_diagen_fracC = 1.0
        DO l=1,n_l_sed
@@ -640,6 +638,7 @@ CONTAINS
        loc_n_sed_stack_top = INT(sed_top_h(dum_i,dum_j)) + 1
     ENDIF
 
+! DH 15.11 double account for O2?! next lines probaly ask if we are using OMEN-SED here....
     IF (ctrl_misc_debug3) print*,'(g) calculate sediment dissolution flux to ocean'
     ! *** (g) calculate sediment dissolution flux to ocean
     !         NOTE: first, convert flux units from cm3 cm-2 to mol cm-2
@@ -1368,7 +1367,7 @@ CONTAINS
        ! Huelse et al. [2016]
        ! NOTE: 'new sed' is not adjusted within sub_huelseetal2016_main and eneds modifying externally
        CALL sub_huelseetal2016_main( &
-            & dum_i, dum_j, dum_dtyr,dum_D,loc_new_sed(:),dum_sfcsumocn(:),loc_sed_pres_fracC, loc_exe_ocn(:) &
+            &  dum_i, dum_j, dum_dtyr,dum_D,loc_new_sed(:),dum_sfcsumocn(:),loc_sed_pres_fracC,loc_exe_ocn(:) &
             & )
        ! calculate the return rain flux back to ocean
        ! NOTE: diagenetic function calculates all (dissolved) exchange fluxes
@@ -1380,7 +1379,8 @@ CONTAINS
                & (sed_type(is) == par_sed_type_POM) .OR. &
                & (sed_type(sed_dep(is)) == par_sed_type_POM) &
                & ) then
-!             loc_new_sed(is) = loc_sed_pres_fracC*loc_new_sed(is)  ! DH: was like this, that's wrong, right?
+! DH: was like this, that's wrong, right?
+!             loc_new_sed(is) = loc_sed_pres_fracC*loc_new_sed(is)
 !             loc_dis_sed(is) = 0.0
              if (sed_type(is) == par_sed_type_scavenged) then
                 loc_dis_sed(is) = 0.0

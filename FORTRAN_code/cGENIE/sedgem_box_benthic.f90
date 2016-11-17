@@ -153,7 +153,7 @@ CONTAINS
         real,DIMENSION(n_ocn),intent(in)::dum_sfcsumocn                     ! ocean composition interface array
         !        real,INTENT(in)::dum_POC1_wtpct_swi, dum_POC2_wtpct_swi             ! POC concentrations at SWI [wt%]
         real,INTENT(inout)::dum_sed_pres_fracC                              ! fraction POC-preserved/POC-deposited [-]
-        real,DIMENSION(n_ocn),intent(inout)::dum_new_swifluxes              ! SWI return fluxes of solutes, calculated with sediment-model [pos. values flux from water-column to sediment]
+        real,DIMENSION(n_ocn),intent(inout)::dum_new_swifluxes              ! SWI return fluxes of solutes, calculated with sediment-model [pos values: flux from sediments to water-column]
 
         ! local variables        
         real::loc_wtpct, loc_wtpct_Middel
@@ -172,7 +172,7 @@ CONTAINS
         REAL::loc_depth_comparison
         integer:: loc_k = 0
 
-        !        print*,'---------- IN OMEN MAIN -----------  '
+!        print*,'---------- IN OMEN MAIN -----------  '
         
         ! initialize BW concentrations 
         !   THE FOLLOWING VALUES WILL BE PASSED DOWN FROM GENIE
@@ -214,6 +214,8 @@ CONTAINS
         loc_print_results = .false.
         if(loc_print_results) then
             if(loc_new_sed_vol .LE. 4.0e-4)then
+                        print*,' '
+                        print*,' '
                         print*,'dum_D = ', dum_D
                         print*,' grid point (i,j)', dum_i, dum_j
                         print*,'GENIE loc_new_sed_vol (or deposition rate) = ', loc_new_sed_vol
@@ -285,6 +287,11 @@ CONTAINS
             !!!!            call sub_huelseetal2016_zTOC(0.006, 0.002, dum_sed_pres_fracC)
             !        print*,'loc_sed_pres_fracC FIX', loc_sed_pres_fracC
 
+!            if(dum_sed_pres_fracC .GE. const_real_nullsmall)then
+!                print*,'Something is preserved', dum_sed_pres_fracC
+!                STOP
+!            end if
+
             if(dum_swiconc_O2 .LE. const_real_nullsmall) then
                 loc_O2_swiflux = 0.0            ! if negative [O2] -> no SWI flux
             else
@@ -297,56 +304,56 @@ CONTAINS
 
             end if
 
-!            if(ocn_select(io_NO3))then
-!                call sub_huelseetal2016_zNO3(dum_swiconc_NO3, loc_NO3_swiflux)
-!            else
-!                zno3 = zox
-!            end if
-!
-!            ! here check for SWI concentration, as problem with root-finding
-!            ! when is zero. And as no SO4 produced no need to call subroutine anyway
-!            if(ocn_select(io_SO4))then
-!                if(dum_swiconc_SO4 > const_real_nullsmall)then
-!                    call sub_huelseetal2016_zSO4(dum_swiconc_SO4, loc_SO4_swiflux)
-!                else
-!                    zso4 = zno3
-!                end if
-!            else
-!                zso4 = zno3
-!            end if
-!
-!            if(ocn_select(io_NH4))then
-!                call sub_huelseetal2016_zNH4(dum_swiconc_NH4, loc_NH4_swiflux)
-!            else
-!                ! If not selected nothing needs to be done
-!            end if
-!
-!            if(ocn_select(io_H2S))then
-!                call sub_huelseetal2016_zH2S(dum_swiconc_H2S, loc_H2S_swiflux)
-!            else
-!                ! If not selected nothing needs to be done
-!            end if
-!
-!            if(ocn_select(io_PO4))then
-!                call sub_huelseetal2016_zPO4_M(dum_swiconc_PO4, loc_PO4_swiflux, dum_swiflux_M, loc_M_swiflux)
-!            else
-!                ! If not selected nothing needs to be done
-!            end if
+            if(ocn_select(io_NO3))then
+                call sub_huelseetal2016_zNO3(dum_swiconc_NO3, loc_NO3_swiflux)
+            else
+                zno3 = zox
+            end if
+
+            ! here check for SWI concentration, as problem with root-finding
+            ! when is zero. And as no SO4 produced no need to call subroutine anyway
+            if(ocn_select(io_SO4))then
+                if(dum_swiconc_SO4 > const_real_nullsmall)then
+                    call sub_huelseetal2016_zSO4(dum_swiconc_SO4, loc_SO4_swiflux)
+                else
+                    zso4 = zno3
+                end if
+            else
+                zso4 = zno3
+            end if
+
+            if(ocn_select(io_NH4))then
+                call sub_huelseetal2016_zNH4(dum_swiconc_NH4, loc_NH4_swiflux)
+            else
+                ! If not selected nothing needs to be done
+            end if
+
+            if(ocn_select(io_H2S))then
+                call sub_huelseetal2016_zH2S(dum_swiconc_H2S, loc_H2S_swiflux)
+            else
+                ! If not selected nothing needs to be done
+            end if
+
+            if(ocn_select(io_PO4))then
+                call sub_huelseetal2016_zPO4_M(dum_swiconc_PO4, loc_PO4_swiflux, dum_swiflux_M, loc_M_swiflux)
+            else
+                ! If not selected nothing needs to be done
+            end if
         end if  ! loc_POC1/2_wtpct_swi .LE. const_real_nullsmall
 
         ! Now pass back the values to the global field
         dum_new_swifluxes(io_O2) = loc_O2_swiflux                                   ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
-!        if(ocn_select(io_NO3))then
-!            dum_new_swifluxes(io_NO3) = loc_NO3_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
-!            dum_new_swifluxes(io_NH4) = loc_NH4_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
-!        end if
-!        if(ocn_select(io_SO4))then
-!            dum_new_swifluxes(io_SO4) = loc_SO4_swiflux                         ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
-!            dum_new_swifluxes(io_H2S) = loc_H2S_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
-!        end if
-!        if(ocn_select(io_PO4))then
-!            dum_new_swifluxes(io_PO4) = loc_PO4_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
-!        end if
+        if(ocn_select(io_NO3))then
+            dum_new_swifluxes(io_NO3) = loc_NO3_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
+            dum_new_swifluxes(io_NH4) = loc_NH4_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
+        end if
+        if(ocn_select(io_SO4))then
+            dum_new_swifluxes(io_SO4) = loc_SO4_swiflux                         ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
+            dum_new_swifluxes(io_H2S) = loc_H2S_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
+        end if
+        if(ocn_select(io_PO4))then
+            dum_new_swifluxes(io_PO4) = loc_PO4_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
+        end if
 
         if(loc_print_results) then
             !            loc_new_sed_vol = fun_calc_sed_vol(loc_new_sed(:))
@@ -379,7 +386,7 @@ CONTAINS
             print*,'FINAL M SWI flux = ', loc_M_swiflux
             print*,'Fraction POC-preserved/POC-deposited =' , dum_sed_pres_fracC
             print*,' '
-            print*,' '
+!            print*,' '
             
         !loc_filename=trim(par_outdir_name)//'ecogem_series_resources_'//fun_conv_num_char_n(2,i)//fun_conv_num_char_n(2,j)
         !OPEN(88,file=loc_filename,action='write',position='append',iostat=ios)
@@ -473,7 +480,7 @@ CONTAINS
         ! ORGANIC MATTER
         DC1 = Dbio
         k1=0.1
-        k2=0.01
+        k2=0.1
 
         ! GLOBAL DIFFUSION COEFFICIENTS
         ! O2

@@ -86,9 +86,10 @@ MODULE sedgem_lib
   NAMELIST /ini_sedgem_nml/par_sed_diagen_fracC2Ppres_ox,par_sed_diagen_fracC2Ppres_anox,par_sed_diagen_fracC2Ppres_eux
   ! ------------------- DIAGENESIS SCHEME: ARCHER 1991 --------------------------------------------------------------------------- !
   REAL::par_sed_archer1991_dissc                                 ! dissolution rate constant, units of 1/s
+  REAL::par_sed_archer1991_disscpct                              ! dissolution rate scaling (%)
   REAL::par_sed_archer1991_dissn                                 ! dissolution rate order
   REAL::par_sed_archer1991_rc                                    ! organic degradation rate constant, 1/s
-  NAMELIST /ini_sedgem_nml/par_sed_archer1991_dissc,par_sed_archer1991_dissn,par_sed_archer1991_rc
+  NAMELIST /ini_sedgem_nml/par_sed_archer1991_dissc,par_sed_archer1991_disscpct,par_sed_archer1991_dissn,par_sed_archer1991_rc
   integer::par_sed_archer1991_iterationmax                       ! loop limit in 'o2org' subroutine
   NAMELIST /ini_sedgem_nml/par_sed_archer1991_iterationmax
   NAMELIST /ini_sedgem_nml/par_sed_archer1991_iterationmax
@@ -116,6 +117,10 @@ MODULE sedgem_lib
   real::par_bio_red_CaCO3_LiCO3_alpha                            ! Partition coefficient (alpha)
   NAMELIST /ini_sedgem_nml/par_bio_red_CaCO3_LiCO3,par_bio_red_CaCO3_LiCO3_alpha
   ! ------------------- ISOTOPIC FRACTIONATION ----------------------------------------------------------------------------------- !
+  LOGICAL::ctrl_sed_Corgburial_fixedD13C                         ! set fixed d13C fractionation of Corg w.r.t. CaCO3?
+  NAMELIST /ini_sedgem_nml/ctrl_sed_Corgburial_fixedD13C
+  real::par_d13C_DIC_Corg_ef                                     ! frac for intercellular C fix
+  NAMELIST /ini_sedgem_nml/par_d13C_DIC_Corg_ef
   CHARACTER(len=63)::opt_sed_foram_b_13C_delta                   ! Benthic foram 13C fractionation scheme ID string
   NAMELIST /ini_sedgem_nml/opt_sed_foram_b_13C_delta
   REAL::par_d7Li_LiCO3_epsilon                                   ! 7/6Li fractionation between Li and LiCO3
@@ -611,7 +616,7 @@ CONTAINS
   ! ****************************************************************************************************************************** !
 
     ! ****************************************************************************************************************************** !
-    ! CALCULATE SEDIMENT Corg concentration in mol cm-3 and mol %- FROM POC FLUX (FOR BOTH FRACTIONS) - NEEDED FOR HUELSEETAL2016
+     ! CALCULATE SEDIMENT Corg concentration in mol cm-3 and mol %- FROM POC FLUX (FOR BOTH FRACTIONS) - NEEDED FOR HUELSEETAL2016
     function fun_sed_calcCorgwt(dum_FPOC, loc_sed_w, dum_por,dum_den)
         ! -------------------------------------------------------- !
         ! RESULT VARIABLE
@@ -629,8 +634,8 @@ CONTAINS
         ! -------------------------------------------------------- !
         ! DEFINE LOCAL VARIABLES
         ! -------------------------------------------------------- !
-        real::fun_sed_calcCorg  
-        
+        real::fun_sed_calcCorg
+
         ! mass fraction of Corg is equal to % of total mass per unit volume ...
         ! but taken at the bottom boundary level, also equal to the % of the burial fraction
         ! wt% Corg = FCorg/(FCorg + Fdet)*100.0
@@ -642,11 +647,11 @@ CONTAINS
         ! C = (1-por)*Corg/Sed_accumulation units: conv_POC_cm3_mol* cm3 cm-2 / (cm3 cm-2) = mol cm-3
         ! Note: units of concentration must be changed from (cm3 cm-3) to (mol cm-3)
         fun_sed_calcCorg = conv_POC_cm3_mol*(1-dum_por)*dum_FPOC/loc_sed_w
-       
+
         ! calculate wt%: g/g = mol cm-3 * g/mol * cm3/g
         fun_sed_calcCorgwt = 100*fun_sed_calcCorg*12/dum_den
-        
-        
+
+
 !!!!!!!!! DH 28.50.2016: was before
 !        ! assume all buried sediment is detrital to a first approximation
 !        ! (burial velocity) x (solids as a fraction of total volume) x (density)

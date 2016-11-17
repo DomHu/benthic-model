@@ -202,8 +202,8 @@ However, due to their computational efficiency, both representations are often u
 A superior approach is the vertically integrated dynamic model, which represents the whole sediment column as a single box \citep{huelse_biopump_models_2016}. Here, OM deposited on the seafloor is added 
 to the sediment box where it gets degraded and dissolved species diffuse through the sediment-water interface in accordance with these transformations. 
 This approach thus ignores the vertical extent of the sediments and the temporary storage of dissolved species \citep{soetaert_coupling_2000}. Yet, it is computationally efficient and 
-also allows differentiating between various fractions of organic matter. Most EMICs incorporate a vertically integrated dynamic model for particulate inorganic carbon only (i.e. mainly \chem{CaCO_3}) and just a few are 
-considering oxic-only sediment degradation of organic matter \citep{huelse_biopump_models_2016}. 
+also allows differentiating between various fractions of organic matter. Most EMICs incorporate a vertically integrated dynamic model for particulate inorganic carbon only (i.e. mainly \chem{CaCO_3}) and just a few  
+consider oxic-only sediment degradation of organic matter \citep{huelse_biopump_models_2016}. 
 The most complex description of marine sediments in Earth System models are vertically resolved diagenetic models, solving the one-dimensional, fully coupled reaction-transport equation for multiple solid and dissolved species 
 \citep[e.g.][]{berner_early_1980, boudreau1997diagenetic}. These models account for important transport processes (e.g. bioturbation, molecular diffusion and bioirrigation), resolve the coupled biogeochemical dynamics of dissolved species
 and usually at least a part of the resulting characteristic redox-zonation of marine sediments \citep{soetaert_coupling_2000, huelse_biopump_models_2016}. Examples of global carbon cycle models employing a vertically resolved diagenetic model are 
@@ -216,31 +216,35 @@ None of the EMICs reviewed by \citet{huelse_biopump_models_2016} use such a sedi
 \textbf{Problem with that:} \\
 Obviously, such simplifications can neither account for the observed vast structural complexity in natural organic matter and its resulting different degradation rates nor for the rapid decrease in 
 OM degradability in the uppermost centimeters of the sediments \citep{arndt_quantifying_2013}. At least a 3G approach is necessary to accurately represent organic matter dynamics in this part of the sediments where most OM is 
-degraded \citep[e.g.][]{soetaert_model_1996}. \textcolor{red}{TODO: Go on from here!}
+degraded \citep[e.g.][]{soetaert_model_1996}. 
+Furthermore, the spatial variability in benthic OM degradation kinetics is unknown at the global scale and reported rate constants can vary by almost 10 orders of magnitude \citep{arndt_quantifying_2013}.
+Thus, a major challenge for diagenetic models is defining appropriate OM degradation rate constants which is either achieved 
+through profile fitting for a specific site or, for global applications, the rate constants follow empirical relations with a related, readily available sediment characteristic such as water depth 
+\citep{middelburg_empirical_1997}, sedimentation rate \citep{toth_organic_1977, tromp_global_1995} or OM flux \citep{boudreau1997diagenetic}. 
+However, these relationships are mostly based on simple fitting exercises to limited data sets and show at the most a very weak trend and no statistically significant relationship \citep{arndt_quantifying_2013}. 
+This creates considerable uncertainties when diagenetic models are coupled to global biogeochemical ocean models especially when applying the model for different geological timescales. % see: https://goldschmidtabstracts.info/2013/2270.pdf
+Other model parameters implicitly accounting for processes not explicitly described are sedimentation and bioturbation rate and are generally related to water depth following \citet{middelburg_empirical_1997}.
 
-A further problem of both approaches (and models in general) are model parameters which implicitly account for processes not explicitly described. These parameters are either derived through profile fitting for a specific site or 
-follow different global relationships with a related, readily available sediment characteristic, such as water depth \citep{middelburg_empirical_1997} or sedimentation rate \citep{tromp_global_1995}. 
-However, also these relationships are mostly based on simple fitting exercises to limited data sets and cannot replace a mechanistic representation of the underlying processes, especially when applying the model 
-for different geological timescales. 
+% These parameters, in particular the OM degradation rate constants, are either derived through profile fitting for a specific site or, for global applications, follow empirical relations with a related, readily available sediment 
+% characteristic such as water depth \citep{middelburg_empirical_1997}, sedimentation rate \citep{toth_organic_1977, tromp_global_1995} or OM flux \citep{boudreau1997diagenetic}. 
+% Start with OM is composed of loads of different compound classes. 1G approach can't account for that. Need at least 3 different fractions. Then problem of defining degradation rate constants especially on a global scale. 
+% Say how diverse the OM stuff is and how variable it is spatially. Need actually at least 3G approach...
+% Vertically integrated and resolved sediment models of organic matter degradation need to be properly initialise (i.e. get realistic POC degradation rates, from \citep{soetaert_coupling_2000})
+% \textcolor{red}{TODO:} How they usually quantify the rate of OM degradation (see Stolpovsky et al. 2015 or/and \citep{soetaert_coupling_2000, mackenzie_past_2004}.\\
+% The spatial variability in e.g. benthic particulate organic carbon (POC) mineralization kinetics throughout the ocean is currently unknown. This creates considerable 
+% uncertainties when diagenetic models are used to couple benthic and pelagic biogeochemical cycles in global models. see: https://goldschmidtabstracts.info/2013/2270.pdf \\[2ex]
 
-Start with OM is composed of loads of different compound classes. 1G approach can't account for that. Need at least 3 different fractions. Then problem of defining degradation rate constants especially on a global scale. 
-Say how diverse the OM stuff is and how variable it is spatially (move stuff from above down here). Need actually at least 3G approach...
-Vertically integrated and resolved sediment models of organic matter degradation need to be properly initialise (i.e. get realistic POC degradation rates, from \citep{soetaert_coupling_2000})
-\textcolor{red}{TODO:} How they usually quantify the rate of OM degradation (see Stolpovsky et al. 2015 or/and \citep{soetaert_coupling_2000, mackenzie_past_2004}.\\
-The spatial variability in e.g. benthic particulate organic carbon (POC) mineralization kinetics throughout the ocean is currently unknown. This creates considerable 
-uncertainties when diagenetic models are used to couple benthic and pelagic biogeochemical cycles in global models. see: https://goldschmidtabstracts.info/2013/2270.pdf \\[2ex]
+%\textcolor{red}{TODO???:} \textbf{Alternative Model approaches} e.g. from coastal research\\[2ex]
 
-\textbf{Alternative Model approaches} e.g. from coastal research\\[2ex]
-
-\textbf{Solution presented here:}
+\textbf{Solution presented here:}\\
 Here, we present the OrganicMatter ENabled SEDiment model (OMEN-SED 1.0), a new, one-dimensional, numerically efficient reactive transport model (RTM) 
 that describes OM cycling as well as the associated dynamics of the most important terminal electron acceptors (\chem{O_2,\ NO_3,\ SO_4,\ CH_4}), 
 related reduced substances (\chem{NH_4,\ H_2S}) and macronutrients (\chem{PO_4}). %, DIC and Alkalinity.  
 %for the biogeochemical dynamics of organic matter,  related chemical elements (\chem{O}, \chem{N}, \chem{S}, \chem{P}) and associated pore water quantities (ALK, DIC) in deep-sea sediments. 
-OMEN-SEDs computational efficiency allows its coupling to Earth System Models and therefore the investigation of coupled global biogeochemical dynamics over geological timescales.
-Also mention here presented as a 3G-Model (including one ``refractory'' OM pool, whose degradability is not relevant for the timescales considered), however OMEN-SED can easily be extended to a Multi-G approach. \\ [2ex]
-
-See Van Cappellen and Wang (1996): ``Metal cycling in surface sediments: Modeling the interplay or transport and reaction'' for some good basic info! 
+OMEN-SED's computational efficiency allows its coupling to Earth System Models of different complexities and therefore the investigation of coupled global biogeochemical dynamics over geological timescales. 
+Here, the model is presented as a 2G-approach, however, a third, nondegradable OM pool can be added and furthermore OMEN-SED can easily be extended to a Multi-G approach. 
+% (including one ``refractory'' OM pool, whose degradability is not relevant for the timescales considered)
+%See Van Cappellen and Wang (1996): ``Metal cycling in surface sediments: Modeling the interplay or transport and reaction'' for some good basic info! 
 
 \section{Model Description}
 The following section provides a detailed description of the new model. Table \ref{table:reactions_processes} summarizes the biogeochemical reaction network and 
@@ -256,12 +260,13 @@ The calculation of benthic return/uptake and burial fluxes is based on the verti
 
 where $C_i$ is the concentration of the biogeochemical species $i$, $\xi$ equals the porosity $\phi$ for solute species and $(1-\phi)$ for solid species, hence represents the partitioning of species $i$ 
 into the solute and dissolved phase. The term $z$ is the sediment depth, $t$ denotes the time, $F$ summarises the transport fluxes and $\sum_j R_i^j$ represents the sum of production/consumption rates $j$ 
-that affect species $i$. The reaction network has to account for the most important primary and secondary redox reactions, equilibrium reactions, mineral dissolution and precipitation, as well as adsorption 
+that affect species $i$. The reaction network accounts for the most important primary and secondary redox reactions, equilibrium reactions, mineral dissolution and precipitation, as well as adsorption 
 and desorption processes that affect the explicitly resolved chemical species.\\
 State-of-the-art reaction-transport models generally solve the ordinary differential equation (ODE) (eq. \ref{eq:Eq_generaldiagenetic}) numerically and thus allow to account for transient dynamics, 
-depth-varying parameters or a high degree of coupling between different chemical species. Yet, numerical models are computational expensive, thus rendering their application in an Earth System Model framework prohibitive. 
-An analytical solution of equation \eqref{eq:Eq_generaldiagenetic} provides an alternative and computational more efficient approach. Analytical models enjoyed great popularity in the early days of diagenetic modelling 
-and computer technology due to their low computational demands. However, early analytical models were often very problem-specific and only considered one or two coupled species  \textcolor{red}{(e.g. Lehrman, Berner) ?? which pubs?}. 
+depth-varying parameters or a high degree of coupling between different chemical species \citep[e.g.][]{soetaert_model_1996, aguilera_knowledge-based_2005}. 
+Yet, numerical models are computational expensive, thus rendering their application in an Earth System Model framework prohibitive. An analytical solution of equation \eqref{eq:Eq_generaldiagenetic} 
+provides an alternative and computational more efficient approach which enjoyed great popularity in the early days of diagenetic modelling and computer technology. % due to their low computational demands. 
+However, early analytical models were often very problem-specific and only considered one or two coupled species \citep[e.g.][]{berner_idealized_1964}. \textcolor{red}{(e.g. Lehrman, Berner) ?? which other pub?}
 Over the next decades, a number of more complex analytical models describing the coupled dynamics of ....were developed \citep[e.g.][]{billen1982modelling, goloway1982diagenetic, jahnke1982model}, 
 before the boost in computing power enabled the development of fully-coupled, multi-species, numerical models \citep[e.g.][]{van1995metal, soetaert_model_1996}. 
 
