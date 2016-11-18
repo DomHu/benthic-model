@@ -238,8 +238,8 @@ Other model parameters implicitly accounting for processes not explicitly descri
 
 \textbf{Solution presented here:}\\
 Here, we present the OrganicMatter ENabled SEDiment model (OMEN-SED 1.0), a new, one-dimensional, numerically efficient reactive transport model (RTM) 
-that describes OM cycling as well as the associated dynamics of the most important terminal electron acceptors (\chem{O_2,\ NO_3,\ SO_4,\ CH_4}), 
-related reduced substances (\chem{NH_4,\ H_2S}) and macronutrients (\chem{PO_4}). %, DIC and Alkalinity.  
+that describes OM cycling as well as the associated dynamics of the most important terminal electron acceptors (TEAs, i.e. \chem{O_2}, \chem{NO_3}, \chem{SO_4}, \chem{CH_4}), 
+related reduced substances (\chem{NH_4} \chem{H_2S}), macronutrients (\chem{PO_4}) and associated pore water quantities (\chem{ALK}, \chem{DIC}).  
 %for the biogeochemical dynamics of organic matter,  related chemical elements (\chem{O}, \chem{N}, \chem{S}, \chem{P}) and associated pore water quantities (ALK, DIC) in deep-sea sediments. 
 OMEN-SED's computational efficiency allows its coupling to Earth System Models of different complexities and therefore the investigation of coupled global biogeochemical dynamics over geological timescales. 
 Here, the model is presented as a 2G-approach, however, a third, nondegradable OM pool can be added and furthermore OMEN-SED can easily be extended to a Multi-G approach. 
@@ -267,7 +267,7 @@ depth-varying parameters or a high degree of coupling between different chemical
 Yet, numerical models are computational expensive, thus rendering their application in an Earth System Model framework prohibitive. An analytical solution of equation \eqref{eq:Eq_generaldiagenetic} 
 provides an alternative and computational more efficient approach which enjoyed great popularity in the early days of diagenetic modelling and computer technology. % due to their low computational demands. 
 However, early analytical models were often very problem-specific and only considered one or two coupled species \citep[e.g.][]{berner_idealized_1964}. \textcolor{red}{(e.g. Lehrman, Berner) ?? which other pub?}
-Over the next decades, a number of more complex analytical models describing the coupled dynamics of ....were developed \citep[e.g.][]{billen1982modelling, goloway1982diagenetic, jahnke1982model}, 
+Over the next decades, a number of more complex analytical models describing the coupled dynamics of OM degradation, TEAs and rediced substances in sediments were developed \citep[e.g.][]{billen1982modelling, goloway1982diagenetic, jahnke1982model}, 
 before the boost in computing power enabled the development of fully-coupled, multi-species, numerical models \citep[e.g.][]{van1995metal, soetaert_model_1996}. 
 
 \begin{figure}[htbp]
@@ -353,7 +353,7 @@ Variables & Organic matter, oxygen, nitrate, ammonium, sulfate, sulfide (hydroge
 
 
 \subsubsection{Organic matter}
-In marine sediments, organic matter (OM) is degraded by heterotrophic activity coupled to the sequential utilisation of terminal electron acceptors (TEAs), typically in the order of \chem{O_2}, \chem{NO_3^-}, Mn(VI), Fe(III) and 
+In marine sediments, organic matter (OM) is degraded by heterotrophic activity coupled to the sequential utilisation of terminal electron acceptors, typically in the order of \chem{O_2}, \chem{NO_3^-}, \chem{Mn(VI)}, \chem{Fe(III)} and 
 \chem{SO_4^{2-}} followed by methanogenesis and/or fermentation. Here, organic matter degradation is described via a multi-G model approach \citep[][and references therein]{arndt_quantifying_2013}, 
 assuming that the bulk OM consists of a number of discrete compound classes $C_i$ characterised by specific degradation rate constants $k_i$. Such a multi-G approach allows for selective preservation of compound 
 classes according to their reactivity, $k_i$ and, thus, accounts for the change in organic matter reactivity during burial. Each compound class is degraded according to first-order kinetics. 
@@ -367,10 +367,10 @@ The conservation equation for organic matter dynamics is thus given by:
 %  D_{C_i}&=D_{\mathrm{bio}} 	 &\text{if ($z\leq z_{\mathrm{bio}}$)}\\
 %  D_{C_i}&=0            &\text{if ($z > z_{\mathrm{bio}}$)} 
 % \end{align}
-The analytical solution of Eq. \eqref{eq:ODE_OC} (see section \ref{sec:Solution} for details) requires the definition of a set of boundary conditions (Table \ref{Tab:BC_OM+O2}). 
+The analytical solution of Eq. \eqref{eq:ODE_OC} (see section \ref{subsec:module_Structure} for details) requires the definition of a set of boundary conditions (Table \ref{Tab:BC_OM}). 
 The model assumes a known concentration/flux at the sediment-water interface and continuity across the bottom of the bioturbated zone, $z_{\mathrm{bio}}$.
 \begin{table}[tbp]
-\caption{Boundary conditions for organic matter and oxygen. For the boundaries we define:  $z^-_{\_\_} := \lim_{h\to0} (z_{\_\_}-h)$ and $z^+_{\_\_} := \lim_{h\to0} (z_{\_\_}+h)$.}
+\caption{Boundary conditions for organic matter. For the boundaries we define:  $z_{\mathrm{bio}}^- := \lim_{h\to0} (z_{\mathrm{bio}}-h)$ and $z_{\mathrm{bio}}^+ := \lim_{h\to0} (z_{\mathrm{bio}}+h)$.}
 % title of Table
 \centering
 % used for centering table
@@ -383,20 +383,8 @@ $z=z_{\mathrm{bio}}$&continuity& 2)& $C_i(z_{\mathrm{bio}}^-)$=$C_i(z_{\mathrm{b
                &&3)&$-D_{\mathrm{bio}}\cdot \frac{\partial C_i}{\partial z}|_{z_{\mathrm{bio}}^-}=0$\\
 %Dom was               &&3) $D_{\mathrm{bio}}\cdot \frac{\partial C_i}{\partial z}|_{z_{\mathrm{bio}}^-}-w\cdot C_i(z_{\mathrm{bio}}^-)=-w\cdot C_i(z_{\mathrm{bio}}^+)$\\
 \hline
-$z=0$& known concentration& 1)&$\chem{O_2}(0)=O_{20}$\\
-$z=z_{\mathrm{bio}}$&continuity& 2)&$ \chem{O_2}(z_{\mathrm{bio}}^-)$=$ \chem{O_2}(z_{\mathrm{bio}}^+)$\\
-               &&3)&$-\left(D_{ \chem{O_2},0}+D_{\mathrm{bio}}\right )\cdot \frac{\partial  \chem{O_2}}{\partial z}|_{z_{\mathrm{bio}}^-}=-D_{ \chem{O_2},0} \cdot \frac{\partial  \chem{O_2}}{\partial z}|_{z_{\mathrm{bio}}^+}$\\
-%Dom was               &&3) $\left(D_{\mathrm{bio}}+D_{mol, \chem{O_2}}\right )\cdot \frac{\partial  \chem{O_2}}{\partial z}|_{z_{\mathrm{bio}}^-}-w\cdot  \chem{O_2}(z_{\mathrm{bio}}^-)=D_{mol, \chem{O_2}} \cdot \frac{\partial  \chem{O_2}}{\partial z}|_{z_{\mathrm{bio}}^+}-w\cdot  \chem{O_2}(z_{\mathrm{bio}}^+)$\\
-$z=z_{\mathrm{ox}}$&  \chem{O_2} consumption & 4)&\textbf{IF} $ (\chem{O_2}(z_\infty)> 0 )$\\
-& ($z_{\mathrm{ox}} = z_\infty$) &&\quad $\frac{\partial  \chem{O_2}}{\partial z}|_{z_{\mathrm{ox}}}=0$ \\
-& & &\textbf{ELSE} \\
-& ($z_{\mathrm{ox}} < z_\infty$) & &\quad $  \chem{O_2}(z_{\mathrm{ox}})=0$  \quad and \quad $-D_{ \chem{O_2}} \cdot \frac{\partial  \chem{O_2}}{\partial z}|_{z_{\mathrm{ox}}}=F_{red}(z_\mathrm{ox})$\\
-%$z=z_{\mathrm{ox}}$& & 5) $-D_{ \chem{O_2}} \cdot \frac{\partial  \chem{O_2}}{\partial z}|_{z_{\mathrm{ox}}}=F_{red, z_{\mathrm{ox}}}$\\   
-&with flux from below &&$\quad F_{red}(z_\mathrm{ox})=\frac{1-\phi}{\phi} \cdot \int_{z_{\mathrm{ox}}}^{\infty}  \sum_i \left( 2\gamma_{\chem{NH_4}} \chem{NC_i} + \gamma_{\chem{H_2S}} \chem{SO_4C} \right) k_i C_i\ dz$ \\
-% was from Sandra &with:&$F_{red,z_{\mathrm{ox}}}=\beta \cdot \int_{z_{\mathrm{ox}}}^{\inf}  \sum_i k_i\cdot C_i  dz  + 2\cdot \gamma \cdot \int_{z_{\mathrm{ox}}}^{\inf}  \sum_i k_i\cdot C_i  -  $ \\
-\hline    
 \end{tabular}
-\label{Tab:BC_OM+O2}
+\label{Tab:BC_OM}
 % is used to refer this table in the text
 \end{table}
 
@@ -409,7 +397,7 @@ and produces ammonium, which is partially nitrified to nitrate ($\gamma_\chem{NH
 %Oxygen serves as the most powerful terminal electron acceptor for the heterotrophic degradation of organic carbon. In addition, the oxidation of reduced species produced through microbial activity throughout the 
 %sediment column further contributes to the consumption of oxygen. The model explicitly accounts for the consumption of oxygen by heterotrophic degradation and nitrification of ammonium in the oxic layer of the sediment. 
 %The nitrification of 1 mol of ammonium in the oxic layer consumes 2 mol of oxygen. 
-In addition, the oxygen consumption through the oxidation of reduced species (\chem{Fe^{2+}}, \chem{Mn^{2+}}, \chem{NH_4}, \chem{H_2S}) produced in the suboxic and anoxic layers of the sediment is implicitly taken into account 
+In addition, the oxygen consumption through the oxidation of reduced species (\chem{NH_4}, \chem{H_2S}) produced in the suboxic and anoxic layers of the sediment is implicitly taken into account 
 through the flux boundary condition at the dynamic oxygen penetration depth $z_{\mathrm{ox}}$. This simplification can be justified as it has been shown that these secondary redox reactions mainly occur at the oxic/suboxic 
 interface \citep{soetaert_model_1996}.  
 The factor $\frac{1-\phi}{\phi}$ accounts for the volume conversion from the solid to the dissolved phase. 
@@ -424,14 +412,40 @@ Oxygen dynamics are thus described by:
 %  D_{ \chem{O_2}}&=D_{ \chem{O_2}, 0}+D_{\mathrm{bio}}  &\text{if ($z\leq z_{\mathrm{bio}}$)}\\
 %  D_{ \chem{O_2}}&=D_{ \chem{O_2}, 0}                &\text{if ($z > z_{\mathrm{bio}}$)} 
 % \end{align}  
-The analytical solution of Eq. \eqref{eq:ODE_O2_1} (see section \ref{sec:Solution}) requires the definition of boundary conditions (Table \ref{Tab:BC_OM+O2}). 
+The analytical solution of Eq. \eqref{eq:ODE_O2_1} requires the definition of boundary conditions (Table \ref{Tab:BC_O2}). 
 The model assumes a known bottom water concentration and the complete consumption of oxygen at the oxygen penetration depth (or zero flux if $z_{\mathrm{ox}}=z_\infty$). 
 It considers equal oxygen concentration and diffusive flux above ($z_{\mathrm{bio}}^-$) and 
 below ($z_{\mathrm{bio}}^+$) the bioturbation boundary. In addition, the model imposes a flux of reduced species through the bottom of the oxic zone that is calculated as the reduced substances produced through anoxic mineralization 
-of organic matter below $z_{\mathrm{ox}}$. Thus, assuming that fractions ($\gamma_{\chem{NH_4}}$ and $\delta$) of these reduced species are oxidised at the oxic/suboxic interface.
+of organic matter below $z_{\mathrm{ox}}$. Thus, assuming that fractions ($\gamma_{\chem{NH_4}}$ and $\gamma_{\chem{H_2S}}$) of these reduced species are oxidised at the oxic/suboxic interface.
 %\textcolor{red}{does not $\gamma_{\chem{NH_4}}, \delta$ account for part which is not oxidised?}
 % was Sandra: In addition, it imposes a flux of reduce species through the bottom of the oxic zone that is calculated by integrating organic matter degradation rate and, thus, 
 %assumes a complete oxidation of these species at the oxic/suboxic interface:   
+\begin{table}[tbp]
+\caption{Boundary conditions for oxygen. For the boundaries we define:  $z_{\mathrm{bio}}^- := \lim_{h\to0} (z_{\mathrm{bio}}-h)$ and $z_{\mathrm{bio}}^+ := \lim_{h\to0} (z_{\mathrm{bio}}+h)$.}
+% title of Table
+\centering
+% used for centering table
+\begin{tabular}{ |c| l| c l|}
+\hline
+\textbf{Boundary}& \textbf{Condition}& &\\
+\hline
+$z=0$& known concentration& 1)&$\chem{O_2}(0)=O_{20}$\\
+$z=z_{\mathrm{bio}}$&continuity& 2)&$ \chem{O_2}(z_{\mathrm{bio}}^-)$=$ \chem{O_2}(z_{\mathrm{bio}}^+)$\\
+               &&3)&$-\left(D_{ \chem{O_2},0}+D_{\mathrm{bio}}\right )\cdot \frac{\partial  \chem{O_2}}{\partial z}|_{z_{\mathrm{bio}}^-}=-D_{ \chem{O_2},0} \cdot \frac{\partial  \chem{O_2}}{\partial z}|_{z_{\mathrm{bio}}^+}$\\
+%Dom was               &&3) $\left(D_{\mathrm{bio}}+D_{mol, \chem{O_2}}\right )\cdot \frac{\partial  \chem{O_2}}{\partial z}|_{z_{\mathrm{bio}}^-}-w\cdot  \chem{O_2}(z_{\mathrm{bio}}^-)=D_{mol, \chem{O_2}} \cdot \frac{\partial  \chem{O_2}}{\partial z}|_{z_{\mathrm{bio}}^+}-w\cdot  \chem{O_2}(z_{\mathrm{bio}}^+)$\\
+$z=z_{\mathrm{ox}}$&  \chem{O_2} consumption & 4)&\textbf{IF} $ (\chem{O_2}(z_\infty)> 0 )$\\
+& ($z_{\mathrm{ox}} = z_\infty$) &&\quad $\frac{\partial  \chem{O_2}}{\partial z}|_{z_{\mathrm{ox}}}=0$ \\
+& & &\textbf{ELSE} \\
+& ($z_{\mathrm{ox}} < z_\infty$) & &\quad $  \chem{O_2}(z_{\mathrm{ox}})=0$  \quad and \quad $-D_{ \chem{O_2}} \cdot \frac{\partial  \chem{O_2}}{\partial z}|_{z_{\mathrm{ox}}}=F_{red}(z_\mathrm{ox})$\\
+%$z=z_{\mathrm{ox}}$& & 5) $-D_{ \chem{O_2}} \cdot \frac{\partial  \chem{O_2}}{\partial z}|_{z_{\mathrm{ox}}}=F_{red, z_{\mathrm{ox}}}$\\   
+&with flux from below &&$\quad F_{red}(z_\mathrm{ox})=\frac{1-\phi}{\phi} \cdot \int_{z_{\mathrm{ox}}}^{\infty}  \sum_i \left( 2\gamma_{\chem{NH_4}} \chem{NC_i} + \gamma_{\chem{H_2S}} \chem{SO_4C} \right) k_i C_i\ dz$ \\
+% was from Sandra &with:&$F_{red,z_{\mathrm{ox}}}=\beta \cdot \int_{z_{\mathrm{ox}}}^{\inf}  \sum_i k_i\cdot C_i  dz  + 2\cdot \gamma \cdot \int_{z_{\mathrm{ox}}}^{\inf}  \sum_i k_i\cdot C_i  -  $ \\
+\hline    
+\end{tabular}
+\label{Tab:BC_O2}
+% is used to refer this table in the text
+\end{table}
+
 \subsubsection{Nitrate and Ammonium}
 %Nitrate and ammonium are described in $mol\ cm^{-3}$ liquid and a factor of $\frac{1-\phi}{\phi}$ is introduced to account for the conversion from mineralization rates to production of dissolved species. 
 %To model nutrient dynamics the sediment is partitioned into two geochemical layers (oxic and suboxic)
@@ -460,7 +474,7 @@ for both species, the complete consumption of nitrate at the nitrate penetration
 at $z_{\mathrm{bio}}$ and $z_{\mathrm{ox}}$.  In addition, the re-oxidation of upward-diffusing reduced ammonium is considered in the oxic-suboxic boundary condition for nitrate and ammonium. 
 
 \begin{table}[tbp]
-\caption{Boundary conditions for nitrate and ammonium.}
+\caption{Boundary conditions for nitrate and ammonium. For the boundaries we define:  $z^-_{\_\_} := \lim_{h\to0} (z_{\_\_}-h)$ and $z^+_{\_\_} := \lim_{h\to0} (z_{\_\_}+h)$.}
 % title of Table
 \centering
 % used for centering table
@@ -523,7 +537,7 @@ a zero flux condition for sulfate is considered. At lower boundary ($z_\infty$) 
 \textcolor{red}{correct??}\\
 
 \begin{table}[tbp]
-\caption{Boundary conditions for sulfate and sulfide.}
+\caption{Boundary conditions for sulfate and sulfide. For the boundaries we define:  $z^-_{\_\_} := \lim_{h\to0} (z_{\_\_}-h)$ and $z^+_{\_\_} := \lim_{h\to0} (z_{\_\_}+h)$.}
 % title of Table
 \centering
 % used for centering table
@@ -622,7 +636,7 @@ concentration at $z_\infty$. \\
 \textcolor{red}{@ Sandra: SWI Flux for M does not exist, right???}
 
 \begin{table}[tbp]
-\caption{Boundary conditions for phosphate and Fe-bound P (M).}
+\caption{Boundary conditions for phosphate and Fe-bound P (M). For the boundaries we define:  $z^-_{\_\_} := \lim_{h\to0} (z_{\_\_}-h)$ and $z^+_{\_\_} := \lim_{h\to0} (z_{\_\_}+h)$.}
 % title of Table
 \centering
 % used for centering table
@@ -663,10 +677,10 @@ Dissolved inorganic carbon (DIC) is produced by when organic matter is degraded.
  \intertext{2. Layer ($z_{\chem{SO_4}} < z \leq z_\infty$)} 
   \frac{\partial DIC^{II}}{\partial t} &= 0 = D_{DIC} \frac{\partial^2DIC^{II} }{\partial z^2} - w\frac{\partial DIC^{II} }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i \chem{DICC^{II}} \cdot k_i \cdot C_{i}(z)\label{eq:DIC_ODE1_L2} %\qquad &\text{1. Layer ($z\leq z_{\mathrm{ox}}$)}\\
 \end{align}
-To solve equations \ref{eq:DIC_ODE1_L1} and \ref{eq:DIC_ODE1_L2} the model assumes the boundary conditions summarised in Table \ref{Tab:BC_DIC+ALK}.
+To solve equations \ref{eq:DIC_ODE1_L1} and \ref{eq:DIC_ODE1_L2} the model assumes the boundary conditions summarised in Table \ref{Tab:BC_DIC}.
 
 \begin{table}[tbp]
-\caption{Boundary conditions for DIC and alkalinity.}
+\caption{Boundary conditions for \chem{DIC}. For the boundaries we define:  $z^-_{\_\_} := \lim_{h\to0} (z_{\_\_}-h)$ and $z^+_{\_\_} := \lim_{h\to0} (z_{\_\_}+h)$.}
 % title of Table
 \centering
 % used for centering table
@@ -682,22 +696,8 @@ $z=z_{\chem{SO_4}}$& continuity & 8)& $\chem{DIC}(z_{\chem{SO_4}}^-)$=$\chem{DIC
 &where: & &$\quad F_{\chem{CH_4}}(z_{\chem{SO_4}})=\frac{1-\phi}{\phi} \cdot \int_{z_{\chem{SO_4}}}^{\infty}  \sum_i \chem{MC} \cdot k_i \cdot C_i\ dz$ \\          
 $z=z_{\infty}$& zero \chem{DIC} flux & 10)& $\frac{\partial \chem{DIC}}{\partial z}|_{z_\infty}=0$\\
 \hline
-$z=0$& known concentration& 1)& $\chem{ALK}(0)=\chem{ALK}_{0}$  \\
-$z=z_{\mathrm{bio}}$&continuity& 2)& $\chem{ALK}(z_{\mathrm{bio}}^-)$=$\chem{ALK}(z_{\mathrm{bio}}^+)$\\
-               & flux & 3)& $-\left(D_{\chem{ALK},0}+D_{\mathrm{bio}}\right )\cdot \frac{\partial \chem{ALK}}{\partial z}|_{z_{\mathrm{bio}}^-}=-D_{\chem{ALK},0} \cdot \frac{\partial \chem{ALK}}{\partial z}|_{z_{\mathrm{bio}}^+}$\\
-$z=z_{\mathrm{ox}}$& continuity& 4)& $\chem{ALK}(z_{\mathrm{ox}}^-)$=$\chem{ALK}(z_{\mathrm{ox}}^+)$\\
-               & flux & 5)& $-D_{\chem{ALK}} \cdot \frac{\partial \chem{ALK}}{\partial z}|_{z_{\mathrm{ox}}^-} +  F_{\chem{ALK}}(z_{\mathrm{ox}})=-D_{\chem{ALK}} \cdot \frac{\partial \chem{ALK}}{\partial z}|_{z_{\mathrm{ox}}^+}$\\
-&where: & &$\quad F_{\chem{ALK}}(z_{\mathrm{ox}})=\frac{1-\phi}{\phi} \cdot \left( \chem{ALK}^\chem{H_2S}\gamma_\chem{H_2S} \int_{z_{\chem{NO_3}}}^{\chem{SO_4}} \sum_i \chem{SO_4C} \cdot k_i \cdot C_i\ dz \right)+ $\\
-& & &$\qquad \qquad \qquad \quad \frac{1-\phi}{\phi} \cdot \left(\chem{ALK}^\chem{NIT} \frac{\gamma_\chem{NH_4}}{1+k_\chem{NH_4}}\int_{z_{\chem{NO_3}}}^{\infty}  \sum_i \chem{NC_i} \cdot k_i \cdot C_i\ dz \right)$\\            
-$z=z_{\chem{NO_3}}$&continuity& 6)& $\chem{ALK}(z_{\chem{NO_3}}^-)$=$\chem{ALK}(z_{\chem{NO_3}}^+)$\\
-               & flux & 7)& $-D_{\chem{ALK}}\cdot \frac{\partial \chem{ALK}}{\partial z}|_{z_{\chem{NO_3}}^-}=-D_{\chem{ALK}} \cdot \frac{\partial \chem{ALK}}{\partial z}|_{z_{\chem{NO_3}}^+}$\\
-$z=z_{\chem{SO_4}}$& continuity & 8)& $\chem{ALK}(z_{\chem{SO_4}}^-)$=$\chem{ALK}(z_{\chem{SO_4}}^+)$\\ %$\frac{\partial \chem{ALK}}{\partial z}|_{z_{\chem{ALK}}}=0$\\
-               & flux (with AOM) & 9)&  $-D_{\chem{ALK}}\cdot \frac{\partial \chem{ALK}}{\partial z}|_{z_{\chem{SO_4}}^-} + F_{\chem{ALK}}(z_{\chem{SO_4}})=-D_{\chem{ALK}} \cdot \frac{\partial \chem{ALK}}{\partial z}|_{z_{\chem{SO_4}}^+}$\\
-&where: & &$\quad F_{\chem{ALK}}(z_{\chem{SO_4}})=\frac{1-\phi}{\phi} \cdot \left( \chem{ALK}^\chem{AOM}\gamma_\chem{CH_4}\cdot \int_{z_{\chem{SO_4}}}^{\infty}  \sum_i \chem{MC} \cdot k_i \cdot C_i\ dz \right)$ \\          
-$z=z_{\infty}$& zero \chem{ALK} flux & 10)& $\frac{\partial \chem{ALK}}{\partial z}|_{z_\infty}=0$\\
-\hline    
 \end{tabular}
-\label{Tab:BC_DIC+ALK}
+\label{Tab:BC_DIC}
 \end{table}
 
 \subsubsection{Alkalinity}
@@ -715,8 +715,34 @@ Alkalinity is produced and consumed by when organic matter is degraded. Explain 
  \intertext{4. Layer ($z_{\chem{SO_4}} < z \leq z_{\infty} $)} 
 \frac{\partial \chem{ALK}^{IV}}{\partial t} &= 0 = D_{\chem{ALK}} \frac{\partial^2\chem{ALK}^{IV} }{\partial z^2} - w\frac{\partial \chem{ALK}^{IV} }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i \chem{ALK}^\mathrm{MET}\cdot k_i \cdot C_{i}(z)\label{eq:ALK_ODE1_L2}
 \end{align}
-To solve equations \ref{eq:ALK_ODE1_L1} and \ref{eq:ALK_ODE1_L2} the model assumes the boundary conditions summarised in Table \ref{Tab:BC_DIC+ALK}.
+To solve equations \ref{eq:ALK_ODE1_L1} and \ref{eq:ALK_ODE1_L2} the model assumes the boundary conditions summarised in Table \ref{Tab:BC_ALK}.
 
+\begin{table}[tbp]
+\caption{Boundary conditions for alkalinity. For the boundaries we define:  $z^-_{\_\_} := \lim_{h\to0} (z_{\_\_}-h)$ and $z^+_{\_\_} := \lim_{h\to0} (z_{\_\_}+h)$.}
+% title of Table
+\centering
+% used for centering table
+\begin{tabular}{ |c| c| c l|}
+\hline
+\textbf{Boundary}& \textbf{Condition}&&\\
+\hline
+$z=0$& known concentration& 1)& $\chem{ALK}(0)=\chem{ALK}_{0}$  \\
+$z=z_{\mathrm{bio}}$&continuity& 2)& $\chem{ALK}(z_{\mathrm{bio}}^-)$=$\chem{ALK}(z_{\mathrm{bio}}^+)$\\
+               & flux & 3)& $-\left(D_{\chem{ALK},0}+D_{\mathrm{bio}}\right )\cdot \frac{\partial \chem{ALK}}{\partial z}|_{z_{\mathrm{bio}}^-}=-D_{\chem{ALK},0} \cdot \frac{\partial \chem{ALK}}{\partial z}|_{z_{\mathrm{bio}}^+}$\\
+$z=z_{\mathrm{ox}}$& continuity& 4)& $\chem{ALK}(z_{\mathrm{ox}}^-)$=$\chem{ALK}(z_{\mathrm{ox}}^+)$\\
+               & flux & 5)& $-D_{\chem{ALK}} \cdot \frac{\partial \chem{ALK}}{\partial z}|_{z_{\mathrm{ox}}^-} +  F_{\chem{ALK}}(z_{\mathrm{ox}})=-D_{\chem{ALK}} \cdot \frac{\partial \chem{ALK}}{\partial z}|_{z_{\mathrm{ox}}^+}$\\
+&where: & &$\quad F_{\chem{ALK}}(z_{\mathrm{ox}})=\frac{1-\phi}{\phi} \cdot \left( \chem{ALK}^\chem{H_2S}\gamma_\chem{H_2S} \int_{z_{\chem{NO_3}}}^{\chem{SO_4}} \sum_i \chem{SO_4C} \cdot k_i \cdot C_i\ dz \right)+ $\\
+& & &$\qquad \qquad \qquad \quad \frac{1-\phi}{\phi} \cdot \left(\chem{ALK}^\chem{NIT} \frac{\gamma_\chem{NH_4}}{1+k_\chem{NH_4}}\int_{z_{\chem{NO_3}}}^{\infty}  \sum_i \chem{NC_i} \cdot k_i \cdot C_i\ dz \right)$\\            
+$z=z_{\chem{NO_3}}$&continuity& 6)& $\chem{ALK}(z_{\chem{NO_3}}^-)$=$\chem{ALK}(z_{\chem{NO_3}}^+)$\\
+               & flux & 7)& $-D_{\chem{ALK}}\cdot \frac{\partial \chem{ALK}}{\partial z}|_{z_{\chem{NO_3}}^-}=-D_{\chem{ALK}} \cdot \frac{\partial \chem{ALK}}{\partial z}|_{z_{\chem{NO_3}}^+}$\\
+$z=z_{\chem{SO_4}}$& continuity & 8)& $\chem{ALK}(z_{\chem{SO_4}}^-)$=$\chem{ALK}(z_{\chem{SO_4}}^+)$\\ %$\frac{\partial \chem{ALK}}{\partial z}|_{z_{\chem{ALK}}}=0$\\
+               & flux (with AOM) & 9)&  $-D_{\chem{ALK}}\cdot \frac{\partial \chem{ALK}}{\partial z}|_{z_{\chem{SO_4}}^-} + F_{\chem{ALK}}(z_{\chem{SO_4}})=-D_{\chem{ALK}} \cdot \frac{\partial \chem{ALK}}{\partial z}|_{z_{\chem{SO_4}}^+}$\\
+&where: & &$\quad F_{\chem{ALK}}(z_{\chem{SO_4}})=\frac{1-\phi}{\phi} \cdot \left( \chem{ALK}^\chem{AOM}\gamma_\chem{CH_4}\cdot \int_{z_{\chem{SO_4}}}^{\infty}  \sum_i \chem{MC} \cdot k_i \cdot C_i\ dz \right)$ \\          
+$z=z_{\infty}$& zero \chem{ALK} flux & 10)& $\frac{\partial \chem{ALK}}{\partial z}|_{z_\infty}=0$\\
+\hline    
+\end{tabular}
+\label{Tab:BC_ALK}
+\end{table}
 
 \subsection{Model Parameters}
 This section describes the parameters used in OMEN-SED (1.0) to describe sediment transport and biogeochemical reactions related to the burial and mineralization of organic matter under a wide range of environmental conditions. 
@@ -725,10 +751,11 @@ secondary reaction parameters used in the model.
 
 \subsubsection{Transport Parameters}
 Advection is the bulk flow of sediments and can be directly related to the accumulation of new material on the seafloor \citep[i.e. sedimentation,][]{burdige2006geochemistry}. 
-This results in a downward flux of older sediment material and porewater in relation to the sediment-water interface. OMEN-SED (1.0) uses the empirical global relationship between 
+This results in a downward flux of older sediment material and porewater in relation to the sediment-water interface. When coupled to an ocean model, its sedimentation flux can be readily used in OMEN-SED 1.0. 
+The stand-alone version of OMEN-SED 1.0 uses the empirical global relationship between 
 sediment accumulation rate (cm yr$^{-1}$) and seafloor depth (m) of \citet{middelburg_empirical_1997}: 
 \begin{equation}
- w = 3.3\cdot 10^{-0.87478367-0.00043512\cdot \text{depth}}\label{eq:sedimentation_rate}
+ w = 3.3\cdot 10^{-0.87478367-0.00043512\cdot \text{depth}}\label{eq:sedimentation_rate},
 \end{equation}
 As discussed before (Sec. \ref{subsec:Transport}), the diffusion coefficient of species $i$ is calculated as $D_i=D_{i,0}+D_{\mathrm{bio}}=D_{\mathrm{mol},i}\cdot f_{ir}+D_{\mathrm{bio}}$ for dissolved species and $D_i=D_{\mathrm{bio}}$ for solid species. 
 The bioturbation coefficient $D_{\mathrm{bio}}$ (cm$^2$ yr$^-1$) is constant in the bioturbated zone and also follows the empirical relationship by \citet{middelburg_empirical_1997}:
@@ -804,7 +831,7 @@ and are assumed invariant along the sediment column, therefore independent of th
 The stoichiometry of organic matter is represented by the factors \chem{NC_i} and \chem{PC_i} denoting the molecular nitrogen to carbon and phosphorus to carbon ratio. 
 In the sulfidic and methanic zone the 
 reduction of 1 mol organic matter additionally produces 0.5 mol of hydrogen sulfide (\chem{SO_4C}) and 0.5 mol of methane (\chem{MC}). 
-In the total sediment column organic matter mineralization consumes the specific terminal electron acceptor with a fixed ratio (\chem{OC}, \chem{NO_3C} and \chem{SO_4C} respectively). 
+In the total sediment column organic matter mineralization consumes the specific TEA with a fixed ratio (\chem{OC}, \chem{NO_3C} and \chem{SO_4C} respectively). 
 See Table \ref{table:reaction_parameters} for a complete summary of the parameters and their values.
 % \textcolor{red}{Or bit longer:}\\
 % In the sulfidic and methanic zone the 
@@ -867,7 +894,7 @@ $k_a$ & yr$^{-1}$ & \textcolor{red}{???} & rate constant for authigenic P format
 \label{table:reaction_parameters}
 \end{table}
 
-\subsection{Module Structure}
+\subsection{Module Structure}\label{subsec:module_Structure}
 %Sandra: Technical description, e.g. how is it implemented and how can it be coupled to model\\
 \textcolor{red}{TODO: }
 %Describe in which order we calculate the different profiles/exchange fluxes (first calculating OM profile, then different TEA profiles).\\ 

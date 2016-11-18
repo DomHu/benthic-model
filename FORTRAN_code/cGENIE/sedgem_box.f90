@@ -248,7 +248,7 @@ CONTAINS
                & (sed_type(is) == par_sed_type_POM) .OR. &
                & (sed_type(sed_dep(is)) == par_sed_type_POM) &
                & ) then
-    ! DH: was like this, that's wrong, right?
+    ! DH: was like this, that's wrong, right?  Think, you did it drunk on the plane.....
 !             loc_new_sed(is) = loc_sed_pres_fracC*loc_new_sed(is)
 !             loc_dis_sed(is) = 0.0
              if (sed_type(is) == par_sed_type_scavenged) then
@@ -1379,7 +1379,7 @@ CONTAINS
                & (sed_type(is) == par_sed_type_POM) .OR. &
                & (sed_type(sed_dep(is)) == par_sed_type_POM) &
                & ) then
-! DH: was like this, that's wrong, right?
+! DH: was like this, that's wrong, right? Think, you did it drunk on the plane.....
 !             loc_new_sed(is) = loc_sed_pres_fracC*loc_new_sed(is)
 !             loc_dis_sed(is) = 0.0
              if (sed_type(is) == par_sed_type_scavenged) then

@@ -92,7 +92,7 @@ classdef benthic_main < handle
             obj.PC2=0.0094*obj.SD;  % Sandra played with  1e-20;            %P/C second TOC fraction 1/106 (mol/mol)
             obj.SO4C=0.5*obj.SD;                                                %SO4/C (mol/mol)
             obj.DICC1=1.0*obj.SD;                                               %DIC/C until zSO4 (mol/mol)
-            obj.DICC2=0.5*obj.SD;                                               %DIC/C below zSO$ (mol/mol)
+            obj.DICC2=0.5*obj.SD;                                               %DIC/C below zSO4 (mol/mol)
             obj.MC=0.5*obj.SD;                                                  %CH4/C (mol/mol)
             obj.NO3CR=(94.4/106)*obj.SD;                                        % NO3 consumed by Denitrification
             obj.ALKROX=15.0/106;                                                  % Aerobic degradation                     

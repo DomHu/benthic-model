@@ -190,7 +190,8 @@ where:
  D_{OC_i}&=0            &\text{if ($z > z_{bio}$)} 
 \end{align}
 
-The solution of eq. \ref{eq:ODE_OC} (see section \ref{sec:Solution} for details) requires the definition of boundary conditions. The model assumes a known concentration/flux at the sediment-water interface and continuity across the bottom of the bioturbated zone at $z_{bio}$:\\
+The solution of eq. \ref{eq:ODE_OC} (see section \ref{sec:Solution} for details) requires the definition of boundary conditions. The model assumes a known concentration/flux at the sediment-water interface and continuity across 
+the bottom of the bioturbated zone at $z_{bio}$:\\
 
 \begin{tabular}{ l l l}
 \textbf{Boundary}& \textbf{Condition}&\\
@@ -201,7 +202,10 @@ $z=z_{bio}$&continuity& 2) $OC_i(zbio)$=$OC_i(zbio)$\\
 
 
 \subsubsection{Oxygen}
-Oxygen serves as the most powerful terminal electron acceptor for the heterotrophic degradation of organic carbon. In addition, the oxidation of reduces species produced through microbial activity throughout the sediment column further contributes to the consumption of oxygen. The model explicitly account for the consumption of oxygen by heterotrophic degradation and the nitrification of ammonium in the oxic layer of the sediment. In addition, the oxygen consumption through the oxidation of reduced species produced in the suboxic and anoxic layers of the sediment ($Fe^{2+}, Mn^{2+}, NH_4, H_2S$) is implicitly taken into account through the flux boundary condition at the dynamic oxygen penetration depth $z_{ox}$ assuming that secondary redox reactions occur directly at the oxic/suboxic interface.  Oxygen dynamics are thus described by:
+Oxygen serves as the most powerful terminal electron acceptor for the heterotrophic degradation of organic carbon. In addition, the oxidation of reduces species produced through microbial activity throughout the sediment column further 
+contributes to the consumption of oxygen. The model explicitly account for the consumption of oxygen by heterotrophic degradation and the nitrification of ammonium in the oxic layer of the sediment. In addition, the oxygen consumption 
+through the oxidation of reduced species produced in the suboxic and anoxic layers of the sediment ($Fe^{2+}, Mn^{2+}, NH_4, H_2S$) is implicitly taken into account through the flux boundary condition at the dynamic oxygen penetration 
+depth $z_{ox}$ assuming that secondary redox reactions occur directly at the oxic/suboxic interface.  Oxygen dynamics are thus described by:
 
 
 \begin{align} 
