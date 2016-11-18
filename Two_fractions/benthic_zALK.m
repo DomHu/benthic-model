@@ -37,7 +37,7 @@ classdef benthic_zALK
                              
             % Preparation: for each layer, sort out solution-matching across bioturbation boundary if necessary
             % layer 1: 0 < z < zox, Nitrification (-) Aerobic degradation (+)
-            %      ls =      prepfg_l12( bsd, swi, r, reac1,                                            reac2,                                          ktemp, zU, zL, D1,        D2)
+            %      ls =      prepfg_l12( bsd, swi, r, reac1,        reac2,       ktemp,     zU,   zL,       D1,      D2)
             rALK.ls1 = r.zTOC.prepfg_l12(bsd, swi, r, obj.reac11, obj.reac12,         0,     0, r.zox, obj.DALK1, obj.DALK2);
             % layer 2: zox < z < zno3, Denitrification (+)
             rALK.ls2 = r.zTOC.prepfg_l12(bsd, swi, r, obj.reac2, obj.reac2,         0,  r.zox, r.zno3, obj.DALK1, obj.DALK2);            

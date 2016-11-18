@@ -43,6 +43,13 @@ MODULE sedgem_box_benthic
     real gammaCH4                           !fraction of CH4 that is oxidised at SO4
     real satSO4                               ! SO4 saturation
     real NO3CR                                  ! NO3 consumed by Denitrification
+    real ALKROX;                                 ! Aerobic degradation
+    real ALKRNIT;                                ! Nitrification
+    real ALKRDEN;                                ! Denitrification
+    real ALKRSUL;                                ! Sulfato reduction
+    real ALKRH2S;                                ! H2S oxydation (CHECK THIS VALUE!!!)
+    real ALKRMET;                                ! Methanogenesis
+    real ALKRAOM;                                ! AOM
 
     real zoxgf                            ! cm, rolloff NH4, H2S oxidation for small zox depth
 
@@ -54,8 +61,10 @@ MODULE sedgem_box_benthic
     real dum_swiconc_H2S                  ! H2S concentration at SWI (mol/cm3)
     real dum_swiconc_NO3                  ! NO3 concentration at SWI (mol/cm3)
     real dum_swiconc_NH4                  ! NH4 concentration at SWI (mol/cm3)
-    real dum_swiconc_PO4                                                  !PO4 concentration at SWI (mol/cm3)
-    real dum_swiflux_M                       ! flux of M to the sediment (mol/(cm2*yr))
+    real dum_swiconc_PO4                    !PO4 concentration at SWI (mol/cm3)
+    real dum_swiflux_M                      ! flux of M to the sediment (mol/(cm2*yr))
+    real dum_swiconc_DIC                  ! DIC concentration at SWI (mol/cm3)
+    real dum_swiconc_ALK                  ! ALK concentration at SWI (mol/cm3)
 
 
     ! ORGANIC MATTER
@@ -115,6 +124,17 @@ MODULE sedgem_box_benthic
     real PO4a                     ! Equilibrium concentration for authigenic P formation (mol/cm3)
     real Minf                     ! asymptotic concentration for Fe-bound P (mol/cm3)
 
+    ! DIC
+    real qdispDIC                   ! DIC diffusion coefficient in water (cm2/yr)
+    real adispDIC                   ! DIC linear coefficient for temperature dependence (cm2/yr/oC)
+    real DDIC1                      ! DIC diffusion coefficient in bioturbated layer (cm2/yr)
+    real DDIC2                      ! DIC diffusion coefficient in non-bioturbated layer (cm2/yr)
+
+    ! Alkalinity
+    real qdispALK                   ! ALK diffusion coefficient in water (cm2/yr)
+    real adispALK                   ! ALK linear coefficient for temperature dependence (cm2/yr/oC)
+    real DALK1                      ! ALK diffusion coefficient in bioturbated layer (cm2/yr)
+    real DALK2                      ! ALK diffusion coefficient in non-bioturbated layer (cm2/yr)
 
     SAVE
 
@@ -165,6 +185,9 @@ CONTAINS
         real::loc_NH4_swiflux                                       ! SWI return fluxes of H2S [mol/cm^3]
         real::loc_PO4_swiflux                                       ! SWI return fluxes of PO4 [mol/cm^3]
         real::loc_M_swiflux                                         ! SWI return fluxes of M - DOES NOT EXIST, JUST FOR DEBUGGING
+        real::loc_DIC_swiflux                                       ! SWI return fluxes of DIC [mol/cm^3]
+        real::loc_ALK_swiflux                                       ! SWI return fluxes of ALK [mol/cm^3]
+
         real::loc_fPOC                                              ! Corg flux to the sediment [cm3 cm-2]
         !        real::dum_POC1_wtpct_swi, dum_POC2_wtpct_swi             ! POC concentrations at SWI [wt%]
         logical :: loc_print_results
@@ -185,13 +208,15 @@ CONTAINS
             dum_swiconc_NH4 = dum_sfcsumocn(io_NH4)*1e-3
         end if
         if(ocn_select(io_SO4))then
-        dum_swiconc_SO4 = dum_sfcsumocn(io_SO4)*1e-3
-        dum_swiconc_H2S = dum_sfcsumocn(io_H2S)*1e-3
+            dum_swiconc_SO4 = dum_sfcsumocn(io_SO4)*1e-3
+            dum_swiconc_H2S = dum_sfcsumocn(io_H2S)*1e-3
         end if
         if(ocn_select(io_PO4))then
             dum_swiconc_PO4 = dum_sfcsumocn(io_PO4)*1e-3
             dum_swiflux_M = 365*0.2e-10
         end if
+        dum_swiconc_DIC = dum_sfcsumocn(io_DIC)*1e-3
+        dum_swiconc_ALK = dum_sfcsumocn(io_ALK)*1e-3
 
 
         ! calculate wt% of mol from POC flux (both fractions)
@@ -211,7 +236,7 @@ CONTAINS
 !        dum_swiconc_PO4 = 40.0e-9
 !        loc_depth_comparison = 600.0
 
-        loc_print_results = .false.
+        loc_print_results = .true.
         if(loc_print_results) then
             if(loc_new_sed_vol .LE. 4.0e-4)then
                         print*,' '
@@ -267,6 +292,8 @@ CONTAINS
             print*,'dum_swiconc_H2S = ', dum_swiconc_H2S
             print*,'dum_swiconc_PO4 = ', dum_swiconc_PO4
             print*,'dum_swiflux_M = ', dum_swiflux_M
+            print*,'dum_swiconc_DIC = ', dum_swiconc_DIC
+            print*,'dum_swiconc_ALK = ', dum_swiconc_ALK
             !            print*, 'grid-point depth',dum_D
             print*,' '
         end if
@@ -281,6 +308,9 @@ CONTAINS
             loc_SO4_swiflux = 0.0
             loc_NH4_swiflux = 0.0
             loc_H2S_swiflux = 0.0
+            ! DH: TODO what about DIC and ALK?
+            loc_DIC_swiflux = 0.0
+            loc_ALK_swiflux = 0.0
         else
             call sub_huelseetal2016_zTOC(loc_POC1_wtpct_swi, loc_POC2_wtpct_swi, dum_sed_pres_fracC)
             ! below test with specific wt% to compare with matlab
@@ -339,6 +369,18 @@ CONTAINS
             else
                 ! If not selected nothing needs to be done
             end if
+
+            if(ocn_select(io_DIC))then
+                call sub_huelseetal2016_zDIC(dum_swiconc_DIC, loc_DIC_swiflux)
+            else
+                ! If not selected nothing needs to be done
+            end if
+
+            if(ocn_select(io_ALK))then
+                call sub_huelseetal2016_zALK(dum_swiconc_ALK, loc_ALK_swiflux)
+            else
+                ! If not selected nothing needs to be done
+            end if
         end if  ! loc_POC1/2_wtpct_swi .LE. const_real_nullsmall
 
         ! Now pass back the values to the global field
@@ -353,6 +395,12 @@ CONTAINS
         end if
         if(ocn_select(io_PO4))then
             dum_new_swifluxes(io_PO4) = loc_PO4_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
+        end if
+        if(ocn_select(io_DIC))then
+            dum_new_swifluxes(io_DIC) = loc_DIC_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
+        end if
+        if(ocn_select(io_ALK))then
+            dum_new_swifluxes(io_ALK) = loc_ALK_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
         end if
 
         if(loc_print_results) then
@@ -384,6 +432,8 @@ CONTAINS
             print*,'FINAL H2S SWI flux = ', dum_new_swifluxes(io_H2S)           
             print*,'FINAL PO4 SWI flux = ', dum_new_swifluxes(io_PO4)
             print*,'FINAL M SWI flux = ', loc_M_swiflux
+            print*,'FINAL DIC SWI flux = ', dum_new_swifluxes(io_DIC)
+            print*,'FINAL ALK SWI flux = ', loc_ALK_swiflux
             print*,'Fraction POC-preserved/POC-deposited =' , dum_sed_pres_fracC
             print*,' '
 !            print*,' '
@@ -476,11 +526,18 @@ CONTAINS
         DICC2=0.5*SD                                           ! DIC/C below zSO$ (mol/mol)
         MC=0.5*SD                                              ! CH4/C (mol/mol)
         NO3CR=(94.4/106)*SD                                    ! NO3 consumed by Denitrification
+        ALKROX=15.0/106;                                        ! Aerobic degradation
+        ALKRNIT=-2.0;                                           ! Nitrification
+        ALKRDEN=93.4/106;                                       ! Denitrification
+        ALKRSUL=15.0/106;                                       ! Sulfato reduction
+        ALKRH2S=-1.0;                                           ! H2S oxydation (CHECK THIS VALUE!!!)
+        ALKRMET=14.0/106;                                       ! Methanogenesis
+        ALKRAOM=2.0;                                            ! AOM
         
         ! ORGANIC MATTER
         DC1 = Dbio
-        k1=0.1
-        k2=0.1
+        k1=0.01
+        k2=0.0001
 
         ! GLOBAL DIFFUSION COEFFICIENTS
         ! O2
@@ -502,6 +559,15 @@ CONTAINS
         ! Phosphate (PO4)
         qdispPO4=112.90764
         adispPO4=5.586252
+
+        ! DIC
+        qdispDIC=309.0528
+        adispDIC=12.2640
+
+        ! Alkalinity
+        qdispALK=309.0528;                                          ! ALK diffusion coefficient in water (cm2/yr)
+        adispALK=12.2640;                                           ! ALK linear coefficient for temperature dependence (cm2/yr/oC)
+
 
         ! *********************************************************************************
 
@@ -549,6 +615,14 @@ CONTAINS
         PO4s = 1.0e-9                    ! Equilibrium concentration for P sorption (mol/cm3)
         PO4a = 0.5e-8                    ! Equilibrium concentration for authigenic P formation (mol/cm3)
         Minf = 1.0e-10                    ! asymptotic concentration for Fe-bound P (mol/cm3)
+
+        ! DIC
+        DDIC1=(qdispDIC+adispDIC*loc_TempC)*dispFactor+Dbio                 ! DIC diffusion coefficient in bioturbated layer (cm2/yr)
+        DDIC2=(qdispDIC+adispDIC*loc_TempC)*dispFactor                      ! DIC diffusion coefficient in non-bioturbated layer (cm2/yr)
+
+        ! Alkalinity
+        DALK1=(qdispALK+adispALK*loc_TempC)*dispFactor+Dbio;                ! ALK diffusion coefficient in bioturbated layer (cm2/yr)
+        DALK2=(qdispALK+adispALK*loc_TempC)*dispFactor;                     ! ALK diffusion coefficient in non-bioturbated layer (cm2/yr)
 
     end SUBROUTINE sub_huelseetal2016_initialize
     
@@ -2071,6 +2145,311 @@ CONTAINS
     !   *****************************************************************
     !------------------------------------------------------------------------------------
 
+    !------------------------------------------------------------------------------------
+    !   *****************************************************************
+    !   *****************************************************************
+
+    !                   Dissolved Inorganic Carbon (DIC)
+
+    !   *****************************************************************
+    !   *****************************************************************
+    !------------------------------------------------------------------------------------
+
+    SUBROUTINE sub_huelseetal2016_zDIC(dum_swiconc_DIC, loc_new_swiflux_DIC)
+
+
+        ! dummy arguments
+        real,INTENT(in)::dum_swiconc_DIC                ! DIC concentrations at SWI
+        real,INTENT(inout)::loc_new_swiflux_DIC         ! DIC flux
+
+        ! local variables
+        real reac1_dic, reac2_dic                 ! reactive terms: OM degradation
+        integer ltype1, ltype2, ltype3, ltype4
+        real ls_a1, ls_b1, ls_c1, ls_d1, ls_e1, ls_f1
+        real ls_a2, ls_b2, ls_c2, ls_d2, ls_e2, ls_f2
+        real zso4_a, zso4_b, zso4_c, zso4_d, zso4_e, zso4_f
+        real e2_zinf, dedz2_zinf, f2_zinf, dfdz2_zinf, g2_zinf, dgdz2_zinf
+        real e1_zso4, dedz1_zso4, f1_zso4, dfdz1_zso4, g1_zso4, dgdz1_zso4
+        real e2_zso4, dedz2_zso4, f2_zso4, dfdz2_zso4, g2_zso4, dgdz2_zso4
+        real e1_00, dedz1_00, f1_00, dfdz1_00, g1_00, dgdz1_00
+        real e1_0, dedz1_0, f1_0, dfdz1_0, g1_0, dgdz1_0
+!
+        real rDIC_A2, rDIC_B2
+        real rDIC_A1, rDIC_B1
+
+        real zso4FDIC
+
+        reac1_dic = DICC1                 ! DIC/C until zSO4 (mol/mol)
+        reac2_dic = DICC2                 !DIC/C below zSO4 (mol/mol)
+
+        !    print*, ''
+        !    print*, '------------------------------------------------------------------'
+        !    print*, '---------------------- START zDIC ------------------------------- '
+        !    print*, ''
+
+        ! Calculate DIC
+
+        ! Preparation: for each layer, sort out solution-matching across bioturbation boundary if necessary
+        ! layer 1: 0 < z < zso4, DIC produced my OM degradation
+        !    prepfg_l12(reac1,      reac2,  ktemp, zU,  zL,     D1, D2, ls_a, ls_b, ls_c, ls_d, ls_e, ls_f, ltype)
+        call sub_prepfg_l12(reac1_dic, reac1_dic, 0.0, 0.0, zso4, DDIC1, DDIC2, ls_a1, ls_b1, ls_c1, ls_d1, ls_e1, ls_f1, ltype1)
+
+        ! layer 2: zso4 < z < zinf, DIC production by OM degradation (Methanogenesis) -> different production rate
+        call sub_prepfg_l12(reac2_dic, reac2_dic, 0.0, zso4, zinf, DDIC1, DDIC2, ls_a2, ls_b2, ls_c2, ls_d2, ls_e2, ls_f2, ltype2)
+
+
+        ! Work up from the bottom, matching solutions at boundaries
+        ! Basis functions at bottom of layer 2 zinf
+        !   calcfg_l12(  z,     reac1,      reac2, ktemp, ls_a, ls_b,  ls_c, ls_d,   ls_e, ls_f,  ls_D1, ls_D2, ltype, e, dedz, f, dfdz, g, dgdz)
+        call sub_calcfg_l12(zinf, reac2_dic, reac2_dic, 0.0, ls_a2, ls_b2, ls_c2, ls_d2, ls_e2, ls_f2, DDIC1, DDIC2, ltype2, &
+        e2_zinf, dedz2_zinf, f2_zinf, dfdz2_zinf, g2_zinf, dgdz2_zinf)
+
+        ! Match at zso4, layer 1 - layer 2 (continuity and flux with AOM production)
+        ! basis functions at bottom of layer 1
+        call sub_calcfg_l12(zso4, reac1_dic, reac2_dic, 0.0, ls_a1, ls_b1, ls_c1, ls_d1, ls_e1, ls_f1, DDIC1, DDIC2, ltype1, &
+        e1_zso4, dedz1_zso4, f1_zso4, dfdz1_zso4, g1_zso4, dgdz1_zso4)
+
+        ! ... and top of layer 2
+        call sub_calcfg_l12(zso4, reac2_dic, reac2_dic, 0.0, ls_a2, ls_b2, ls_c2, ls_d2, ls_e2, ls_f2, DDIC1, DDIC2, ltype2, &
+        e2_zso4, dedz2_zso4, f2_zso4, dfdz2_zso4, g2_zso4, dgdz2_zso4)
+
+        ! flux of DIC produced by AOM interface (Source of DIC)
+        zso4FDIC = FUN_calcReac(zso4, zinf, MC, MC) ! MULTIPLY BY 1/POR ????
+        !    print*,'flux of H2S produced by AOM interface zso4FH2S = ', zso4FH2S
+
+        ! match solutions at zso4 - continuous concentration and flux
+        call sub_matchsoln(e1_zso4, f1_zso4, g1_zso4, dedz1_zso4, dfdz1_zso4, dgdz1_zso4, &
+        e2_zso4, f2_zso4, g2_zso4, dedz2_zso4, dfdz2_zso4, dgdz2_zso4, &
+        0.0, -gammaCH4*zso4FDIC/DDIC2, zso4_a, zso4_b, zso4_c, zso4_d, zso4_e, zso4_f)
+
+        ! Solution at swi, top of layer 1
+        call sub_calcfg_l12(0.0, reac1_dic, reac1_dic, 0.0, ls_a1, ls_b1, ls_c1, ls_d1, ls_e1, ls_f1, DDIC1, DDIC2, ltype1, &
+        e1_00, dedz1_00, f1_00, dfdz1_00, g1_00, dgdz1_00)
+
+        ! transform to use coeffs from l2
+        call sub_xformsoln(e1_00, f1_00, g1_00, dedz1_00, dfdz1_00, dgdz1_00, &
+        zso4_a, zso4_b, zso4_c, zso4_d, zso4_e, zso4_f, &
+        e1_0, f1_0, g1_0, dedz1_0,  dfdz1_0, dgdz1_0)
+
+        ! Solve for ADIC, BDIC given boundary conditions (expressed in terms of transformed basis fns, layer 4 A, B)
+        !  ADIC*dedz4_zinf   +  BDIC*dfz4_zinf  + dgz4_zinf = 0;          % zero flux at zinf
+        !  ADIC*e1_0     +   BDIC*f1_0     + g1_0  = swi.DIC0;
+
+        !  | dedz4_zinf dfdz4_zinf |  |ADIC|   = | -dgz4_zinf       |
+        !  | e1_0     f1_0         |  |BDIC|     | swi.DIC0 - g1_0 |
+
+        call sub_solve2eqn(dedz2_zinf, dfdz2_zinf, e1_0, f1_0, -dgdz2_zinf, dum_swiconc_DIC - g1_0, rDIC_A2, rDIC_B2)
+
+        ! flux at swi - DO include por so this is per cm^2 water column area
+        ! DH: added advective flux 28.05.2016
+        loc_new_swiflux_DIC = por*(DDIC1*(rDIC_A2*dedz1_0+rDIC_B2*dfdz1_0 + dgdz1_0) - w*dum_swiconc_DIC)   ! NB: use A2, B2 as these are _xformed_ layer 1 basis functions
+
+        ! save coeffs for layers 1
+        rDIC_A1 = zso4_a*rDIC_A2 + zso4_b*rDIC_B2 + zso4_e
+        rDIC_B1 = zso4_c*rDIC_A2 + zso4_d*rDIC_B2 + zso4_f
+
+        !    print*,' ---------------- RESULTS: benthic_zDIC ---------------- '
+!        print*,'flxswiDIC ', char(9), flxswiDIC
+    !    print*,'rH2S_A4, rH2S_B4, rH2S_A3, rH2S_B3, rH2S_A2, rH2S_B2, rH2S_A1, rH2S_B1', &
+    !          &  rH2S_A4, rH2S_B4, rH2S_A3, rH2S_B3, rH2S_A2, rH2S_B2, rH2S_A1, rH2S_B1
+
+
+    END SUBROUTINE sub_huelseetal2016_zDIC
+
+    !------------------------------------------------------------------------------------
+    !   *****************************************************************
+    !   *****************************************************************
+
+    !                           Alkalinity (ALK)
+
+    !   *****************************************************************
+    !   *****************************************************************
+    !------------------------------------------------------------------------------------
+
+    SUBROUTINE sub_huelseetal2016_zALK(dum_swiconc_ALK, loc_new_swiflux_ALK)
+
+        ! dummy arguments
+        real,INTENT(in)::dum_swiconc_ALK                ! ALK concentrations at SWI
+        real,INTENT(inout)::loc_new_swiflux_ALK         ! ALK flux
+
+        ! local variables
+        real reac11_alk, reac12_alk, reac2_alk, reac3_alk, reac4_alk                 ! reactive terms: OM degradation
+        integer ltype1, ltype2, ltype3, ltype4
+        real ls_a1, ls_b1, ls_c1, ls_d1, ls_e1, ls_f1
+        real ls_a2, ls_b2, ls_c2, ls_d2, ls_e2, ls_f2
+        real ls_a3, ls_b3, ls_c3, ls_d3, ls_e3, ls_f3
+        real ls_a4, ls_b4, ls_c4, ls_d4, ls_e4, ls_f4
+        real e4_zinf, dedz4_zinf, f4_zinf, dfdz4_zinf, g4_zinf, dgdz4_zinf
+        real e3_zso4, dedz3_zso4, f3_zso4, dfdz3_zso4, g3_zso4, dgdz3_zso4
+        real e4_zso4, dedz4_zso4, f4_zso4, dfdz4_zso4, g4_zso4, dgdz4_zso4
+        real zso4_a, zso4_b, zso4_c, zso4_d, zso4_e, zso4_f
+        real e2_zno3, dedz2_zno3, f2_zno3, dfdz2_zno3, g2_zno3, dgdz2_zno3
+        real e3_zno30, dedz3_zno30, f3_zno30, dfdz3_zno30, g3_zno30, dgdz3_zno30
+        real e3_zno3, dedz3_zno3, f3_zno3, dfdz3_zno3, g3_zno3, dgdz3_zno3
+        real zno3_a, zno3_b, zno3_c, zno3_d, zno3_e, zno3_f
+        real e1_zox, dedz1_zox, f1_zox, dfdz1_zox, g1_zox, dgdz1_zox
+        real e2_zox0, dedz2_zox0, f2_zox0, dfdz2_zox0, g2_zox0, dgdz2_zox0
+        real e2_zox, dedz2_zox, f2_zox, dfdz2_zox, g2_zox, dgdz2_zox
+        real zox_a, zox_b, zox_c, zox_d, zox_e, zox_f
+        real e1_00, dedz1_00, f1_00, dfdz1_00, g1_00, dgdz1_00
+        real e1_0, dedz1_0, f1_0, dfdz1_0, g1_0, dgdz1_0
+
+        real rALK_A4, rALK_B4
+        real rALK_A3, rALK_B3
+        real rALK_A2, rALK_B2
+        real rALK_A1, rALK_B1
+
+        real zso4FALK, zoxFALK
+
+        reac11_alk = gamma*NC1/(1+KNH4)*ALKRNIT+ALKROX*SD           ! z < zox:  Nitrification (-2) Aerobic degradation (+15/106)
+        reac12_alk = gamma*NC2/(1+KNH4)*ALKRNIT+ALKROX*SD           ! z < zox:  Nitrification (-2) Aerobic degradation (+15/106)
+        reac2_alk = SD*ALKRDEN                                      ! zox < z < zno3: Denitrification (+93.4/106)
+        reac3_alk = SD*ALKRSUL                                      ! zno3 < z < zso4: Sulfate reduction (+15/106)
+        reac4_alk = SD*ALKRMET                                      ! zso4 < z < zinf: Methanogenesis (+14/106)
+
+        !    print*, ''
+        !    print*, '------------------------------------------------------------------'
+        !    print*, '---------------------- START zALK ------------------------------- '
+        !    print*, ''
+
+        ! Calculate ALK
+
+        ! Preparation: for each layer, sort out solution-matching across bioturbation boundary if necessary
+        ! layer 1: 0 < z < zox, Nitrification (-) Aerobic degradation (+)
+        !    prepfg_l12(reac1,      reac2,    ktemp, zU,  zL,   D1,     D2, ls_a, ls_b, ls_c, ls_d, ls_e, ls_f, ltype)
+        call sub_prepfg_l12(reac11_alk, reac12_alk, 0.0, 0.0, zox, DALK1, DALK2, ls_a1, ls_b1, ls_c1, ls_d1, ls_e1, ls_f1, ltype1)
+
+        ! layer 2: zox < z < zno3, Denitrification (+)
+        call sub_prepfg_l12(reac2_alk, reac2_alk, 0.0, zox, zno3, DALK1, DALK2, ls_a2, ls_b2, ls_c2, ls_d2, ls_e2, ls_f2, ltype2)
+
+        ! layer 3: zno3 < z < zso4, Sulfate reduction (+)
+        call sub_prepfg_l12(reac3_alk, reac3_alk, 0.0, zno3, zso4, DALK1, DALK2, ls_a3, ls_b3, ls_c3, ls_d3, ls_e3, ls_f3, ltype3)
+
+        ! layer 4: zso4 < z < zinf, Methanogenesis (+)
+        call sub_prepfg_l12(reac4_alk, reac4_alk, 0.0, zso4, zinf, DALK1, DALK2, ls_a4, ls_b4, ls_c4, ls_d4, ls_e4, ls_f4, ltype4)
+
+        ! Work up from the bottom, matching solutions at boundaries
+        ! Basis functions at bottom of layer 4 zinf
+        !   calcfg_l12(  z,     reac1,      reac2, ktemp, ls_a, ls_b,  ls_c, ls_d,   ls_e, ls_f,  ls_D1, ls_D2, ltype, e, dedz, f, dfdz, g, dgdz)
+        call sub_calcfg_l12(zinf, reac4_alk, reac4_alk, 0.0, ls_a4, ls_b4, ls_c4, ls_d4, ls_e4, ls_f4, DALK1, DALK2, ltype4, &
+        e4_zinf, dedz4_zinf, f4_zinf, dfdz4_zinf, g4_zinf, dgdz4_zinf)
+
+        ! Match at zso4, layer 3 - layer 4 (continuity and flux with AOM production)
+        ! basis functions at bottom of layer 3
+        call sub_calcfg_l12(zso4, reac3_alk, reac3_alk, 0.0, ls_a3, ls_b3, ls_c3, ls_d3, ls_e3, ls_f3, DALK1, DALK2, ltype3, &
+        e3_zso4, dedz3_zso4, f3_zso4, dfdz3_zso4, g3_zso4, dgdz3_zso4)
+
+        ! ... and top of layer 4
+        call sub_calcfg_l12(zso4, reac4_alk, reac4_alk, 0.0, ls_a4, ls_b4, ls_c4, ls_d4, ls_e4, ls_f4, DALK1, DALK2, ltype4, &
+        e4_zso4, dedz4_zso4, f4_zso4, dfdz4_zso4, g4_zso4, dgdz4_zso4)
+
+        ! flux of ALK produced by AOM interface (Source of ALK)
+        zso4FALK = ALKRAOM*gammaCH4*FUN_calcReac(zso4, zinf, MC, MC) ! MULTIPLY BY 1/POR ????
+        !    print*,'flux of ALK produced by AOM interface zso4FALK = ', zso4FALK
+
+        ! match solutions at zso4 - continuous concentration and flux
+        call sub_matchsoln(e3_zso4, f3_zso4, g3_zso4, dedz3_zso4, dfdz3_zso4, dgdz3_zso4, &
+        e4_zso4, f4_zso4, g4_zso4, dedz4_zso4, dfdz4_zso4, dgdz4_zso4, &
+        0.0, -zso4FALK/DALK2, zso4_a, zso4_b, zso4_c, zso4_d, zso4_e, zso4_f)
+
+        ! Match at zno3, layer 2 - layer 3 (continuity and flux)
+        ! basis functions at bottom of layer 2
+        call sub_calcfg_l12(zno3, reac2_alk, reac2_alk, 0.0, ls_a2, ls_b2, ls_c2, ls_d2, ls_e2, ls_f2, DALK1, DALK2, ltype2, &
+        e2_zno3, dedz2_zno3, f2_zno3, dfdz2_zno3, g2_zno3, dgdz2_zno3)
+
+        ! ... and top of layer 3
+        call sub_calcfg_l12(zno3, reac3_alk, reac3_alk, 0.0, ls_a3, ls_b3, ls_c3, ls_d3, ls_e3, ls_f3, DALK1, DALK2, ltype3, &
+        e3_zno30, dedz3_zno30, f3_zno30, dfdz3_zno30, g3_zno30, dgdz3_zno30)
+
+        ! ... transformed to use coeffs from l4
+        call sub_xformsoln(e3_zno30, f3_zno30, g3_zno30, dedz3_zno30, dfdz3_zno30, dgdz3_zno30, &
+        zso4_a , zso4_b , zso4_c , zso4_d , zso4_e ,zso4_f, &
+        e3_zno3, f3_zno3, g3_zno3, dedz3_zno3, dfdz3_zno3, dgdz3_zno3)
+        ! match solutions at zno3 - continuous concentration and flux
+        call sub_matchsoln(e2_zno3, f2_zno3, g2_zno3, dedz2_zno3, dfdz2_zno3, dgdz2_zno3, &
+        e3_zno3, f3_zno3, g3_zno3, dedz3_zno3, dfdz3_zno3, dgdz3_zno3, &
+        0.0, 0.0, zno3_a, zno3_b, zno3_c, zno3_d, zno3_e, zno3_f)
+
+        ! Match at zox, layer 1 - layer 2 (continuity, flux discontinuity from ALK source)
+        ! flux of ALK to oxic interface (from all sources of ALK below) from NH4 and H2S
+        zoxFALK = ALKRNIT*gamma*FUN_calcReac(zno3, zinf, NC1/(1+KNH4),NC2/(1+KNH4)) &      ! MULTIPLY BY 1/POR ????
+                    + ALKRH2S*gammaH2S*FUN_calcReac(zno3, zso4, SO4C, SO4C)                 ! Dominik 25.02.2016
+        ! DH 24.02.2016: actually should be 2 integrals for ALK produced: ALK-reduction + AOM (see documentation, but has the same reac const = 0.5) :
+
+        !    print*,' '
+        !    print*,'flux of ALK to oxic interface zoxFALK = ', zoxFALK
+        !    print*,' '
+
+        ! basis functions at bottom of layer 1
+        call sub_calcfg_l12(zox, reac11_alk, reac12_alk, 0.0, ls_a1, ls_b1, ls_c1, ls_d1, ls_e1, ls_f1, DALK1, DALK2, ltype1, &
+        e1_zox, dedz1_zox, f1_zox, dfdz1_zox, g1_zox, dgdz1_zox)
+
+        ! basis functions at top of layer 2
+        call sub_calcfg_l12(zox, reac2_alk, reac2_alk, 0.0, ls_a2, ls_b2, ls_c2, ls_d2, ls_e2, ls_f2, DALK1, DALK2, ltype2, &
+        e2_zox0, dedz2_zox0, f2_zox0, dfdz2_zox0, g2_zox0, dgdz2_zox0)
+
+        !   transform to use coeffs from l4
+        call sub_xformsoln(e2_zox0, f2_zox0, g2_zox0, dedz2_zox0, dfdz2_zox0, dgdz2_zox0, &
+        zno3_a , zno3_b , zno3_c , zno3_d , zno3_e ,zno3_f, &
+        e2_zox, f2_zox, g2_zox, dedz2_zox, dfdz2_zox, dgdz2_zox)
+
+        ! match solutions at zox - continuous concentration, flux discontinuity from ALK ox
+
+        IF(zox .le. zbio) THEN
+            call sub_matchsoln(e1_zox, f1_zox, g1_zox, dedz1_zox, dfdz1_zox, dgdz1_zox, &
+            e2_zox, f2_zox, g2_zox, dedz2_zox, dfdz2_zox, dgdz2_zox, &
+            0.0, -r_zxf*zoxFALK/DALK1, zox_a, zox_b, zox_c, zox_d, zox_e, zox_f)
+        ELSE
+            call sub_matchsoln(e1_zox, f1_zox, g1_zox, dedz1_zox, dfdz1_zox, dgdz1_zox, &
+            e2_zox, f2_zox, g2_zox, dedz2_zox, dfdz2_zox, dgdz2_zox, &
+            0.0, -r_zxf*zoxFALK/DALK2, zox_a, zox_b, zox_c, zox_d, zox_e, zox_f)
+        END IF
+
+        ! Solution at swi, top of layer 1
+        call sub_calcfg_l12(0.0, reac11_alk, reac12_alk, 0.0, ls_a1, ls_b1, ls_c1, ls_d1, ls_e1, ls_f1, DALK1, DALK2, ltype1, &
+        e1_00, dedz1_00, f1_00, dfdz1_00, g1_00, dgdz1_00)
+
+        ! transform to use coeffs from l4
+        call sub_xformsoln(e1_00, f1_00, g1_00, dedz1_00, dfdz1_00, dgdz1_00, &
+        zox_a , zox_b , zox_c , zox_d , zox_e ,zox_f, &
+        e1_0, f1_0, g1_0, dedz1_0,  dfdz1_0, dgdz1_0)
+
+        ! Solve for AALK, BALK given boundary conditions (expressed in terms of transformed basis fns, layer 4 A, B)
+        !  AALK*dedz4_zinf   +  BALK*dfz4_zinf  + dgz4_zinf = 0;          % zero flux at zinf
+        !  AALK*e1_0     +   BALK*f1_0     + g1_0  = swi.ALK0;
+
+        !  | dedz4_zinf dfdz4_zinf |  |AALK|   = | -dgz4_zinf       |
+        !  | e1_0     f1_0         |  |BALK|     | swi.ALK0 - g1_0 |
+
+        call sub_solve2eqn(dedz4_zinf, dfdz4_zinf, e1_0, f1_0, -dgdz4_zinf, dum_swiconc_ALK - g1_0, rALK_A4, rALK_B4)
+
+        ! flux at swi - DO include por so this is per cm^2 water column area
+        loc_new_swiflux_ALK = por*(DALK1*(rALK_A4*dedz1_0+rALK_B4*dfdz1_0 + dgdz1_0) - w*dum_swiconc_ALK)   ! NB: use A4, B4 as these are _xformed_ layer 1 basis functions
+
+        ! save coeffs for layers 3, 2 and 1
+        rALK_A3 = zso4_a*rALK_A4 + zso4_b*rALK_B4 + zso4_e
+        rALK_B3 = zso4_c*rALK_A4 + zso4_d*rALK_B4 + zso4_f
+
+        rALK_A2 = zno3_a*rALK_A4 + zno3_b*rALK_B4 + zno3_e
+        rALK_B2 = zno3_c*rALK_A4 + zno3_d*rALK_B4 + zno3_f
+
+        rALK_A1 = zox_a*rALK_A4 + zox_b*rALK_B4 + zox_e
+        rALK_B1 = zox_c*rALK_A4 + zox_d*rALK_B4 + zox_f
+
+        !    print*,' ---------------- RESULTS: benthic_zALK ---------------- '
+!        print*,'flxswiALK ', char(9), flxswiALK
+    !    print*,'rALK_A4, rALK_B4, rALK_A3, rALK_B3, rALK_A2, rALK_B2, rALK_A1, rALK_B1', &
+    !          &  rALK_A4, rALK_B4, rALK_A3, rALK_B3, rALK_A2, rALK_B2, rALK_A1, rALK_B1
+
+
+    !   print*,'INPUT1: dedz4_zinf, dfdz4_zinf, e1_0, f1_0, -dgdz4_zinf, ALK0 - g1_0', &
+    !           & dedz4_zinf, dfdz4_zinf, e1_0, f1_0, -dgdz4_zinf, ALK0 - g1_0
+    !    print*,'INPUT2: zox_a , zox_b , zox_c , zox_d , zox_e ,zox_f', &
+    !            & zox_a , zox_b , zox_c , zox_d , zox_e ,zox_f
+    !    print*,'RESULTS:  rALK_A4, rALK_B4', &
+    !            & rALK_A4, rALK_B4
+
+    END SUBROUTINE sub_huelseetal2016_zALK
 
 
     FUNCTION FUN_calcReac(zU, zL, reac1, reac2)

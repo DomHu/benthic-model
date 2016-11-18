@@ -11,5 +11,6 @@ program main
     call benthic_zNH4()
     call benthic_zH2S()
     call benthic_zPO4_M()
-    ! call benthic_zDIC()
+    call benthic_zDIC()
+    call benthic_zALK()
 end program main

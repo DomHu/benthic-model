@@ -11,21 +11,20 @@ classdef benthic_test
             %bottom water concentrations
             swi.T = 6.9125369867776385; %20.0;                         %temperature (degree C)
             % see caption for Fig 1.2 - two equal TOC fractions 0.02 0.2 2
-            swi.C01= 1.0*1e-2/12*bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*bsd.rho_sed;         %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-            swi.C02= 1.0*1e-2/12*bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;          %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+            swi.C01= 1.1322982042709264*1e-2/12*bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*bsd.rho_sed;         %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+            swi.C02= 0.43928448717502155*1e-2/12*bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;          %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
             %swi.C01=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
             %swi.C02=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-            swi.O20=4.72790437531057415E-008;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
+            swi.O20=9.95855581311530336E-008;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
             swi.NO30=0.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
             swi.Nitrogen=false;
             swi.NH40=0.0e-9;                                                %NH4 concentration at SWI (mol/cm^3)
-            swi.SO40=2.92197604047698980E-005;                                            %SO4 concentration at SWI (mol/cm^3)
-            swi.H2S0=2.33807600936833357E-011;         %was 0.0e-9                            %H2S concentration at SWI (mol/cm^3)
-            swi.PO40=3.16426889455719286E-009; %0.06e-8; % Dom was 1e-9;    % Sandra played with 3e-9                                              %PO4 concentration at SWI (mol/cm^3)
+            swi.SO40=2.91643030922377166E-005;                                            %SO4 concentration at SWI (mol/cm^3)
+            swi.H2S0=2.13289558743097263E-012;         %was 0.0e-9                            %H2S concentration at SWI (mol/cm^3)
+            swi.PO40=3.17416753610679898E-009; %0.06e-8; % Dom was 1e-9;    % Sandra played with 3e-9                                              %PO4 concentration at SWI (mol/cm^3)
             swi.Mflux0=365*0.2e-10; % Sandra played with 10e-9; ;   % = 7.3e-9    %flux of M to the sediment (mol/(cm2*yr))   TODO/CHECK: good value+right conversion? is from Slomp et al. 1996        
-
-            swi.DIC0=2000.0e-9;                                             %DIC concentration at SWI (mol/cm^3)
-            swi.ALK0=2400.0e-9;                                             %ALK concentration at SWI (mol/cm^3)
+            swi.DIC0=365*0.2e-10;                                             %DIC concentration at SWI (mol/cm^3)
+            swi.ALK0=2.36553578213102926E-006;                                             %ALK concentration at SWI (mol/cm^3)
             swi.S0=35;                                                      %Salinity at SWI
         end
         
@@ -35,7 +34,7 @@ classdef benthic_test
 %            % set date-time
 %            str_date = datestr(now,'ddmmyy_HH_MM_SS');
             res=benthic_test.test_benthic(1,swi);
-            benthic_test.plot_column(res, false, swi, '1510')
+            benthic_test.plot_column(res, false, swi, '1811')
         end
         
          function run_OMEN_BRNS()
@@ -600,8 +599,8 @@ classdef benthic_test
             res.zNH4 = benthic_zNH4(res.bsd, res.swi);
             res.zH2S = benthic_zH2S(res.bsd, res.swi);
             res.zPO4_M = benthic_zPO4_M(res.bsd, res.swi);
-%            res.zDIC = benthic_zDIC(res.bsd, res.swi);
-%            res.zALK = benthic_zALK(res.bsd, res.swi);
+            res.zDIC = benthic_zDIC(res.bsd, res.swi);
+            res.zALK = benthic_zALK(res.bsd, res.swi);
    
             tic;
             res = res.zTOC.calc(res.bsd,res.swi, res);
@@ -618,8 +617,8 @@ classdef benthic_test
              end
              res = res.zH2S.calc(res.bsd, res.swi, res);
              res = res.zPO4_M.calc(res.bsd, res.swi, res);
-%             res = res.zDIC.calc(res.bsd, res.swi, res);
-%             res = res.zALK.calc(res.bsd, res.swi, res);
+             res = res.zDIC.calc(res.bsd, res.swi, res);
+             res = res.zALK.calc(res.bsd, res.swi, res);
             toc;
             
             %%%%% WRITE OUTPUT:
@@ -1085,36 +1084,36 @@ classdef benthic_test
 %            ylabel('Depth (cm)')
 %            title ('Fe-bound P (mol/cm^3)')
             
-% % % %             % DIC
-% % % %             subplot(3,2,3)
-% % % %             for i=1:length(zgrid)
-% % % %                 [DIC(i), flxDIC(i)] = res.zDIC.calcDIC(zgrid(i), bsd, res.swi, res);
-% % % %             end
-% % % %             plot(DIC, -zgrid, 'b')
-% % % %             hold on
-% % % %             t=xlim;         % to draw penetration depths the correct lengths
-% % % %             plot([0,t(1,2)], [-bsd.zbio,-bsd.zbio], 'k--')     
-% % % %             plot([0,t(1,2)], [-res.zox,-res.zox], 'b--')     
-% % % %             plot([0,t(1,2)], [-res.zno3,-res.zno3], 'g--')     
-% % % %             plot([0,t(1,2)], [-res.zso4,-res.zso4], 'r--')          
-% % % %             xlabel ('DIC (mol/cm^3)')
-% % % %             ylabel('Depth (cm)')
-% % % %             
-% % % %             % ALK
-% % % %             subplot(3,2,4)
-% % % %             for i=1:length(zgrid)
-% % % %                 [ALK(i), flxALK(i)] = res.zALK.calcALK(zgrid(i), bsd, res.swi, res);
-% % % %             end
-% % % %             plot(ALK, -zgrid, 'b')
-% % % %             hold on
-% % % %             t=xlim;         % to draw penetration depths the correct lengths
-% % % %             plot([0,t(1,2)], [-bsd.zbio,-bsd.zbio], 'k--')     
-% % % %             plot([0,t(1,2)], [-res.zox,-res.zox], 'b--')     
-% % % %             plot([0,t(1,2)], [-res.zno3,-res.zno3], 'g--')     
-% % % %             plot([0,t(1,2)], [-res.zso4,-res.zso4], 'r--')          
-% % % %             xlabel ('ALK (mol/cm^3)')
-% % % %             ylabel('Depth (cm)')
-% % % %             
+            % DIC
+            subplot(3,2,3)
+            for i=1:length(zgrid)
+                [DIC(i), flxDIC(i)] = res.zDIC.calcDIC(zgrid(i), bsd, res.swi, res);
+            end
+            plot(DIC, -zgrid, 'b')
+            hold on
+            t=xlim;         % to draw penetration depths the correct lengths
+            plot([0,t(1,2)], [-bsd.zbio,-bsd.zbio], 'k--')     
+            plot([0,t(1,2)], [-res.zox,-res.zox], 'b--')     
+            plot([0,t(1,2)], [-res.zno3,-res.zno3], 'g--')     
+            plot([0,t(1,2)], [-res.zso4,-res.zso4], 'r--')          
+            xlabel ('DIC (mol/cm^3)')
+            ylabel('Depth (cm)')
+            
+            % ALK
+            subplot(3,2,4)
+            for i=1:length(zgrid)
+                [ALK(i), flxALK(i)] = res.zALK.calcALK(zgrid(i), bsd, res.swi, res);
+            end
+            plot(ALK, -zgrid, 'b')
+            hold on
+            t=xlim;         % to draw penetration depths the correct lengths
+            plot([0,t(1,2)], [-bsd.zbio,-bsd.zbio], 'k--')     
+            plot([0,t(1,2)], [-res.zox,-res.zox], 'b--')     
+            plot([0,t(1,2)], [-res.zno3,-res.zno3], 'g--')     
+            plot([0,t(1,2)], [-res.zso4,-res.zso4], 'r--')          
+            xlabel ('ALK (mol/cm^3)')
+            ylabel('Depth (cm)')
+            
 
             print('-depsc2', ['0_PO4_PROFILES_' str_date '.eps']);
         end

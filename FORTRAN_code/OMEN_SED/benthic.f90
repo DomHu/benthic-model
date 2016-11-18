@@ -280,7 +280,11 @@ CONTAINS
         DDIC1=(qdispDIC+adispDIC*T)*dispFactor+Dbio                 ! DIC diffusion coefficient in bioturbated layer (cm2/yr)
         DDIC2=(qdispDIC+adispDIC*T)*dispFactor                      ! DIC diffusion coefficient in non-bioturbated layer (cm2/yr)
 
-
+        ! Alkalinity
+        qdispALK=309.0528;                                          ! ALK diffusion coefficient in water (cm2/yr)
+        adispALK=12.2640;                                           ! ALK linear coefficient for temperature dependence (cm2/yr/oC)
+        DALK1=(qdispALK+adispALK*T)*dispFactor+Dbio;                ! ALK diffusion coefficient in bioturbated layer (cm2/yr)
+        DALK2=(qdispALK+adispALK*T)*dispFactor;                     ! ALK diffusion coefficient in non-bioturbated layer (cm2/yr)
 
     end SUBROUTINE initialize
 
@@ -2498,28 +2502,18 @@ CONTAINS
         integer ltype1, ltype2, ltype3, ltype4
         real ls_a1, ls_b1, ls_c1, ls_d1, ls_e1, ls_f1
         real ls_a2, ls_b2, ls_c2, ls_d2, ls_e2, ls_f2
-!        real e4_zinf, dedz4_zinf, f4_zinf, dfdz4_zinf, g4_zinf, dgdz4_zinf
-!        real e3_zso4, dedz3_zso4, f3_zso4, dfdz3_zso4, g3_zso4, dgdz3_zso4
-!        real e4_zso4, dedz4_zso4, f4_zso4, dfdz4_zso4, g4_zso4, dgdz4_zso4
-!        real zso4_a, zso4_b, zso4_c, zso4_d, zso4_e, zso4_f
-!        real e2_zno3, dedz2_zno3, f2_zno3, dfdz2_zno3, g2_zno3, dgdz2_zno3
-!        real e3_zno30, dedz3_zno30, f3_zno30, dfdz3_zno30, g3_zno30, dgdz3_zno30
-!        real e3_zno3, dedz3_zno3, f3_zno3, dfdz3_zno3, g3_zno3, dgdz3_zno3
-!        real zno3_a, zno3_b, zno3_c, zno3_d, zno3_e, zno3_f
-!        real e1_zox, dedz1_zox, f1_zox, dfdz1_zox, g1_zox, dgdz1_zox
-!        real e2_zox0, dedz2_zox0, f2_zox0, dfdz2_zox0, g2_zox0, dgdz2_zox0
-!        real e2_zox, dedz2_zox, f2_zox, dfdz2_zox, g2_zox, dgdz2_zox
-!        real zox_a, zox_b, zox_c, zox_d, zox_e, zox_f
-!        real e1_00, dedz1_00, f1_00, dfdz1_00, g1_00, dgdz1_00
-!        real e1_0, dedz1_0, f1_0, dfdz1_0, g1_0, dgdz1_0
+        real zso4_a, zso4_b, zso4_c, zso4_d, zso4_e, zso4_f
+        real e2_zinf, dedz2_zinf, f2_zinf, dfdz2_zinf, g2_zinf, dgdz2_zinf
+        real e1_zso4, dedz1_zso4, f1_zso4, dfdz1_zso4, g1_zso4, dgdz1_zso4
+        real e2_zso4, dedz2_zso4, f2_zso4, dfdz2_zso4, g2_zso4, dgdz2_zso4
+        real e1_00, dedz1_00, f1_00, dfdz1_00, g1_00, dgdz1_00
+        real e1_0, dedz1_0, f1_0, dfdz1_0, g1_0, dgdz1_0
 !
-!        real rH2S_A4, rH2S_B4
-!        real rH2S_A3, rH2S_B3
-!        real rH2S_A2, rH2S_B2
-!        real rH2S_A1, rH2S_B1
-!
-!        real zso4FH2S, zoxFH2S
-!        real flxswiH2S
+        real rDIC_A2, rDIC_B2
+        real rDIC_A1, rDIC_B1
+
+        real zso4FDIC
+        real flxswiDIC
 
         reac1_dic = DICC1                 ! DIC/C until zSO4 (mol/mol)
         reac2_dic = DICC2                 !DIC/C below zSO4 (mol/mol)
@@ -2545,32 +2539,161 @@ CONTAINS
         !   calcfg_l12(  z,     reac1,      reac2, ktemp, ls_a, ls_b,  ls_c, ls_d,   ls_e, ls_f,  ls_D1, ls_D2, ltype, e, dedz, f, dfdz, g, dgdz)
         call calcfg_l12(zinf, reac2_dic, reac2_dic, 0.0, ls_a2, ls_b2, ls_c2, ls_d2, ls_e2, ls_f2, DDIC1, DDIC2, ltype2, &
         e2_zinf, dedz2_zinf, f2_zinf, dfdz2_zinf, g2_zinf, dgdz2_zinf)
-! DH 17.11.2016 TODO: Go on from here !!!!
+
+        ! Match at zso4, layer 1 - layer 2 (continuity and flux with AOM production)
+        ! basis functions at bottom of layer 1
+        call calcfg_l12(zso4, reac1_dic, reac2_dic, 0.0, ls_a1, ls_b1, ls_c1, ls_d1, ls_e1, ls_f1, DDIC1, DDIC2, ltype1, &
+        e1_zso4, dedz1_zso4, f1_zso4, dfdz1_zso4, g1_zso4, dgdz1_zso4)
+
+        ! ... and top of layer 2
+        call calcfg_l12(zso4, reac2_dic, reac2_dic, 0.0, ls_a2, ls_b2, ls_c2, ls_d2, ls_e2, ls_f2, DDIC1, DDIC2, ltype2, &
+        e2_zso4, dedz2_zso4, f2_zso4, dfdz2_zso4, g2_zso4, dgdz2_zso4)
+
+        ! flux of DIC produced by AOM interface (Source of DIC)
+        zso4FDIC = calcReac(zso4, zinf, MC, MC) ! MULTIPLY BY 1/POR ????
+        !    print*,'flux of H2S produced by AOM interface zso4FH2S = ', zso4FH2S
+
+        ! match solutions at zso4 - continuous concentration and flux
+        call matchsoln(e1_zso4, f1_zso4, g1_zso4, dedz1_zso4, dfdz1_zso4, dgdz1_zso4, &
+        e2_zso4, f2_zso4, g2_zso4, dedz2_zso4, dfdz2_zso4, dgdz2_zso4, &
+        0.0, -gammaCH4*zso4FDIC/DDIC2, zso4_a, zso4_b, zso4_c, zso4_d, zso4_e, zso4_f)
+
+        ! Solution at swi, top of layer 1
+        call calcfg_l12(0.0, reac1_dic, reac1_dic, 0.0, ls_a1, ls_b1, ls_c1, ls_d1, ls_e1, ls_f1, DDIC1, DDIC2, ltype1, &
+        e1_00, dedz1_00, f1_00, dfdz1_00, g1_00, dgdz1_00)
+
+        ! transform to use coeffs from l2
+        call xformsoln(e1_00, f1_00, g1_00, dedz1_00, dfdz1_00, dgdz1_00, &
+        zso4_a, zso4_b, zso4_c, zso4_d, zso4_e, zso4_f, &
+        e1_0, f1_0, g1_0, dedz1_0,  dfdz1_0, dgdz1_0)
+
+        ! Solve for ADIC, BDIC given boundary conditions (expressed in terms of transformed basis fns, layer 4 A, B)
+        !  ADIC*dedz4_zinf   +  BDIC*dfz4_zinf  + dgz4_zinf = 0;          % zero flux at zinf
+        !  ADIC*e1_0     +   BDIC*f1_0     + g1_0  = swi.DIC0;
+
+        !  | dedz4_zinf dfdz4_zinf |  |ADIC|   = | -dgz4_zinf       |
+        !  | e1_0     f1_0         |  |BDIC|     | swi.DIC0 - g1_0 |
+
+        call solve2eqn(dedz2_zinf, dfdz2_zinf, e1_0, f1_0, -dgdz2_zinf, DIC0 - g1_0, rDIC_A2, rDIC_B2)
+
+        ! flux at swi - DO include por so this is per cm^2 water column area
+        ! DH: added advective flux 28.05.2016
+        flxswiDIC = por*(DDIC1*(rDIC_A2*dedz1_0+rDIC_B2*dfdz1_0 + dgdz1_0) - w*DIC0)   ! NB: use A2, B2 as these are _xformed_ layer 1 basis functions
+
+        ! save coeffs for layers 1
+        rDIC_A1 = zso4_a*rDIC_A2 + zso4_b*rDIC_B2 + zso4_e
+        rDIC_B1 = zso4_c*rDIC_A2 + zso4_d*rDIC_B2 + zso4_f
+
+        !    print*,' ---------------- RESULTS: benthic_zDIC ---------------- '
+        print*,'flxswiDIC ', char(9), flxswiDIC
+    !    print*,'rH2S_A4, rH2S_B4, rH2S_A3, rH2S_B3, rH2S_A2, rH2S_B2, rH2S_A1, rH2S_B1', &
+    !          &  rH2S_A4, rH2S_B4, rH2S_A3, rH2S_B3, rH2S_A2, rH2S_B2, rH2S_A1, rH2S_B1
+
+
+    END SUBROUTINE benthic_zDIC
+
+    !------------------------------------------------------------------------------------
+    !   *****************************************************************
+    !   *****************************************************************
+
+    !                           Alkalinity (ALK)
+
+    !   *****************************************************************
+    !   *****************************************************************
+    !------------------------------------------------------------------------------------
+
+    SUBROUTINE benthic_zALK()
+
+        !    real, intent(in)::zox, zso4
+
+        ! local variables
+        real reac11_alk, reac12_alk, reac2_alk, reac3_alk, reac4_alk                 ! reactive terms: OM degradation
+        integer ltype1, ltype2, ltype3, ltype4
+        real ls_a1, ls_b1, ls_c1, ls_d1, ls_e1, ls_f1
+        real ls_a2, ls_b2, ls_c2, ls_d2, ls_e2, ls_f2
+        real ls_a3, ls_b3, ls_c3, ls_d3, ls_e3, ls_f3
+        real ls_a4, ls_b4, ls_c4, ls_d4, ls_e4, ls_f4
+        real e4_zinf, dedz4_zinf, f4_zinf, dfdz4_zinf, g4_zinf, dgdz4_zinf
+        real e3_zso4, dedz3_zso4, f3_zso4, dfdz3_zso4, g3_zso4, dgdz3_zso4
+        real e4_zso4, dedz4_zso4, f4_zso4, dfdz4_zso4, g4_zso4, dgdz4_zso4
+        real zso4_a, zso4_b, zso4_c, zso4_d, zso4_e, zso4_f
+        real e2_zno3, dedz2_zno3, f2_zno3, dfdz2_zno3, g2_zno3, dgdz2_zno3
+        real e3_zno30, dedz3_zno30, f3_zno30, dfdz3_zno30, g3_zno30, dgdz3_zno30
+        real e3_zno3, dedz3_zno3, f3_zno3, dfdz3_zno3, g3_zno3, dgdz3_zno3
+        real zno3_a, zno3_b, zno3_c, zno3_d, zno3_e, zno3_f
+        real e1_zox, dedz1_zox, f1_zox, dfdz1_zox, g1_zox, dgdz1_zox
+        real e2_zox0, dedz2_zox0, f2_zox0, dfdz2_zox0, g2_zox0, dgdz2_zox0
+        real e2_zox, dedz2_zox, f2_zox, dfdz2_zox, g2_zox, dgdz2_zox
+        real zox_a, zox_b, zox_c, zox_d, zox_e, zox_f
+        real e1_00, dedz1_00, f1_00, dfdz1_00, g1_00, dgdz1_00
+        real e1_0, dedz1_0, f1_0, dfdz1_0, g1_0, dgdz1_0
+
+        real rALK_A4, rALK_B4
+        real rALK_A3, rALK_B3
+        real rALK_A2, rALK_B2
+        real rALK_A1, rALK_B1
+
+        real zso4FALK, zoxFALK
+        real flxswiALK
+
+        reac11_alk = gamma*NC1/(1+KNH4)*ALKRNIT+ALKROX*SD           ! z < zox:  Nitrification (-2) Aerobic degradation (+15/106)
+        reac12_alk = gamma*NC2/(1+KNH4)*ALKRNIT+ALKROX*SD           ! z < zox:  Nitrification (-2) Aerobic degradation (+15/106)
+        reac2_alk = SD*ALKRDEN                                      ! zox < z < zno3: Denitrification (+93.4/106)
+        reac3_alk = SD*ALKRSUL                                      ! zno3 < z < zso4: Sulfate reduction (+15/106)
+        reac4_alk = SD*ALKRMET                                      ! zso4 < z < zinf: Methanogenesis (+14/106)
+
+        !    print*, ''
+        !    print*, '------------------------------------------------------------------'
+        !    print*, '---------------------- START zALK ------------------------------- '
+        !    print*, ''
+
+        ! Calculate ALK
+
+        ! Preparation: for each layer, sort out solution-matching across bioturbation boundary if necessary
+        ! layer 1: 0 < z < zox, Nitrification (-) Aerobic degradation (+)
+        !    prepfg_l12(reac1,      reac2,    ktemp, zU,  zL,   D1,     D2, ls_a, ls_b, ls_c, ls_d, ls_e, ls_f, ltype)
+        call prepfg_l12(reac11_alk, reac12_alk, 0.0, 0.0, zox, DALK1, DALK2, ls_a1, ls_b1, ls_c1, ls_d1, ls_e1, ls_f1, ltype1)
+
+        ! layer 2: zox < z < zno3, Denitrification (+)
+        call prepfg_l12(reac2_alk, reac2_alk, 0.0, zox, zno3, DALK1, DALK2, ls_a2, ls_b2, ls_c2, ls_d2, ls_e2, ls_f2, ltype2)
+
+        ! layer 3: zno3 < z < zso4, Sulfate reduction (+)
+        call prepfg_l12(reac3_alk, reac3_alk, 0.0, zno3, zso4, DALK1, DALK2, ls_a3, ls_b3, ls_c3, ls_d3, ls_e3, ls_f3, ltype3)
+
+        ! layer 4: zso4 < z < zinf, Methanogenesis (+)
+        call prepfg_l12(reac4_alk, reac4_alk, 0.0, zso4, zinf, DALK1, DALK2, ls_a4, ls_b4, ls_c4, ls_d4, ls_e4, ls_f4, ltype4)
+
+        ! Work up from the bottom, matching solutions at boundaries
+        ! Basis functions at bottom of layer 4 zinf
+        !   calcfg_l12(  z,     reac1,      reac2, ktemp, ls_a, ls_b,  ls_c, ls_d,   ls_e, ls_f,  ls_D1, ls_D2, ltype, e, dedz, f, dfdz, g, dgdz)
+        call calcfg_l12(zinf, reac4_alk, reac4_alk, 0.0, ls_a4, ls_b4, ls_c4, ls_d4, ls_e4, ls_f4, DALK1, DALK2, ltype4, &
+        e4_zinf, dedz4_zinf, f4_zinf, dfdz4_zinf, g4_zinf, dgdz4_zinf)
+
         ! Match at zso4, layer 3 - layer 4 (continuity and flux with AOM production)
         ! basis functions at bottom of layer 3
-        call calcfg_l12(zso4, reac1_h2s, reac2_h2s, 0.0, ls_a3, ls_b3, ls_c3, ls_d3, ls_e3, ls_f3, DH2S1, DH2S2, ltype3, &
+        call calcfg_l12(zso4, reac3_alk, reac3_alk, 0.0, ls_a3, ls_b3, ls_c3, ls_d3, ls_e3, ls_f3, DALK1, DALK2, ltype3, &
         e3_zso4, dedz3_zso4, f3_zso4, dfdz3_zso4, g3_zso4, dgdz3_zso4)
 
         ! ... and top of layer 4
-        call calcfg_l12(zso4, 0.0,  0.0, 0.0, ls_a4, ls_b4, ls_c4, ls_d4, ls_e4, ls_f4, DH2S1, DH2S2, ltype4, &
+        call calcfg_l12(zso4, reac4_alk, reac4_alk, 0.0, ls_a4, ls_b4, ls_c4, ls_d4, ls_e4, ls_f4, DALK1, DALK2, ltype4, &
         e4_zso4, dedz4_zso4, f4_zso4, dfdz4_zso4, g4_zso4, dgdz4_zso4)
 
-        ! flux of H2S produced by AOM interface (Source of H2S)
-        zso4FH2S = calcReac(zso4, zinf, MC, MC) ! MULTIPLY BY 1/POR ????
-        !    print*,'flux of H2S produced by AOM interface zso4FH2S = ', zso4FH2S
+        ! flux of ALK produced by AOM interface (Source of ALK)
+        zso4FALK = ALKRAOM*gammaCH4*calcReac(zso4, zinf, MC, MC) ! MULTIPLY BY 1/POR ????
+        !    print*,'flux of ALK produced by AOM interface zso4FALK = ', zso4FALK
 
         ! match solutions at zso4 - continuous concentration and flux
         call matchsoln(e3_zso4, f3_zso4, g3_zso4, dedz3_zso4, dfdz3_zso4, dgdz3_zso4, &
         e4_zso4, f4_zso4, g4_zso4, dedz4_zso4, dfdz4_zso4, dgdz4_zso4, &
-        0.0, -gammaCH4*zso4FH2S/DH2S2, zso4_a, zso4_b, zso4_c, zso4_d, zso4_e, zso4_f)
+        0.0, -zso4FALK/DALK2, zso4_a, zso4_b, zso4_c, zso4_d, zso4_e, zso4_f)
 
         ! Match at zno3, layer 2 - layer 3 (continuity and flux)
         ! basis functions at bottom of layer 2
-        call calcfg_l12(zno3, 0.0, 0.0, 0.0, ls_a2, ls_b2, ls_c2, ls_d2, ls_e2, ls_f2, DH2S1, DH2S2, ltype2, &
+        call calcfg_l12(zno3, reac2_alk, reac2_alk, 0.0, ls_a2, ls_b2, ls_c2, ls_d2, ls_e2, ls_f2, DALK1, DALK2, ltype2, &
         e2_zno3, dedz2_zno3, f2_zno3, dfdz2_zno3, g2_zno3, dgdz2_zno3)
 
         ! ... and top of layer 3
-        call calcfg_l12(zno3, reac1_h2s, reac2_h2s, 0.0, ls_a3, ls_b3, ls_c3, ls_d3, ls_e3, ls_f3, DH2S1, DH2S2, ltype3, &
+        call calcfg_l12(zno3, reac3_alk, reac3_alk, 0.0, ls_a3, ls_b3, ls_c3, ls_d3, ls_e3, ls_f3, DALK1, DALK2, ltype3, &
         e3_zno30, dedz3_zno30, f3_zno30, dfdz3_zno30, g3_zno30, dgdz3_zno30)
 
         ! ... transformed to use coeffs from l4
@@ -2582,21 +2705,22 @@ CONTAINS
         e3_zno3, f3_zno3, g3_zno3, dedz3_zno3, dfdz3_zno3, dgdz3_zno3, &
         0.0, 0.0, zno3_a, zno3_b, zno3_c, zno3_d, zno3_e, zno3_f)
 
-        ! Match at zox, layer 1 - layer 2 (continuity, flux discontinuity from H2S source)
-        ! flux of H2S to oxic interface (from all sources of H2S below)
-        ! NB: include methane region as AOM will produce sulphide as well..
-        zoxFH2S = calcReac(zno3, zso4, SO4C, SO4C) &
-        +  calcReac(zso4, zinf, MC, MC) ! MULTIPLY BY 1/POR ????
+        ! Match at zox, layer 1 - layer 2 (continuity, flux discontinuity from ALK source)
+        ! flux of ALK to oxic interface (from all sources of ALK below) from NH4 and H2S
+        zoxFALK = ALKRNIT*gamma*calcReac(zno3, zinf, NC1/(1+KNH4),NC2/(1+KNH4)) &      ! MULTIPLY BY 1/POR ????
+                    + ALKRH2S*gammaH2S*calcReac(zno3, zso4, SO4C, SO4C)                 ! Dominik 25.02.2016
+        ! DH 24.02.2016: actually should be 2 integrals for ALK produced: ALK-reduction + AOM (see documentation, but has the same reac const = 0.5) :
+
         !    print*,' '
-        !    print*,'flux of H2S to oxic interface zoxFH2S = ', zoxFH2S
+        !    print*,'flux of ALK to oxic interface zoxFALK = ', zoxFALK
         !    print*,' '
 
         ! basis functions at bottom of layer 1
-        call calcfg_l12(zox, 0.0, 0.0, 0.0, ls_a1, ls_b1, ls_c1, ls_d1, ls_e1, ls_f1, DH2S1, DH2S2, ltype1, &
+        call calcfg_l12(zox, reac11_alk, reac12_alk, 0.0, ls_a1, ls_b1, ls_c1, ls_d1, ls_e1, ls_f1, DALK1, DALK2, ltype1, &
         e1_zox, dedz1_zox, f1_zox, dfdz1_zox, g1_zox, dgdz1_zox)
 
         ! basis functions at top of layer 2
-        call calcfg_l12(zox, 0.0, 0.0, 0.0, ls_a2, ls_b2, ls_c2, ls_d2, ls_e2, ls_f2, DH2S1, DH2S2, ltype2, &
+        call calcfg_l12(zox, reac2_alk, reac2_alk, 0.0, ls_a2, ls_b2, ls_c2, ls_d2, ls_e2, ls_f2, DALK1, DALK2, ltype2, &
         e2_zox0, dedz2_zox0, f2_zox0, dfdz2_zox0, g2_zox0, dgdz2_zox0)
 
         !   transform to use coeffs from l4
@@ -2604,20 +2728,20 @@ CONTAINS
         zno3_a , zno3_b , zno3_c , zno3_d , zno3_e ,zno3_f, &
         e2_zox, f2_zox, g2_zox, dedz2_zox, dfdz2_zox, dgdz2_zox)
 
-        ! match solutions at zox - continuous concentration, flux discontinuity from H2S ox
+        ! match solutions at zox - continuous concentration, flux discontinuity from ALK ox
 
         IF(zox .le. zbio) THEN
             call matchsoln(e1_zox, f1_zox, g1_zox, dedz1_zox, dfdz1_zox, dgdz1_zox, &
             e2_zox, f2_zox, g2_zox, dedz2_zox, dfdz2_zox, dgdz2_zox, &
-            0.0, r_zxf*gammaH2S*zoxFH2S/DH2S1, zox_a, zox_b, zox_c, zox_d, zox_e, zox_f)
+            0.0, -r_zxf*zoxFALK/DALK1, zox_a, zox_b, zox_c, zox_d, zox_e, zox_f)
         ELSE
             call matchsoln(e1_zox, f1_zox, g1_zox, dedz1_zox, dfdz1_zox, dgdz1_zox, &
             e2_zox, f2_zox, g2_zox, dedz2_zox, dfdz2_zox, dgdz2_zox, &
-            0.0, r_zxf*gammaH2S*zoxFH2S/DH2S2, zox_a, zox_b, zox_c, zox_d, zox_e, zox_f)
+            0.0, -r_zxf*zoxFALK/DALK2, zox_a, zox_b, zox_c, zox_d, zox_e, zox_f)
         END IF
 
         ! Solution at swi, top of layer 1
-        call calcfg_l12(0.0, 0.0, 0.0, 0.0, ls_a1, ls_b1, ls_c1, ls_d1, ls_e1, ls_f1, DH2S1, DH2S2, ltype1, &
+        call calcfg_l12(0.0, reac11_alk, reac12_alk, 0.0, ls_a1, ls_b1, ls_c1, ls_d1, ls_e1, ls_f1, DALK1, DALK2, ltype1, &
         e1_00, dedz1_00, f1_00, dfdz1_00, g1_00, dgdz1_00)
 
         ! transform to use coeffs from l4
@@ -2625,42 +2749,42 @@ CONTAINS
         zox_a , zox_b , zox_c , zox_d , zox_e ,zox_f, &
         e1_0, f1_0, g1_0, dedz1_0,  dfdz1_0, dgdz1_0)
 
-        ! Solve for AH2S, BH2S given boundary conditions (expressed in terms of transformed basis fns, layer 4 A, B)
-        !  AH2S*dedz4_zinf   +  BH2S*dfz4_zinf  + dgz4_zinf = 0;          % zero flux at zinf
-        !  AH2S*e1_0     +   BH2S*f1_0     + g1_0  = swi.H2S0;
+        ! Solve for AALK, BALK given boundary conditions (expressed in terms of transformed basis fns, layer 4 A, B)
+        !  AALK*dedz4_zinf   +  BALK*dfz4_zinf  + dgz4_zinf = 0;          % zero flux at zinf
+        !  AALK*e1_0     +   BALK*f1_0     + g1_0  = swi.ALK0;
 
-        !  | dedz4_zinf dfdz4_zinf |  |AH2S|   = | -dgz4_zinf       |
-        !  | e1_0     f1_0         |  |BH2S|     | swi.H2S0 - g1_0 |
+        !  | dedz4_zinf dfdz4_zinf |  |AALK|   = | -dgz4_zinf       |
+        !  | e1_0     f1_0         |  |BALK|     | swi.ALK0 - g1_0 |
 
-        call solve2eqn(dedz4_zinf, dfdz4_zinf, e1_0, f1_0, -dgdz4_zinf, H2S0 - g1_0, rH2S_A4, rH2S_B4)
+        call solve2eqn(dedz4_zinf, dfdz4_zinf, e1_0, f1_0, -dgdz4_zinf, ALK0 - g1_0, rALK_A4, rALK_B4)
 
         ! flux at swi - DO include por so this is per cm^2 water column area
-        flxswiH2S = por*(DH2S1*(rH2S_A4*dedz1_0+rH2S_B4*dfdz1_0 + dgdz1_0) - w*H2S0)   ! NB: use A4, B4 as these are _xformed_ layer 1 basis functions
+        flxswiALK = por*(DALK1*(rALK_A4*dedz1_0+rALK_B4*dfdz1_0 + dgdz1_0) - w*ALK0)   ! NB: use A4, B4 as these are _xformed_ layer 1 basis functions
 
         ! save coeffs for layers 3, 2 and 1
-        rH2S_A3 = zso4_a*rH2S_A4 + zso4_b*rH2S_B4 + zso4_e
-        rH2S_B3 = zso4_c*rH2S_A4 + zso4_d*rH2S_B4 + zso4_f
+        rALK_A3 = zso4_a*rALK_A4 + zso4_b*rALK_B4 + zso4_e
+        rALK_B3 = zso4_c*rALK_A4 + zso4_d*rALK_B4 + zso4_f
 
-        rH2S_A2 = zno3_a*rH2S_A4 + zno3_b*rH2S_B4 + zno3_e
-        rH2S_B2 = zno3_c*rH2S_A4 + zno3_d*rH2S_B4 + zno3_f
+        rALK_A2 = zno3_a*rALK_A4 + zno3_b*rALK_B4 + zno3_e
+        rALK_B2 = zno3_c*rALK_A4 + zno3_d*rALK_B4 + zno3_f
 
-        rH2S_A1 = zox_a*rH2S_A4 + zox_b*rH2S_B4 + zox_e
-        rH2S_B1 = zox_c*rH2S_A4 + zox_d*rH2S_B4 + zox_f
+        rALK_A1 = zox_a*rALK_A4 + zox_b*rALK_B4 + zox_e
+        rALK_B1 = zox_c*rALK_A4 + zox_d*rALK_B4 + zox_f
 
-        !    print*,' ---------------- RESULTS: benthic_zH2S ---------------- '
-        print*,'flxswiH2S ', char(9), flxswiH2S
-    !    print*,'rH2S_A4, rH2S_B4, rH2S_A3, rH2S_B3, rH2S_A2, rH2S_B2, rH2S_A1, rH2S_B1', &
-    !          &  rH2S_A4, rH2S_B4, rH2S_A3, rH2S_B3, rH2S_A2, rH2S_B2, rH2S_A1, rH2S_B1
+        !    print*,' ---------------- RESULTS: benthic_zALK ---------------- '
+        print*,'flxswiALK ', char(9), flxswiALK
+    !    print*,'rALK_A4, rALK_B4, rALK_A3, rALK_B3, rALK_A2, rALK_B2, rALK_A1, rALK_B1', &
+    !          &  rALK_A4, rALK_B4, rALK_A3, rALK_B3, rALK_A2, rALK_B2, rALK_A1, rALK_B1
 
 
-    !   print*,'INPUT1: dedz4_zinf, dfdz4_zinf, e1_0, f1_0, -dgdz4_zinf, H2S0 - g1_0', &
-    !           & dedz4_zinf, dfdz4_zinf, e1_0, f1_0, -dgdz4_zinf, H2S0 - g1_0
+    !   print*,'INPUT1: dedz4_zinf, dfdz4_zinf, e1_0, f1_0, -dgdz4_zinf, ALK0 - g1_0', &
+    !           & dedz4_zinf, dfdz4_zinf, e1_0, f1_0, -dgdz4_zinf, ALK0 - g1_0
     !    print*,'INPUT2: zox_a , zox_b , zox_c , zox_d , zox_e ,zox_f', &
     !            & zox_a , zox_b , zox_c , zox_d , zox_e ,zox_f
-    !    print*,'RESULTS:  rH2S_A4, rH2S_B4', &
-    !            & rH2S_A4, rH2S_B4
+    !    print*,'RESULTS:  rALK_A4, rALK_B4', &
+    !            & rALK_A4, rALK_B4
 
-    END SUBROUTINE benthic_zDIC
+    END SUBROUTINE benthic_zALK
 
 
     ! *******************************************************************
