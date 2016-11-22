@@ -164,7 +164,7 @@ However, the overall amount, exact timing and the rate of organic matter burial 
 
 % % Difference for oxic vs. anoxic sediments and impacts on atmospheric \chem{CO_2}. 
 % % 
-% % \textcolor{red}{TODO:} Give examples when and why important (also in Paleo-context).\\
+% % Give examples when and why important (also in Paleo-context).\\
 % % 
 % % - general dynamics: first e.g. \chem{CaCO_3} then nutrients and the OM! \\
 % % - then more focus on paleo!\\
@@ -608,7 +608,7 @@ $z=z_{\infty}$& zero \chem{H_2S} flux & 10)& $\frac{\partial \chem{H_2S}}{\parti
 \end{figure}
 To model phosphorus (P) in the sediments the model takes into account the change with depth of phosphate (PO$_4$) and iron-bound P, thereby mainly following the description of \citet{caroline_p_slomp_key_1996} 
 and \citet{gypens_simple_2008}. Throughout the sediment column organic matter is mineralized resulting in a release of phosphate to the pore water. In the oxic part of the sediment, this PO$_4$ either 
-diffuses upward to the water column or is adsorped to Fe oxides forming Fe-bound P (or M)\citep{slomp1998role}. In the suboxic/anoxic zone, PO$_4$ is not only produced through organic matter degradation but is 
+diffuses upward to the water column or is adsorped to Fe oxides forming Fe-bound P (or M) \citep{slomp1998role}. In the suboxic/anoxic zone, PO$_4$ is not only produced through organic matter degradation but is 
 also released from the Fe-bound P pool due to the reduction of Fe oxides. Furthermore, phosphate concentrations can become high enough in this layer for authigenic mineral formation to occur \citep{cappellen_mathematical_1988}. 
 This phosphorus bound in authigenic minerals represents a permanent sink for reactive phosphorus \citep{caroline_p_slomp_key_1996}. See Figure \ref{fig:P-cycle} for a schematic overview of the sedimentary P cycle.
 Therefore the diagenetic equations for phosphorus are written:
@@ -826,7 +826,8 @@ $D_{\chem{PO_4}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 5.586252 &Diffus
 \subsubsection {Reaction Parameters}
 %The parameters relating to organic matter 
 %The overall reactions implemented in OMEN-SED (1.0) are listed in Table \ref{table:reactions_processes}. 
-The applied multi-G approach for organic matter degradation considers specific degradation rate constants $k_i$ (yr$^{-1}$) for each compound class. The degradation constants are generally taken from the coupled Earth System model 
+The applied multi-G approach for organic matter degradation considers specific degradation rate constants $k_i$ (yr$^{-1}$) for each compound class. 
+\textcolor{red}{TODO: } \textit{ The degradation constants are generally taken from the coupled Earth System model} 
 and are assumed invariant along the sediment column, therefore independent of the nature of the terminal electron acceptor. 
 The stoichiometry of organic matter is represented by the factors \chem{NC_i} and \chem{PC_i} denoting the molecular nitrogen to carbon and phosphorus to carbon ratio. 
 In the sulfidic and methanic zone the 
@@ -900,7 +901,7 @@ $k_a$ & yr$^{-1}$ & \textcolor{red}{???} & rate constant for authigenic P format
 %Describe in which order we calculate the different profiles/exchange fluxes (first calculating OM profile, then different TEA profiles).\\ 
 An analytical steady-state solution is found for the reaction-transport equation of each chemical species in each layer. 
 At each boundary (i.e. $z_{\mathrm{ox}}, z_{\mathrm{bio}}, z_{\chem{NO_3}}$ and $z_{\chem{SO_4}}$) the model has to match continuity and flux for different ODE solutions of the layer above and below the specific boundary. 
-In particular the bioturbation boundary is problematic as it can theoretically occur in any geochemical layer. In order to simplify this recurring boundary matching problem it is implemented in an independent algorithm 
+In particular the bioturbation boundary is problematic as it can theoretically occur in any geochemical layer (compare Fig. \ref{fig:Boundary_matching_algo}). In order to simplify this recurring boundary matching problem it is implemented in an independent algorithm 
 which is described in Section \ref{subsec:GBCM}. Instructions and requirements for coupling OMEN-SED (1.0) to a global Earth Sytem Model are given in Section \ref{subsubsec:ESM_coupling}.
 
 \subsubsection{Generic boundary condition matching (GBCM)}\label{subsec:GBCM}
@@ -917,7 +918,7 @@ and can therefore be expressed as:
 \begin{align}
 C(z) = A \cdot E(z) + B \cdot F(z) + G(z) 
 \end{align}
-where $E(z)$, $F (z)$ are the homogeneous solutions of the ODE, G(z) the particular integral, and A, B are the integration constants.\\[1em]
+where $E(z)$, $F (z)$ are the homogeneous solutions of the ODE, G(z) the particular integral, and A, B are the integration constants (compare Fig. \ref{fig:Boundary_matching_algo} for the whole sediment column).\\[1em]
 Each boundary matching problem involves matching continuity and flux for the two solutions $C_U(z)$ (= 'upper') and $C_L(z)$ (= 'lower') across a boundary at $z = z_b$. Therefore, we get two ODE solutions of the genral form:
 \begin{align}
 C_U(z) &= A_U \cdot E_U(z) + B_U \cdot F_U(z) + G_U(z) \label{ODE_solution_U}\\
@@ -958,6 +959,14 @@ where
 \end{align}
 (in the code this is done by \textsf{\textbf{benthic\_utils.xformsoln}}).
 
+\begin{figure}[htbp]
+\begin{center}
+	\includegraphics[width=0.3\textwidth]{figures/Boundary_Matching_zbio.pdf}
+	\caption{Schematic of the generic boundary condition matching (GBCM) problem. Showing the resulting integration constants ($A_i,\ B_i$) and ODE solutions ($E_i,\ F_i,\ G_i$) for the different sediment layers and the variable 
+	bioturbation boundary.}
+	\label{fig:Boundary_matching_algo}
+	\end{center}
+\end{figure}
 %\subsubsection*{Application in the model}\label{subsubsec:GBCM-Appl}
 
 \subsubsection*{Solving the sediment layer stack}
@@ -970,7 +979,7 @@ and one for the bottom of the sediments (e.g. a concentration condition at the b
 
 \subsubsection*{Abstracting out the bioturbation boundary}
 The bioturbation boundary affects the diffusion coefficient of the modelled solutes and the conservation equation of organic matter which is available for mineralization. 
-The boundary is particularly inconvenient as it can in principle occur in the middle of any ``geochemical'' layer and therefore generates multiple cases. 
+The boundary is particularly inconvenient as it can in principle occur in the middle of any ``geochemical'' layer and therefore generates multiple cases (compare Fig. \ref{fig:Boundary_matching_algo}). 
 To simplify this for solutes, the ``piecewise solution construction'' above is used to abstract out the bioturbation boundary. 
 An initial test for each layer is made to identify its ``bioturbation-status'' (fully bioturbated, fully non-bioturbated or crossing the bioturbation boundary) and (if needed) a piecewise solution is 
 constructed by matching boundary conditions across the bioturbation boundary. 
@@ -983,7 +992,7 @@ When calculating the solutions for the different layers, the pre-calculated stru
 solution type to use.
 
 \subsubsection{Coupling to an Earth System Model}\label{subsubsec:ESM_coupling}
-
+Describe what needs to be done/checked. Compare/use as example what I did with GENIE coupling. What are the if-clauses used? Input to OMEN-SED, output of OMEN-SED. 
 
 \section {Test Cases}
 
@@ -1030,6 +1039,57 @@ Depth & \chem{O_2} & \chem{NO_3} & \chem{SO_4} & \chem{NH_4} & \chem{H_2O} & \ch
 
 
 \subsection{Sensitivity Analysis}
+Model parameters implicitly account for processes not explicitly described, they are notoriously difficult to constrain and a source of uncertainty for a numerical model. Sensitivity Analysis (SA) is a term used for mathematical 
+techniques to investigate how the variations in the outputs ($y_1,\ ...,\ y_N$) of a numerical model can be attributed to variations in the different input parameters ($x_1,\ ...,\ x_M$) \citep{pianosi_sensitivity_2016}. 
+Different types of sensitivity indices, which quantify this relative influence with a scalar $S_i$, can be calculated, ranging from simple one-at-a-time methods to statistical evaluations of the 
+output distribution \citep[e.g. variance-based or density-based approaches][]{pianosi_sensitivity_2016}. Especially the latter indices are easy to interpret and to compare across different parameters and/or different model outputs as 
+they generally take values between zero and one ($S_i \in [0, 1]$). An index of zero indicates a non-influential parameter and a higher value a more influential parameter. 
+Here, we use SA mainly to identify which parameters have the largest impact on the different model outputs and therefore require careful calibration. 
+% and if there is any factor whose variability has a negligible effects on specific outputs?
+%Due to OMEN-SED's computational efficiency we are able to apply one of the approaches requiring higher numbers of model evaluations to compute the sensitivity index.  
+As the probability density functions of our model outputs (i.e. the resulting SWI-fluxes) are generally highly-skewed towards extreme organic matter degradation rates (not shown) variance-based sensitivity indices are not very 
+reliable uncertainty indicators \citep{pianosi_sensitivity_2016}. Rather than just considering the variance we employ the novel density-based PAWN method by \citep{pianosi_simple_2015} which considers the entire Probability Density Function (PDF) 
+of the model output to calculate the sensitivity index. 
+Due to the model complexity it is impossible to compute the sensitivity indices analytically therefore they are approximated from a Latin-Hypercube sampling of parameter inputs and calculated outputs.
+
+\textcolor{red}{TODO:} go on here... How is the index calculated ... show if for e.g. O2. 
+
+We use PAWN as implemented within the Sensitivity Analysis for Everyone (SAFE) matlab toolbox \citep{pianosi_matlab_2015} to investigate 11 model parameters for ranges specified in Table \ref{table:SA_parameter_ranges}. 
+
+
+Briefly different types of SA techniques. Variance based ...., why are we using PAWN pdf-based... A bit mathematical background (formula), sampling technique, bootstrapping. How do we calculate SA-index (maybe, some graphs with confidence bounds). 
+What do we see in figure... most sensitive parameters ... negligible parameters ... why? 
+Conclude OM degradation rate highly important, reflects results from the literature ... important to calibrate... or run ensembles with different degradation rates which is easily possible with OMEN-SED. 
+
+\begin{table}[btp]
+\caption{Range of model parameters used for sensitivity analysis of model predicted output.} 
+% Note: Constant concentrations at all sites for \chem{SO_4} ($28000 \mu$mol cm$^{-3}$) and \chem{H_2S} (0.0 $\mu$mol cm$^{-3}$).}
+\centering
+% used for centering table
+\begin{tabular}{l l c c c c}
+% centered columns (15 columns)
+\hline\hline
+Parameter & Description & Units & Minimum  & Maximum & Source\\
+\hline
+$k_1$ & labile OM degradation constant & yr$^{-1}$ & $1e^{-4}$ & 5.0 & (1)\\
+$\widetilde{k_2}$ & order of refractory OM degradation & - & $1e^{-4}$ & $1e^{-1}$ &  (1)\\
+ & constant ($k_2 = \widetilde{k_2} \cdot k_1$) & & &  &\\
+$f_1$ & fraction of labile OM & - & 0.02 & 0.98  & - \\
+$K_{NH_4}$ & Adsorption coefficient & - & 0.8 & 1.7  & (2) \\
+$\gamma_{NH_4}$ & $NH_4$ fraction oxidised &  & 0.5 & 1.0 & - \\
+$\gamma_{H_2S}$ &  $H_2S$ fraction oxidised  &  & 0.5 & 1.0 & - \\
+$K_{PO_4}^I$ & Adsorption coeff. oxic & - & 100.0 & 400.0  & (3) \\
+$K_{PO_4}^{II}$ & Adsorption coeff. anoxic & - & 1.3 & 2.0 & (3) \\
+$k_{s}$ & kinetic P sorption & yr$^{-1}$  & 0.1 & 100.0 & (4, 5)\\
+$k_{m}$ & Fe-bound P release & yr$^{-1}$  & 0.015 & 0.02 & (4, 5)\\
+$k_{a}$ & authigenic P formation & yr$^{-1}$  & 0.001 & 10.0 & (4, 6)\\
+\hline
+Source: &\multicolumn{5}{l}{(1) \citet{arndt_quantifying_2013}; (2): \citet{cappellen_cycling_1996}; (3): \citet{krom_adsorption_1980}}\\
+&\multicolumn{5}{l}{(4): \citet{gypens_simple_2008}; (5): \citet{caroline_p_slomp_key_1996}; (6): \citet{cappellen_mathematical_1988}}
+\end{tabular}
+\label{table:SA_parameter_ranges}
+\end{table}
+
 
 \begin{figure}[htbp]
 \begin{center}
@@ -1040,6 +1100,7 @@ Depth & \chem{O_2} & \chem{NO_3} & \chem{SO_4} & \chem{NH_4} & \chem{H_2O} & \ch
 	\end{center}
 \end{figure}
 
+Reality check, does OMEN-SED calculate realistic sediment-water interface fluxes!? Describe database of Stolpovsky and what we did. Add N to figures (i.e. data points from Stolpovsky).
 
 \begin{figure}[htbp]
 \begin{center}
