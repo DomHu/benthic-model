@@ -236,7 +236,7 @@ CONTAINS
 !        dum_swiconc_PO4 = 40.0e-9
 !        loc_depth_comparison = 600.0
 
-        loc_print_results = .true.
+        loc_print_results = .false.
         if(loc_print_results) then
             if(loc_new_sed_vol .LE. 4.0e-4)then
                         print*,' '
@@ -536,8 +536,8 @@ CONTAINS
         
         ! ORGANIC MATTER
         DC1 = Dbio
-        k1=0.01
-        k2=0.0001
+        k1=0.1
+        k2=0.1
 
         ! GLOBAL DIFFUSION COEFFICIENTS
         ! O2

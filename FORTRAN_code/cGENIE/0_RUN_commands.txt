@@ -1,0 +1,83 @@
+###########
+
+# SAVE TIMESLICE EVERY YEAR
+
+# 100 yrs from normal SPINUP without sediments
+./runmuffin.sh DOMcgenie.eb_go_gs_ac_bg_sg_rg.worbe2.BASES_EVERY1 DOM/05_OMEN_GENIE_Oct2016 EXAMPLE.worbe2.S36x36_Corg.FROMSPIN_TEST 100 EXAMPLE.worbe2.S36x36_Corg.SPIN
+
+# create 3 year SPINUP to asses crash when writing netcdf for year 5
+./runmuffin.sh DOMcgenie.eb_go_gs_ac_bg_sg_rg.worbe2.BASES_EVERY1 DOM/05_OMEN_GENIE_Oct2016 EXAMPLE.worbe2.S36x36_Corg.FROMSPIN_3yrs 3 EXAMPLE.worbe2.S36x36_Corg.SPIN
+
+# use this as new restart
+./runmuffin.sh DOMcgenie.eb_go_gs_ac_bg_sg_rg.worbe2.BASES_EVERY1 DOM/05_OMEN_GENIE_Oct2016 EXAMPLE.worbe2.S36x36_Corg.FROMSPIN_TEST 10 EXAMPLE.worbe2.S36x36_Corg.FROMSPIN_3yrs 
+
+
+
+#########################
+
+# ORIGINAL ONE WITH default time-slice save options
+./runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg.worbe2.BASES DOM/05_OMEN_GENIE_Oct2016 EXAMPLE.worbe2.S36x36_Corg.FROMSPIN_TEST 100 EXAMPLE.worbe2.S36x36_Corg.SPIN
+
+
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg.worbe2.BASES DOM/05_OMEN_GENIE_Oct2016 EXAMPLE.worbe2.S36x36_Corg_restO2_weathering.FROMSPIN_1000yr 1000 EXAMPLE.worbe2.S36x36_Corg.SPIN
+
+
+#########################
+
+######## 07.11.2016: 
+
+# 1) 5000yrs, weathering - no O2 restoring - now with SO4, H2S switched on (was commented out at 05.11), k1 = 0.01, k2 = 0.0001 - job 8140
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg.worbe2.BASES DOM/05_OMEN_GENIE_Oct2016 EXAMPLE.worbe2.S36x36_Corg_weathering.FROMSPIN_5000yrs_0711 5000 EXAMPLE.worbe2.S36x36_Corg.SPIN
+-------> STOPPED AT ABOUT 1750 years
+
+# 2) as 1) - with higher k1 = 0.1, k2 = 0.01 -  job 8141 
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg.worbe2.BASES DOM/05_OMEN_GENIE_Oct2016 EXAMPLE.worbe2.S36x36_Corg_weathering.FROMSPIN_5000yrs_higherk_0711 5000 EXAMPLE.worbe2.S36x36_Corg.SPIN
+-------> STOPPED AT ABOUT 1750 years
+
+###########################################################
+###########################################################
+
+####	RUN AS OPEN SYSTEM, CHECK EVERYTHING IN BALANCE	07.10.2016	####
+
+# 1) SPINUP FOR 10kyrs - no carbonate and OM burial - job 8167
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg.worbe2.BASES DOM/05_OMEN_GENIE_Oct2016 EXAMPLE05.worbe2.S36x36_Corg.OPEN.SPIN10kyrs_0711 10000
+
+# 2) ENABLE OMEN-SED from year zero (but all remineralized k1,2 = 0.1), no carbonate burial, no weathering or restoring of O2 - RUN TO EQUILIBRIUM - job 8168
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg.worbe2.BASES DOM/05_OMEN_GENIE_Oct2016 EXAMPLE05.worbe2.S36x36_Corg.OPEN_0711 10000
+--------> Just ran 1000 years........ use this as restart and run for 9000 years more see 2) at 08.11.
+
+
+#### 08.11.2016
+
+# 1) ENABLE OMEN-SED from year zero (slower remin. k1 = 0.01, k2 = 0.0001), no carbonate burial, no weathering or restoring of O2 - RUN TO EQUILIBRIUM -  job 8240
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg.worbe2.BASES DOM/05_OMEN_GENIE_Oct2016 EXAMPLE05.worbe2.S36x36_Corg_ksmaller.OPEN_0811 10000
+
+# 2) AS 2) at 07.11. use that as restart - job 8241
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg.worbe2.BASES DOM/05_OMEN_GENIE_Oct2016 EXAMPLE05.worbe2.S36x36_Corg_all_remin.OPEN_0811_FROM_SPIN 9000 EXAMPLE05.worbe2.S36x36_Corg.OPEN_0711 -------->  Just ran 1000 years........ 
+
+#3 2) start 2) from yesterday again from zero - job 8242
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg.worbe2.BASES DOM/05_OMEN_GENIE_Oct2016 EXAMPLE05.worbe2.S36x36_Corg_all_remin.OPEN_0811 10000
+-------->  Just ran 1000 years........ 
+
+#### 15.11.2016
+
+# 1) Don't do *** (g) calculate sediment dissolution flux to ocean - comment it out! - job 8329
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg.worbe2.BASES DOM/05_OMEN_GENIE_Oct2016 EXAMPLE05.worbe2.S36x36_Corg_all_remin.OPEN_1511 10000
+
+
+#######################################################################
+#######################################################################
+
+######### 22/11/2016  ANDY worked on dissolution flux problem - my version is GitHub/benthic-model/FORTRAN_code/cGENIE/sedgem_box_DOM_2211.f90
+
+
+###### NOW using simple Ocean setup: cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASE
+
+1) SPIN1 as in ANDY experiments manual Section 4.3 - CLOSED SYSTEM - no OMEN - job 8352
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASE / EXAMPLE._rwlma.PO4_S18x18.SPIN1 20000
+
+2) as SPIN1 but OPEN SYSTEM no CaCO3 - no OMEN - job 8353 
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASE DOM/05_OMEN_GENIE_Oct2016 EXAMPLE05._rwlma.PO4_S18x18.OPEN_noCaCO3_2211 20000
+
+3) as SPIN1 but OPEN SYSTEM no CaCO3 - with OMEN all remineralised k1,2 = 0.1 - job 8354
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASE DOM/05_OMEN_GENIE_Oct2016 EXAMPLE05._rwlma.PO4_S18x18.OPEN_noCaCO3_Corg_all_remin_2211 20000

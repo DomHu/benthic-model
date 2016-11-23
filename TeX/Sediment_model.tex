@@ -1025,13 +1025,13 @@ Depth & Temp. & $z_{\mathrm{bio}}$ & $D_{\mathrm{bio}}$  & \chem{TOC_1} & \chem{
 4298 & 2.5 & 4.2 & 0.18 & 1.0 & 1.2 & 0.055 & $1e^{-5}$\\
 \hline\hline
 \multicolumn{8}{l}{\textbf{Bottom water concentrations of solutes} (all in $\mu$mol cm$^{-3}$):}\\
-Depth & \chem{O_2} & \chem{NO_3} & \chem{SO_4} & \chem{NH_4} & \chem{H_2O} & \chem{PO_4} & \chem{PO_4^a}\\
+Depth & \chem{O_2} & \chem{NO_3} & \chem{SO_4} & \chem{NH_4} & \chem{H_2S} & \chem{PO_4} & \chem{PO_4^a}\\
 %(m) & ($\frac{\mu mol}{cm^3}$) &  ($\frac{\mu mol}{cm^3}$) &  ($\frac{\mu mol}{cm^3}$) &  ($\frac{\mu mol}{cm^3}$) &  ($\frac{\mu mol}{cm^3}$)  &   ($\frac{\mu mol}{cm^3}$) &   ($\frac{\mu mol}{cm^3}$) \\
 \hline
 108 & 210.0 & 9.6 & 28,000 & 0.4 & 0.0 & 0.0 & 15.0 \\
 585 & 10.0 & 25.0 & 28,000 & 0.0 & 0.0 & 50.0 & 90.0 \\
-2213 & 250 & 25 & 28,000 & 0.6 & 0.0 & 0.0 & 5.0 \\
-4298 & 243 & 30.1 & 28,000 & 0.22 & 0.0 0.0 & 5.0 \\
+2213 & 250 & 25.0 & 28,000 & 0.6 & 0.0 & 0.0 & 5.0 \\
+4298 & 243 & 30.1 & 28,000 & 0.22 & 0.0 & 5.0 \\
 % inserts double horizontal lines
 \end{tabular}
 \label{table:Profiles_BC}
@@ -1048,18 +1048,21 @@ Here, we use SA mainly to identify which parameters have the largest impact on t
 % and if there is any factor whose variability has a negligible effects on specific outputs?
 %Due to OMEN-SED's computational efficiency we are able to apply one of the approaches requiring higher numbers of model evaluations to compute the sensitivity index.  
 As the probability density functions of our model outputs (i.e. the resulting SWI-fluxes) are generally highly-skewed towards extreme organic matter degradation rates (not shown) variance-based sensitivity indices are not very 
-reliable uncertainty indicators \citep{pianosi_sensitivity_2016}. Rather than just considering the variance we employ the novel density-based PAWN method by \citep{pianosi_simple_2015} which considers the entire Probability Density Function (PDF) 
-of the model output to calculate the sensitivity index. 
+reliable uncertainty indicators \citep{pianosi_sensitivity_2016}. Rather than just considering the variance we employ the novel density-based PAWN method by \citep{pianosi_simple_2015} which considers the entire conditional and unconditional 
+Cumulative Destribution Function (CDF) of the model output. % Probability Density Function (PDF) 
+The sensitivity index of parameter $i$ is calculated as the difference between the two CDFs, i.e.
+\begin{equation}
+ S_i = \max_{x_i} \max_{y} | F_y(y) - F_{y|x_i}(y) |
+\end{equation}
+where $F_y(y)$ is the unconditional CDF of the output $y$ and $F_{y|x_i}(y)$ is the conditional CDF when the $i$-th parameter is fixed to $x_i$. For a more detailed description of the method we refer the interested reader to \citet{pianosi_simple_2015}. 
 Due to the model complexity it is impossible to compute the sensitivity indices analytically therefore they are approximated from a Latin-Hypercube sampling of parameter inputs and calculated outputs.
-
-\textcolor{red}{TODO:} go on here... How is the index calculated ... show if for e.g. O2. 
-
 We use PAWN as implemented within the Sensitivity Analysis for Everyone (SAFE) matlab toolbox \citep{pianosi_matlab_2015} to investigate 11 model parameters for ranges specified in Table \ref{table:SA_parameter_ranges}. 
+We calculate sensitivity indices for all resulting SWI-fluxes from OMEN-SED for two idealised sediment conditions (see Table \ref{table:SA_2Cases}). 
+The resulting indices (compare Fig. \ref{fig:SA_O2+NO3} for two examplary cases) are then translated into a color code and summarised in a pattern plot (Fig. \ref{fig:Sensitivity_Analysis}) to simplify comparison. 
+The most significant parameters for all model outputs are the degradation rate for the labile OM part ($\chem{k_1}$) and its share in the total OM pool ($\chem{f_1}$).
+For the anoxic setup, where no oxidation occurs, the secondary redox parameters (i.e. $\gamma_\chem{NH_4},\ \gamma_\chem{H_2S}$) are essentially non-influential, however, they are getting more important for the oxic scenario. 
+The $\chem{PO_4}$ SWI-flux appears to be insensitive under oxic conditions as the majority is absorbed to $\chem{Fe}$-oxides \textcolor{red}{correct....?}.
 
-
-Briefly different types of SA techniques. Variance based ...., why are we using PAWN pdf-based... A bit mathematical background (formula), sampling technique, bootstrapping. How do we calculate SA-index (maybe, some graphs with confidence bounds). 
-What do we see in figure... most sensitive parameters ... negligible parameters ... why? 
-Conclude OM degradation rate highly important, reflects results from the literature ... important to calibrate... or run ensembles with different degradation rates which is easily possible with OMEN-SED. 
 
 \begin{table}[btp]
 \caption{Range of model parameters used for sensitivity analysis of model predicted output.} 
@@ -1071,41 +1074,77 @@ Conclude OM degradation rate highly important, reflects results from the literat
 \hline\hline
 Parameter & Description & Units & Minimum  & Maximum & Source\\
 \hline
-$k_1$ & labile OM degradation constant & yr$^{-1}$ & $1e^{-4}$ & 5.0 & (1)\\
-$\widetilde{k_2}$ & order of refractory OM degradation & - & $1e^{-4}$ & $1e^{-1}$ &  (1)\\
+$\chem{k_1}$ & labile OM degradation constant & yr$^{-1}$ & $1e^{-4}$ & 5.0 & (1)\\
+$\widetilde{\chem{k_2}}$ & order of refractory OM degradation & - & $1e^{-4}$ & $1e^{-1}$ &  (1)\\
  & constant ($k_2 = \widetilde{k_2} \cdot k_1$) & & &  &\\
-$f_1$ & fraction of labile OM & - & 0.02 & 0.98  & - \\
-$K_{NH_4}$ & Adsorption coefficient & - & 0.8 & 1.7  & (2) \\
-$\gamma_{NH_4}$ & $NH_4$ fraction oxidised &  & 0.5 & 1.0 & - \\
-$\gamma_{H_2S}$ &  $H_2S$ fraction oxidised  &  & 0.5 & 1.0 & - \\
-$K_{PO_4}^I$ & Adsorption coeff. oxic & - & 100.0 & 400.0  & (3) \\
-$K_{PO_4}^{II}$ & Adsorption coeff. anoxic & - & 1.3 & 2.0 & (3) \\
+$\chem{f_1}$ & fraction of labile OM & - & 0.02 & 0.98  & - \\
+$K_{\chem{NH_4}}$ & Adsorption coefficient & - & 0.8 & 1.7  & (2) \\
+$\gamma_\chem{NH_4}$ & $NH_4$ fraction oxidised &  & 0.5 & 1.0 & - \\
+$\gamma_\chem{H_2S}$ &  $H_2S$ fraction oxidised  &  & 0.5 & 1.0 & - \\
+$K_\chem{PO_4}^I$ & Adsorption coeff. oxic & - & 100.0 & 400.0  & (3) \\
+$K_\chem{PO_4}^{II}$ & Adsorption coeff. anoxic & - & 1.3 & 2.0 & (3) \\
 $k_{s}$ & kinetic P sorption & yr$^{-1}$  & 0.1 & 100.0 & (4, 5)\\
 $k_{m}$ & Fe-bound P release & yr$^{-1}$  & 0.015 & 0.02 & (4, 5)\\
 $k_{a}$ & authigenic P formation & yr$^{-1}$  & 0.001 & 10.0 & (4, 6)\\
 \hline
-Source: &\multicolumn{5}{l}{(1) \citet{arndt_quantifying_2013}; (2): \citet{cappellen_cycling_1996}; (3): \citet{krom_adsorption_1980}}\\
+Sources: &\multicolumn{5}{l}{(1) \citet{arndt_quantifying_2013}; (2): \citet{cappellen_cycling_1996}; (3): \citet{krom_adsorption_1980}}\\
 &\multicolumn{5}{l}{(4): \citet{gypens_simple_2008}; (5): \citet{caroline_p_slomp_key_1996}; (6): \citet{cappellen_mathematical_1988}}
 \end{tabular}
 \label{table:SA_parameter_ranges}
 \end{table}
+
+\begin{table}[btp]
+\caption{\textcolor{red}{Maybe in Suppl.} Model boundary conditions for the two idealised sediment conditions used for the sensitivity analysis (Figure \ref{fig:Sensitivity_Analysis}). 
+All solute concentrations are in $\mu$mol cm$^{-3}$.} 
+% Note: Constant concentrations at all sites for \chem{SO_4} ($28000 \mu$mol cm$^{-3}$) and \chem{H_2S} (0.0 $\mu$mol cm$^{-3}$).}
+\centering
+% used for centering table
+\begin{tabular}{c c c c c c c c}
+% centered columns (15 columns)
+\hline\hline
+Depth (m) & Temp. ({}$^\circ$C)& OC (wt\%) & \chem{O_2} & \chem{NO_3} & \chem{SO_4} & \chem{PO_4} & $z_{\mathrm{bio}}$ (cm)\\
+\hline
+400 & 8.0 & 2.0 & 0.0 & 40.0 & 28,000 & 40.0 & 0.001 \\
+4000 & 1.5 & 1.0 & 300.0 & 20.0 & 28,000 & 40.0 & 10.0 \\
+\hline
+\end{tabular}
+\label{table:SA_2Cases}
+\end{table}
+
+
+\begin{figure}[htbp]
+\begin{center}
+	\includegraphics[width=1.0\textwidth]{figures/SA/SIndex_O_2+NO3_4000m.pdf}
+	\caption{\textcolor{red}{Maybe in Suppl.} Box plot of parameter sensitivities for the $O_2$ and $NO_3$ SWI-flux for the 4000m oxic condition. 
+	Average sensitivities (black lines) and 90\% condidence intervals using $N=11200$ model evaluations and $Nboot = 100$ bootstrap resamples.}
+	\label{fig:SA_O2+NO3}
+	\end{center}
+\end{figure}
 
 
 \begin{figure}[htbp]
 \begin{center}
 	\includegraphics[width=1.0\textwidth]{figures/SA/0_KSIndex_ALL_OUTPUT_WHITE.pdf}
 	\caption{Pattern plot, showing the output sensitivity for each SWI flux (i.e. the chemical compounds on the horizontal axis) and each input factor (i.e. the model parameters 
-	on the vertical axis) for two hypothetical sediment cores. }
+	on the vertical axis) for two idealised sediment cores. }
 	\label{fig:Sensitivity_Analysis}
 	\end{center}
 \end{figure}
 
-Reality check, does OMEN-SED calculate realistic sediment-water interface fluxes!? Describe database of Stolpovsky and what we did. Add N to figures (i.e. data points from Stolpovsky).
+To test if OMEN-SED (1.0) is able to reproduce observed SWI-fluxes, the Latin-Hypercube sampling outputs are compared with a global database of benthic fluxes of $\chem{O_2}$ and $\chem{NO_3}$ \citep{bohlen_simple_2012}. 
+The coloured scatter plots (Figure \ref{fig:SA_Color_ScatterPlots}) show that the observed fluxes fall well in the range of SWI-fluxes calculated with OMEN-SED (1.0). Also highlighted by the emergence of colour patterns 
+in Figure \ref{fig:SA_Color_ScatterPlots} A+B are the strong interactions between the amount of labile OM  $\chem{f_1}$ and its degradation rate $\chem{k_1}$ for the resulting SWI-flux of the most powerful TEA available. 
+
+% Conclude OM degradation rate highly important, reflects results from the literature ... important to calibrate... or run ensembles with different degradation rates which is easily possible with OMEN-SED. 
+% Reality check, does OMEN-SED calculate realistic sediment-water interface fluxes!? Describe database of Stolpovsky and what we did. Add N to figures (i.e. data points from Stolpovsky).
 
 \begin{figure}[htbp]
 \begin{center}
 	\includegraphics[width=1.0\textwidth]{figures/SA/k1_vs_f1_SWIflux_COMBINED.pdf}
-	\caption{}
+	\caption{Coloured scatter plots ($\chem{k_1}$ vs $\chem{f_!}$) of resulting OMEN-SED (1.0) SWI-fluxes for the 400m anoxic (A: $\chem{NO_3}$) and 4000m oxic (B: $\chem{O_2}$, C: $\chem{NO_3}$) scenario. 
+	Negative values representing flux from the water column into the sediments.
+	Indicated area at the respective colour scale represents range of benthic fluxes in the global database of \citet{bohlen_simple_2012}. 
+	\textcolor{red}{TODO: Add N and swap colour scale + add text: Low influx, High influx...}}
 	\label{fig:SA_Color_ScatterPlots}
 \end{center}
 \end{figure}
