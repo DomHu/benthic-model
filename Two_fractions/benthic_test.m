@@ -9,7 +9,7 @@ classdef benthic_test
         function swi = default_swi()
             bsd = benthic_main();
             %bottom water concentrations
-            swi.T = 6.9125369867776385; %20.0;                         %temperature (degree C)
+            swi.T = 5.85; %20.0;                         %temperature (degree C)
             % see caption for Fig 1.2 - two equal TOC fractions 0.02 0.2 2
             swi.C01= 1.1322982042709264*1e-2/12*bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*bsd.rho_sed;         %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
             swi.C02= 0.43928448717502155*1e-2/12*bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;          %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)

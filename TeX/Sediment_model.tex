@@ -210,7 +210,7 @@ and usually at least a part of the resulting characteristic redox-zonation of ma
 PISCES \citep{gehlen_reconciling_2006} and CLIMBER 3$\alpha$ \citep{ilyina_global_2013}, both using a version of \citet{heinze_global_1999}, however, just utilizing a 1G approach with a constant degradation rate constant. % and NORESM \citep{tjiputra_evaluation_2013} does not say anything if they just use the original oxic-only
 None of the EMICs reviewed by \citet{huelse_biopump_models_2016} use such a sediment representation. 
 
-% \textcolor{red}{TODO:} Sandra review: large scale of published model parameters illustrates the complex nature of organic matter dynamics! Very difficult to find global relationships to relate model parameters 
+% Sandra review: large scale of published model parameters illustrates the complex nature of organic matter dynamics! Very difficult to find global relationships to relate model parameters 
 % to available environmental characteristics, such as water depth, deposition rate. 
 
 \textbf{Problem with that:} \\
@@ -230,7 +230,7 @@ Other model parameters implicitly accounting for processes not explicitly descri
 % Start with OM is composed of loads of different compound classes. 1G approach can't account for that. Need at least 3 different fractions. Then problem of defining degradation rate constants especially on a global scale. 
 % Say how diverse the OM stuff is and how variable it is spatially. Need actually at least 3G approach...
 % Vertically integrated and resolved sediment models of organic matter degradation need to be properly initialise (i.e. get realistic POC degradation rates, from \citep{soetaert_coupling_2000})
-% \textcolor{red}{TODO:} How they usually quantify the rate of OM degradation (see Stolpovsky et al. 2015 or/and \citep{soetaert_coupling_2000, mackenzie_past_2004}.\\
+% How they usually quantify the rate of OM degradation (see Stolpovsky et al. 2015 or/and \citep{soetaert_coupling_2000, mackenzie_past_2004}.\\
 % The spatial variability in e.g. benthic particulate organic carbon (POC) mineralization kinetics throughout the ocean is currently unknown. This creates considerable 
 % uncertainties when diagenetic models are used to couple benthic and pelagic biogeochemical cycles in global models. see: https://goldschmidtabstracts.info/2013/2270.pdf \\[2ex]
 
@@ -863,6 +863,8 @@ Parameter/Variable & Unit  & Value & Description\\
 \chem{PC_i} & mol/mol & 0.0094 & phosphorus to carbon ratio\\
 \chem{MC}& mol/mol & 0.5 & methane to carbon ratio\\
 &&&produced during methanogenesis\\
+\chem{DICC^I}& mol/mol & 1.0 & DIC to carbon ratio until \chem{z_{SO_4}}\\
+\chem{DICC^{II}}& mol/mol & 0.5 &  DIC to carbon ratio below \chem{z_{SO_4}}\\
 \chem{OC} & mol/mol & 1.0 & oxygen to carbon ratio\\
 \chem{NO_3C} & mol/mol & 94.4/106 & nitrate to carbon ratio\\
 \chem{SO_4C} & mol/mol & 0.5 & sulfate to carbon ratio\\
@@ -1020,8 +1022,8 @@ Depth & Temp. & $z_{\mathrm{bio}}$ & $D_{\mathrm{bio}}$  & \chem{TOC_1} & \chem{
  (m) & ($^{\circ}C$) & (cm) & (cm$^2$yr$^{-1}$) &(wt\%) & (wt\%) & (yr$^{-1}$) & (yr$^{-1}$)\\
 \hline
 108 & 12.5 & 1.0 & 0.02 & 2.64 & 1.8 & 0.65 & $1.0e^{-5}$ \\
-585 & 5.85 & 0.01 & 0.02 & 2.0 & 3.5 & 0.1 & $1.0e^{-3}$\\
-2213 & 3.2 & 10.0 & 0.17 & 0.45 & 0.6 & 0.15 & $9.0e^{4}$\\
+585 & 5.85 & 0.01 & 0.02 & 2.0 & 3.5 & 0.2 & $8.0e^{-4}$\\
+2213 & 3.2 & 10.0 & 0.17 & 0.45 & 0.6 & 0.15 & $9.0e^{-4}$\\
 4298 & 2.5 & 4.2 & 0.18 & 1.0 & 1.2 & 0.055 & $1e^{-5}$\\
 \hline\hline
 \multicolumn{8}{l}{\textbf{Bottom water concentrations of solutes} (all in $\mu$mol cm$^{-3}$):}\\

@@ -71,7 +71,7 @@ qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg
 ######### 22/11/2016  ANDY worked on dissolution flux problem - my version is GitHub/benthic-model/FORTRAN_code/cGENIE/sedgem_box_DOM_2211.f90
 
 
-###### NOW using simple Ocean setup: cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASE
+###### NOW using simple Ocean setup: cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASE  ---- this is without SO4 use the BASES config!!!! (see 23/11)
 
 1) SPIN1 as in ANDY experiments manual Section 4.3 - CLOSED SYSTEM - no OMEN - job 8352
 qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASE / EXAMPLE._rwlma.PO4_S18x18.SPIN1 20000
@@ -81,3 +81,25 @@ qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg
 
 3) as SPIN1 but OPEN SYSTEM no CaCO3 - with OMEN all remineralised k1,2 = 0.1 - job 8354
 qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASE DOM/05_OMEN_GENIE_Oct2016 EXAMPLE05._rwlma.PO4_S18x18.OPEN_noCaCO3_Corg_all_remin_2211 20000
+
+#######################################################################
+#######################################################################
+
+###### 23/11/2016 
+###### NOW using simple Ocean setup: cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES WITH SO4, H2S, ALK and DIC
+
+1) SPIN1 as in ANDY experiments manual Section 4.3 - CLOSED SYSTEM - no OMEN - job 8356
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES / EXAMPLE._rwlma.PO4_S18x18.SPIN1 20000
+
+2) as SPIN1 but OPEN SYSTEM no CaCO3 - no OMEN - job 8359
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/05_OMEN_GENIE_Oct2016 EXAMPLE05._rwlma.PO4_S18x18.OPEN_noCaCO3_2311 20000
+
+3) as SPIN1 but OPEN SYSTEM no CaCO3 - with OMEN all remineralised k1,2 = 0.1 - job 8360 ----> CRASHED after 485 years, maybe bc of STOP when POC is buried.... ---> do new Exp 5) with higher k + no STOP command
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/05_OMEN_GENIE_Oct2016 EXAMPLE05._rwlma.PO4_S18x18.OPEN_noCaCO3_Corg_all_remin_2311 20000
+
+4) as SPIN1 but OPEN SYSTEM no CaCO3 - with OMEN ksmaller k1 = 0.01; k2 = 0.001 - job 8361
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/05_OMEN_GENIE_Oct2016 EXAMPLE05._rwlma.PO4_S18x18.OPEN_noCaCO3_Corg_ksmaller_2311 20000
+
+5) as SPIN1 but OPEN SYSTEM no CaCO3 - with OMEN all remineralised k1,2 = 0.2 - job 8362 ----> CRASHED after 58 years .... I think something is wrong with my ALK...
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/05_OMEN_GENIE_Oct2016 EXAMPLE05._rwlma.PO4_S18x18.OPEN_noCaCO3_Corg_all_remin_k0.2_2311 20000
+

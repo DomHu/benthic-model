@@ -308,6 +308,7 @@ CONTAINS
             loc_SO4_swiflux = 0.0
             loc_NH4_swiflux = 0.0
             loc_H2S_swiflux = 0.0
+            loc_PO4_swiflux = 0.0
             ! DH: TODO what about DIC and ALK?
             loc_DIC_swiflux = 0.0
             loc_ALK_swiflux = 0.0
@@ -331,7 +332,6 @@ CONTAINS
 !                    print*,'loc_O2_swiflux too small ', loc_O2_swiflux
 !    !                STOP
 !                end if
-
             end if
 
             if(ocn_select(io_NO3))then
@@ -536,8 +536,8 @@ CONTAINS
         
         ! ORGANIC MATTER
         DC1 = Dbio
-        k1=0.1
-        k2=0.1
+        k1=0.2
+        k2=0.2
 
         ! GLOBAL DIFFUSION COEFFICIENTS
         ! O2

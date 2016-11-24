@@ -23,11 +23,11 @@ classdef benthic_zALK
 
   
              %reactive terms: OM degradation
-             obj.reac11=bsd.gamma*bsd.NC1/(1+obj.KNH4)*bsd.ALKRNIT+bsd.ALKROX*bsd.SD;     % z < zox:  Nitrification (-2) Aerobic degradation (+15/106)
-             obj.reac12=bsd.gamma*bsd.NC2/(1+obj.KNH4)*bsd.ALKRNIT+bsd.ALKROX*bsd.SD;     % z < zox:  Nitrification (-2) Aerobic degradation (+15/106)
-             obj.reac2=bsd.SD*bsd.ALKRDEN;                                  % zox < z < zno3: Denitrification (+93.4/106)
-             obj.reac3=bsd.SD*bsd.ALKRSUL;                                  % zno3 < z < zso4: Sulfate reduction (+15/106)
-             obj.reac4=bsd.SD*bsd.ALKRMET;                                  % zso4 < z < zinf: Methanogenesis (+14/106)
+             obj.reac11=bsd.gamma*bsd.NC1/(1+obj.KNH4)*bsd.ALKRNIT+bsd.ALKROX*bsd.SD;       % z < zox:  Nitrification (-2) Aerobic degradation (+15/106)
+             obj.reac12=bsd.gamma*bsd.NC2/(1+obj.KNH4)*bsd.ALKRNIT+bsd.ALKROX*bsd.SD;       % z < zox:  Nitrification (-2) Aerobic degradation (+15/106)
+             obj.reac2=bsd.SD*bsd.ALKRDEN;                                                  % zox < z < zno3: Denitrification (+93.4/106)
+             obj.reac3=bsd.SD*bsd.ALKRSUL;                                                  % zno3 < z < zso4: Sulfate reduction (+15/106)
+             obj.reac4=bsd.SD*bsd.ALKRMET;                                                  % zso4 < z < zinf: Methanogenesis (+14/106)
 
           
         end
