@@ -380,7 +380,7 @@
             %            data.H2S=PW_data(:,[1 11]);                        
                         
                     case 6  % Reimers et al. 1996   NOT really clear which measurements fit together -> leave out!
-                        str_date = '585m_Reimers_BC68_2311_';
+                        str_date = '585m_Reimers_BC68_2811_';
                         data.TOC=load('../Observations/Reimers_SantaBarbara/BC68_Corg.dat','ascii');
             %            TOC2=load('../Observations/Reimers_SantaBarbara/BC21_Corg.dat','ascii');
                         data.O2=load('../Observations/Reimers_SantaBarbara/IMP_O2.dat','ascii');

@@ -32,7 +32,7 @@ classdef benthic_zH2S
             rH2S.ls1 = r.zTOC.prepfg_l12(bsd, swi, r, 0,         0,         0,     0, r.zox, obj.DH2S1, obj.DH2S2);
             % layer 2: zox < z < zno3, passive diffn
             rH2S.ls2 = r.zTOC.prepfg_l12(bsd, swi, r, 0,         0,         0,  r.zox, r.zno3, obj.DH2S1, obj.DH2S2);            
-            % layer 3: zno3 < z < zso4, H2S consumption by OM oxidation
+            % layer 3: zno3 < z < zso4, H2S prod. by OM oxidation
             rH2S.ls3 = r.zTOC.prepfg_l12(bsd, swi, r, obj.reac1, obj.reac2, 0, r.zno3, r.zso4, obj.DH2S1, obj.DH2S2);
             % layer 4: zso4 < z < zinf, passive diffn
             rH2S.ls4 = r.zTOC.prepfg_l12(bsd, swi, r, 0,         0,         0, r.zso4, bsd.zinf, obj.DH2S1, obj.DH2S2);

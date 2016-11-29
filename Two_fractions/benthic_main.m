@@ -95,12 +95,12 @@ classdef benthic_main < handle
             obj.DICC2=0.5*obj.SD;                                               %DIC/C below zSO4 (mol/mol)
             obj.MC=0.5*obj.SD;                                                  %CH4/C (mol/mol)
             obj.NO3CR=(94.4/106)*obj.SD;                                        % NO3 consumed by Denitrification
-            obj.ALKROX=15.0/106;                                                  % Aerobic degradation                     
+            obj.ALKROX=15.0;                                                  % Aerobic degradation                     
             obj.ALKRNIT=-2.0;                                                     % Nitrification    
-            obj.ALKRDEN=93.4/106;                                               % Denitrification
-            obj.ALKRSUL=15.0/106;                                                 % Sulfato reduction
-            obj.ALKRH2S=-1.0;                                                     % H2S oxydation (CHECK THIS VALUE!!!)
-            obj.ALKRMET=14.0/106;                                                 % Methanogenesis
+            obj.ALKRDEN=93.4;                                               % Denitrification
+            obj.ALKRSUL=15.0;                                                 % Sulfato reduction
+            obj.ALKRH2S=-2.0;                                                     % H2S oxydation (CHECK THIS VALUE!!!)
+            obj.ALKRMET=14.0;                                                 % Methanogenesis
             obj.ALKRAOM=2.0;                                                      % AOM
 
 

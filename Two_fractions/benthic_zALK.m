@@ -11,7 +11,8 @@ classdef benthic_zALK
         
         reac11;
         reac12;
-        reac2;
+        reac21;
+        reac22;
         reac3;
         reac4;
     end
@@ -23,12 +24,20 @@ classdef benthic_zALK
 
   
              %reactive terms: OM degradation
-             obj.reac11=bsd.gamma*bsd.NC1/(1+obj.KNH4)*bsd.ALKRNIT+bsd.ALKROX*bsd.SD;       % z < zox:  Nitrification (-2) Aerobic degradation (+15/106)
-             obj.reac12=bsd.gamma*bsd.NC2/(1+obj.KNH4)*bsd.ALKRNIT+bsd.ALKROX*bsd.SD;       % z < zox:  Nitrification (-2) Aerobic degradation (+15/106)
-             obj.reac2=bsd.SD*bsd.ALKRDEN;                                                  % zox < z < zno3: Denitrification (+93.4/106)
-             obj.reac3=bsd.SD*bsd.ALKRSUL;                                                  % zno3 < z < zso4: Sulfate reduction (+15/106)
-             obj.reac4=bsd.SD*bsd.ALKRMET;                                                  % zso4 < z < zinf: Methanogenesis (+14/106)
-
+% Following is too high!
+             obj.reac11=bsd.gamma*bsd.NC1/(1+obj.KNH4)*bsd.ALKRNIT+bsd.OC*bsd.ALKROX;       % z < zox:  Nitrification (-2) Aerobic degradation (+15/106)
+             obj.reac12=bsd.gamma*bsd.NC2/(1+obj.KNH4)*bsd.ALKRNIT+bsd.OC*bsd.ALKROX;       % z < zox:  Nitrification (-2) Aerobic degradation (+15/106)
+             obj.reac21=bsd.ALKRDEN*bsd.NC1;                                                  % zox < z < zno3: Denitrification (+93.4/106)
+             obj.reac22=bsd.ALKRDEN*bsd.NC2;                                                  % zox < z < zno3: Denitrification (+93.4/106)
+             obj.reac3=bsd.ALKRSUL*bsd.SO4C;                                                  % zno3 < z < zso4: Sulfate reduction (+15/106)
+             obj.reac4=bsd.ALKRMET*bsd.MC;                                                  % zso4 < z < zinf: Methanogenesis (+14/106)
+%   From Nicolas:
+%              obj.reac11=bsd.gamma*bsd.NC1*bsd.ALKRNIT+bsd.ALKROX*bsd.SD;       % z < zox:  Nitrification (-2) Aerobic degradation (+15/106)
+%              obj.reac12=bsd.gamma*bsd.NC2*bsd.ALKRNIT+bsd.ALKROX*bsd.SD;       % z < zox:  Nitrification (-2) Aerobic degradation (+15/106)
+%              obj.reac21=bsd.ALKRDEN*bsd.SD;                                                  % zox < z < zno3: Denitrification (+93.4/106)
+%              obj.reac22=bsd.ALKRDEN*bsd.SD;                                                  % zox < z < zno3: Denitrification (+93.4/106)
+%              obj.reac3=bsd.ALKRSUL*bsd.SD;                                                  % zno3 < z < zso4: Sulfate reduction (+15/106)
+%              obj.reac4=bsd.ALKRMET*bsd.SD;                                                  % zso4 < z < zinf: Methanogenesis (+14/106)
           
         end
         
@@ -40,7 +49,7 @@ classdef benthic_zALK
             %      ls =      prepfg_l12( bsd, swi, r, reac1,        reac2,       ktemp,     zU,   zL,       D1,      D2)
             rALK.ls1 = r.zTOC.prepfg_l12(bsd, swi, r, obj.reac11, obj.reac12,         0,     0, r.zox, obj.DALK1, obj.DALK2);
             % layer 2: zox < z < zno3, Denitrification (+)
-            rALK.ls2 = r.zTOC.prepfg_l12(bsd, swi, r, obj.reac2, obj.reac2,         0,  r.zox, r.zno3, obj.DALK1, obj.DALK2);            
+            rALK.ls2 = r.zTOC.prepfg_l12(bsd, swi, r, obj.reac21, obj.reac22,         0,  r.zox, r.zno3, obj.DALK1, obj.DALK2);            
             % layer 3: zno3 < z < zso4, Sulfate reduction (+)
             rALK.ls3 = r.zTOC.prepfg_l12(bsd, swi, r, obj.reac3, obj.reac3,         0, r.zno3, r.zso4, obj.DALK1, obj.DALK2);
             % layer 4: zso4 < z < zinf, Methanogenesis (+)
@@ -68,7 +77,7 @@ classdef benthic_zALK
             % Match at zno3, layer 2 - layer 3 (continuity and flux)                        
             % basis functions at bottom of layer 2
             [ e2_zno3, dedz2_zno3, f2_zno3, dfdz2_zno3, g2_zno3, dgdz2_zno3] ...
-                = r.zTOC.calcfg_l12(r.zno3, bsd, swi, r,     obj.reac2, obj.reac2, 0, rALK.ls2);
+                = r.zTOC.calcfg_l12(r.zno3, bsd, swi, r,     obj.reac21, obj.reac22, 0, rALK.ls2);
             % ... and top of layer 3
             [ e3_zno3, dedz3_zno3, f3_zno3, dfdz3_zno3, g3_zno3, dgdz3_zno3] ...
                 = r.zTOC.calcfg_l12(r.zno3, bsd, swi, r, obj.reac3, obj.reac3, 0, rALK.ls3);
@@ -92,7 +101,7 @@ classdef benthic_zALK
                 = r.zTOC.calcfg_l12(r.zox, bsd, swi, r, obj.reac11, obj.reac12 , 0, rALK.ls1);
             % basis functions at top of layer 2
             [ e2_zox, dedz2_zox, f2_zox, dfdz2_zox, g2_zox, dgdz2_zox] ...
-                = r.zTOC.calcfg_l12(r.zox, bsd, swi, r, obj.reac2, obj.reac2, 0, rALK.ls2);
+                = r.zTOC.calcfg_l12(r.zox, bsd, swi, r, obj.reac21, obj.reac22, 0, rALK.ls2);
             % transform to use coeffs from l4
             [e2_zox, f2_zox, g2_zox, dedz2_zox, dfdz2_zox, dgdz2_zox] = benthic_utils.xformsoln(e2_zox, f2_zox, g2_zox, dedz2_zox, dfdz2_zox, dgdz2_zox, ...
                                                                zno3.a , zno3.b , zno3.c , zno3.d , zno3.e ,zno3.f);
@@ -162,7 +171,7 @@ classdef benthic_zALK
                 ALK     = r.rALK.A1.*e + r.rALK.B1.*f + g;
                 flxALK  = D.*(r.rALK.A1.*dedz+r.rALK.B1.*dfdz + dgdz);
             elseif z <= r.zno3 % layer 2
-                [ e, dedz, f, dfdz, g, dgdz]  = r.zTOC.calcfg_l12(z, bsd, swi, r, obj.reac2 , obj.reac2 , 0, rALK.ls2);
+                [ e, dedz, f, dfdz, g, dgdz]  = r.zTOC.calcfg_l12(z, bsd, swi, r, obj.reac21 , obj.reac22 , 0, rALK.ls2);
                 ALK     = r.rALK.A2.*e + r.rALK.B2.*f + g;
                 flxALK  = D.*(r.rALK.A2.*dedz+r.rALK.B2.*dfdz + dgdz);
             elseif z <= r.zso4
