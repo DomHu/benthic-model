@@ -996,11 +996,45 @@ When calculating the solutions for the different layers, the pre-calculated stru
 solution type to use.
 
 \subsubsection{Coupling to an Earth System Model}\label{subsubsec:ESM_coupling}
-Describe what needs to be done/checked. Compare/use as example what I did with GENIE coupling. What are the if-clauses used? Input to OMEN-SED, output of OMEN-SED. 
+% Describe what needs to be done/checked. Compare/use as example what I did with GENIE coupling. What are the if-clauses used? Input to OMEN-SED, output of OMEN-SED. 
+\begin{figure}[tbp]
+\begin{center}
+	\includegraphics[width=0.8\textwidth]{figures/OMEN-GENIE-coupling.pdf}
+	\caption{Schematic of the relationship between OMEN-SED (1.0) and GENIE. Arrows and accompanied text represent the information transferred between models. }
+	\label{fig:OMEN-GENIE-coupling}
+	\end{center}
+\end{figure}Here the coupling of OMEN-SED (1.0) to the GENIE Earth System model is described, in particular its incorporation into the sediment geochemistry model \citep[SEDGEM,][]{ridgwell_regulation_2007}. 
+Results from pre-industrial experiments are presented in section \ref{subsec:GENIE-pre-ind}. OMEN-SED (1.0) is called by SEDGEM for each grid point instead of remineralising the settling flux of OM at the seafloor, passing over the 
+bottom water concentrations of solutes (in $\frac{mol}{kg}$) and the flux of OM (\chem{POC_{flux}}, in $\frac{cm^3}{cm^2\,yr}$, see Fig. \ref{fig:OMEN-GENIE-coupling}). 
+To be used by OMEN-SED (1.0) dissolved species and OM flux need to be converted into $\frac{mol}{cm^3}$. 
+For the solutes this is trivial and the OM flux is converted into a concentration (\chem{POC_{con}}, in $\frac{mol}{cm^3}$) using the sediment accumulation rate from GENIE ($w$, in $\frac{cm}{yr}$) as:
+\begin{equation}
+ \chem{POC_{con}} = \frac{1}{12}\cdot(1-\phi)\cdot \frac{\chem{POC_{flux}}}{w}
+\end{equation}
+where $\phi$ is the sediment porosity (-) and $\frac{1}{12}$ is the conversion of POC from $cm^3$ to $mol$ assuming the average density of POC as $1.0 \frac{cm^3}{g}$ .
+Other parameters needed GENIE the seafloor depth, the local temperature and the partitioning of bulk OM into the slower and faster degrading pool (and a third unreactive pool if modelled). 
+OMEN-SED (1.0) then computes the resulting SWI-fluxes of solutes (in $\frac{mol}{cm^2\,yr^1}$) and the fraction of POC preserved in the sediments at a depth of 100 cm which are given back to GENIE. 
+In order to reduce reservoir requirements the sediment profiles (e.g. as shown in Fig. \ref{fig:Sediment_profiles}) are in general not calculated by OMEN-SED (1.0), however, the information needed to do this once the experiment 
+has terminated is passed over and saved in SEDGEM (i.e. the integration constants from the lowest layer$A_L,\ B_L$ and the ODE solutions $E_i,\ F_i,\ G_i$ for the different sediment layers $i$).
+\textcolor{red}{TODO: check that is correct... e.g. need all ODE solutions but just IC from lowest layer? - why not calculated like this in matlab when calc. the profiles...?}
+
+
 
 \section {Test Cases}
 
 \subsection{Sediment profiles}
+Figure \ref{fig:Sediment_profiles} compares profiles calculated with OMEN-SED (1.0) to observations from different ocean depths taken at the Santa Barbara basin \citep[585 m, ][]{reimers_porewater_1996}, 
+the Iberian margin (108 and 2213 m) and Naza\'e Canyon \citep[4298 m, ][]{epping_oxidation_2002}. 
+Sediment-water interface characteristics and concentrations of total organic matter and all dissolved species in OMEN-SED (1.0) were set to the observed values where available (Table \ref{table:Profiles_BC}). 
+The OM and pore water profiles were fitted by optimizing the OM partitioning into the fast and slow degrading pool and their respective first order degradation rate constants (priority given to reproduce the OM and \chem{O_2} profiles). 
+For phosphorus the equilibrium concentration for authigenic P formation (\chem{PO_4^a}) was adjusted to fit the \chem{PO_4} concentration at $z_\infty$. 
+For the two open Iberian margin stations (108 and 2213 m) OMEN-SED (1.0) fits all observations well. OMEN-SED (1.0) does especially well at depth 2213m by reproducing the deep \chem{O_2} penetration and the subsurface maximum in \chem{NO_3} 
+concentration due to the nitrification of \chem{NH_4}. 
+For the Santa Barbara basin (585 m) a misfit is observed for \chem{H_2S} and \chem{PO_4} in the upper 20 cm of the sediment. This can be explained by the presence of \chem{Mn^{2+}}, \chem{Fe^{2+}} and dissolved \chem{Fe} at this site which 
+are either reduced to degrade OM and/or react with \chem{H_2S} to form iron sulfides, therefore inhibiting the rise in concentration of \chem{H_2S} \citep{reimers_porewater_1996}. 
+Phosphorus is adsorbed to \chem{Fe} oxides and incorporated into carbonate fluorapatite (\chem{CFA}) which is not modelled explicitly in OMEN-SED (1.0).  \textcolor{red}{above correct/okay....?}
+For the Naza\'e Canyon station (4298 m) satisfactory fits could be realised apart from \chem{NH_4}. However, also the original study \citep{epping_oxidation_2002} had the same problem using a more 
+complex diagenetic model and suggested non-local solute exchange being responsible for the higher observed \chem{NH_4} concentrations.
 
 \begin{figure}[htbp]
 \begin{center}
@@ -1062,7 +1096,7 @@ where $F_y(y)$ is the unconditional CDF of the output $y$ and $F_{y|x_i}(y)$ is 
 Due to the model complexity it is impossible to compute the sensitivity indices analytically therefore they are approximated from a Latin-Hypercube sampling of parameter inputs and calculated outputs.
 We use PAWN as implemented within the Sensitivity Analysis for Everyone (SAFE) matlab toolbox \citep{pianosi_matlab_2015} to investigate 11 model parameters for ranges specified in Table \ref{table:SA_parameter_ranges}. 
 We calculate sensitivity indices for all resulting SWI-fluxes from OMEN-SED for two idealised sediment conditions (see Table \ref{table:SA_2Cases}). 
-The resulting indices (compare Fig. \ref{fig:SA_O2+NO3} for two examplary cases) are then translated into a color code and summarised in a pattern plot (Fig. \ref{fig:Sensitivity_Analysis}) to simplify comparison. 
+The resulting indices (compare Fig. \ref{fig:SA_O2+NO3} for two examplary cases) are then translated into a color code and summarised in a pattern plot to simplify comparison (Fig. \ref{fig:Sensitivity_Analysis}). 
 The most significant parameters for all model outputs are the degradation rate for the labile OM part ($\chem{k_1}$) and its share in the total OM pool ($\chem{f_1}$).
 For the anoxic setup, where no oxidation occurs, the secondary redox parameters (i.e. $\gamma_\chem{NH_4},\ \gamma_\chem{H_2S}$) are essentially non-influential, however, they are getting more important for the oxic scenario. 
 The $\chem{PO_4}$ SWI-flux appears to be insensitive under oxic conditions as the majority is absorbed to $\chem{Fe}$-oxides \textcolor{red}{correct....?}.
@@ -1158,6 +1192,8 @@ in Figure \ref{fig:SA_Color_ScatterPlots} A+B are the strong interactions betwee
 
 \subsection{Benthic fluxes on a global scale}
 Application to Seitert, 2004 OM, burwiczk see rate data and evaluation based on global data (Archer)
+
+\subsection{GENIE pre-industrial}\label{subsec:GENIE-pre-ind}
 
 \subsection{GENIE-Cretaceous test?}
 

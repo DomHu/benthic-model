@@ -645,7 +645,7 @@ CONTAINS
         !        print*, ' '
 
         ! C = (1-por)*Corg/Sed_accumulation units: conv_POC_cm3_mol* cm3 cm-2 / (cm3 cm-2) = mol cm-3
-        ! Note: units of concentration must be changed from (cm3 cm-3) to (mol cm-3)
+        ! Note: units of concentration must be changed from (cm2 cm-3) to (mol cm-3)
         fun_sed_calcCorg = conv_POC_cm3_mol*(1-dum_por)*dum_FPOC/loc_sed_w
 
         ! calculate wt%: g/g = mol cm-3 * g/mol * cm3/g
