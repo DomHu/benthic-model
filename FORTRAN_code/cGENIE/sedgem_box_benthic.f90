@@ -153,7 +153,8 @@ CONTAINS
     !------------------------------------------------------------------------------------
 
     !    SUBROUTINE sub_huelseetal2016_main(dum_POC1_wtpct_swi, dum_POC2_wtpct_swi, dum_sfcsumocn, dum_sed_pres_fracC, dum_new_swifluxes)
-    SUBROUTINE sub_huelseetal2016_main(dum_i, dum_j, dum_dtyr, dum_D, loc_new_sed, dum_sfcsumocn, dum_sed_pres_fracC, dum_new_swifluxes)
+    SUBROUTINE sub_huelseetal2016_main &
+    & (dum_i, dum_j, dum_dtyr, dum_D, loc_new_sed, dum_sfcsumocn, dum_sed_pres_fracC, dum_sed_pres_fracP, dum_new_swifluxes)
 !    SUBROUTINE sub_huelseetal2016_main(dum_dtyr, dum_D, loc_new_sed, dum_sfcsumocn, dum_sed_pres_fracC, dum_new_swifluxes)
         !   __________________________________________________________
         !
@@ -173,6 +174,7 @@ CONTAINS
         real,DIMENSION(n_ocn),intent(in)::dum_sfcsumocn                     ! ocean composition interface array
         !        real,INTENT(in)::dum_POC1_wtpct_swi, dum_POC2_wtpct_swi             ! POC concentrations at SWI [wt%]
         real,INTENT(inout)::dum_sed_pres_fracC                              ! fraction POC-preserved/POC-deposited [-]
+        real,INTENT(inout)::dum_sed_pres_fracP                              ! fraction POP-preserved/POP-deposited [-]
         real,DIMENSION(n_ocn),intent(inout)::dum_new_swifluxes              ! SWI return fluxes of solutes, calculated with sediment-model [pos values: flux from sediments to water-column]
 
         ! local variables        
@@ -226,6 +228,7 @@ CONTAINS
         loc_new_sed_vol = fun_calc_sed_vol(loc_new_sed(:))
         if(loc_new_sed_vol .LE. 4.0e-4)then
             loc_new_sed_vol =  4.0e-4
+            print*,' grid point (i,j)', dum_i, dum_j
         end if
         ! DH Change for comparison
 !        dum_swiconc_O2 = 300.0e-9
@@ -366,6 +369,12 @@ CONTAINS
 
             if(ocn_select(io_PO4))then
                 call sub_huelseetal2016_zPO4_M(dum_swiconc_PO4, loc_PO4_swiflux, dum_swiflux_M, loc_M_swiflux)
+!                print*,' '
+!                print*,'OMEN loc_PO4_swiflux = ', loc_PO4_swiflux
+                ! 30/11/2016: remineralise all POC and calculate PO4 return flux
+!               PO4 hack
+!                loc_PO4_swiflux = loc_fPOC*conv_POC_cm3_mol*1/106
+!                print*,'CALC loc_PO4_swiflux = ', loc_PO4_swiflux
             else
                 ! If not selected nothing needs to be done
             end if
@@ -390,7 +399,7 @@ CONTAINS
             dum_new_swifluxes(io_NH4) = loc_NH4_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
         end if
         if(ocn_select(io_SO4))then
-            dum_new_swifluxes(io_SO4) = loc_SO4_swiflux                         ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
+            dum_new_swifluxes(io_SO4) = loc_SO4_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
             dum_new_swifluxes(io_H2S) = loc_H2S_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
         end if
         if(ocn_select(io_PO4))then
@@ -455,6 +464,7 @@ CONTAINS
 !                STOP
 !            end if
 !        end if
+    dum_sed_pres_fracP = dum_sed_pres_fracC
 
     end SUBROUTINE sub_huelseetal2016_main
     
@@ -526,18 +536,18 @@ CONTAINS
         DICC2=0.5*SD                                           ! DIC/C below zSO$ (mol/mol)
         MC=0.5*SD                                              ! CH4/C (mol/mol)
         NO3CR=(94.4/106)*SD                                    ! NO3 consumed by Denitrification
-        ALKROX=15.0/106;                                        ! Aerobic degradation
+        ALKROX=15.0;                                        ! Aerobic degradation
         ALKRNIT=-2.0;                                           ! Nitrification
-        ALKRDEN=93.4/106;                                       ! Denitrification
-        ALKRSUL=15.0/106;                                       ! Sulfato reduction
-        ALKRH2S=-1.0;                                           ! H2S oxydation (CHECK THIS VALUE!!!)
-        ALKRMET=14.0/106;                                       ! Methanogenesis
+        ALKRDEN=93.4;                                       ! Denitrification
+        ALKRSUL=15.0;                                       ! Sulfato reduction
+        ALKRH2S=-2.0;                                           ! H2S oxydation (CHECK THIS VALUE!!!)
+        ALKRMET=14.0;                                       ! Methanogenesis
         ALKRAOM=2.0;                                            ! AOM
         
         ! ORGANIC MATTER
         DC1 = Dbio
-        k1=0.2
-        k2=0.2
+        k1=0.1
+        k2=0.1
 
         ! GLOBAL DIFFUSION COEFFICIENTS
         ! O2
@@ -2273,7 +2283,7 @@ CONTAINS
         real,INTENT(inout)::loc_new_swiflux_ALK         ! ALK flux
 
         ! local variables
-        real reac11_alk, reac12_alk, reac2_alk, reac3_alk, reac4_alk                 ! reactive terms: OM degradation
+        real reac11_alk, reac12_alk, reac21_alk, reac22_alk, reac3_alk, reac4_alk                 ! reactive terms: OM degradation
         integer ltype1, ltype2, ltype3, ltype4
         real ls_a1, ls_b1, ls_c1, ls_d1, ls_e1, ls_f1
         real ls_a2, ls_b2, ls_c2, ls_d2, ls_e2, ls_f2
@@ -2301,11 +2311,18 @@ CONTAINS
 
         real zso4FALK, zoxFALK
 
-        reac11_alk = gamma*NC1/(1+KNH4)*ALKRNIT+ALKROX*SD           ! z < zox:  Nitrification (-2) Aerobic degradation (+15/106)
-        reac12_alk = gamma*NC2/(1+KNH4)*ALKRNIT+ALKROX*SD           ! z < zox:  Nitrification (-2) Aerobic degradation (+15/106)
-        reac2_alk = SD*ALKRDEN                                      ! zox < z < zno3: Denitrification (+93.4/106)
-        reac3_alk = SD*ALKRSUL                                      ! zno3 < z < zso4: Sulfate reduction (+15/106)
-        reac4_alk = SD*ALKRMET                                      ! zso4 < z < zinf: Methanogenesis (+14/106)
+        reac11_alk = gamma*NC1/(1+KNH4)*ALKRNIT+ALKROX*OC           ! z < zox:  Nitrification (-2) Aerobic degradation (+15/106)
+        reac12_alk = gamma*NC2/(1+KNH4)*ALKRNIT+ALKROX*OC           ! z < zox:  Nitrification (-2) Aerobic degradation (+15/106)
+        reac21_alk = ALKRDEN*NC1                                     ! zox < z < zno3: Denitrification (+93.4/106)
+        reac22_alk = ALKRDEN*NC2                                     ! zox < z < zno3: Denitrification (+93.4/106)
+        reac3_alk = ALKRSUL*SO4C                                    ! zno3 < z < zso4: Sulfate reduction (+15/106)
+        reac4_alk = ALKRMET*MC                                      ! zso4 < z < zinf: Methanogenesis (+14/106)
+!
+!        reac11_alk = gamma*NC1/(1+KNH4)*ALKRNIT+ALKROX*SD           ! z < zox:  Nitrification (-2) Aerobic degradation (+15/106)
+!        reac12_alk = gamma*NC2/(1+KNH4)*ALKRNIT+ALKROX*SD           ! z < zox:  Nitrification (-2) Aerobic degradation (+15/106)
+!        reac2_alk = SD*ALKRDEN                                      ! zox < z < zno3: Denitrification (+93.4/106)
+!        reac3_alk = SD*ALKRSUL                                      ! zno3 < z < zso4: Sulfate reduction (+15/106)
+!        reac4_alk = SD*ALKRMET                                      ! zso4 < z < zinf: Methanogenesis (+14/106)
 
         !    print*, ''
         !    print*, '------------------------------------------------------------------'
@@ -2320,7 +2337,7 @@ CONTAINS
         call sub_prepfg_l12(reac11_alk, reac12_alk, 0.0, 0.0, zox, DALK1, DALK2, ls_a1, ls_b1, ls_c1, ls_d1, ls_e1, ls_f1, ltype1)
 
         ! layer 2: zox < z < zno3, Denitrification (+)
-        call sub_prepfg_l12(reac2_alk, reac2_alk, 0.0, zox, zno3, DALK1, DALK2, ls_a2, ls_b2, ls_c2, ls_d2, ls_e2, ls_f2, ltype2)
+        call sub_prepfg_l12(reac21_alk, reac22_alk, 0.0, zox, zno3, DALK1, DALK2, ls_a2, ls_b2, ls_c2, ls_d2, ls_e2, ls_f2, ltype2)
 
         ! layer 3: zno3 < z < zso4, Sulfate reduction (+)
         call sub_prepfg_l12(reac3_alk, reac3_alk, 0.0, zno3, zso4, DALK1, DALK2, ls_a3, ls_b3, ls_c3, ls_d3, ls_e3, ls_f3, ltype3)
@@ -2354,7 +2371,7 @@ CONTAINS
 
         ! Match at zno3, layer 2 - layer 3 (continuity and flux)
         ! basis functions at bottom of layer 2
-        call sub_calcfg_l12(zno3, reac2_alk, reac2_alk, 0.0, ls_a2, ls_b2, ls_c2, ls_d2, ls_e2, ls_f2, DALK1, DALK2, ltype2, &
+        call sub_calcfg_l12(zno3, reac21_alk, reac22_alk, 0.0, ls_a2, ls_b2, ls_c2, ls_d2, ls_e2, ls_f2, DALK1, DALK2, ltype2, &
         e2_zno3, dedz2_zno3, f2_zno3, dfdz2_zno3, g2_zno3, dgdz2_zno3)
 
         ! ... and top of layer 3
@@ -2385,7 +2402,7 @@ CONTAINS
         e1_zox, dedz1_zox, f1_zox, dfdz1_zox, g1_zox, dgdz1_zox)
 
         ! basis functions at top of layer 2
-        call sub_calcfg_l12(zox, reac2_alk, reac2_alk, 0.0, ls_a2, ls_b2, ls_c2, ls_d2, ls_e2, ls_f2, DALK1, DALK2, ltype2, &
+        call sub_calcfg_l12(zox, reac21_alk, reac22_alk, 0.0, ls_a2, ls_b2, ls_c2, ls_d2, ls_e2, ls_f2, DALK1, DALK2, ltype2, &
         e2_zox0, dedz2_zox0, f2_zox0, dfdz2_zox0, g2_zox0, dgdz2_zox0)
 
         !   transform to use coeffs from l4

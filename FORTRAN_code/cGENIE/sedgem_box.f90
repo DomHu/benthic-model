@@ -74,7 +74,7 @@ CONTAINS
     real::loc_r_sed_por                                        ! thickness ratio due to porosity differences (stack / surface layer)
     real::loc_frac_CaCO3                                       ! 
     real::loc_frac_CaCO3_top                                   ! 
-    real::loc_fPOC,loc_sed_pres_fracC                          ! 
+    real::loc_fPOC,loc_sed_pres_fracC,loc_sed_pres_fracP       ! 
     real::loc_sed_dis_frac_max                                 ! maximum fraction that can be remineralized
     REAL,DIMENSION(n_sed)::loc_new_sed                         ! new (sedimenting) top layer material
     REAL,DIMENSION(n_sed)::loc_dis_sed                         ! remineralized top layer material
@@ -90,6 +90,7 @@ CONTAINS
     loc_exe_sed(:) = 0.0
     loc_exe_ocn(:) = 0.0
     loc_sed_pres_fracC = 0.0
+    loc_sed_pres_fracP = 0.0
     ! initialize relevant location in global sediment dissolution results array
     sed_fdis(:,dum_i,dum_j) = 0.0
     ! initialize flags recording growing or shrinking of sediment stack (i.e., new layers being added or removed, respectively)
@@ -236,7 +237,7 @@ CONTAINS
        ! Huelse et al. [2016]
        ! NOTE: 'new sed' is not adjusted within sub_huelseetal2016_main and eneds modifying externally
        CALL sub_huelseetal2016_main( &
-            & dum_i,dum_j,dum_dtyr,dum_D,loc_new_sed(:),dum_sfcsumocn(:),loc_sed_pres_fracC,loc_exe_ocn(:) &
+            & dum_i,dum_j,dum_dtyr,dum_D,loc_new_sed(:),dum_sfcsumocn(:),loc_sed_pres_fracC,loc_sed_pres_fracP,loc_exe_ocn(:) &
             & )
        ! calculate the return rain flux back to ocean
        ! NOTE: diagenetic function calculates all (dissolved) exchange fluxes
@@ -255,14 +256,15 @@ CONTAINS
                 ! 
                 ! ################################################################################################################ !
              else
-                ! NOTE: adjust 'new' sed to the preserved fraction, and set dissolved sed flux to zero,
+                ! NOTE: adjust 'new' sed to be the preserved fraction, and set dissolved sed flux to zero,
                 !       the latter change needed becasue the Huelse et al. [2016] sed model calculates the dissolved fluxes itself
                 loc_new_sed(is) = loc_sed_pres_fracC*loc_new_sed(is)
                 loc_dis_sed(is) = 0.0
              end if
           end if
+          if (is == is_POP) loc_new_sed(is_POP) = loc_sed_pres_fracP*loc_new_sed(is_POP)
        end DO
-       ! correct dissovled flux units (WAT UNITS??? -> mol cm-2 per time-step) and set output array
+       ! correct dissovled flux units (mol cm-2 per year -> mol cm-2 per time-step) and set output array
        sedocn_fnet(:,dum_i,dum_j) = sedocn_fnet(:,dum_i,dum_j) + dum_dtyr*loc_exe_ocn(:)
     case default
        loc_sed_diagen_fracC = 1.0
@@ -281,6 +283,11 @@ CONTAINS
                 ! ################################################################################################################ !
              else
                 loc_dis_sed(is) = loc_new_sed(is)
+!                if (.NOT. ctrl_sed_Fcaco3) then
+!                   loc_dis_sed(is) = loc_new_sed(is)
+!                else
+!                   loc_dis_sed(is) = 0.0                
+!               endif
              end if
           end if
        end DO
@@ -337,7 +344,6 @@ CONTAINS
        end if
        error_Archer = .FALSE.
     case default
-    if (.NOT. ctrl_sed_Fcaco3) then
        DO l=1,n_l_sed
           is = conv_iselected_is(l)
           if ( &
@@ -352,11 +358,14 @@ CONTAINS
                 ! 
                 ! ################################################################################################################ !
              else
-                loc_dis_sed(is) = loc_new_sed(is)
+                if (.NOT. ctrl_sed_Fcaco3) then
+                   loc_dis_sed(is) = loc_new_sed(is)
+                else
+                   loc_dis_sed(is) = 0.0                
+                endif
              end if
           end if
        end DO
-       end if
     end select
     ! error-catching of negative dissolution: return rain flux back to ocean
     If (loc_dis_sed(is_CaCO3) < -const_real_nullsmall) then
@@ -394,7 +403,6 @@ CONTAINS
             & sed_top(:,dum_i,dum_j)  &
             & )
     case default
-    if (.NOT. ctrl_sed_Fopal) then
        DO l=1,n_l_sed
           is = conv_iselected_is(l)
           if ( &
@@ -410,14 +418,17 @@ CONTAINS
                 ! ################################################################################################################ !
              else
                 If (ocn_select(io_SiO2)) then
-                   loc_dis_sed(is) = loc_new_sed(is)
+                   if (.NOT. ctrl_sed_Fopal) then
+                      loc_dis_sed(is) = loc_new_sed(is)
+                   else
+                      loc_dis_sed(is) = 0.0                
+                   endif
                 else
                    loc_dis_sed(is) = 0.0
                 endif
              end if
           end if
        end DO
-       end if
     end select
     ! default and error-catching of negative dissoluiton: return rain flux back to ocean
     If (loc_dis_sed(is_opal) < -const_real_nullsmall) then
@@ -645,7 +656,6 @@ CONTAINS
        loc_n_sed_stack_top = INT(sed_top_h(dum_i,dum_j)) + 1
     ENDIF
 
-! DH 15.11 double account for O2?! next lines probaly ask if we are using OMEN-SED here....
     IF (ctrl_misc_debug3) print*,'(g) calculate sediment dissolution flux to ocean'
     ! *** (g) calculate sediment dissolution flux to ocean
     !         NOTE: first, convert flux units from cm3 cm-2 to mol cm-2
@@ -1237,7 +1247,7 @@ CONTAINS
     ! (sediment stack / surface layer)
     real::loc_frac_CaCO3                                       ! 
     real::loc_frac_CaCO3_top                                   ! 
-    real::loc_fPOC,loc_sed_pres_fracC                          ! 
+    real::loc_fPOC,loc_sed_pres_fracC,loc_sed_pres_fracP       ! 
     real::loc_sed_dis_frac_max                                 ! maximum fraction that can be remineralized
     REAL,DIMENSION(n_sed)::loc_new_sed                         ! new (sedimenting) top layer material
     REAL,DIMENSION(n_sed)::loc_dis_sed                         ! remineralized top layer material
@@ -1255,6 +1265,7 @@ CONTAINS
     loc_exe_sed(:) = 0.0
     loc_exe_ocn(:) = 0.0
     loc_sed_pres_fracC = 0.0
+    loc_sed_pres_fracP = 0.0
     ! initialize relevant location in global sediment dissolution results array
     sed_fdis(:,dum_i,dum_j) = 0.0
 
@@ -1374,7 +1385,7 @@ CONTAINS
        ! Huelse et al. [2016]
        ! NOTE: 'new sed' is not adjusted within sub_huelseetal2016_main and eneds modifying externally
        CALL sub_huelseetal2016_main( &
-            &  dum_i, dum_j, dum_dtyr,dum_D,loc_new_sed(:),dum_sfcsumocn(:),loc_sed_pres_fracC,loc_exe_ocn(:) &
+            & dum_i,dum_j,dum_dtyr,dum_D,loc_new_sed(:),dum_sfcsumocn(:),loc_sed_pres_fracC,loc_sed_pres_fracP,loc_exe_ocn(:) &
             & )
        ! calculate the return rain flux back to ocean
        ! NOTE: diagenetic function calculates all (dissolved) exchange fluxes
@@ -1386,18 +1397,22 @@ CONTAINS
                & (sed_type(is) == par_sed_type_POM) .OR. &
                & (sed_type(sed_dep(is)) == par_sed_type_POM) &
                & ) then
-! DH: was like this, that's wrong, right?
-!             loc_new_sed(is) = loc_sed_pres_fracC*loc_new_sed(is)
-!             loc_dis_sed(is) = 0.0
              if (sed_type(is) == par_sed_type_scavenged) then
                 loc_dis_sed(is) = 0.0
+                ! deal with how particle-reactive elements are left in the sediments (i.e., what do they stick on?) ...
+                ! ### <INSERT CODE> ############################################################################################## !
+                ! 
+                ! ################################################################################################################ !
              else
-                loc_sed_dis_frac     = 1.0 - loc_sed_pres_fracC
-                loc_dis_sed(is) = loc_sed_dis_frac*loc_new_sed(is)
+                ! NOTE: adjust 'new' sed to be the preserved fraction, and set dissolved sed flux to zero,
+                !       the latter change needed becasue the Huelse et al. [2016] sed model calculates the dissolved fluxes itself
+                loc_new_sed(is) = loc_sed_pres_fracC*loc_new_sed(is)
+                loc_dis_sed(is) = 0.0
              end if
           end if
+          if (is == is_POP) loc_new_sed(is_POP) = loc_sed_pres_fracP*loc_new_sed(is_POP)
        end DO
-       ! correct dissovled flux units (WHAT UNITS??? -> mol cm-2 per time-step) and set output array
+       ! correct dissovled flux units (mol cm-2 per year -> mol cm-2 per time-step) and set output array
        sedocn_fnet(:,dum_i,dum_j) = sedocn_fnet(:,dum_i,dum_j) + dum_dtyr*loc_exe_ocn(:)
     case default
        DO l=1,n_l_sed

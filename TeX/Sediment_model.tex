@@ -352,7 +352,7 @@ Variables & Organic matter, oxygen, nitrate, ammonium, sulfate, sulfide (hydroge
 \end{table}
 
 
-\subsubsection{Organic matter}
+\subsubsection{Organic matter or Particulate Organic Carbon (POC)}
 In marine sediments, organic matter (OM) is degraded by heterotrophic activity coupled to the sequential utilisation of terminal electron acceptors, typically in the order of \chem{O_2}, \chem{NO_3^-}, \chem{Mn(VI)}, \chem{Fe(III)} and 
 \chem{SO_4^{2-}} followed by methanogenesis and/or fermentation. Here, organic matter degradation is described via a multi-G model approach \citep[][and references therein]{arndt_quantifying_2013}, 
 assuming that the bulk OM consists of a number of discrete compound classes $C_i$ characterised by specific degradation rate constants $k_i$. Such a multi-G approach allows for selective preservation of compound 
@@ -670,7 +670,7 @@ $z=z_{\infty}$& assymptotic concentration & 10) $M(z_\infty)=M_\infty$\\
 % solution\\
 
 \subsubsection{Dissolved Inorganic Carbon (DIC)}
-Dissolved inorganic carbon (DIC) is produced by when organic matter is degraded. Explain different ratios for the two layers.
+Dissolved inorganic carbon (DIC) is produced by when organic matter is degraded. Explain different ratios for the two layers. 
 \begin{align}
 \intertext{1. Layer ($z \leq z_{\chem{SO_4}}$)}
   \frac{\partial DIC^I}{\partial t} &= 0 = D_{DIC} \frac{\partial^2DIC^I }{\partial z^2} - w\frac{\partial DIC^I }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i \chem{DICC^I} \cdot k_i \cdot C_{i}(z)\label{eq:DIC_ODE1_L1}\\ %\qquad &\text{1. Layer ($z\leq z_{\mathrm{ox}}$)}\\
@@ -977,9 +977,9 @@ where
 Equations (\ref{Solution_matchsoln}), (\ref{Solution_Upper_transformed_basis_fct}) and (\ref{Solution_NEW_EFG}) can now be applied for each layer boundary, working up from the bottom of the sediments. 
 The net result is to construct a piecewise solution with just two integration constants (coming from the lowest layer), which can then be solved for by applying one boundary condition for the sediment-water interface 
 and one for the bottom of the sediments (e.g. a concentration condition at the bottom of the sediments, and a flux condition at the SWI).
+% The key point here is that this is now an algorithm (rather than a fully-worked-out algebraic solution), which only ever has to solve a two-simultaneous-equation problem as above.
 
-\textbf{\textcolor{red}{TODO: Add figure, illustrating this e.g. for nitrate...}}% The key point here is that this is now an algorithm (rather than a fully-worked-out algebraic solution),
-% which only ever has to solve a two-simultaneous-equation problem as above.
+%\textbf{\textcolor{red}{TODO: Add figure, illustrating this e.g. for nitrate...}}
 
 \subsubsection*{Abstracting out the bioturbation boundary}
 The bioturbation boundary affects the diffusion coefficient of the modelled solutes and the conservation equation of organic matter which is available for mineralization. 
@@ -1007,15 +1007,15 @@ solution type to use.
 Results from pre-industrial experiments are presented in section \ref{subsec:GENIE-pre-ind}. OMEN-SED (1.0) is called by SEDGEM for each grid point instead of remineralising the settling flux of OM at the seafloor, passing over the 
 bottom water concentrations of solutes (in $\frac{mol}{kg}$) and the flux of OM (\chem{POC_{flux}}, in $\frac{cm^3}{cm^2\,yr}$, see Fig. \ref{fig:OMEN-GENIE-coupling}). 
 To be used by OMEN-SED (1.0) dissolved species and OM flux need to be converted into $\frac{mol}{cm^3}$. 
-For the solutes this is trivial and the OM flux is converted into a concentration (\chem{POC_{con}}, in $\frac{mol}{cm^3}$) using the sediment accumulation rate from GENIE ($w$, in $\frac{cm}{yr}$) as:
+For the solutes this is trivial; the OM flux is converted into a concentration (\chem{POC_{con}}, in $\frac{mol}{cm^3}$) using the sediment accumulation rate from GENIE ($w$, in $\frac{cm}{yr}$) as:
 \begin{equation}
  \chem{POC_{con}} = \frac{1}{12}\cdot(1-\phi)\cdot \frac{\chem{POC_{flux}}}{w}
 \end{equation}
 where $\phi$ is the sediment porosity (-) and $\frac{1}{12}$ is the conversion of POC from $cm^3$ to $mol$ assuming the average density of POC as $1.0 \frac{cm^3}{g}$ .
-Other parameters needed GENIE the seafloor depth, the local temperature and the partitioning of bulk OM into the slower and faster degrading pool (and a third unreactive pool if modelled). 
+Other parameters needed from GENIE are the seafloor depth, the local temperature and the partitioning of bulk OM into the slower and faster degrading pool (and a third unreactive pool if modelled). 
 OMEN-SED (1.0) then computes the resulting SWI-fluxes of solutes (in $\frac{mol}{cm^2\,yr^1}$) and the fraction of POC preserved in the sediments at a depth of 100 cm which are given back to GENIE. 
-In order to reduce reservoir requirements the sediment profiles (e.g. as shown in Fig. \ref{fig:Sediment_profiles}) are in general not calculated by OMEN-SED (1.0), however, the information needed to do this once the experiment 
-has terminated is passed over and saved in SEDGEM (i.e. the integration constants from the lowest layer$A_L,\ B_L$ and the ODE solutions $E_i,\ F_i,\ G_i$ for the different sediment layers $i$).
+In order to reduce memory requirements the sediment profiles (e.g. as shown in Fig. \ref{fig:Sediment_profiles}) are by default not calculated by OMEN-SED (1.0), however, the information needed to do this once the experiment 
+has terminated is passed over and saved in SEDGEM (i.e. the integration constants from the lowest layer $A_L,\ B_L$ and the ODE solutions $E_i,\ F_i,\ G_i$ for the different sediment layers $i$).
 \textcolor{red}{TODO: check that is correct... e.g. need all ODE solutions but just IC from lowest layer? - why not calculated like this in matlab when calc. the profiles...?}
 
 

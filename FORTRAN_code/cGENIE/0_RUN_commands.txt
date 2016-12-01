@@ -97,9 +97,60 @@ qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg
 3) as SPIN1 but OPEN SYSTEM no CaCO3 - with OMEN all remineralised k1,2 = 0.1 - job 8360 ----> CRASHED after 485 years, maybe bc of STOP when POC is buried.... ---> do new Exp 5) with higher k + no STOP command
 qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/05_OMEN_GENIE_Oct2016 EXAMPLE05._rwlma.PO4_S18x18.OPEN_noCaCO3_Corg_all_remin_2311 20000
 
-4) as SPIN1 but OPEN SYSTEM no CaCO3 - with OMEN ksmaller k1 = 0.01; k2 = 0.001 - job 8361
+4) as SPIN1 but OPEN SYSTEM no CaCO3 - with OMEN ksmaller k1 = 0.01; k2 = 0.001 - job 8361 ----> CRASHED after 6312 years...
 qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/05_OMEN_GENIE_Oct2016 EXAMPLE05._rwlma.PO4_S18x18.OPEN_noCaCO3_Corg_ksmaller_2311 20000
 
 5) as SPIN1 but OPEN SYSTEM no CaCO3 - with OMEN all remineralised k1,2 = 0.2 - job 8362 ----> CRASHED after 58 years .... I think something is wrong with my ALK...
 qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/05_OMEN_GENIE_Oct2016 EXAMPLE05._rwlma.PO4_S18x18.OPEN_noCaCO3_Corg_all_remin_k0.2_2311 20000
+
+#######################################################################
+#######################################################################
+
+###### 30/11/2016 	----- USE HIGHER DERITAL FLUX FOR SHELVES 
+sg_ctrl_sed_Fdet=true
+sg_par_sed_Fdet_name='_rwlma.Fedt'
+###### NOW using simple Ocean setup: cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES WITH SO4, H2S, ALK and DIC
+###### USING DIFFERENT ALKALINITY: 
+        ALKROX=15.0;                                        	! Aerobic degradation
+        ALKRNIT=-2.0;                                           ! Nitrification
+        ALKRDEN=93.4;                                       	! Denitrification
+        ALKRSUL=15.0;                                       	! Sulfato reduction
+        ALKRH2S=-2.0;                                           ! H2S oxydation (CHECK THIS VALUE!!!)
+        ALKRMET=14.0;                                       	! Methanogenesis
+        ALKRAOM=2.0;                                            ! AOM
+        reac11_alk = gamma*NC1/(1+KNH4)*ALKRNIT+ALKROX*OC     	! z < zox:  Nitrification (-2) Aerobic degradation (+15/106)
+        reac12_alk = gamma*NC2/(1+KNH4)*ALKRNIT+ALKROX*OC      	! z < zox:  Nitrification (-2) Aerobic degradation (+15/106)
+        reac21_alk = ALKRDEN*NC1                               	! zox < z < zno3: Denitrification (+93.4/106)
+        reac22_alk = ALKRDEN*NC2                              	! zox < z < zno3: Denitrification (+93.4/106)
+        reac3_alk = ALKRSUL*SO4C                               	! zno3 < z < zso4: Sulfate reduction (+15/106)
+        reac4_alk = ALKRMET*MC                                 	! zso4 < z < zinf: Methanogenesis (+14/106)
+###### ALSO ADDED to user-configs: no implicit alkalinity transofrmation associated with organic matter formation and degradation:
+bg_par_bio_red_PON_ALK=0.0
+
+1) SPIN1 as in ANDY experiments manual Section 4.3 - CLOSED SYSTEM - no OMEN - job 8384
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/05_OMEN_GENIE_Oct2016 EXAMPLE._rwlma.PO4_S18x18.SPIN1_noALK_3011 10000
+
+2) as SPIN1 but OPEN SYSTEM no CaCO3 - no OMEN - job 8385
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/05_OMEN_GENIE_Oct2016 EXAMPLE05._rwlma.PO4_S18x18.OPEN_noCaCO3_noALK_3011 10000
+
+3)  as SPIN1 but OPEN SYSTEM no CaCO3 - with OMEN all remineralised k1,2 = 0.1 - job 8386
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/05_OMEN_GENIE_Oct2016 EXAMPLE05._rwlma.PO4_S18x18.OPEN_noCaCO3_Corg_all_remin_noALK_3011 10000
+
+4) as SPIN1 but OPEN SYSTEM no CaCO3 - with OMEN ksmaller k1 = 0.01; k2 = 0.001 - job 8387
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/05_OMEN_GENIE_Oct2016 EXAMPLE05._rwlma.PO4_S18x18.OPEN_noCaCO3_Corg_ksmaller_noALK_3011 10000
+
+
+###### TRY FIX PO4: return all PO4 from sediment model:
+# calculated as: loc_PO4_swiflux = loc_fPOC*conv_POC_cm3_mol*1/106
+
+5)  as 3) above with OMEN all remineralised k1,2 = 0.1  calculate PO4 return flux directly- job 8388 - crashed after 9 years
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/05_OMEN_GENIE_Oct2016 EXAMPLE05._rwlma.PO4_S18x18.OPEN_noCaCO3_Corg_all_remin_noALK_PO4-hack_3011 10000
+
+6) as SPIN1 but OPEN SYSTEM no CaCO3 - with OMEN ksmaller k1 = 0.01; k2 = 0.001  calculate PO4 return flux directly - job 8390
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/05_OMEN_GENIE_Oct2016 EXAMPLE05._rwlma.PO4_S18x18.OPEN_noCaCO3_Corg_ksmaller_noALK_PO4-hack_3011 10000
+
+
+
+
+
 
