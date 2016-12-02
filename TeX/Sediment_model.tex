@@ -391,7 +391,7 @@ $z=z_{\mathrm{bio}}$&continuity& 2)& $C_i(z_{\mathrm{bio}}^-)$=$C_i(z_{\mathrm{b
 
 \subsubsection{Oxygen}
 In marine sediments, oxygen is consumed through the aerobic degradation of organic matter and a number of secondary redox reactions. 
-In the oxic layer ($z<z_{ox}$), the model explicitly accounts for the aerobic degradation of OM, which consumes oxygen with a fixed O:C ratio (\chem{OC}, Tab. \ref{table:reaction_parameters}) 
+In the oxic layer ($z<z_{ox}$), the model explicitly accounts for the aerobic degradation of OM, which consumes oxygen with a fixed \chem{O_2:C} ratio (\chem{O_2C}, Tab. \ref{table:reaction_parameters}) 
 and produces ammonium, which is partially nitrified to nitrate ($\gamma_\chem{NH_4}$).
 %nitrification of parts of ammonium produced in the oxic layer of the sediment. 
 %Oxygen serves as the most powerful terminal electron acceptor for the heterotrophic degradation of organic carbon. In addition, the oxidation of reduced species produced through microbial activity throughout the 
@@ -405,7 +405,7 @@ The factor $\frac{1-\phi}{\phi}$ accounts for the volume conversion from the sol
 %a factor of $\frac{1-\phi}{\phi}$, where $\phi$ is the sediment porosity. 
 Oxygen dynamics are thus described by:
 \begin{align} 
- \frac{\partial \chem{O_2}}{\partial t} &= 0= D_{\chem{ \chem{O_2}}}\frac{\partial^2  \chem{O_2} }{\partial z^2} - w\frac{\partial  \chem{O_2}}{\partial z} - \frac{1-\phi}{\phi}\sum_i k_i \cdot [ \chem{OC} + 2 \gamma_{\chem{NH_4}} \chem{NC_i} ]\cdot C_{i}(z) \label{eq:ODE_O2_1}
+ \frac{\partial \chem{O_2}}{\partial t} &= 0= D_{\chem{ \chem{O_2}}}\frac{\partial^2  \chem{O_2} }{\partial z^2} - w\frac{\partial  \chem{O_2}}{\partial z} - \frac{1-\phi}{\phi}\sum_i k_i \cdot [ \chem{O_2C} + 2 \gamma_{\chem{NH_4}} \chem{NC_i} ]\cdot C_{i}(z) \label{eq:ODE_O2_1}
 \end{align}
 % where:
 % \begin{align}
@@ -709,7 +709,7 @@ Alkalinity is produced and consumed by when organic matter is degraded. Explain 
 \begin{align}
  \intertext{1. Layer ($z \leq z_{\chem{ox}}$)} 
 \frac{\partial \chem{ALK}^{I}}{\partial t} &= 0 = D_{\chem{ALK}} \frac{\partial^2\chem{ALK}^{I} }{\partial z^2} - w\frac{\partial \chem{ALK}^{I} }{\partial z} \notag\\
-					  & + \frac{1-\phi}{\phi} \cdot \sum_i \left( \chem{ALK}^\mathrm{NIT} \cdot \frac{\gamma_{\chem{NH_4}}}{1+K_\chem{NH_4}} \chem{NC_i} + \chem{ALK}^\mathrm{OX}\cdot \chem{OC}\right)\cdot k_i \cdot C_{i}(z) \label{eq:ALK_ODE1_L1}\\
+					  & + \frac{1-\phi}{\phi} \cdot \sum_i \left( \chem{ALK}^\mathrm{NIT} \cdot \frac{\gamma_{\chem{NH_4}}}{1+K_\chem{NH_4}} \chem{NC_i} + \chem{ALK}^\mathrm{OX}\cdot \chem{O_2C}\right)\cdot k_i \cdot C_{i}(z) \label{eq:ALK_ODE1_L1}\\
  \intertext{2. Layer ($z_{\chem{ox}} < z \leq z_{\chem{NO_3}} $)} 
 \frac{\partial \chem{ALK}^{II}}{\partial t} &= 0 = D_{\chem{ALK}} \frac{\partial^2\chem{ALK}^{II} }{\partial z^2} - w\frac{\partial \chem{ALK}^{II} }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i \chem{ALK}^\mathrm{DEN}\cdot \chem{NC_i} \cdot k_i \cdot C_{i}(z)\label{eq:ALK_ODE1_L2}
  \intertext{3. Layer ($z_{\chem{NO_3}} < z \leq z_{\chem{SO_4}} $)} 
@@ -834,12 +834,12 @@ and are assumed invariant along the sediment column, therefore independent of th
 The stoichiometry of organic matter is represented by the factors \chem{NC_i} and \chem{PC_i} denoting the molecular nitrogen to carbon and phosphorus to carbon ratio. 
 In the sulfidic and methanic zone the 
 reduction of 1 mol organic matter additionally produces 0.5 mol of hydrogen sulfide (\chem{SO_4C}) and 0.5 mol of methane (\chem{MC}). 
-In the total sediment column organic matter mineralization consumes the specific TEA with a fixed ratio (\chem{OC}, \chem{NO_3C} and \chem{SO_4C} respectively). 
+In the total sediment column organic matter mineralization consumes the specific TEA with a fixed ratio (\chem{O_2C}, \chem{NO_3C} and \chem{SO_4C} respectively). 
 See Table \ref{table:reaction_parameters} for a complete summary of the parameters and their values.
 % \textcolor{red}{Or bit longer:}\\
 % In the sulfidic and methanic zone the 
 % reduction of 1 mol organic matter additionally produces 0.5 mol of hydrogen sulfide (\chem{SO_4C}) and 0.5 mol of methane (\chem{MC}) respectively. 
-% In the oxic part of the sediments 1 mol of oxygen is needed to mineralize 1 mol of organic matter (\chem{OC}). In the nitrate and sulfate reduction zone 1 mol of organic matter is reduced by 
+% In the oxic part of the sediments 1 mol of oxygen is needed to mineralize 1 mol of organic matter (\chem{O_2C}). In the nitrate and sulfate reduction zone 1 mol of organic matter is reduced by 
 % 0.8906 mol of nitrate (\chem{NO_3C}) and 0.5 mol of sulfate (\chem{SO_4C}) respectively. \\
 %\textcolor{red}{Next bit from Gypens:} Re-oxidation occurs in a ratio of 1 mol of oxygen per mol of carbon anoxically mineralized. Similarly, 2 mol of oxygen
 %are consumed during nitrification of \chem{NH_4} produced in the anoxic zone. As nitrification may be incomplete in the oxic layer, we similarly allow for part of the ammonium flux to escape re-oxidation. 
@@ -867,7 +867,7 @@ Parameter/Variable & Unit  & Value & Description\\
 &&&produced during methanogenesis\\
 \chem{DICC^I}& mol/mol & 1.0 & DIC to carbon ratio until \chem{z_{SO_4}}\\
 \chem{DICC^{II}}& mol/mol & 0.5 &  DIC to carbon ratio below \chem{z_{SO_4}}\\
-\chem{OC} & mol/mol & 1.0 & oxygen to carbon ratio\\
+\chem{O_2C} & mol/mol & 1.0 & oxygen to carbon ratio\\
 \chem{NO_3C} & mol/mol & 94.4/106 & nitrate to carbon ratio\\
 \chem{SO_4C} & mol/mol & 0.5 & sulfate to carbon ratio\\
 $\chem{ALK}^\mathrm{OX}$ & mol/mol & 15 & ALK from aerobic degradation\\
