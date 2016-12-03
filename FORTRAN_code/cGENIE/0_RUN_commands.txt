@@ -159,7 +159,7 @@ qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg
 2) try now with OMEN-SED calculation of PO4 but no Fe-P and authigenic P formation and adsorption coeff oxic/anoxic = 0.0 - job 8393  (now higher return flux as GENIE) ----> crashes after 952 years
 qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/05_OMEN_GENIE_Oct2016 EXAMPLE05._rwlma.OPEN_noCaCO3_Corg_all_remin_noALK_mineralP_0112 10000
 
------ no w runs after Andy's fix (POC available for CaCO3 diagenesis)
+----- now runs after Andy's fix (POC available for CaCO3 diagenesis)
 
 3) PO4 as in 2) also use same stoichiometry for (O2, SO4, H2S) to C in OMEN-SED as in GENIE (should be the ones needed to balance the water column (as I did in 1) for PO4)) - job 8417 ----> crashed after 79 yrs
 qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/05_OMEN_GENIE_Oct2016 DOM-TEST_O2_SO4_H2S-HACK_10krs_0112 10000
@@ -168,3 +168,20 @@ ALK FLUXES AT THE SHELVES?????
 4) as 3) also enable DIC and ALK now again in OMEN-SED ----> crashed after 4 years...
 ./runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/05_OMEN_GENIE_Oct2016 EXAMPLE05._rwlma.OPEN_noCaCO3_Corg_all_remin_no-mineralP_WITH-ALK_0112 4
 HUGE ALK FLUXES AT THE SHELVES
+
+
+###### 02/12/2016 	----- USE STOICHIOMETRY FROM GENIE; as before no mineral P AND calculate ALK as 
+loc_ALK_swiflux = 2.0*loc_H2S_swiflux + loc_new_sed(is_POC)*conv_POC_cm3_mol*NC1
+
+1) with OMEN all remineralised k1,2 = 0.1 - job 8423 (SHIP) or with DEBUG: 8421 
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/05_OMEN_GENIE_Oct2016 DOM_TEST_ALK_OPEN_noCaCO3_Corg_all_remin_no-mineralP_WITH-ALK_SHIP_0212 10000
+
+2) as 1) with OMEN ksmaller k1 = 0.01; k2 = 0.001 - job 8424 (SHIP) or with DEBUG: 8422
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/05_OMEN_GENIE_Oct2016 DOM_TEST_ALK_OPEN_noCaCO3_Corg_smaller_k_no-mineralP_WITH-ALK_SHIP_0212 10000
+
+#### as 1) and 2) but try to balance ocean O2, SO4, H2S, PO4, DIC and ALK
+3) with OMEN all remineralised k1,2 = 0.1 - job 8425
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/05_OMEN_GENIE_Oct2016 DOM_TEST_ALK_OPEN_noCaCO3_Corg_all_remin_no-mineralP_WITH-ALK_DISS_HACK_0212 10000
+
+4)  as 3) with OMEN ksmaller k1 = 0.01; k2 = 0.001 - job 8426
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/05_OMEN_GENIE_Oct2016 DOM_TEST_ALK_OPEN_noCaCO3_Corg_smaller_k_no-mineralP_WITH-ALK_DISS_HACK_0212 10000

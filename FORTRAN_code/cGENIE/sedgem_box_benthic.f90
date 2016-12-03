@@ -197,7 +197,9 @@ CONTAINS
         REAL::loc_depth_comparison
         integer:: loc_k = 0
 
-        calc_DIC_ALK = .false.
+        loc_print_results = .false.
+        calc_DIC_ALK = .true.
+
 !        print*,'---------- IN OMEN MAIN -----------  '
         
         ! initialize BW concentrations 
@@ -240,7 +242,6 @@ CONTAINS
 !        dum_swiconc_PO4 = 40.0e-9
 !        loc_depth_comparison = 600.0
 
-        loc_print_results = .false.
         if(loc_print_results) then
             if(loc_new_sed_vol .LE. 4.0e-4)then
                         print*,' '
@@ -335,11 +336,11 @@ CONTAINS
             else
                 ! Dom TODO: can do it as a function as don't need to give values. BW-O2 is global variable
 !               Hack
-!                    loc_O2_swiflux = loc_new_sed(is_POC)*conv_POC_cm3_mol*(-138.0/106.0)
+                    loc_O2_swiflux = loc_new_sed(is_POC)*conv_POC_cm3_mol*(-138.0/106.0) !*SD
 !                print*,' '
 !                print*,'dum_D ', dum_D
 !                    print*,'CALC loc_O2_swiflux = ', loc_O2_swiflux
-                call sub_huelseetal2016_zO2(dum_D, dum_swiconc_O2, loc_O2_swiflux)
+!                call sub_huelseetal2016_zO2(dum_D, dum_swiconc_O2, loc_O2_swiflux)
 !                    print*,'OMEN loc_O2_swiflux = ', loc_O2_swiflux
 !                if(abs(loc_O2_swiflux) .LE. const_real_nullsmall)then
 !                    print*,'loc_O2_swiflux too small ', loc_O2_swiflux
@@ -358,11 +359,11 @@ CONTAINS
             if(ocn_select(io_SO4))then
                 if(dum_swiconc_SO4 > const_real_nullsmall)then
 !               Hack
-!                    loc_SO4_swiflux = loc_new_sed(is_POC)*conv_POC_cm3_mol*(-138.0/212.0)
+                    loc_SO4_swiflux = loc_new_sed(is_POC)*conv_POC_cm3_mol*(-138.0/212.0)
 !                print*,' '
 !                print*,'dum_D ', dum_D
 !                    print*,'CALC loc_SO4_swiflux = ', loc_SO4_swiflux
-                    call sub_huelseetal2016_zSO4(dum_swiconc_SO4, loc_SO4_swiflux)
+!                    call sub_huelseetal2016_zSO4(dum_swiconc_SO4, loc_SO4_swiflux)
 !                    print*,'OMEN loc_SO4_swiflux = ', loc_SO4_swiflux
                 else
                     zso4 = zno3
@@ -379,11 +380,11 @@ CONTAINS
 
             if(ocn_select(io_H2S))then
 !               Hack
-!                    loc_H2S_swiflux = loc_new_sed(is_POC)*conv_POC_cm3_mol*(138.0/212.0)
+                    loc_H2S_swiflux = loc_new_sed(is_POC)*conv_POC_cm3_mol*(138.0/212.0)
 !                print*,' '
 !                print*,'dum_D ', dum_D
 !                    print*,'CALC loc_H2S_swiflux = ', loc_H2S_swiflux
-                call sub_huelseetal2016_zH2S(dum_swiconc_H2S, loc_H2S_swiflux)
+!                call sub_huelseetal2016_zH2S(dum_swiconc_H2S, loc_H2S_swiflux)
 !                    print*,'OMEN loc_H2S_swiflux = ', loc_H2S_swiflux
             else
                 ! If not selected nothing needs to be done
@@ -391,11 +392,11 @@ CONTAINS
 
             if(ocn_select(io_PO4))then
 !               PO4 hack
-!                loc_PO4_swiflux = loc_new_sed(is_POP)*conv_POC_cm3_mol
+                loc_PO4_swiflux = loc_new_sed(is_POP)*conv_POC_cm3_mol
 !                print*,' '
 !                print*,'dum_D ', dum_D
 !                print*,'CALC loc_PO4_swiflux = ', loc_PO4_swiflux
-                call sub_huelseetal2016_zPO4_M(dum_swiconc_PO4, loc_PO4_swiflux, dum_swiflux_M, loc_M_swiflux)
+!                call sub_huelseetal2016_zPO4_M(dum_swiconc_PO4, loc_PO4_swiflux, dum_swiflux_M, loc_M_swiflux)
 !                print*,' '
 !                print*,'OMEN loc_PO4_swiflux = ', loc_PO4_swiflux
                 ! 30/11/2016: remineralise all POC and calculate PO4 return flux
@@ -411,12 +412,18 @@ CONTAINS
         if(calc_DIC_ALK)then
             if(ocn_select(io_DIC))then
                 call sub_huelseetal2016_zDIC(dum_swiconc_DIC, loc_DIC_swiflux)
+!                print*,'OMEN loc_DIC_swiflux = ', loc_DIC_swiflux
+!                print*,'OMEN loc_POC_swiflux = ', loc_new_sed(is_POC)*conv_POC_cm3_mol*SD
+                loc_DIC_swiflux = loc_new_sed(is_POC)*conv_POC_cm3_mol ! *SD
             else
                 ! If not selected nothing needs to be done
             end if
 
             if(ocn_select(io_ALK))then
-                call sub_huelseetal2016_zALK(dum_swiconc_ALK, loc_ALK_swiflux)
+!                call sub_huelseetal2016_zALK(dum_swiconc_ALK, loc_ALK_swiflux)
+!                print*,'OMEN loc_ALK_swiflux = ', loc_ALK_swiflux
+                loc_ALK_swiflux = 2.0*loc_H2S_swiflux + loc_new_sed(is_POC)*conv_POC_cm3_mol*16/106 !NC1
+!                print*,'CALC loc_ALK_swiflux = ', loc_ALK_swiflux
             else
                 ! If not selected nothing needs to be done
             end if
@@ -560,7 +567,7 @@ CONTAINS
         SD=(1-por)/por                                          ! volume factor solid->dissolved phase
         OC= SD*(138.0/106.0)!1.0*SD                                               ! O2/C (mol/mol)
         NC1=0.1509*SD                                           ! N/C first TOC fraction (mol/mol)
-        NC2=0.13333*SD                                          ! N/C second TOC fraction (mol/mol)
+        NC2=0.1509*SD  !0.13333*SD                                          ! N/C second TOC fraction (mol/mol)
         PC1=SD*1/106.0 !0.0094*SD                                          ! P/C first TOC fraction (mol/mol)
         PC2=SD*1/106.0 !0.0094*SD                                          ! P/C second TOC fraction (mol/mol)
         SO4C=SD*(138.0/212.0)!0.5*SD                                             ! SO4/C (mol/mol)
@@ -578,8 +585,8 @@ CONTAINS
         
         ! ORGANIC MATTER
         DC1 = Dbio
-        k1=0.1
-        k2=0.1
+        k1=0.01
+        k2=0.001
 
         ! GLOBAL DIFFUSION COEFFICIENTS
         ! O2
