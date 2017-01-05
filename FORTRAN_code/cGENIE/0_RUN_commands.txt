@@ -185,3 +185,41 @@ qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg
 
 4)  as 3) with OMEN ksmaller k1 = 0.01; k2 = 0.001 - job 8426
 qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/05_OMEN_GENIE_Oct2016 DOM_TEST_ALK_OPEN_noCaCO3_Corg_smaller_k_no-mineralP_WITH-ALK_DISS_HACK_0212 10000
+
+
+########################################################################################################################################
+########################################################################################################################################
+########################################################################################################################################
+
+################# 		2017 
+
+########################################################################################################################################
+########################################################################################################################################
+########################################################################################################################################
+
+############ 03/01/2017
+1) Abiotic ocean - open system - no weathering - no air-sea gas exchange - with OMEN all remineralised k1,2 = 0.1 - -> run with new artificial ocean (no shelfs) - job 8638
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/05_OMEN_GENIE_Oct2016 DOM_TEST_artifical_world_abiotic_nogastransf_noweathering_allremin_0301 5000
+
+2) as 1) - with OMEN all remineralised k1,2 = 0.1  just biotic ocean - job 8639 --> crashes after 1000 years -----> run with air-sea gas exchange
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/05_OMEN_GENIE_Oct2016 DOM_TEST_artifical_world_biotic_nogastransf_noweathering_allremin_0301 5000
+
+3) as 2)  with OMEN ksmaller k1 = 0.01; k2 = 0.0001 - job 8641 
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/05_OMEN_GENIE_Oct2016 DOM_TEST_artifical_world_biotic_nogastransf_noweathering_ksmaller_0301 5000
+
+
+######################   re-run the crashed experiments with shelfes from 23/11 (was job 8362) --------> see if/why it crashes!!! crahes after 2 years
+4) OPEN SYSTEM no CaCO3 - with OMEN all remineralised k1,2 = 0.2 - 
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/05_OMEN_GENIE_Oct2016 EXAMPLE05._rwlma.PO4_S18x18.OPEN_noCaCO3_Corg_all_remin_k0.2_0301 20000
+																						 or  _k0.1_0301
+
+############ 04/01/2017
+1) Abiotic ocean - open system - no weathering - no air-sea gas exchange - No OMEN - run with new artificial ocean (no shelfs) - job 8646 (TOO CHECK if there is any leak when coupling to OMEN)
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/05_OMEN_GENIE_Oct2016 DOM_TEST_artifical_world_abiotic_nogastransf_noweathering_NoOMEN_0401 5000
+
+2) Biotic ocean - open system - no weathering - no air-sea gas exchange - No OMEN - run with new artificial ocean (no shelfs) - job 8656 (TOO CHECK if balanced when not coupled to OMEN)
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/05_OMEN_GENIE_Oct2016 DOM_TEST_artifical_world_biotic_nogastransf_noweathering_NoOMEN_0401 5000
+
+#### TEST old shelfs with smaller detrital input (as 4) at 03/01/2017) now with baseconfig - save every timeslice:
+./runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES_EVERY1 DOM/05_OMEN_GENIE_Oct2016 EXAMPLE05._rwlma.PO4_S18x18.OPEN_noCaCO3_Corg_all_remin_k0.1_0301 10
+	       

@@ -192,13 +192,16 @@ CONTAINS
 
         real::loc_fPOC                                              ! Corg flux to the sediment [cm3 cm-2]
         !        real::dum_POC1_wtpct_swi, dum_POC2_wtpct_swi             ! POC concentrations at SWI [wt%]
-        logical :: loc_print_results, calc_DIC_ALK
+        logical :: loc_print_results, calc_ALK
         REAL::loc_new_sed_vol                                      ! new sediment volume (as SOLID material)
         REAL::loc_depth_comparison
         integer:: loc_k = 0
 
         loc_print_results = .false.
-        calc_DIC_ALK = .true.
+        calc_ALK = .true.
+
+        loc_DIC_swiflux = 0.0
+        loc_ALK_swiflux = 0.0
 
 !        print*,'---------- IN OMEN MAIN ----------- '
         
@@ -305,22 +308,22 @@ CONTAINS
 
         
         ! Check for no POC deposited -> nothing preserved
-        if(loc_POC1_wtpct_swi .LE. const_real_nullsmall .AND. loc_POC2_wtpct_swi .LE. const_real_nullsmall)then
+!        if(loc_POC1_wtpct_swi .LE. const_real_nullsmall .AND. loc_POC2_wtpct_swi .LE. const_real_nullsmall)then
 !            print*,' '
 !            print*,'no POC deposited  dum_D ', dum_D
 !            print*,' grid point (i,j) ', dum_i, dum_j
-            dum_sed_pres_fracC = 0.0
-            ! what TODO when no POC, still call sediment model for solutes - no, set everything to zero
-            loc_O2_swiflux = 0.0
-            loc_NO3_swiflux = 0.0
-            loc_SO4_swiflux = 0.0
-            loc_NH4_swiflux = 0.0
-            loc_H2S_swiflux = 0.0
-            loc_PO4_swiflux = 0.0
-            ! DH: TODO what about DIC and ALK?
-            loc_DIC_swiflux = 0.0
-            loc_ALK_swiflux = 0.0
-        else
+!            dum_sed_pres_fracC = 0.0
+!            ! what TODO when no POC, still call sediment model for solutes - no, set everything to zero
+!            loc_O2_swiflux = 0.0
+!            loc_NO3_swiflux = 0.0
+!            loc_SO4_swiflux = 0.0
+!            loc_NH4_swiflux = 0.0
+!            loc_H2S_swiflux = 0.0
+!            loc_PO4_swiflux = 0.0
+!            ! DH: TODO what about DIC and ALK?
+!            loc_DIC_swiflux = 0.0
+!            loc_ALK_swiflux = 0.0
+!        else
             call sub_huelseetal2016_zTOC(loc_POC1_wtpct_swi, loc_POC2_wtpct_swi, dum_sed_pres_fracC)
             ! below test with specific wt% to compare with matlab
             !!!!            call sub_huelseetal2016_zTOC(0.006, 0.002, dum_sed_pres_fracC)
@@ -409,16 +412,16 @@ CONTAINS
                 ! If not selected nothing needs to be done
             end if
 
-        if(calc_DIC_ALK)then
             if(ocn_select(io_DIC))then
                 call sub_huelseetal2016_zDIC(dum_swiconc_DIC, loc_DIC_swiflux)
-!                print*,'OMEN loc_DIC_swiflux = ', loc_DIC_swiflux
-!                print*,'OMEN loc_POC_swiflux = ', loc_new_sed(is_POC)*conv_POC_cm3_mol*SD
-!                loc_DIC_swiflux = loc_new_sed(is_POC)*conv_POC_cm3_mol ! *SD
+            !                print*,'OMEN loc_DIC_swiflux = ', loc_DIC_swiflux
+            !                print*,'OMEN loc_POC_swiflux = ', loc_new_sed(is_POC)*conv_POC_cm3_mol*SD
+            !                loc_DIC_swiflux = loc_new_sed(is_POC)*conv_POC_cm3_mol ! *SD   DIC hack
             else
                 ! If not selected nothing needs to be done
             end if
 
+        if(calc_ALK)then
             if(ocn_select(io_ALK))then
                 call sub_huelseetal2016_zALK(dum_swiconc_ALK, loc_ALK_swiflux)
 !                print*,'OMEN loc_ALK_swiflux = ', loc_ALK_swiflux
@@ -427,8 +430,11 @@ CONTAINS
             else
                 ! If not selected nothing needs to be done
             end if
-        end if      ! calc_DIC_ALK
-        end if  ! loc_POC1/2_wtpct_swi .LE. const_real_nullsmall
+        else    ! use ALK hack
+             loc_ALK_swiflux = 2.0*loc_H2S_swiflux + loc_new_sed(is_POC)*conv_POC_cm3_mol*16/106 !NC1
+        end if      ! calc_ALK
+
+!        end if  ! loc_POC1/2_wtpct_swi .LE. const_real_nullsmall
 
         ! Now pass back the values to the global field
         dum_new_swifluxes(io_O2) = loc_O2_swiflux                                   ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
@@ -443,14 +449,14 @@ CONTAINS
         if(ocn_select(io_PO4))then
             dum_new_swifluxes(io_PO4) = loc_PO4_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
         end if
-        if(calc_DIC_ALK)then
-            if(ocn_select(io_DIC))then
-                dum_new_swifluxes(io_DIC) = loc_DIC_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
-            end if
+        if(ocn_select(io_DIC))then
+            dum_new_swifluxes(io_DIC) = loc_DIC_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
+        end if
+!        if(calc_ALK)then
             if(ocn_select(io_ALK))then
                 dum_new_swifluxes(io_ALK) = loc_ALK_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
             end if
-        end if      ! calc_DIC_ALK
+!        end if      ! calc_ALK
         if(loc_print_results) then
             !            loc_new_sed_vol = fun_calc_sed_vol(loc_new_sed(:))
             !            print*,'dum_D = ', dum_D
@@ -585,8 +591,8 @@ CONTAINS
         
         ! ORGANIC MATTER
         DC1 = Dbio
-        k1=0.001
-        k2=0.00001
+        k1=0.1
+        k2=0.1
 
         ! GLOBAL DIFFUSION COEFFICIENTS
         ! O2
