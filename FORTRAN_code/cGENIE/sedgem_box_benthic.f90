@@ -180,15 +180,15 @@ CONTAINS
         ! local variables        
         real::loc_wtpct, loc_wtpct_Middel
         real::loc_POC1_wtpct_swi, loc_POC2_wtpct_swi                ! POC concentration at SWI [wt%]
-        real::loc_O2_swiflux                                        ! SWI return fluxes of O2 [mol/cm^3]
-        real::loc_SO4_swiflux                                       ! SWI return fluxes of SO4 [mol/cm^3]
-        real::loc_NO3_swiflux                                       ! SWI return fluxes of NO3 [mol/cm^3]
-        real::loc_H2S_swiflux                                       ! SWI return fluxes of H2S [mol/cm^3]
-        real::loc_NH4_swiflux                                       ! SWI return fluxes of H2S [mol/cm^3]
-        real::loc_PO4_swiflux                                       ! SWI return fluxes of PO4 [mol/cm^3]
+        real::loc_O2_swiflux                                        ! SWI return fluxes of O2 [mol/(cm^2 yr)]
+        real::loc_SO4_swiflux                                       ! SWI return fluxes of SO4 [mol/(cm^2 yr)]
+        real::loc_NO3_swiflux                                       ! SWI return fluxes of NO3 [mol/(cm^2 yr)]
+        real::loc_H2S_swiflux                                       ! SWI return fluxes of H2S [mol/(cm^2 yr)]
+        real::loc_NH4_swiflux                                       ! SWI return fluxes of H2S [mol/(cm^2 yr)]
+        real::loc_PO4_swiflux                                       ! SWI return fluxes of PO4 [mol/(cm^2 yr)]
         real::loc_M_swiflux                                         ! SWI return fluxes of M - DOES NOT EXIST, JUST FOR DEBUGGING
-        real::loc_DIC_swiflux                                       ! SWI return fluxes of DIC [mol/cm^3]
-        real::loc_ALK_swiflux                                       ! SWI return fluxes of ALK [mol/cm^3]
+        real::loc_DIC_swiflux                                       ! SWI return fluxes of DIC [mol/(cm^2 yr)]
+        real::loc_ALK_swiflux                                       ! SWI return fluxes of ALK [mol/(cm^2 yr)]
 
         real::loc_fPOC                                              ! Corg flux to the sediment [cm3 cm-2]
         !        real::dum_POC1_wtpct_swi, dum_POC2_wtpct_swi             ! POC concentrations at SWI [wt%]

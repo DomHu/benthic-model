@@ -31,13 +31,13 @@ classdef benthic_zO2
             fun0 = fun(1e-10); % >=0 for eg zero oxygen at swi
             
             % Try zero flux at zinf and see if we have any O2 left
-            [flxzox, conczox, flxswi,rtmp] = obj.calcbc(bsd.zinf, bsd, swi, r, 2);
+            [flxzox, conczinf, flxswi,rtmp] = obj.calcbc(bsd.zinf, bsd, swi, r, 2);
             
             if bsd.usescalarcode
                 if fun0 >= 0   % i.e. zero oxygen at swi bc O2 flows into sediments (so -)
                     r.zox = 0;
                     bctype = 1;
-                elseif conczox >=0      % still O2 at zinf -> zox = zinf
+                elseif conczinf >=0      % still O2 at zinf -> zox = zinf
                     r.zox = bsd.zinf;
                     bctype = 2;
                 else                    % search zox in the interval
@@ -55,6 +55,10 @@ classdef benthic_zO2
             end
      
             [flxzox, conczox, flxswiO2, r] = obj.calcbc(r.zox, bsd, swi, r, bctype);
+            flxswiO2
+            advflux0 = bsd.por.*bsd.w.*(swi.O20)
+            advfluxinf = bsd.por.*bsd.w.*(conczinf)
+            flxswiO2 = flxswiO2 - bsd.por.*bsd.w.*(swi.O20); %-conczinf);
             r.flxzox = flxzox;
             r.conczox = conczox;
             r.flxswiO2 = flxswiO2;
@@ -104,7 +108,7 @@ classdef benthic_zO2
             conczox = rO2.AO2.*e_zox+rO2.BO2.*f_zox + g_zox;
 
             Dswi = (0 < bsd.zbio).*obj.DO21 + (0 >= bsd.zbio).*obj.DO22; 
-            flxswi = bsd.por.*(Dswi.*(rO2.AO2.*dedz_0+rO2.BO2.*dfdz_0 + dgdz_0) - bsd.w.*swi.O20);   % por fac so this is per cm^2 water column
+            flxswi = bsd.por.*(Dswi.*(rO2.AO2.*dedz_0+rO2.BO2.*dfdz_0 + dgdz_0)); % - bsd.w.*swi.O20);   % por fac so this is per cm^2 water column
             
             r.zxf = zox./(bsd.zoxgf + zox); % roll off oxidation at low zox
             

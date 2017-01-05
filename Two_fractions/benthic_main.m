@@ -85,12 +85,12 @@ classdef benthic_main < handle
             obj.dispFactor=obj.por.^(obj.tort-1.0).*obj.irrigationFactor;                 %dispersion factor (-)
             obj.SD=(1-obj.por)./obj.por;   % Sandra played with 1.0
             
-            obj.OC=1.0*obj.SD;                                                  %O2/C (mol/mol)
+            obj.OC=1.0*obj.SD; %(138/106)*obj.SD;                                                  %O2/C (mol/mol)
             obj.NC1=0.1509*obj.SD;                                          %N/C first TOC fraction: 16/106 (mol/mol)
-            obj.NC2=0.13333*obj.SD;                                         %N/C second TOC fraction (mol/mol)            
+            obj.NC2= 0.1509*obj.SD; %0.13333*obj.SD;                                         %N/C second TOC fraction (mol/mol)            
             obj.PC1=0.0094*obj.SD;  % Sandra played with 1e-20;             %P/C first TOC fraction  1/106 (mol/mol)
             obj.PC2=0.0094*obj.SD;  % Sandra played with  1e-20;            %P/C second TOC fraction 1/106 (mol/mol)
-            obj.SO4C=0.5*obj.SD;                                                %SO4/C (mol/mol)
+            obj.SO4C=(138.0/212.0)*obj.SD; % 0.5*obj.SD;                                                %SO4/C (mol/mol)
             obj.DICC1=1.0*obj.SD;                                               %DIC/C until zSO4 (mol/mol)
             obj.DICC2=0.5*obj.SD;                                               %DIC/C below zSO4 (mol/mol)
             obj.MC=0.5*obj.SD;                                                  %CH4/C (mol/mol)

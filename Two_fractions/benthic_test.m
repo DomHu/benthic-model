@@ -578,6 +578,7 @@ classdef benthic_test
             res.bsd = benthic_main(ncl);
             res.bsd.usescalarcode = ncl==1;
             
+            
             if nargin < 2 || isempty(swi)
                 swi = benthic_test.default_swi();
             end
@@ -590,6 +591,11 @@ classdef benthic_test
             end
             
             res.swi = swi;
+
+            % check O2 demand using O2 to C ratio and (convert POC concentr. to flux analog to fortran)
+            % POC_flux*OC = POC_conc * w * 1/(1 - por) * OC
+            O2_demand = (swi.C01+swi.C02)*res.bsd.w*1/(1-res.bsd.por)*res.bsd.OC
+
             
             % calculate 
             res.zTOC = benthic_zTOC(res.bsd);
