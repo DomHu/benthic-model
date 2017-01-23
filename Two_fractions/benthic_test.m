@@ -36,6 +36,16 @@ classdef benthic_test
             res=benthic_test.test_benthic(1,swi);
             benthic_test.plot_column(res, false, swi, 'k_0.1')
         end
+
+        function test_k_SWIflux()            
+            clear
+            swi=benthic_test.default_swi()
+%            % set date-time
+%            str_date = datestr(now,'ddmmyy_HH_MM_SS');
+            res=benthic_test.test_benthic(1,swi);
+            benthic_test.plot_column(res, false, swi, 'k_0.1')
+        end
+        
         
          function run_OMEN_BRNS()
             clear
@@ -399,7 +409,8 @@ classdef benthic_test
             res.zALK = benthic_zALK(res.bsd, res.swi);
             
             fileID = fopen(['./Sensitivity/Results_' str_date '.txt'],'w');
-            fprintf(fileID,'%1s %8s %12s %12s %12s %12s %12s %12s %8s %8s\n','% Exp','F_O2','F_NO3','F_SO4','F_NH4','F_H2S','F_PO4','zox','zNO3','zSO4');
+%            fprintf(fileID,'%1s %8s %12s %12s %12s %12s %12s %12s %8s %8s\n','% Exp','F_O2','F_NO3','F_SO4','F_NH4','F_H2S','F_PO4','zox','zNO3','zSO4');
+            fprintf(fileID,'%1s %8s %8s\n','% Exp','F_O2','zox');
             fclose(fileID);    
             
             for i=1:length(Params.k1)  
@@ -420,24 +431,27 @@ classdef benthic_test
    
             res = res.zTOC.calc(res.bsd,res.swi, res);
             res = res.zO2.calc(res.bsd, res.swi, res);
-%            if(swi.Nitrogen)
-            res = res.zNO3.calc(res.bsd, res.swi, res);
-%            else
-%            res.zno3=res.zox;
-%            end
-            res = res.zSO4.calc(res.bsd, res.swi, res);
-%            if(swi.Nitrogen)
-            res = res.zNH4.calc(res.bsd, res.swi, res);
-%            end
-            res = res.zH2S.calc(res.bsd, res.swi, res);
-            res = res.zPO4_M.calc(res.bsd, res.swi, res);
-            res = res.zDIC.calc(res.bsd, res.swi, res);
-            res = res.zALK.calc(res.bsd, res.swi, res);
+% % % %             
+% % % % %            if(swi.Nitrogen)
+% % % %             res = res.zNO3.calc(res.bsd, res.swi, res);
+% % % % %            else
+% % % % %            res.zno3=res.zox;
+% % % % %            end
+% % % %             res = res.zSO4.calc(res.bsd, res.swi, res);
+% % % % %            if(swi.Nitrogen)
+% % % %             res = res.zNH4.calc(res.bsd, res.swi, res);
+% % % % %            end
+% % % %             res = res.zH2S.calc(res.bsd, res.swi, res);
+% % % %             res = res.zPO4_M.calc(res.bsd, res.swi, res);
+% % % %             res = res.zDIC.calc(res.bsd, res.swi, res);
+% % % %             res = res.zALK.calc(res.bsd, res.swi, res);
             
-            swi.Results(i,:) = [i res.flxswiO2 res.flxswiNO3 res.flxswiSO4 res.flxswiNH4 res.flxswiH2S res.flxswi_P res.zox res.zno3 res.zso4];
-            
+ %           swi.Results(i,:) = [i res.flxswiO2 res.flxswiNO3 res.flxswiSO4 res.flxswiNH4 res.flxswiH2S res.flxswi_P res.zox res.zno3 res.zso4];
+ swi.Results(i,:) = [i res.flxswiO2 res.zox];
+           
             fileID = fopen(['./Sensitivity/Results_' str_date '.txt'],'a');
-            fprintf(fileID,'%3d %7.6e %7.6e %7.6e %7.6e %7.6e %7.6e %8.5f %8.5f %8.5f\n',i, res.flxswiO2, res.flxswiNO3, res.flxswiSO4, res.flxswiNH4, res.flxswiH2S, res.flxswi_P, res.zox, res.zno3, res.zso4);
+%            fprintf(fileID,'%3d %7.6e %7.6e %7.6e %7.6e %7.6e %7.6e %8.5f %8.5f %8.5f\n',i, res.flxswiO2, res.flxswiNO3, res.flxswiSO4, res.flxswiNH4, res.flxswiH2S, res.flxswi_P, res.zox, res.zno3, res.zso4);
+            fprintf(fileID,'%3d %7.6e %8.5f\n',i, res.flxswiO2, res.zox);
             fclose(fileID);          
             
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1054,7 +1068,7 @@ classdef benthic_test
             bsd = res.bsd;
             zgrid = 0:0.1:bsd.zinf;
             
-        if(true)                
+        if(false)                
             figure
             % PO4
             subplot(3,2,1)
@@ -1575,10 +1589,10 @@ classdef benthic_test
             
             %bottom water concentrations
             swi.T=20.0;                                                     %temperature (degree C)
-            swi.C01=0.1/12*res.bsd.rho_sed;                                         %TOC concentration at SWI (mol/cm^3)
-            swi.C02=0.1/12*res.bsd.rho_sed;                                         %TOC concentration at SWI (mol/cm^3)
+            swi.C01=0.01*1e-2/12*res.bsd.rho_sed;                                         %TOC concentration at SWI (mol/cm^3)
+            swi.C02=0.01*1e-2/12*res.bsd.rho_sed;                                         %TOC concentration at SWI (mol/cm^3)
             
-            O20=4*900.0e-5*1e-3;                                                 %O2  concentration at SWI (mol/cm^3)
+            O20=300.0e-9;                                                 %O2  concentration at SWI (mol/cm^3)
             
             if ncl == 1
                 swi.O20 = O20;

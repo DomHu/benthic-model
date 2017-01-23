@@ -55,10 +55,11 @@ classdef benthic_zO2
             end
      
             [flxzox, conczox, flxswiO2, r] = obj.calcbc(r.zox, bsd, swi, r, bctype);
+            format longEng            
             flxswiO2
             advflux0 = bsd.por.*bsd.w.*(swi.O20)
             advfluxinf = bsd.por.*bsd.w.*(conczinf)
-            flxswiO2 = flxswiO2 - bsd.por.*bsd.w.*(swi.O20); %-conczinf);
+            flxswiO2 = flxswiO2 - bsd.por.*bsd.w.*(swi.O20-conczinf)
             r.flxzox = flxzox;
             r.conczox = conczox;
             r.flxswiO2 = flxswiO2;
@@ -130,7 +131,7 @@ classdef benthic_zO2
             %FLUX of NH4 and Reduced species from ZOX to ZINF
             
             
-            FO2 = zox./(bsd.zoxgf + zox).*r.zTOC.calcReac(zox, bsd.zinf, tmpreac1, tmpreac2, bsd, swi, r);
+            FO2 = 0.0; %zox./(bsd.zoxgf + zox).*r.zTOC.calcReac(zox, bsd.zinf, tmpreac1, tmpreac2, bsd, swi, r);
             % NB (1-bsd.por)/bsd.por  has been included in OC etc stoich factors, so this is flux / cm^2 pore area
            
         end

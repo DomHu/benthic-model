@@ -9,8 +9,8 @@ classdef benthic_zTOC < handle
     properties
         DC1;                                                   %TOC diffusion coefficient (cm2/yr)
        
-        k1= 1.0; %0.035; % 0.01 0.006;                                                  %TOC degradation rate constnat (1/yr)
-        k2=1.0;   %0.0006;                                                %TOC degradation rate constant (1/yr)  
+        k1= 0.05; %0.035; % 0.01 0.006;                                                  %TOC degradation rate constnat (1/yr)
+        k2= 0.05;   %0.0006;                                                %TOC degradation rate constant (1/yr)  
        
     end
     
@@ -24,12 +24,22 @@ classdef benthic_zTOC < handle
         
         function res = calc(obj, bsd, swi, res)
             % Calculate solution for TOC vs z
-            
+
             rTOC.a11=(bsd.w-sqrt(bsd.w.^2+4.*obj.DC1.*obj.k1))./(2.*obj.DC1);
             rTOC.b11=(bsd.w+sqrt(bsd.w.^2+4.*obj.DC1.*obj.k1))./(2.*obj.DC1);
             rTOC.a21=(-obj.k1./bsd.w);
             rTOC.A11=-(swi.C01.*rTOC.b11.*exp(rTOC.b11.*bsd.zbio))./(rTOC.a11.*exp(rTOC.a11.*bsd.zbio)-rTOC.b11.*exp(rTOC.b11.*bsd.zbio)+bsd.tol_const);
             rTOC.A21=(rTOC.A11.*(exp(rTOC.a11.*bsd.zbio)-exp(rTOC.b11.*bsd.zbio))+swi.C01.*exp(rTOC.b11.*bsd.zbio))./(exp(rTOC.a21.*bsd.zbio)+bsd.tol_const);
+            %rTOC.A21=rTOC.A11.*exp(rTOC.a11.*bsd.zbio)./(exp(rTOC.a21.*bsd.zbio)+bsd.tol_const)-rTOC.A11.*exp(rTOC.b11.*bsd.zbio)./(exp(rTOC.a21.*bsd.zbio)+bsd.tol_const)+swi.C01.*exp(rTOC.b11.*bsd.zbio)./(exp(rTOC.a21.*bsd.zbio)+bsd.tol_const);
+           
+%             diff1 = exp(rTOC.a11.*bsd.zbio)
+%             diff2 = exp(rTOC.b11.*bsd.zbio)
+%             difference= (exp(rTOC.a11.*bsd.zbio)-exp(rTOC.b11.*bsd.zbio))
+%             denom=(exp(rTOC.a21.*bsd.zbio)+bsd.tol_const)
+%             denom1=exp(rTOC.a21.*bsd.zbio)
+%             nom=(rTOC.A11.*(exp(rTOC.a11.*bsd.zbio)-exp(rTOC.b11.*bsd.zbio))+swi.C01.*exp(rTOC.b11.*bsd.zbio))
+%             nom1 = rTOC.A11.*(exp(rTOC.a11.*bsd.zbio)-exp(rTOC.b11.*bsd.zbio))
+%             nom2 =swi.C01.*exp(rTOC.b11.*bsd.zbio)
             
             rTOC.a12=(bsd.w-sqrt(bsd.w.^2+4.*obj.DC1.*obj.k2))./(2.*obj.DC1);
             rTOC.b12=(bsd.w+sqrt(bsd.w.^2+4.*obj.DC1.*obj.k2))./(2.*obj.DC1);
@@ -54,7 +64,7 @@ classdef benthic_zTOC < handle
         function [C, C1, C2] = calcC(obj, z, bsd, swi, r)
             % Calculate concentration at depth z from solution
                 rTOC = r.rTOC;
-                if(z<bsd.zbio)
+                if(z<=bsd.zbio)
                     C1=rTOC.A11.*(exp(rTOC.a11.*z)-exp(rTOC.b11.*z))+swi.C01.*exp(rTOC.b11.*z);
                     C2=rTOC.A12.*(exp(rTOC.a12.*z)-exp(rTOC.b12.*z))+swi.C02.*exp(rTOC.b12.*z);
                 else                   

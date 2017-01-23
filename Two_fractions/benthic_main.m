@@ -15,7 +15,7 @@ classdef benthic_main < handle
         wdepth=3575.0;     % Dom was 600.0                       % water depth (m)
         w;                                      % burial velocity  (cm/yr)
         z0  = 0;                                % surface
-        zbio=10.0;                              % bioturbation depth (cm)       
+        zbio=80.0;                              % bioturbation depth (cm)       
         
         zinf=100;                               %Inifinity (cm)
         %zinf = 1000;
@@ -86,8 +86,8 @@ classdef benthic_main < handle
             obj.SD=(1-obj.por)./obj.por;   % Sandra played with 1.0
             
             obj.OC=1.0*obj.SD; %(138/106)*obj.SD;                                                  %O2/C (mol/mol)
-            obj.NC1=0.1509*obj.SD;                                          %N/C first TOC fraction: 16/106 (mol/mol)
-            obj.NC2= 0.1509*obj.SD; %0.13333*obj.SD;                                         %N/C second TOC fraction (mol/mol)            
+            obj.NC1=0.0; %0.1509*obj.SD;                                          %N/C first TOC fraction: 16/106 (mol/mol)
+            obj.NC2= 0.0; %0.1509*obj.SD; %0.13333*obj.SD;                                         %N/C second TOC fraction (mol/mol)            
             obj.PC1=0.0094*obj.SD;  % Sandra played with 1e-20;             %P/C first TOC fraction  1/106 (mol/mol)
             obj.PC2=0.0094*obj.SD;  % Sandra played with  1e-20;            %P/C second TOC fraction 1/106 (mol/mol)
             obj.SO4C=(138.0/212.0)*obj.SD; % 0.5*obj.SD;                                                %SO4/C (mol/mol)
@@ -103,7 +103,6 @@ classdef benthic_main < handle
             obj.ALKRMET=14.0;       % /106                                            % Methanogenesis
             obj.ALKRAOM=2.0;                                                      % AOM
 
-
         end
     end
     
@@ -111,14 +110,14 @@ classdef benthic_main < handle
         
         function w = sedrate(wdepth)
             % sedimentation rate, cm/yr
-            w = 10.0.^(-0.87478367-0.00043512*wdepth)*3.3; % 0.2668 is at 500m this is of  10.0.^(-0.87478367-0.00043512*wdepth)*3.3; % 0.03; 
-            % w = 0.42; %2.53711935261055925E-003;
+            %w = 10.0.^(-0.87478367-0.00043512*wdepth)*3.3; % 0.2668 is at 500m this is of  10.0.^(-0.87478367-0.00043512*wdepth)*3.3; % 0.03; 
+            w = 12.0E-003; %2.53711935261055925E-003;
         end
         
          function Dbio = biorate(wdepth)
             % bioturbation coeff, cm^2/yr
-            Dbio= 5.2*(10.0^(0.7624-0.0003972*wdepth)); %5.2*(10.0^(0.7624-0.0003972*wdepth)); % Dom was 3.0;                                 %bioturbation coefficient (cm2/yr)
-            % Dbio=0.02; %0.08; %10.0;
+            %Dbio= 5.2*(10.0^(0.7624-0.0003972*wdepth)); %5.2*(10.0^(0.7624-0.0003972*wdepth)); % Dom was 3.0;                                 %bioturbation coefficient (cm2/yr)
+            Dbio=0.01; %0.08; %10.0;
         end       
         
         
