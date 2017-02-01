@@ -11,8 +11,12 @@ classdef benthic_test
             %bottom water concentrations
             swi.T = 5.85; %20.0;                         %temperature (degree C)
             % see caption for Fig 1.2 - two equal TOC fractions 0.02 0.2 2
-            swi.C01= 0.01*1e-2/12*bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*bsd.rho_sed;         %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-            swi.C02= 0.01*1e-2/12*bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;          %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+            swi.C01_nonbio= 1.0*1e-2/12*bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*bsd.rho_sed;         %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+            swi.C02_nonbio= 1.0*1e-2/12*bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;          %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+            swi.Fnonbio1 =swi.C01_nonbio*(1-bsd.por)*bsd.w;    %according non-bioturbated flux
+            swi.Fnonbio2 =swi.C02_nonbio*(1-bsd.por)*bsd.w;
+            swi.C01 = 0.0;  % resulting bioturbated SWI-concentration, to be calculated in benthic_zTOC.m
+            swi.C02 = 0.0;
             %swi.C01=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
             %swi.C02=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
             swi.O20=150.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
@@ -606,14 +610,11 @@ classdef benthic_test
             
             res.swi = swi;
 
-            % check O2 demand using O2 to C ratio and (convert POC concentr. to flux analog to fortran)
-            % POC_flux*OC = POC_conc * w * 1/(1 - por) * OC
-            O2_demand = (swi.C01+swi.C02)*res.bsd.w*1/(1-res.bsd.por)*res.bsd.OC
 
             
             % calculate 
             res.zTOC = benthic_zTOC(res.bsd);
-            res.zO2 = benthic_zO2(res.bsd, res.swi);           
+           res.zO2 = benthic_zO2(res.bsd, res.swi);           
             res.zNO3 = benthic_zNO3(res.bsd, res.swi);
             res.zSO4 = benthic_zSO4(res.bsd, res.swi);
             res.zNH4 = benthic_zNH4(res.bsd, res.swi);
@@ -624,6 +625,9 @@ classdef benthic_test
    
             tic;
             res = res.zTOC.calc(res.bsd,res.swi, res);
+            % check O2 demand using O2 to C ratio and (convert POC concentr. to flux analog to fortran)
+            % POC_flux*OC = POC_conc * w * 1/(1 - por) * OC           
+            O2_demand = (res.swi.C01+res.swi.C02)*res.bsd.w*1/(1-res.bsd.por)*res.bsd.OC
             res = res.zO2.calc(res.bsd, res.swi, res);
             if(swi.Nitrogen)
                 res = res.zNO3.calc(res.bsd, res.swi, res);
@@ -1260,7 +1264,8 @@ classdef benthic_test
 
                 print('-depsc2', ['0_ALL_PROFILES_' str_date '.eps']);
 
-            else
+             else % no Nitrogen
+                 
                 figure;
                 % TOC
                 subplot(2,2,1)

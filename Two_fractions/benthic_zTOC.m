@@ -9,8 +9,8 @@ classdef benthic_zTOC < handle
     properties
         DC1;                                                   %TOC diffusion coefficient (cm2/yr)
        
-        k1= 0.05; %0.035; % 0.01 0.006;                                                  %TOC degradation rate constnat (1/yr)
-        k2= 0.05;   %0.0006;                                                %TOC degradation rate constant (1/yr)  
+        k1= 0.6; %0.035; % 0.01 0.006;                                                  %TOC degradation rate constnat (1/yr)
+        k2= 0.6;   %0.0006;                                                %TOC degradation rate constant (1/yr)  
        
     end
     
@@ -28,6 +28,12 @@ classdef benthic_zTOC < handle
             rTOC.a11=(bsd.w-sqrt(bsd.w.^2+4.*obj.DC1.*obj.k1))./(2.*obj.DC1);
             rTOC.b11=(bsd.w+sqrt(bsd.w.^2+4.*obj.DC1.*obj.k1))./(2.*obj.DC1);
             rTOC.a21=(-obj.k1./bsd.w);
+            % calculate bioturbated SWI
+            swi.C01 = (swi.Fnonbio1*(-rTOC.a11*exp(rTOC.a11*bsd.zbio)+rTOC.b11*exp(rTOC.b11*bsd.zbio)))/(-obj.DC1*rTOC.b11*rTOC.a11*exp(rTOC.b11*bsd.zbio) + obj.DC1*rTOC.b11*rTOC.a11*exp(rTOC.a11*bsd.zbio) + ...
+                        obj.DC1*rTOC.b11*rTOC.a11*bsd.por*exp(rTOC.b11*bsd.zbio) - obj.DC1*rTOC.b11*rTOC.a11*bsd.por*exp(rTOC.a11*bsd.zbio) - bsd.w*rTOC.a11*exp(rTOC.a11*bsd.zbio) + bsd.w*rTOC.b11*exp(rTOC.b11*bsd.zbio) + ...
+                        bsd.w*bsd.por*rTOC.a11*exp(rTOC.a11*bsd.zbio) - bsd.w*bsd.por*rTOC.b11*exp(rTOC.b11*bsd.zbio));
+            res.swi.C01 = swi.C01;
+            
             rTOC.A11=-(swi.C01.*rTOC.b11.*exp(rTOC.b11.*bsd.zbio))./(rTOC.a11.*exp(rTOC.a11.*bsd.zbio)-rTOC.b11.*exp(rTOC.b11.*bsd.zbio)+bsd.tol_const);
             rTOC.A21=(rTOC.A11.*(exp(rTOC.a11.*bsd.zbio)-exp(rTOC.b11.*bsd.zbio))+swi.C01.*exp(rTOC.b11.*bsd.zbio))./(exp(rTOC.a21.*bsd.zbio)+bsd.tol_const);
             %rTOC.A21=rTOC.A11.*exp(rTOC.a11.*bsd.zbio)./(exp(rTOC.a21.*bsd.zbio)+bsd.tol_const)-rTOC.A11.*exp(rTOC.b11.*bsd.zbio)./(exp(rTOC.a21.*bsd.zbio)+bsd.tol_const)+swi.C01.*exp(rTOC.b11.*bsd.zbio)./(exp(rTOC.a21.*bsd.zbio)+bsd.tol_const);
@@ -44,6 +50,12 @@ classdef benthic_zTOC < handle
             rTOC.a12=(bsd.w-sqrt(bsd.w.^2+4.*obj.DC1.*obj.k2))./(2.*obj.DC1);
             rTOC.b12=(bsd.w+sqrt(bsd.w.^2+4.*obj.DC1.*obj.k2))./(2.*obj.DC1);
             rTOC.a22=(-obj.k2./bsd.w);
+            % calculate bioturbated SWI
+            swi.C02 = (swi.Fnonbio2*(-rTOC.a12*exp(rTOC.a12*bsd.zbio)+rTOC.b12*exp(rTOC.b12*bsd.zbio)))/(-obj.DC1*rTOC.b12*rTOC.a12*exp(rTOC.b12*bsd.zbio) + obj.DC1*rTOC.b12*rTOC.a12*exp(rTOC.a12*bsd.zbio) + ...
+                        obj.DC1*rTOC.b12*rTOC.a12*bsd.por*exp(rTOC.b12*bsd.zbio) - obj.DC1*rTOC.b12*rTOC.a12*bsd.por*exp(rTOC.a12*bsd.zbio) - bsd.w*rTOC.a12*exp(rTOC.a12*bsd.zbio) + bsd.w*rTOC.b12*exp(rTOC.b12*bsd.zbio) + ...
+                        bsd.w*bsd.por*rTOC.a12*exp(rTOC.a12*bsd.zbio) - bsd.w*bsd.por*rTOC.b12*exp(rTOC.b12*bsd.zbio));
+            res.swi.C02 = swi.C02;
+            
             rTOC.A12=-(swi.C02.*rTOC.b12.*exp(rTOC.b12.*bsd.zbio))./(rTOC.a12.*exp(rTOC.a12.*bsd.zbio)-rTOC.b12.*exp(rTOC.b12.*bsd.zbio)+bsd.tol_const);
             rTOC.A22=(rTOC.A12.*(exp(rTOC.a12.*bsd.zbio)-exp(rTOC.b12.*bsd.zbio))+swi.C02.*exp(rTOC.b12.*bsd.zbio))./(exp(rTOC.a22.*bsd.zbio)+bsd.tol_const);
             
@@ -57,6 +69,29 @@ classdef benthic_zTOC < handle
             res.F_TOC2=-(1-bsd.por).*bsd.w.*rTOC.A22.*exp(rTOC.a22.*bsd.zinf);
             res.F_TOC=res.F_TOC1+res.F_TOC2;
             
+            Int_nonbio = obj.k1*((rTOC.A21/rTOC.a21*exp(rTOC.a21*bsd.zinf)) - rTOC.A21/rTOC.a21*exp(rTOC.a21*bsd.zbio))
+            Int_bio_Maple = obj.k1*( (rTOC.A11*(exp(rTOC.a11*bsd.zbio)/rTOC.a11 - exp(rTOC.b11*bsd.zbio)/rTOC.b11)) + swi.C01/rTOC.b11 * exp(rTOC.b11*bsd.zbio) - (rTOC.A11*(1/rTOC.a11 - 1/rTOC.b11)+ swi.C01/rTOC.b11)) % for C(inf) = 0:   k* (A1/a1*exp(a1*zinf)-A1/a1)
+            Sum_bio_nonbio_ALL = Int_nonbio + Int_bio_Maple
+            
+for i=1:1:1001
+    z(i) = (i-1)/10;
+    if(z<=bsd.zbio)
+        C1(i)=rTOC.A11*(exp(rTOC.a11*z(i))-exp(rTOC.b11*z(i)))+swi.C01*exp(rTOC.b11*z(i));
+%        C1matlab(i)=rTOC.A11.*(exp(rTOC.a11.*z(i))-exp(rTOC.b11.*z(i)))+swi.C01.*exp(rTOC.b11.*z(i));
+    else                   
+        C1(i)=rTOC.A21*exp(rTOC.a21*z(i));
+%        C1matlab(i)=rTOC.A21.*exp(rTOC.a21.*z(i));
+    end
+end
+figure
+plot(C1,-z)
+ hold on
+t=xlim;
+plot([0,t(1,2)], [-bsd.zbio,-bsd.zbio], 'k--') 
+xlabel ('[TOC] in zTOC')
+ylabel('Depth (cm)')
+hold off
+
             
         end
         

@@ -2,9 +2,9 @@ format longEng
 clear all;
 close all
 
-w = 0.1;
+w = 0.01;
 C0 = 0.1;
-k=0.1;
+k=0.4;
 DC1 = 0.10;
 DC2 = 0.0;
 por = 0.85;
@@ -15,12 +15,13 @@ zinf = 100;
 a1=(w-sqrt(w^2+4*DC1*k))/(2*DC1);
 b1=(w+sqrt(w^2+4*DC1*k))/(2*DC1);
 A1= C0; %-(C0*b1*exp(b1*zbio))/(a1*exp(a1*zbio)-b1*exp(b1*zbio));% for C(inf) = 0: C0;
+A2 = C0;
 
 a2= -k/w;
 
 Int_bio = k* (A1/a1*exp(a1*zinf)-A1/a1) %k*( (A1*(exp(a1*zinf)/a1 - exp(b1*zinf)/b1)) + C0/b1 * exp(b1*zinf) - (A1*(1/a1 - 1/b1)+ C0/b1)) % for C(inf) = 0:  k* (A1/a1*exp(a1*zinf)-A1/a1)%
 
-Int_nonbio = k*((C0/a2*exp(a2*zinf)) - C0/a2)
+Int_nonbio = k*((A2/a2*exp(a2*zinf)) - A2/a2)
 
 for i=1:1:1001
     z = (i-1)/10;
