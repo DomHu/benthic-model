@@ -9,8 +9,8 @@ classdef benthic_zTOC < handle
     properties
         DC1;                                                   %TOC diffusion coefficient (cm2/yr)
        
-        k1= 0.6; %0.035; % 0.01 0.006;                                                  %TOC degradation rate constnat (1/yr)
-        k2= 0.6;   %0.0006;                                                %TOC degradation rate constant (1/yr)  
+        k1= 1.0; %0.035; % 0.01 0.006;                                                  %TOC degradation rate constnat (1/yr)
+        k2= 1.0;   %0.0006;                                                %TOC degradation rate constant (1/yr)  
        
     end
     
@@ -36,7 +36,6 @@ classdef benthic_zTOC < handle
             
             rTOC.A11=-(swi.C01.*rTOC.b11.*exp(rTOC.b11.*bsd.zbio))./(rTOC.a11.*exp(rTOC.a11.*bsd.zbio)-rTOC.b11.*exp(rTOC.b11.*bsd.zbio)+bsd.tol_const);
             rTOC.A21=(rTOC.A11.*(exp(rTOC.a11.*bsd.zbio)-exp(rTOC.b11.*bsd.zbio))+swi.C01.*exp(rTOC.b11.*bsd.zbio))./(exp(rTOC.a21.*bsd.zbio)+bsd.tol_const);
-            %rTOC.A21=rTOC.A11.*exp(rTOC.a11.*bsd.zbio)./(exp(rTOC.a21.*bsd.zbio)+bsd.tol_const)-rTOC.A11.*exp(rTOC.b11.*bsd.zbio)./(exp(rTOC.a21.*bsd.zbio)+bsd.tol_const)+swi.C01.*exp(rTOC.b11.*bsd.zbio)./(exp(rTOC.a21.*bsd.zbio)+bsd.tol_const);
            
 %             diff1 = exp(rTOC.a11.*bsd.zbio)
 %             diff2 = exp(rTOC.b11.*bsd.zbio)

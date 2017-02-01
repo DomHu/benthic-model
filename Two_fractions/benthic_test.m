@@ -15,8 +15,8 @@ classdef benthic_test
             swi.C02_nonbio= 1.0*1e-2/12*bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;          %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
             swi.Fnonbio1 =swi.C01_nonbio*(1-bsd.por)*bsd.w;    %according non-bioturbated flux
             swi.Fnonbio2 =swi.C02_nonbio*(1-bsd.por)*bsd.w;
-            swi.C01 = 0.0;  % resulting bioturbated SWI-concentration, to be calculated in benthic_zTOC.m
-            swi.C02 = 0.0;
+            swi.C01 = swi.C01_nonbio; %0.0;  % resulting bioturbated SWI-concentration, to be calculated in benthic_zTOC.m
+            swi.C02 = swi.C02_nonbio; %0.0;
             %swi.C01=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
             %swi.C02=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
             swi.O20=150.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
