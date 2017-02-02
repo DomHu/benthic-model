@@ -36,16 +36,7 @@ classdef benthic_zTOC < handle
             
             rTOC.A11=-(swi.C01.*rTOC.b11.*exp(rTOC.b11.*bsd.zbio))./(rTOC.a11.*exp(rTOC.a11.*bsd.zbio)-rTOC.b11.*exp(rTOC.b11.*bsd.zbio)+bsd.tol_const);
             rTOC.A21=(rTOC.A11.*(exp(rTOC.a11.*bsd.zbio)-exp(rTOC.b11.*bsd.zbio))+swi.C01.*exp(rTOC.b11.*bsd.zbio))./(exp(rTOC.a21.*bsd.zbio)+bsd.tol_const);
-           
-%             diff1 = exp(rTOC.a11.*bsd.zbio)
-%             diff2 = exp(rTOC.b11.*bsd.zbio)
-%             difference= (exp(rTOC.a11.*bsd.zbio)-exp(rTOC.b11.*bsd.zbio))
-%             denom=(exp(rTOC.a21.*bsd.zbio)+bsd.tol_const)
-%             denom1=exp(rTOC.a21.*bsd.zbio)
-%             nom=(rTOC.A11.*(exp(rTOC.a11.*bsd.zbio)-exp(rTOC.b11.*bsd.zbio))+swi.C01.*exp(rTOC.b11.*bsd.zbio))
-%             nom1 = rTOC.A11.*(exp(rTOC.a11.*bsd.zbio)-exp(rTOC.b11.*bsd.zbio))
-%             nom2 =swi.C01.*exp(rTOC.b11.*bsd.zbio)
-            
+                     
             rTOC.a12=(bsd.w-sqrt(bsd.w.^2+4.*obj.DC1.*obj.k2))./(2.*obj.DC1);
             rTOC.b12=(bsd.w+sqrt(bsd.w.^2+4.*obj.DC1.*obj.k2))./(2.*obj.DC1);
             rTOC.a22=(-obj.k2./bsd.w);
@@ -68,29 +59,34 @@ classdef benthic_zTOC < handle
             res.F_TOC2=-(1-bsd.por).*bsd.w.*rTOC.A22.*exp(rTOC.a22.*bsd.zinf);
             res.F_TOC=res.F_TOC1+res.F_TOC2;
             
-            Int_nonbio = obj.k1*((rTOC.A21/rTOC.a21*exp(rTOC.a21*bsd.zinf)) - rTOC.A21/rTOC.a21*exp(rTOC.a21*bsd.zbio))
-            Int_bio_Maple = obj.k1*( (rTOC.A11*(exp(rTOC.a11*bsd.zbio)/rTOC.a11 - exp(rTOC.b11*bsd.zbio)/rTOC.b11)) + swi.C01/rTOC.b11 * exp(rTOC.b11*bsd.zbio) - (rTOC.A11*(1/rTOC.a11 - 1/rTOC.b11)+ swi.C01/rTOC.b11)) % for C(inf) = 0:   k* (A1/a1*exp(a1*zinf)-A1/a1)
-            Sum_bio_nonbio_ALL = Int_nonbio + Int_bio_Maple
-            
-for i=1:1:1001
-    z(i) = (i-1)/10;
-    if(z<=bsd.zbio)
-        C1(i)=rTOC.A11*(exp(rTOC.a11*z(i))-exp(rTOC.b11*z(i)))+swi.C01*exp(rTOC.b11*z(i));
-%        C1matlab(i)=rTOC.A11.*(exp(rTOC.a11.*z(i))-exp(rTOC.b11.*z(i)))+swi.C01.*exp(rTOC.b11.*z(i));
-    else                   
-        C1(i)=rTOC.A21*exp(rTOC.a21*z(i));
-%        C1matlab(i)=rTOC.A21.*exp(rTOC.a21.*z(i));
-    end
-end
-figure
-plot(C1,-z)
- hold on
-t=xlim;
-plot([0,t(1,2)], [-bsd.zbio,-bsd.zbio], 'k--') 
-xlabel ('[TOC] in zTOC')
-ylabel('Depth (cm)')
-hold off
+            if(false)   % prints for checking TOC integration for SWI-flux test 
+                Int_nonbio = obj.k1*((rTOC.A21/rTOC.a21*exp(rTOC.a21*bsd.zinf)) - rTOC.A21/rTOC.a21*exp(rTOC.a21*bsd.zbio))
+                Int_bio_Maple = obj.k1*( (rTOC.A11*(exp(rTOC.a11*bsd.zbio)/rTOC.a11 - exp(rTOC.b11*bsd.zbio)/rTOC.b11)) + swi.C01/rTOC.b11 * exp(rTOC.b11*bsd.zbio) - (rTOC.A11*(1/rTOC.a11 - 1/rTOC.b11)+ swi.C01/rTOC.b11)) % for C(inf) = 0:   k* (A1/a1*exp(a1*zinf)-A1/a1)
 
+                Int_bio_z0 = obj.k1*((rTOC.A11*(1/rTOC.a11 - 1/rTOC.b11)+ swi.C01/rTOC.b11))
+                Int_bio_zbio= obj.k1*((rTOC.A11*(exp(rTOC.a11*bsd.zbio)/rTOC.a11 - exp(rTOC.b11*bsd.zbio)/rTOC.b11)) + swi.C01/rTOC.b11 * exp(rTOC.b11*bsd.zbio))
+                Int_nonbio_zbio=obj.k1*(rTOC.A21/rTOC.a21*exp(rTOC.a21*bsd.zbio))
+                Int_nonbio_zinf= obj.k1*((rTOC.A21/rTOC.a21*exp(rTOC.a21*bsd.zinf)))
+
+                Sum_bio_nonbio_ALL = Int_nonbio + Int_bio_Maple
+
+                for i=1:1:1001
+                    z(i) = (i-1)/10;
+                    if(z<=bsd.zbio)
+                        C1(i)=rTOC.A11*(exp(rTOC.a11*z(i))-exp(rTOC.b11*z(i)))+swi.C01*exp(rTOC.b11*z(i));
+                    else                   
+                        C1(i)=rTOC.A21*exp(rTOC.a21*z(i));
+                    end
+                end
+                figure
+                plot(C1,-z)
+                 hold on
+                t=xlim;
+                plot([0,t(1,2)], [-bsd.zbio,-bsd.zbio], 'k--') 
+                xlabel ('[TOC] in zTOC')
+                ylabel('Depth (cm)')
+                hold off
+            end
             
         end
         

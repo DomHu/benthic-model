@@ -15,7 +15,7 @@ classdef benthic_main < handle
         wdepth=3575.0;     % Dom was 600.0                       % water depth (m)
         w;                                      % burial velocity  (cm/yr)
         z0  = 0;                                % surface
-        zbio=100.0;                              % bioturbation depth (cm)       
+        zbio=10.0;                              % bioturbation depth (cm)       
         
         zinf=100;                               %Inifinity (cm)
         %zinf = 1000;
@@ -86,8 +86,8 @@ classdef benthic_main < handle
             obj.SD=(1-obj.por)./obj.por;   % Sandra played with 1.0
             
             obj.OC=1.0*obj.SD; %(138/106)*obj.SD;                                                  %O2/C (mol/mol)
-            obj.NC1=0.0; %0.1509*obj.SD;                                          %N/C first TOC fraction: 16/106 (mol/mol)
-            obj.NC2= 0.0; %0.1509*obj.SD; %0.13333*obj.SD;                                         %N/C second TOC fraction (mol/mol)            
+            obj.NC1=0.1509*obj.SD;                                          %N/C first TOC fraction: 16/106 (mol/mol)
+            obj.NC2= 0.1509*obj.SD; %0.13333*obj.SD;                                         %N/C second TOC fraction (mol/mol)            
             obj.PC1=0.0094*obj.SD;  % Sandra played with 1e-20;             %P/C first TOC fraction  1/106 (mol/mol)
             obj.PC2=0.0094*obj.SD;  % Sandra played with  1e-20;            %P/C second TOC fraction 1/106 (mol/mol)
             obj.SO4C=(138.0/212.0)*obj.SD; % 0.5*obj.SD;                                                %SO4/C (mol/mol)

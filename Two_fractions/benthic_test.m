@@ -626,8 +626,11 @@ classdef benthic_test
             tic;
             res = res.zTOC.calc(res.bsd,res.swi, res);
             % check O2 demand using O2 to C ratio and (convert POC concentr. to flux analog to fortran)
-            % POC_flux*OC = POC_conc * w * 1/(1 - por) * OC           
-            O2_demand = (res.swi.C01+res.swi.C02)*res.bsd.w*1/(1-res.bsd.por)*res.bsd.OC
+            % POC_flux*OC = POC_conc * w * 1/(1 - por) * OC  
+            O2_demand_flux = -(res.swi.Fnonbio1+res.swi.Fnonbio2)*res.bsd.OC/((1-res.bsd.por)./res.bsd.por)
+%            O2_demand = (res.swi.C01+res.swi.C02)*res.bsd.OC
+%            O2_demand = (res.swi.C01+res.swi.C02)*res.bsd.w*res.bsd.OC
+
             res = res.zO2.calc(res.bsd, res.swi, res);
             if(swi.Nitrogen)
                 res = res.zNO3.calc(res.bsd, res.swi, res);
