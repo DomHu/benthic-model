@@ -189,11 +189,9 @@ qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg
 
 ########################################################################################################################################
 ########################################################################################################################################
-########################################################################################################################################
 
 ################# 		2017 
 
-########################################################################################################################################
 ########################################################################################################################################
 ########################################################################################################################################
 
@@ -222,4 +220,21 @@ qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg
 
 #### TEST old shelfs with smaller detrital input (as 4) at 03/01/2017) now with baseconfig - save every timeslice:
 ./runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES_EVERY1 DOM/05_OMEN_GENIE_Oct2016 EXAMPLE05._rwlma.PO4_S18x18.OPEN_noCaCO3_Corg_all_remin_k0.1_0301 10
+
+
+########################################################################################################################################
+########################################################################################################################################
+
+################# 		WORKED on SWI-FLUX PROBLEM AND ALKALINITY
+
+########################################################################################################################################
+########################################################################################################################################
+
+############ 04/01/2017
+1) Biotic ocean - open system - no weathering - no air-sea gas exchange - with OMEN all remineralised k1,2 = 0.1 - -> run with new artificial ocean  - job 9006
+(save timeslice every year with base-config: cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES_EVERY1)
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/05_OMEN_GENIE_Oct2016 DOM_TEST_artifical_world_biotic_nogastransf_noweathering_allremin_min_w-value_0702 5000
+
+2) as 1) with OMEN ksmaller k1 = 0.01; k2 = 0.0001 - job 9007 
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/05_OMEN_GENIE_Oct2016 DOM_TEST_artifical_world_biotic_nogastransf_noweathering_allremin_min_w-value_smaller_k_0702 5000
 	       

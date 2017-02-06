@@ -626,7 +626,7 @@ CONTAINS
         ! -------------------------------------------------------- !
         ! DUMMY ARGUMENTS
         ! -------------------------------------------------------- !
-        real,INTENT(in)::dum_FPOC                                  ! POC flux (cm^3 cm-2) or as timestep is yr (cm^3 cm-2 yr-1)
+        real,INTENT(in)::dum_FPOC                                  ! POC flux as timestep is yr (cm^3 cm-2 yr-1)
         real,INTENT(in)::loc_sed_w                                 ! sediment accumulation rate - burial velocity [cm yr^-1] (Middelburg et al., Deep Sea Res. 1, 1997)
         real,INTENT(in)::dum_por                                   ! sediment porosity (cm3 cm-3)
         real,INTENT(in)::dum_den                                   ! sediment density (g cm-3)

@@ -12,7 +12,7 @@ classdef benthic_main < handle
         
         %sediment characteristics
         rho_sed=2.6; %was 2.5                           % sediment density (g/cm3)
-        wdepth=3575.0;     % Dom was 600.0                       % water depth (m)
+        wdepth=3575.5999999999999;     % Dom was 600.0                       % water depth (m)
         w;                                      % burial velocity  (cm/yr)
         z0  = 0;                                % surface
         zbio=10.0;                              % bioturbation depth (cm)       
@@ -27,6 +27,9 @@ classdef benthic_main < handle
         dispFactor;                             %dispersion factor (-)
         
         %stoichiometric factors
+        X_C;                                    % Carbon Redfield stoichiometry
+        Y_N;                                    % Nitrogen Redfield stoichiometry
+        Z_P;                                    % Phosphorous Redfield stoichiometry
         SD;                                     %volume factor solid->dissolved phase
         OC;                                     %O2/C (mol/mol)
         NC1;                                    %N/C first TOC fraction (mol/mol)
@@ -85,23 +88,27 @@ classdef benthic_main < handle
             obj.dispFactor=obj.por.^(obj.tort-1.0).*obj.irrigationFactor;                 %dispersion factor (-)
             obj.SD=(1-obj.por)./obj.por;   % Sandra played with 1.0
             
-            obj.OC=1.0*obj.SD; %(138/106)*obj.SD;                                                  %O2/C (mol/mol)
+            obj.X_C=106;                                                    % Carbon Redfield stoichiometry
+            obj.Y_N=16;                                                     % Nitrogen Redfield stoichiometry
+            obj.Z_P=1;                                                      % Phosphorous Redfield stoichiometry
+            obj.OC=(138/106)*obj.SD; % 1.0*obj.SD; %                      	%O2/C (mol/mol)
             obj.NC1=0.1509*obj.SD;                                          %N/C first TOC fraction: 16/106 (mol/mol)
             obj.NC2= 0.1509*obj.SD; %0.13333*obj.SD;                                         %N/C second TOC fraction (mol/mol)            
-            obj.PC1=0.0094*obj.SD;  % Sandra played with 1e-20;             %P/C first TOC fraction  1/106 (mol/mol)
-            obj.PC2=0.0094*obj.SD;  % Sandra played with  1e-20;            %P/C second TOC fraction 1/106 (mol/mol)
+            obj.PC1=1/106*obj.SD;  % was 0.0094 Sandra played with 1e-20;             %P/C first TOC fraction  1/106 (mol/mol)
+            obj.PC2=1/106*obj.SD;  % was 0.0094 Sandra played with  1e-20;            %P/C second TOC fraction 1/106 (mol/mol)
             obj.SO4C=(138.0/212.0)*obj.SD; % 0.5*obj.SD;                                                %SO4/C (mol/mol)
             obj.DICC1=1.0*obj.SD;                                               %DIC/C until zSO4 (mol/mol)
             obj.DICC2=0.5*obj.SD;                                               %DIC/C below zSO4 (mol/mol)
             obj.MC=0.5*obj.SD;                                                  %CH4/C (mol/mol)
             obj.NO3CR=(94.4/106)*obj.SD;                                        % NO3 consumed by Denitrification
-            obj.ALKROX=15.0;        % /106                                          % Aerobic degradation                     
-            obj.ALKRNIT=-2.0;                                                     % Nitrification    
-            obj.ALKRDEN=93.4;       % /106                                          % Denitrification
-            obj.ALKRSUL=15.0;       % /106                                            % Sulfato reduction
-            obj.ALKRH2S=-2.0;       % -1.0                                                % H2S oxydation (CHECK THIS VALUE!!!)
-            obj.ALKRMET=14.0;       % /106                                            % Methanogenesis
-            obj.ALKRAOM=2.0;                                                      % AOM
+            
+            obj.ALKROX=-(obj.Y_N+2*obj.Z_P)/obj.X_C;                        % -18/106; was +15      % Aerobic degradation                     
+            obj.ALKRNIT=-2.0;                                               % Nitrification    
+            obj.ALKRDEN=(4*obj.X_C+3*obj.Y_N-10*obj.Z_P)/(5*obj.X_C);       %  462/530 was 93.4;    % Denitrification
+            obj.ALKRSUL=(obj.X_C+obj.Y_N-2*obj.Z_P)/obj.X_C;                % 120/106  was 15      	% Sulfato reduction
+            obj.ALKRH2S=-2.0;                                               % H2S oxydation (CHECK THIS VALUE!!!)
+            obj.ALKRMET=(obj.Y_N-2*obj.Z_P)/obj.X_C;                      	% 14/106 was 14       	% Methanogenesis
+            obj.ALKRAOM=2.0;                                               	% AOM
 
         end
     end
@@ -110,8 +117,8 @@ classdef benthic_main < handle
         
         function w = sedrate(wdepth)
             % sedimentation rate, cm/yr
-            w = 10.0.^(-0.87478367-0.00043512*wdepth)*3.3; % 0.2668 is at 500m this is of  10.0.^(-0.87478367-0.00043512*wdepth)*3.3; % 0.03; 
-            %w = 0.2; %12.0E-003; %2.53711935261055925E-003;
+            %w = 10.0.^(-0.87478367-0.00043512*wdepth)*3.3; % 0.2668 is at 500m this is of  10.0.^(-0.87478367-0.00043512*wdepth)*3.3; % 0.03; 
+            w = 1.67314980808039629E-003; %12.0E-003; %2.53711935261055925E-003;
         end
         
          function Dbio = biorate(wdepth)

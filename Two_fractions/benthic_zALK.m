@@ -25,12 +25,12 @@ classdef benthic_zALK
   
              %reactive terms: OM degradation
 % Following is too high!
-             obj.reac11=bsd.gamma*bsd.NC1/(1+obj.KNH4)*bsd.ALKRNIT+bsd.OC*bsd.ALKROX;       % z < zox:  Nitrification (-2) Aerobic degradation (+15/106)
-             obj.reac12=bsd.gamma*bsd.NC2/(1+obj.KNH4)*bsd.ALKRNIT+bsd.OC*bsd.ALKROX;       % z < zox:  Nitrification (-2) Aerobic degradation (+15/106)
-             obj.reac21=bsd.ALKRDEN*bsd.NC1;                                                  % zox < z < zno3: Denitrification (+93.4/106)
-             obj.reac22=bsd.ALKRDEN*bsd.NC2;                                                  % zox < z < zno3: Denitrification (+93.4/106)
-             obj.reac3=bsd.ALKRSUL*bsd.SO4C;                                                  % zno3 < z < zso4: Sulfate reduction (+15/106)
-             obj.reac4=bsd.ALKRMET*bsd.MC;                                                  % zso4 < z < zinf: Methanogenesis (+14/106)
+             obj.reac11=bsd.gamma*bsd.NC1/(1+obj.KNH4)*bsd.ALKRNIT+bsd.ALKROX;       % z < zox:  Nitrification (-2) Aerobic degradation (+15/106)
+             obj.reac12=bsd.gamma*bsd.NC2/(1+obj.KNH4)*bsd.ALKRNIT+bsd.ALKROX;       % z < zox:  Nitrification (-2) Aerobic degradation (+15/106)
+             obj.reac21=bsd.ALKRDEN;                                                  % zox < z < zno3: Denitrification (+93.4/106)
+             obj.reac22=bsd.ALKRDEN;                                                  % zox < z < zno3: Denitrification (+93.4/106)
+             obj.reac3=bsd.ALKRSUL;                                                  % zno3 < z < zso4: Sulfate reduction (+15/106)
+             obj.reac4=bsd.ALKRMET;                                                  % zso4 < z < zinf: Methanogenesis (+14/106)
 %   From Nicolas:
 %              obj.reac11=bsd.gamma*bsd.NC1*bsd.ALKRNIT+bsd.ALKROX*bsd.SD;       % z < zox:  Nitrification (-2) Aerobic degradation (+15/106)
 %              obj.reac12=bsd.gamma*bsd.NC2*bsd.ALKRNIT+bsd.ALKROX*bsd.SD;       % z < zox:  Nitrification (-2) Aerobic degradation (+15/106)
@@ -68,7 +68,7 @@ classdef benthic_zALK
             [ e4_zso4, dedz4_zso4, f4_zso4, dfdz4_zso4, g4_zso4, dgdz4_zso4] ...1
                 = r.zTOC.calcfg_l12(r.zso4, bsd, swi, r,  obj.reac4, obj.reac4, 0, rALK.ls4);
             %flux of ALK produced by AOM interface (Source of ALK)   
-            zso4FALK = bsd.ALKRAOM.*bsd.gammaCH4.*r.zTOC.calcReac(r.zso4, bsd.zinf, bsd.MC, bsd.MC, bsd, swi, r); % MULTIPLY BY 1/POR ????
+            zso4FALK = bsd.ALKRAOM.*bsd.gammaCH4.*r.zTOC.calcReac(r.zso4, bsd.zinf, bsd.SD, bsd.SD, bsd, swi, r); % MULTIPLY BY 1/POR ????
             % match solutions at zso4 - continuous concentration and flux
             [zso4.a, zso4.b, zso4.c, zso4.d, zso4.e, zso4.f] = benthic_utils.matchsoln(e3_zso4, f3_zso4, g3_zso4, dedz3_zso4, dfdz3_zso4, dgdz3_zso4, ...
                                                                 e4_zso4, f4_zso4, g4_zso4, dedz4_zso4, dfdz4_zso4, dgdz4_zso4, ...

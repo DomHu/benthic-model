@@ -804,6 +804,7 @@ $\chem{PO_4}^a$ & mol\,cm$^{-3}$ & $3.7\cdot 10^{-9}$ & equilibrium conc. for au
 &&&\citet{caroline_p_slomp_key_1996}\\
 $\chem{M}^\infty$ & mol\,cm$^{-3}$ & \textcolor{red}{$1.99\cdot 10^{-9}$} & asymptotic concentration for Fe-bound P\\
 &&&\citet{caroline_p_slomp_key_1996}\\
+\multicolumn{4}{l}{\textcolor{red}{TODO: Add adsorption coefficients!}}\\
 \multicolumn{4}{l}{\textbf{Diffusion coefficients} \citep{Li_diffusion_1974, gypens_simple_2008}}\\
 $D_{\chem{O_2}}^0$ & cm$^2$\,yr$^{-1}$ & 348.62172 &Molecular diffusion coefficient of oxygen at 0$^\circ$C\\
 $D_{\chem{O_2}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 14.08608 &Diffusion coefficient for linear temp. dependence of oxygen\\ % value was 0.0386 (changed by Nicolas 2207)
@@ -844,7 +845,7 @@ See Table \ref{table:reaction_parameters} for a complete summary of the paramete
 %\textcolor{red}{Next bit from Gypens:} Re-oxidation occurs in a ratio of 1 mol of oxygen per mol of carbon anoxically mineralized. Similarly, 2 mol of oxygen
 %are consumed during nitrification of \chem{NH_4} produced in the anoxic zone. As nitrification may be incomplete in the oxic layer, we similarly allow for part of the ammonium flux to escape re-oxidation. 
 \begin{table}[btp]
-\caption{Values for biogeochemical parameters used in OMEN-SED (1.0). 
+\caption{Values for biogeochemical parameters used in OMEN-SED (1.0). The variables $x$, $y$ and $z$ denote the atomic ratio of carbon, nitrogen and phosphorous of the degrading organic matter (here set to $C:N:P = 106:16:1$).
 %\textcolor{red}{Stoichiometric factor for oxygen and sulfate relates to mol of terminal electron acceptor consumed for 1 mol of organic matter mineralized. 
 %NC and MC related to mol of reduced species produces per mol organic matter mineralized. correct???}
 }
@@ -858,38 +859,38 @@ See Table \ref{table:reaction_parameters} for a complete summary of the paramete
 Parameter/Variable & Unit  & Value & Description\\
 \hline
 \multicolumn{4}{l}{\textbf{Stoichiometric factors and molecular ratios}}\\
-\chem{NC_1} & mol/mol & 0.1509 & nitrogen to carbon ratio\\
-& & & \textcolor{red}{refractory fraction, two different ones? why these values?}\\
-\chem{NC_2} & mol/mol & 0.13333 & nitrogen to carbon ratio\\
+\chem{NC_1} & mol/mol & $\frac{y}{x}=\frac{16}{106}$ & nitrogen to carbon ratio\\
+& & & \textcolor{red}{refractory fraction, was 2 different ones? why?}\\
+\chem{NC_2} & mol/mol & $\frac{y}{x}=\frac{16}{106}$ & nitrogen to carbon ratio\\
 & & & labile fraction\\
-\chem{PC_i} & mol/mol & 0.0094 & phosphorus to carbon ratio\\
+\chem{PC_i} & mol/mol & $\frac{z}{x}=\frac{1}{106}$ & phosphorus to carbon ratio\\
 \chem{MC}& mol/mol & 0.5 & methane to carbon ratio\\
 &&&produced during methanogenesis\\
 \chem{DICC^I}& mol/mol & 1.0 & DIC to carbon ratio until \chem{z_{SO_4}}\\
 \chem{DICC^{II}}& mol/mol & 0.5 &  DIC to carbon ratio below \chem{z_{SO_4}}\\
-\chem{O_2C} & mol/mol & 1.0 & oxygen to carbon ratio\\
-\chem{NO_3C} & mol/mol & 94.4/106 & nitrate to carbon ratio\\
-\chem{SO_4C} & mol/mol & 0.5 & sulfate to carbon ratio\\
-$\chem{ALK}^\mathrm{OX}$ & mol/mol & 15 & ALK from aerobic degradation\\
-$\chem{ALK}^\mathrm{NIT}$ & mol/mol & -2 & ALK from nitrification\\
-$\chem{ALK}^\mathrm{DEN}$ & mol/mol & 93.4 & ALK from denitrification\\
-$\chem{ALK}^\mathrm{SUL}$ & mol/mol & 15 & ALK from sulfate reduction\\
-$\chem{ALK}^\mathrm{MET}$ & mol/mol & 14 & ALK from methanogenesis\\
-$\chem{ALK}^\mathrm{H2S}$ & mol/mol & -2 & ALK from \chem{H_2S} oxidation\\
-$\chem{ALK}^\mathrm{AOM}$ & mol/mol & 2 & ALK from AOM\\
+\chem{O_2C} & mol/mol & $\frac{x+2y}{x}=\frac{138}{106}$ & oxygen to carbon ratio\\
+\chem{NO_3C} & mol/mol & $\frac{4x+3y}{5x}=\frac{94.4}{106}$ & nitrate to carbon ratio\\
+\chem{SO_4C} & mol/mol & $\frac{1}{2}\chem{O_2C} = \frac{138}{212}$ & sulfate to carbon ratio\\
+$\chem{ALK}^\mathrm{OX}$ & mol/mol & $-\frac{y+2z}{x}=-\frac{18}{106}$ & ALK from aerobic degradation\\
+$\chem{ALK}^\mathrm{NIT}$ & mol/mol & $-2$ & ALK from nitrification\\
+$\chem{ALK}^\mathrm{DEN}$ & mol/mol & $\frac{4x+3y-10z}{5x}=\frac{92.4}{106}$ & ALK from denitrification\\
+$\chem{ALK}^\mathrm{SUL}$ & mol/mol & $\frac{x+y-2z}{x}=\frac{120}{106}$ & ALK from sulfate reduction\\
+$\chem{ALK}^\mathrm{MET}$ & mol/mol & $\frac{y-2z}{x}=\frac{14}{106}$ & ALK from methanogenesis\\
+$\chem{ALK}^\mathrm{H2S}$ & mol/mol & $-2$ & ALK from \chem{H_2S} oxidation\\
+$\chem{ALK}^\mathrm{AOM}$ & mol/mol & $2$ & ALK from AOM\\
 %$DICC^I$ & $mol/mol$ & 1 & DIC to carbon ratio\\
 %& & & until $z_{\chem{SO_4}}$\\
 %$DICC^{II}$ & $mol/mol$ & 0.5 & DIC to carbon ratio\\
 %& & & for methanogenesis\\[0.5ex]
 \multicolumn{4}{l}{\textbf{Secondary reaction parameters}}\\
-$\gamma_{\chem{NH_4}}$ & - & 0.8 & fraction of \chem{NH_4} that is oxidised\\
+$\gamma_{\chem{NH_4}}$ & - & 0.9 & fraction of \chem{NH_4} that is oxidised\\
 & & & in oxic layer\\
 $\gamma_{\chem{H_2S}}$ & - & 0.95 & fraction of \chem{H_2S} that is oxidised\\
 & & & in oxic layer\\
-$\gamma_{\chem{CH_4}}$ & - & 1.0 & fraction of \chem{CH_4} that is oxidised\\
+$\gamma_{\chem{CH_4}}$ & - & 0.99 & fraction of \chem{CH_4} that is oxidised\\
 & & & at $z_{\chem{SO_4}}$\\
 \multicolumn{4}{l}{\textbf{Rate constants}}\\
-$k_i$ & yr$^{-1}$ & from Earth System Model & OM degradation rate constants\\
+$k_i$ & yr$^{-1}$ & --- & OM degradation rate constants\\
 $k_s$ & yr$^{-1}$ & \textcolor{red}{???} & rate constant for P sorption\\
 $k_m$ & yr$^{-1}$ & \textcolor{red}{???} & rate constant for Fe-bound P release\\
 $k_a$ & yr$^{-1}$ & \textcolor{red}{???} & rate constant for authigenic P formation\\
@@ -1220,18 +1221,25 @@ TEXT
 %inserts double horizontal lines
  Pathway & Stoichiometry \\
 \hline
-& Primary Redox Reactions\\
+& Primary Redox reactions\\
 \hline
 Aerobic degradation &  $ \chem{(CH_2O)_x(NH_3)_y(H_3PO_4)_z} + \mathrm{(x+2y)}\chem{O_2} + \mathrm{(y+2z)}\chem{HCO_3^-} \rightarrow \mathrm{(x+y+2z)}\chem{CO_2} + \chem{yNO_3^-} + \chem{zHPO_4^{2-}} + \mathrm{(x+2y+2z)}\chem{H_2O}$\\
-Denitrification & $ 5\chem{(CH_2O)_x(NH_3)_y(H_3PO_4)_z} + \mathrm{(4x+3y)}\chem{NO_3^-} \rightarrow \mathrm{(2x+4y)}\chem{N_2} +  \mathrm{(x-3y+10z)}\chem{CO_2} + \mathrm{(4x+3y-10z)}\chem{HCO_3^-} + 5\chem{zHPO_4^{2-}} + \mathrm{(3x+6y+10z)}\chem{H_2O}$\\
-Sulfate reduction &  $ 2\chem{(CH_2O)_x(NH_3)_y(H_3PO_4)_z} + \chem{xSO_4^{2-}} +  \mathrm{2(y-2z)}\chem{CO_2} + \mathrm{2(y-2z)}\chem{H_2O}\rightarrow \chem{xH_2S} +  \mathrm{2(x+y-2z)}\chem{HCO_3^-}  + \mathrm{2y}\chem{NH_4^+} + 2\chem{zHPO_4^{2-}}$\\
-Methanogenesis & -----\\
+Denitrification & $ \chem{(CH_2O)_x(NH_3)_y(H_3PO_4)_z} + \frac{\mathrm{(4x+3y)}}{5}\chem{NO_3^-} \rightarrow \frac{\mathrm{(2x+4y)}}{5}\chem{N_2} +  \frac{\mathrm{(x-3y+10z)}}{5}\chem{CO_2} + \frac{\mathrm{(4x+3y-10z)}}{5}\chem{HCO_3^-} 
+		  + \chem{zHPO_4^{2-}} + \frac{\mathrm{(3x+6y+10z)}}{5}\chem{H_2O}$\\
+Sulfate reduction &  $ \chem{(CH_2O)_x(NH_3)_y(H_3PO_4)_z} + \frac{\chem{x}}{2}\chem{SO_4^{2-}} + \mathrm{(y-2z)}\chem{CO_2} + \mathrm{(y-2z)}\chem{H_2O}\rightarrow \frac{\chem{x}}{2}\chem{H_2S} +  \mathrm{(x+y-2z)}\chem{HCO_3^-}  + \mathrm{y}\chem{NH_4^+} + \chem{zHPO_4^{2-}}$\\
+Methanogenesis & $ \chem{(CH_2O)_x(NH_3)_y(H_3PO_4)_z} + \mathrm{(y-2z)}\chem{H_2O}\rightarrow \frac{\chem{x}}{2}\chem{CH_4} +  \frac{\mathrm{x-2y+4z}}{2}\chem{CO_2}  + \mathrm{(x-2z)}\chem{HCO_3^-} + \mathrm{y}\chem{NH_4^+} + \chem{zHPO_4^{2-}}$\\
 \hline
-& Secondary Redox Reactions\\
+& Secondary Redox reactions\\
 \hline
 Nitrification & $\chem{NH_4^++2O_2+2HCO_3^-}\rightarrow \chem{NO_3^-+2CO_2+3H_2O}$\\
 Sulfide oxidation & $\chem{H_2S + 2O_2 + 2HCO_3^-} \rightarrow \chem{SO_4^{2-} + 2CO_2 + 2H_2O}$\\
-AOM & $\chem{CH_4 + SO_4^{2-}} \rightarrow \chem{HCO_3^- + HS^- + H_2O}$ \textcolor{red}{how get $H_2S$?} $\rightarrow \chem{CO_3^{2-}+H_2S+H_2O}$\\
+AOM & $\chem{CH_4 + CO_2 + SO_4^{2-}} \rightarrow \chem{2HCO_3^- + H_2S}$\\
+\hline
+& Adsorption reactions and mineral precipitation\\
+\hline
+\chem{NH_4} adsorption & $\chem{NH_4^+} \xrightarrow{\mathrm{K_{NH_4}}} \chem{NH_4^+(ads)}$\\
+\chem{P} ad-/desorption \textcolor{red}{???} & $\chem{PO_4^{2-}} \xrightarrow{\mathrm{K_{PO_4}^{I, II}}} \chem{PO_4^{2-}(ads)}; \qquad\quad \chem{HPO_4^{2-}} \xrightarrow{\mathrm{k_s}} \mathrm{Fe-bound\ P} \xrightarrow{\mathrm{k_m}} \chem{HPO_4^{2-}} $\\
+\chem{CFA} precipitation & $\chem{PO_4^{2-}} \xrightarrow{\mathrm{k_a}} \chem{CFA}$ \\
 \hline\hline
 % inserts double horizontal lines
 \end{tabular}
