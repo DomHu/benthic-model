@@ -9,8 +9,8 @@ classdef benthic_zTOC < handle
     properties
         DC1;                                                   %TOC diffusion coefficient (cm2/yr)
        
-        k1= 0.1; %0.035; % 0.01 0.006;                                                  %TOC degradation rate constnat (1/yr)
-        k2= 0.1;   %0.0006;                                                %TOC degradation rate constant (1/yr)  
+        k1= 0.05; %0.035; % 0.01 0.006;                                                  %TOC degradation rate constnat (1/yr)
+        k2= 0.05;   %0.0006;                                                %TOC degradation rate constant (1/yr)  
        
     end
     
@@ -59,7 +59,7 @@ classdef benthic_zTOC < handle
             res.F_TOC2=-(1-bsd.por).*bsd.w.*rTOC.A22.*exp(rTOC.a22.*bsd.zinf);
             res.F_TOC=res.F_TOC1+res.F_TOC2;
             
-            if(false)   % prints for checking TOC integration for SWI-flux test 
+            if(true)   % prints for checking TOC integration for SWI-flux test 
                 Int_nonbio = obj.k1*((rTOC.A21/rTOC.a21*exp(rTOC.a21*bsd.zinf)) - rTOC.A21/rTOC.a21*exp(rTOC.a21*bsd.zbio))
                 Int_bio_Maple = obj.k1*( (rTOC.A11*(exp(rTOC.a11*bsd.zbio)/rTOC.a11 - exp(rTOC.b11*bsd.zbio)/rTOC.b11)) + swi.C01/rTOC.b11 * exp(rTOC.b11*bsd.zbio) - (rTOC.A11*(1/rTOC.a11 - 1/rTOC.b11)+ swi.C01/rTOC.b11)) % for C(inf) = 0:   k* (A1/a1*exp(a1*zinf)-A1/a1)
 

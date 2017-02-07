@@ -702,20 +702,20 @@ $z=z_{\infty}$& zero \chem{DIC} flux & 10)& $\frac{\partial \chem{DIC}}{\partial
 
 
 \subsubsection{Alkalinity}
-Alkalinity is produced and consumed by when organic matter is degraded. Explain why it is produced/consumed, where and how in the different layers $j \in \{I,\ II,\ III,\ IV\}$ and talk earlier on in the model description why it matters.
+Alkalinity is produced and consumed by when organic matter is degraded. \textcolor{red}{TODO: Explain why it is produced/consumed, where and how in the different layers} $j \in \{I,\ II,\ III,\ IV\}$ and talk earlier on in the model description why it matters.
 % \begin{equation}
 %   \frac{\partial \chem{ALK}^{}}{\partial t} = 0 = D_{\chem{ALK}} \frac{\partial^2\chem{ALK}^{I} }{\partial z^2} - w\frac{\partial \chem{ALK}^{I} }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i \mathrm{REAC_{ALK}} \cdot k_i \cdot C_{i}(z) \label{eq:ALK_ODE}
 % \end{equation}
 \begin{align}
  \intertext{1. Layer ($z \leq z_{\chem{ox}}$)} 
 \frac{\partial \chem{ALK}^{I}}{\partial t} &= 0 = D_{\chem{ALK}} \frac{\partial^2\chem{ALK}^{I} }{\partial z^2} - w\frac{\partial \chem{ALK}^{I} }{\partial z} \notag\\
-					  & + \frac{1-\phi}{\phi} \cdot \sum_i \left( \chem{ALK}^\mathrm{NIT} \cdot \frac{\gamma_{\chem{NH_4}}}{1+K_\chem{NH_4}} \chem{NC_i} + \chem{ALK}^\mathrm{OX}\cdot \chem{O_2C}\right)\cdot k_i \cdot C_{i}(z) \label{eq:ALK_ODE1_L1}\\
+					  & + \frac{1-\phi}{\phi} \cdot \sum_i \left( \chem{ALK}^\mathrm{NIT} \cdot \frac{\gamma_{\chem{NH_4}}}{1+K_\chem{NH_4}} \chem{NC_i} + \chem{ALK}^\mathrm{OX}\right)\cdot k_i \cdot C_{i}(z) \label{eq:ALK_ODE1_L1}\\
  \intertext{2. Layer ($z_{\chem{ox}} < z \leq z_{\chem{NO_3}} $)} 
-\frac{\partial \chem{ALK}^{II}}{\partial t} &= 0 = D_{\chem{ALK}} \frac{\partial^2\chem{ALK}^{II} }{\partial z^2} - w\frac{\partial \chem{ALK}^{II} }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i \chem{ALK}^\mathrm{DEN}\cdot \chem{NC_i} \cdot k_i \cdot C_{i}(z)\label{eq:ALK_ODE1_L2}
+\frac{\partial \chem{ALK}^{II}}{\partial t} &= 0 = D_{\chem{ALK}} \frac{\partial^2\chem{ALK}^{II} }{\partial z^2} - w\frac{\partial \chem{ALK}^{II} }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i \chem{ALK}^\mathrm{DEN}\cdot k_i \cdot C_{i}(z)\label{eq:ALK_ODE1_L2}
  \intertext{3. Layer ($z_{\chem{NO_3}} < z \leq z_{\chem{SO_4}} $)} 
-\frac{\partial \chem{ALK}^{III}}{\partial t} &= 0 = D_{\chem{ALK}} \frac{\partial^2\chem{ALK}^{III} }{\partial z^2} - w\frac{\partial \chem{ALK}^{III} }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i \chem{ALK}^\mathrm{SUL}\cdot \chem{SO_4C}\cdot k_i \cdot C_{i}(z)\label{eq:ALK_ODE1_L2}
+\frac{\partial \chem{ALK}^{III}}{\partial t} &= 0 = D_{\chem{ALK}} \frac{\partial^2\chem{ALK}^{III} }{\partial z^2} - w\frac{\partial \chem{ALK}^{III} }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i \chem{ALK}^\mathrm{SUL}\cdot k_i \cdot C_{i}(z)\label{eq:ALK_ODE1_L2}
  \intertext{4. Layer ($z_{\chem{SO_4}} < z \leq z_{\infty} $)} 
-\frac{\partial \chem{ALK}^{IV}}{\partial t} &= 0 = D_{\chem{ALK}} \frac{\partial^2\chem{ALK}^{IV} }{\partial z^2} - w\frac{\partial \chem{ALK}^{IV} }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i \chem{ALK}^\mathrm{MET}\cdot \chem{MC}\cdot k_i \cdot C_{i}(z)\label{eq:ALK_ODE1_L2}
+\frac{\partial \chem{ALK}^{IV}}{\partial t} &= 0 = D_{\chem{ALK}} \frac{\partial^2\chem{ALK}^{IV} }{\partial z^2} - w\frac{\partial \chem{ALK}^{IV} }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i \chem{ALK}^\mathrm{MET}\cdot k_i \cdot C_{i}(z)\label{eq:ALK_ODE1_L2}
 \end{align}
 To solve equations \ref{eq:ALK_ODE1_L1} and \ref{eq:ALK_ODE1_L2} the model assumes the boundary conditions summarised in Table \ref{Tab:BC_ALK}.
 
@@ -739,7 +739,7 @@ $z=z_{\chem{NO_3}}$&continuity& 6)& $\chem{ALK}(z_{\chem{NO_3}}^-)$=$\chem{ALK}(
                & flux & 7)& $-D_{\chem{ALK}}\cdot \frac{\partial \chem{ALK}}{\partial z}|_{z_{\chem{NO_3}}^-}=-D_{\chem{ALK}} \cdot \frac{\partial \chem{ALK}}{\partial z}|_{z_{\chem{NO_3}}^+}$\\
 $z=z_{\chem{SO_4}}$& continuity & 8)& $\chem{ALK}(z_{\chem{SO_4}}^-)$=$\chem{ALK}(z_{\chem{SO_4}}^+)$\\ %$\frac{\partial \chem{ALK}}{\partial z}|_{z_{\chem{ALK}}}=0$\\
                & flux (with AOM) & 9)&  $-D_{\chem{ALK}}\cdot \frac{\partial \chem{ALK}}{\partial z}|_{z_{\chem{SO_4}}^-} + F_{\chem{ALK}}(z_{\chem{SO_4}})=-D_{\chem{ALK}} \cdot \frac{\partial \chem{ALK}}{\partial z}|_{z_{\chem{SO_4}}^+}$\\
-&where: & &$\quad F_{\chem{ALK}}(z_{\chem{SO_4}})=\frac{1-\phi}{\phi} \cdot \left( \chem{ALK}^\chem{AOM}\gamma_\chem{CH_4}\cdot \int_{z_{\chem{SO_4}}}^{\infty}  \sum_i \chem{MC} \cdot k_i \cdot C_i\ dz \right)$ \\          
+&where: & &$\quad F_{\chem{ALK}}(z_{\chem{SO_4}})=\frac{1-\phi}{\phi} \cdot \left( \chem{ALK}^\chem{AOM}\gamma_\chem{CH_4}\cdot \int_{z_{\chem{SO_4}}}^{\infty}  \sum_i k_i \cdot C_i\ dz \right)$ \\          
 $z=z_{\infty}$& zero \chem{ALK} flux & 10)& $\frac{\partial \chem{ALK}}{\partial z}|_{z_\infty}=0$\\
 \hline    
 \end{tabular}
@@ -777,7 +777,7 @@ Tortuosity can be expresssed in terms of porosity as $F = \frac{1}{\phi^m}$ \cit
 Values for $D^T_i$ and $D^0_i$ are summarized in Table \ref{table:sed-charac_transport-parameters} and are adapted from \citet{Li_diffusion_1974} and \citet{gypens_simple_2008}.
 
 \begin{table}[hbtp]
-\caption{Fixed sediment characteristics and transport parameters. \textcolor{red}{TODO: Update table!}}
+\caption{Sediment characteristics and transport parameters. \textcolor{red}{TODO: Update table!}}
 % title of Table
 \centering
 % used for centering table
@@ -787,24 +787,30 @@ Values for $D^T_i$ and $D^0_i$ are summarized in Table \ref{table:sed-charac_tra
 %inserts double horizontal lines
 Parameter & Unit  & Value & Description/Source\\
 \hline
-$\rho_{\mathrm{sed}}$ & g\,cm$^{-3}$ & 2.5 & Sediment density \\
-$w$ & cm\,yr$^{-1}$ &  Fct. of seafloor  & Advection/Sediment accumulation rate \\
-&& depth & \citet{middelburg_empirical_1997}\\
-$z_{\mathrm{bio}}$& cm & 10 & Bioturbation depth\\
-&&&\citet{boudreau_mean_1998, teal_global_2010}\\
+$\rho_{\mathrm{sed}}$ & g\,cm$^{-3}$ & 2.6 & Sediment density \\
+$w$ & cm\,yr$^{-1}$ &  From ESM  & Advection/Sediment accumulation rate \\
+&&  & \citep{middelburg_empirical_1997}\\
+$z_{\mathrm{bio}}$& cm & 10 or 0.0 & Bioturbation depth\\
+&&&\citep{boudreau_mean_1998, teal_global_2010}\\
 $D_{\mathrm{bio}}$& cm$^2$\,yr$^{-1}$ & Fct. of seafloor & Bioturbation coefficient\\
-&& depth &\citet{middelburg_empirical_1997}\\
-$\phi$ & - & 0.8 & Porosity\\
+&& depth &\citep{middelburg_empirical_1997}\\
+$\phi$ & - & 0.85 & Porosity\\
 F & - &  $\frac{1}{\phi^m}$ & Tortuosity, here m=3\\
 f$_{ir}$ & - & 1 & Irrigation factor\\
 %dispF & - & $irrF \cdot \phi^{F-1.0}$ & Dispersion factor\\
 $\chem{PO_4}^s$ & mol\,cm$^{-3}$ & $1\cdot 10^{-9}$ & equilibrium conc. for P sorption\\
-&&&\citet{caroline_p_slomp_key_1996}\\
-$\chem{PO_4}^a$ & mol\,cm$^{-3}$ & $3.7\cdot 10^{-9}$ & equilibrium conc. for authigenic P precipitation\\
-&&&\citet{caroline_p_slomp_key_1996}\\
+&&&\citep{caroline_p_slomp_key_1996}\\
+$\chem{PO_4}^a$ & mol\,cm$^{-3}$ &  \textcolor{red}{$3.7\cdot 10^{-9}$} & equilibrium conc. for authigenic P precipitation\\
+&&&\citep{caroline_p_slomp_key_1996}\\
 $\chem{M}^\infty$ & mol\,cm$^{-3}$ & \textcolor{red}{$1.99\cdot 10^{-9}$} & asymptotic concentration for Fe-bound P\\
-&&&\citet{caroline_p_slomp_key_1996}\\
-\multicolumn{4}{l}{\textcolor{red}{TODO: Add adsorption coefficients!}}\\
+&&&\citep{caroline_p_slomp_key_1996}\\
+\multicolumn{4}{l}{\textbf{Adsorption coefficients and rate constants}} \\
+$K_{\chem{NH_4}}$ & - & 1.4 & \chem{NH_4} adsorption coefficient \citep{wang_multicomponent_1996}\\
+$K_\chem{PO_4}^I$ & - & \textcolor{red}{200.0} & \chem{PO_4} adsorption coefficient (oxic) \citep{slomp1998role}\\
+$K_\chem{PO_4}^{II}$ & - & \textcolor{red}{1.3} & \chem{PO_4} adsorption coefficient (anoxic) \citep{slomp1998role}\\
+$k_s$ & yr$^{-1}$ & \textcolor{red}{???} & Rate constant for P sorption\\
+$k_m$ & yr$^{-1}$ & \textcolor{red}{???} & Rate constant for Fe-bound P release\\
+$k_a$ & yr$^{-1}$ & \textcolor{red}{???} & Rate constant for authigenic CFA precipitation\\
 \multicolumn{4}{l}{\textbf{Diffusion coefficients} \citep{Li_diffusion_1974, gypens_simple_2008}}\\
 $D_{\chem{O_2}}^0$ & cm$^2$\,yr$^{-1}$ & 348.62172 &Molecular diffusion coefficient of oxygen at 0$^\circ$C\\
 $D_{\chem{O_2}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 14.08608 &Diffusion coefficient for linear temp. dependence of oxygen\\ % value was 0.0386 (changed by Nicolas 2207)
@@ -834,7 +840,7 @@ The applied multi-G approach for organic matter degradation considers specific d
 and are assumed invariant along the sediment column, therefore independent of the nature of the terminal electron acceptor. 
 The stoichiometry of organic matter is represented by the factors \chem{NC_i} and \chem{PC_i} denoting the molecular nitrogen to carbon and phosphorus to carbon ratio. 
 In the sulfidic and methanic zone the 
-reduction of 1 mol organic matter additionally produces 0.5 mol of hydrogen sulfide (\chem{SO_4C}) and 0.5 mol of methane (\chem{MC}). 
+reduction of 1 mol organic matter additionally produces $\frac{138}{212}$ mol of hydrogen sulfide (\chem{SO_4C}) and 0.5 mol of methane (\chem{MC}). 
 In the total sediment column organic matter mineralization consumes the specific TEA with a fixed ratio (\chem{O_2C}, \chem{NO_3C} and \chem{SO_4C} respectively). 
 See Table \ref{table:reaction_parameters} for a complete summary of the parameters and their values.
 % \textcolor{red}{Or bit longer:}\\
@@ -889,11 +895,11 @@ $\gamma_{\chem{H_2S}}$ & - & 0.95 & fraction of \chem{H_2S} that is oxidised\\
 & & & in oxic layer\\
 $\gamma_{\chem{CH_4}}$ & - & 0.99 & fraction of \chem{CH_4} that is oxidised\\
 & & & at $z_{\chem{SO_4}}$\\
-\multicolumn{4}{l}{\textbf{Rate constants}}\\
-$k_i$ & yr$^{-1}$ & --- & OM degradation rate constants\\
-$k_s$ & yr$^{-1}$ & \textcolor{red}{???} & rate constant for P sorption\\
-$k_m$ & yr$^{-1}$ & \textcolor{red}{???} & rate constant for Fe-bound P release\\
-$k_a$ & yr$^{-1}$ & \textcolor{red}{???} & rate constant for authigenic P formation\\
+% \multicolumn{4}{l}{\textbf{Rate constants}}\\
+% $k_i$ & yr$^{-1}$ & --- & OM degradation rate constants\\
+% $k_s$ & yr$^{-1}$ & \textcolor{red}{???} & rate constant for P sorption\\
+% $k_m$ & yr$^{-1}$ & \textcolor{red}{???} & rate constant for Fe-bound P release\\
+% $k_a$ & yr$^{-1}$ & \textcolor{red}{???} & rate constant for authigenic P formation\\
 \hline\hline
 % inserts double horizontal lines
 \end{tabular}

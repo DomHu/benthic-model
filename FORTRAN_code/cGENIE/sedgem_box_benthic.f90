@@ -608,8 +608,8 @@ CONTAINS
         
         ! ORGANIC MATTER
         DC1 = Dbio
-        k1=0.01
-        k2=0.0001
+        k1=0.1
+        k2=0.1
 
         ! GLOBAL DIFFUSION COEFFICIENTS
         ! O2
@@ -1214,7 +1214,7 @@ CONTAINS
         !tmpreac1=OC+2*gamma*NC1
         !tmpreac2=OC+2*gamma*NC2
         !FLUX of NH4 and Reduced species from ZOX to ZINF
-
+        ! FUN_huelseetal2016_calcFO2 = 0.0    ! for no oxidation of reduced species.
         FUN_huelseetal2016_calcFO2 = z/(zoxgf + z + const_real_nullsmall) * FUN_calcReac(z, zinf, tmpreac1, tmpreac2)
 
     !    print*,'calcFO2', calcFO2
