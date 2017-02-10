@@ -8,7 +8,7 @@ classdef benthic_main < handle
         ncl;                                    % number of sediment columns
         usescalarcode = true;                   % use scalar code 
         
-        tol_const = 1e-18;                      % non-zero constant to avoid numerical errors (e.g. division by zero)
+        tol_const = 0.0;                      % non-zero constant to avoid numerical errors (e.g. division by zero)
         
         %sediment characteristics
         rho_sed=2.6; %was 2.5                           % sediment density (g/cm3)
@@ -21,6 +21,7 @@ classdef benthic_main < handle
         %zinf = 1000;
         %zlow=100;                              
         Dbio; % was 29.06.2016 =5.2*(10.0^(0.7624-0.0003972*obj.wdepth)); % Dom was 3;                                 %bioturbation coefficient (cm2/yr)
+        Dunbio=0.01;
         por=0.85;      %was 0.85                          %porosity (-)
         tort=3.0;                               %tortuosity (-)
         irrigationFactor=1.0;                   %irrigation factor (-)

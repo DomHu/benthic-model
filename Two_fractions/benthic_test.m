@@ -618,7 +618,7 @@ classdef benthic_test
             
             % calculate 
             res.zTOC = benthic_zTOC(res.bsd);
-           res.zO2 = benthic_zO2(res.bsd, res.swi);           
+            res.zO2 = benthic_zO2(res.bsd, res.swi);           
             res.zNO3 = benthic_zNO3(res.bsd, res.swi);
             res.zSO4 = benthic_zSO4(res.bsd, res.swi);
             res.zNH4 = benthic_zNH4(res.bsd, res.swi);

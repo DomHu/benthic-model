@@ -244,7 +244,7 @@ qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg
 4) as 2) with shelfs CRASH
 qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/05_OMEN_GENIE_Oct2016 DOM_TEST_artifical_world_biotic_nogastransf_noweathering_allremin_min_w-value_SHELVES_smaller_k_0702 10000
 
-############ 07/01/2017
+############ 07/02/2017
 1) (no shelfs) Biotic ocean - open system - no weathering - no air-sea gas exchange - with OMEN all remineralised, higher k1,2 = 1.0 - -> run with new artificial ocean  - job 9034
 (save timeslice every year with base-config: cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES_EVERY1)
 qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/05_OMEN_GENIE_Oct2016 DOM_TEST_artifical_world_biotic_nogastransf_noweathering_allremin_min_w-value_k_1.0_0702 10000
@@ -258,4 +258,53 @@ qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg
 4) as  1) with k = 1.0 and NC=0.0 and no 2.redox reactions - job 9037
 qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/05_OMEN_GENIE_Oct2016 DOM_TEST_artifical_world_biotic_nogastransf_noweathering_allremin_min_w-value_no2nd_redox_k_1.0_0702 10000
 
+5) as 3) k=0.1 no 2nd redox with const_real_nullsmall/100000000 in zTOC denominator - job 9046 
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/05_OMEN_GENIE_Oct2016 DOM_TEST_artifical_world_biotic_nogastransf_noweathering_allremin_min_w-value_no2nd_redox_k_0.1_smaller-denom_0702 10000
+
+6) as 4) k=1.0 no 2nd redox with const_real_nullsmall/100000000 in zTOC denominator - job 9047
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/05_OMEN_GENIE_Oct2016 DOM_TEST_artifical_world_biotic_nogastransf_noweathering_allremin_min_w-value_no2nd_redox_k_1.0_smaller-denom_0702 10000
+
+############ 10/02/2017 - still no shelves: cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES
+1) Biotic , open system, no weathering, no air-sea gas exchange - with OMEN all remineralised k = 0.1 - no																																																																																																																																																											 O2 secondary redox (but here H2S still oxidised) NOW: par_bio_red_PON_ALK = 0.0 - no implicity ALK production in GENIE - job 9102
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/05_OMEN_GENIE_Oct2016 1002_DOM_TEST_artifical_world_biotic_nogastransf_noweathering_allremin_min_w-value_k_0.1_NO_IMPL_ALK 5000
+
+2) as 1) k = 1.0 - job 9103
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/05_OMEN_GENIE_Oct2016 1002_DOM_TEST_artifical_world_biotic_nogastransf_noweathering_allremin_min_w-value_k_1.0_NO_IMPL_ALK 5000
+
+3) as 1) k=0.1 BUT NOW: ALSO set oxidation of H2S to SO4 to zero in SO4 & H2S rouines - ALSO set ALK stoichiometry for sec. redox and CH4 to 0.0 
+-  job 9106 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! THIS WAS RUN WITH k=1.0 AS WELL !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/05_OMEN_GENIE_Oct2016 1002_DOM_TEST_art_world_biotic_nogastra_noweath_min_w_k_0.1_NO_IMPL_ALK_NO_2ndREDOX_NoALK 5000
+
+4) as 3) with k = 1.0 - job 9105
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/05_OMEN_GENIE_Oct2016 1002_DOM_TEST_art_world_biotic_nogastra_noweath_min_w_k_1.0_NO_IMPL_ALK_NO_2ndREDOX_NoALK 5000
+
+-------- Double check run 3) and 4) ... looks too similar (too good)
+5) as 3) k=0.1 - job 9112
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/05_OMEN_GENIE_Oct2016 1002_DOM_TEST_art_world_biotic_nogastra_noweath_min_w_k_0.1_NO_IMPL_ALK_NO_2ndREDOX_NoALK_NEW 10000
+  
+6) as 4) k = 1.0 - job 9121 
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/05_OMEN_GENIE_Oct2016 1002_DOM_TEST_art_world_biotic_nogastra_noweath_min_w_k_1.0_NO_IMPL_ALK_NO_2ndREDOX_NoALK_NEW 10000
+
+7) with burial to see what O2, ... does k1=0.01, k2=0.001, rest as before (i.e. all 2nd redox off) - job 9122
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/05_OMEN_GENIE_Oct2016 1002_DOM_TEST_art_world_biotic_nogastra_noweath_min_w_k_small_k_01_001_NO_IMPL_ALK_NO_2ndREDOX_NoALK 10000
+
+8) as before with even higher k = 4.0 - job 9123 
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/05_OMEN_GENIE_Oct2016 1002_DOM_TEST_art_world_biotic_nogastra_noweath_min_w_k_higher_k_4_NO_IMPL_ALK_NO_2ndREDOX_NoALK 10000
+
+
+TODOOOOOOOOOOOOOOOOO:
+
+---------------- NOW WITHOUT DENOMINATOR!!!! ----> CRASHED FOR 1 diffusion coefficient do with 2 diffusion coefficients!
+
+BUT TRY NO TOL for two diffusion coefficients!!!
+
+9) as 5) with 2 diff.-coeffs, k = 0.1 no denominator tolerance - 
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/05_OMEN_GENIE_Oct2016 1002_DOM_TEST_art_world_biotic_nogastra_noweath_min_w_k_0.1_NO_IMPL_ALK_NO_2ndREDOX_NoALK_NO-TOL 10000
+
+10) as 6) with 2 diff.-coeffs, k = 1.0 no denominator tolerance - 
+
+11) as 7) with 2 diff.-coeffs, k1=0.01, k2=0.001 no denominator tolerance - 
+
+12)  as 8) with 2 diff.-coeffs, k = 4.0 no denominator tolerance -  
 
