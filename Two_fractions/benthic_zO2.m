@@ -130,8 +130,8 @@ classdef benthic_zO2
            %tmpreac2=bsd.OC+2*bsd.gamma*bsd.NC2;
             %FLUX of NH4 and Reduced species from ZOX to ZINF
             
-            FO2 = 0.0; % for no oxidation of reduced species.
-            % FO2 = zox./(bsd.zoxgf + zox).*r.zTOC.calcReac(zox, bsd.zinf, tmpreac1, tmpreac2, bsd, swi, r); 
+            % FO2 = 0.0; % for no oxidation of reduced species.
+            FO2 = zox./(bsd.zoxgf + zox).*r.zTOC.calcReac(zox, bsd.zinf, tmpreac1, tmpreac2, bsd, swi, r); 
             % NB (1-bsd.por)/bsd.por  has been included in OC etc stoich factors, so this is flux / cm^2 pore area
            
         end

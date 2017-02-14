@@ -179,10 +179,10 @@ Such studies and quantifications are possible through the application of idealis
 The number of research questions that can be addressed with diagenetic models is infinite and a plethora of different approaches have been developed, mainly following two distinct directions \citep{arndt_quantifying_2013}. 
 First, state-of-the art vertically resolved diagenetic models simulating all of the essential coupled redox and equilibrium reactions within marine sediments that control carbon burial and benthic recycling fluxes 
 (e.g. BRNS, \citeauthor{aguilera_knowledge-based_2005}, \citeyear{aguilera_knowledge-based_2005}; 
-MEDIA, \citeauthor{meysman_reactive_2003}, \citeyear{meysman_reactive_2003}; OMEXDIA, \citeauthor{soetaert_model_1996}, \citeyear{soetaert_model_1996}). These ``complete'',non-steady-state models generally use a so-called multi-G approach, 
+MEDIA, \citeauthor{meysman_reactive_2003}, \citeyear{meysman_reactive_2003}; OMEXDIA, \citeauthor{soetaert_model_1996}, \citeyear{soetaert_model_1996}). These ``complete'', non-steady-state models generally use a so-called multi-G approach, 
 thus dividing the bulk organic carbon pool into a number of compound classes that are characterised by different degradabilities $k_i$. Combining such a complex diagenetic model with an ocean biogeochemical model results in 
 the most realistic benthic-pelagic coupling. However, the global applicability of this set-up is limited by the high computation cost of simulating all biogeochemical reactions in the sediments. 
-The second group of models is less sophisticated and comprehensive than the ``complete'',non-steady-state diagenetic models and is used for the coupling to global Earth System Models 
+The second group of models is less sophisticated and comprehensive than the ``complete'', non-steady-state diagenetic models and is used for the coupling to global Earth System Models 
 (e.g. DCESS, \citeauthor{shaffer_presentation_2008}, \citeyear{shaffer_presentation_2008}; MEDUSA, \citeauthor{munhoven_glacialinterglacial_2007}, \citeyear{munhoven_glacialinterglacial_2007} or the model of \citet{heinze_global_1999}). 
 In particular, these analytic models consider fewer biogeochemical reactions and assume that the sedimentary organic matter pool is composed 
 of just a single or two discrete compound classes (1G or 2G approach respectively). \\[2ex]% apply the so-called 1G approach, thus just representing a single organic matter pool which is degraded at a constant rate. 
@@ -261,7 +261,8 @@ The calculation of benthic return/uptake and burial fluxes is based on the verti
 where $C_i$ is the concentration of the biogeochemical species $i$, $\xi$ equals the porosity $\phi$ for solute species and $(1-\phi)$ for solid species, hence represents the partitioning of species $i$ 
 into the solute and dissolved phase. The term $z$ is the sediment depth, $t$ denotes the time, $F$ summarises the transport fluxes and $\sum_j R_i^j$ represents the sum of production/consumption rates $j$ 
 that affect species $i$. The reaction network accounts for the most important primary and secondary redox reactions, equilibrium reactions, mineral dissolution and precipitation, as well as adsorption 
-and desorption processes that affect the explicitly resolved chemical species.\\
+and desorption processes that affect the explicitly resolved chemical species. 
+
 State-of-the-art reaction-transport models generally solve the ordinary differential equation (ODE) (eq. \ref{eq:Eq_generaldiagenetic}) numerically and thus allow to account for transient dynamics, 
 depth-varying parameters or a high degree of coupling between different chemical species \citep[e.g.][]{soetaert_model_1996, aguilera_knowledge-based_2005}. 
 Yet, numerical models are computational expensive, thus rendering their application in an Earth System Model framework prohibitive. An analytical solution of equation \eqref{eq:Eq_generaldiagenetic} 
@@ -280,7 +281,7 @@ before the boost in computing power enabled the development of fully-coupled, mu
 
 Finding an analytical solution to  Eq. (\ref{eq:Eq_generaldiagenetic}), especially when complex reaction networks are to be considered, is not straightforward and generally requires the assumption of steady state. 
 In addition, the complexity of the reaction network can be reduced by dividing the sediment into distinct zones and accounting for the most pertinent biogeochemical processes 
-within each zone, thus increasing the likelihood of finding an analytical solution to Eq. (\ref{eq:Eq_generaldiagenetic}). 
+within each zone, thus increasing the likelihood of finding an analytical solution to Eq. (\ref{eq:Eq_generaldiagenetic}) (see Eq. (\ref{eq:ODE_general_solution}) in section \ref{subsec:GBCM} for the general steady-state solution). 
 
 Therefore, OMEN-SED assumes that benthic dynamics can be represented by a series of steady-states. 
 Because the Earth system model relevant variability in boundary conditions and fluxes is generally longer than the characteristic timescales of the reaction-transport processes, the sediment can be described by a 
@@ -294,9 +295,9 @@ for more details).
 
 OMEN calculates and feeds back to the Earth System model the fraction of POC preserved in the sediments and the sediment-water interface fluxes of the dissolved species $C_i$ (in mol cm$^{-2}$ year$^{-1}$):
 \begin{equation}
-\mathrm{Flux\_SWI(C_i)} = \phi \cdot \left(D_i \frac{\partial C_i}{\partial z} + w C_i(0) \right)
+\mathrm{Flux\_SWI(C_i)} = \phi \left(D_i \frac{\partial C_i(z)}{\partial z}\bigg\rvert_0 - w \left[ C_i(0) - C_i(z_\infty) \right]\right)
 \end{equation}
-where $w$ is the deposition rate, $D_i$ is the diffusion coefficient and $C_i(0)$ the sediment-water concentration of species $i$. 
+where $w$ is the deposition rate, $D_i$ is the diffusion coefficient and $C_i(0),\ C_i(z_\infty)$ the concentration of species $i$ at the SWI and at the lower sediment boundary. 
 
 \subsection{Transport}\label{subsec:Transport}
 The model accounts for both the advective, as well as the diffusive transport of dissolved and solid species, assuming that sediment compaction is negligible (i.e. $\frac{\partial \phi}{\partial z}=0$). 
@@ -670,7 +671,7 @@ $z=z_{\infty}$& assymptotic concentration & 10) $M(z_\infty)=M_\infty$\\
 % solution\\
 
 \subsubsection{Dissolved Inorganic Carbon (DIC)}
-Dissolved inorganic carbon (DIC) is produced by when organic matter is degraded. Explain different ratios for the two layers. 
+Dissolved inorganic carbon (DIC) is produced when organic matter is degraded. DIC dynamics are described by: 
 \begin{align}
 \intertext{1. Layer ($z \leq z_{\chem{SO_4}}$)}
   \frac{\partial DIC^I}{\partial t} &= 0 = D_{DIC} \frac{\partial^2DIC^I }{\partial z^2} - w\frac{\partial DIC^I }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i \chem{DICC^I} \cdot k_i \cdot C_{i}(z)\label{eq:DIC_ODE1_L1}\\ %\qquad &\text{1. Layer ($z\leq z_{\mathrm{ox}}$)}\\
@@ -702,7 +703,8 @@ $z=z_{\infty}$& zero \chem{DIC} flux & 10)& $\frac{\partial \chem{DIC}}{\partial
 
 
 \subsubsection{Alkalinity}
-Alkalinity is produced and consumed by when organic matter is degraded. \textcolor{red}{TODO: Explain why it is produced/consumed, where and how in the different layers} $j \in \{I,\ II,\ III,\ IV\}$ and talk earlier on in the model description why it matters.
+Alkalinity is produced and consumed when organic matter is degraded. 
+\textcolor{red}{TODO: Explain why it is produced/consumed, where and how in the different layers} $j \in \{I,\ II,\ III,\ IV\}$ and talk earlier on in the model description why it matters.
 % \begin{equation}
 %   \frac{\partial \chem{ALK}^{}}{\partial t} = 0 = D_{\chem{ALK}} \frac{\partial^2\chem{ALK}^{I} }{\partial z^2} - w\frac{\partial \chem{ALK}^{I} }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i \mathrm{REAC_{ALK}} \cdot k_i \cdot C_{i}(z) \label{eq:ALK_ODE}
 % \end{equation}
@@ -923,7 +925,7 @@ A general steady-state advection-diffusion-reaction (ADR) diagenetic equation lo
 where $z$ is the sediment depth, $t$ the time, $D$ is the diffusion coefficient and $w$ is the advection rate.\\
 The ODE solution is of the general form:
 \begin{align}
- C(z) &= A \exp(az) + B  \exp(bz) + \sum_i \frac{\alpha_i}{D \beta_i^2-w\beta_i-k}\cdot \exp(-\beta_i z) + \frac{Q}{k}
+ C(z) &= A \exp(az) + B  \exp(bz) + \sum_i \frac{\alpha_i}{D \beta_i^2-w\beta_i-k}\cdot \exp(-\beta_i z) + \frac{Q}{k} \label{eq:ODE_general_solution}
 \end{align}
 and can therefore be expressed as:
 \begin{align}
@@ -1010,7 +1012,9 @@ solution type to use.
 	\caption{Schematic of the relationship between OMEN-SED (1.0) and GENIE. Arrows and accompanied text represent the information transferred between models. }
 	\label{fig:OMEN-GENIE-coupling}
 	\end{center}
-\end{figure}Here the coupling of OMEN-SED (1.0) to the GENIE Earth System model is described, in particular its incorporation into the sediment geochemistry model \citep[SEDGEM,][]{ridgwell_regulation_2007}. 
+\end{figure}
+\textcolor{red}{TODO: Now: use flux, not POC-concentration.}
+Here the coupling of OMEN-SED (1.0) to the GENIE Earth System model is described, in particular its incorporation into the sediment geochemistry model \citep[SEDGEM,][]{ridgwell_regulation_2007}. 
 Results from pre-industrial experiments are presented in section \ref{subsec:GENIE-pre-ind}. OMEN-SED (1.0) is called by SEDGEM for each grid point instead of remineralising the settling flux of OM at the seafloor, passing over the 
 bottom water concentrations of solutes (in $\frac{mol}{kg}$) and the flux of OM (\chem{POC_{flux}}, in $\frac{cm^3}{cm^2\,yr}$, see Fig. \ref{fig:OMEN-GENIE-coupling}). 
 To be used by OMEN-SED (1.0) dissolved species and OM flux need to be converted into $\frac{mol}{cm^3}$. 

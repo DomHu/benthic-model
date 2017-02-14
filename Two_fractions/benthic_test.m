@@ -12,26 +12,26 @@ classdef benthic_test
             
             bsd = benthic_main();
             %bottom water concentrations
-            swi.T = 5.85; %20.0;                         %temperature (degree C)
+            swi.T = -0.862846215230036; %20.0;                         %temperature (degree C)
             % see caption for Fig 1.2 - two equal TOC fractions 0.02 0.2 2
             swi.C01_nonbio= 1.0*1e-2/12*bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*bsd.rho_sed;         %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
             swi.C02_nonbio= 1.0*1e-2/12*bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;          %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-            swi.Fnonbio1 = swi.C01_nonbio*(1-bsd.por)*bsd.w;    % [mol/(cm2 yr)] according non-bioturbated flux
-            swi.Fnonbio2 = swi.C02_nonbio*(1-bsd.por)*bsd.w;
+            swi.Fnonbio1 = 3.57145928631024E-006; %swi.C01_nonbio*(1-bsd.por)*bsd.w;    % [mol/(cm2 yr)] according non-bioturbated flux
+            swi.Fnonbio2 = 7.50288949976371E-006; %swi.C02_nonbio*(1-bsd.por)*bsd.w;
             swi.C01 = swi.C01_nonbio; %0.0;  % resulting bioturbated SWI-concentration, to be calculated in benthic_zTOC.m
             swi.C02 = swi.C02_nonbio; %0.0;
             %swi.C01=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
             %swi.C02=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-            swi.O20=150.0E-009;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
+            swi.O20=2.60563294905167E-007; %150.0E-009;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
             swi.NO30=0.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
             swi.Nitrogen=false;
             swi.NH40=0.0e-9;                                                %NH4 concentration at SWI (mol/cm^3)
-            swi.SO40=2.9E-005;                                            %SO4 concentration at SWI (mol/cm^3)
-            swi.H2S0=2.0E-012;         %was 0.0e-9                            %H2S concentration at SWI (mol/cm^3)
-            swi.PO40=2.16439751768114123E-009; %0.06e-8; % Dom was 1e-9;    % Sandra played with 3e-9                                              %PO4 concentration at SWI (mol/cm^3)
+            swi.SO40=1.49903511931118E-005; %2.9E-005;                                            %SO4 concentration at SWI (mol/cm^3)
+            swi.H2S0=9.91970338684408E-015; %2.0E-012;         %was 0.0e-9                            %H2S concentration at SWI (mol/cm^3)
+            swi.PO40=1.49652209017614E-009; %0.06e-8; % Dom was 1e-9;    % Sandra played with 3e-9                                              %PO4 concentration at SWI (mol/cm^3)
             swi.Mflux0=365*0.2e-10; % Sandra played with 10e-9; ;   % = 7.3e-9    %flux of M to the sediment (mol/(cm2*yr))   TODO/CHECK: good value+right conversion? is from Slomp et al. 1996        
-            swi.DIC0=2.36E-006;                                             %DIC concentration at SWI (mol/cm^3)
-            swi.ALK0=2.36E-006;                                             %ALK concentration at SWI (mol/cm^3)
+            swi.DIC0=2.14825340022616E-006;                                             %DIC concentration at SWI (mol/cm^3)
+            swi.ALK0=2.2470134175641E-006;                                             %ALK concentration at SWI (mol/cm^3)
             swi.S0=35;                                                      %Salinity at SWI
             swi.plot_PO4_DIC_ALK=true;
         end
@@ -42,7 +42,7 @@ classdef benthic_test
 %            % set date-time
 %            str_date = datestr(now,'ddmmyy_HH_MM_SS');
             res=benthic_test.test_benthic(1,swi);
-            benthic_test.plot_column(res, false, swi, 'k_0.1')
+            benthic_test.plot_column(res, false, swi, 'k_0.01_0.001_no2ndredox_grid_16_18_1302')
         end
 
         function test_k_SWIflux()            
@@ -1279,7 +1279,7 @@ classdef benthic_test
     %            title ('H2S (mol/cm^3)')
 
 
-                print('-dpsc2', ['Exp1_PROFILES_' str_date '.eps']);
+                print('-dpsc2', ['0_PROFILES_' str_date '.eps']);
             end
 
     end

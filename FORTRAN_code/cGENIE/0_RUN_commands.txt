@@ -295,16 +295,20 @@ qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg
 
 TODOOOOOOOOOOOOOOOOO:
 
----------------- NOW WITHOUT DENOMINATOR!!!! ----> CRASHED FOR 1 diffusion coefficient do with 2 diffusion coefficients!
+---------------- NOW WITHOUT DENOMINATOR!!!! ----> CRASHED FOR 1 diffusion coefficient -> do with 2 diffusion coefficients!
 
+############ 11/02/2017 - still no shelves: cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES
 BUT TRY NO TOL for two diffusion coefficients!!!
 
-9) as 5) with 2 diff.-coeffs, k = 0.1 no denominator tolerance - 
-qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/05_OMEN_GENIE_Oct2016 1002_DOM_TEST_art_world_biotic_nogastra_noweath_min_w_k_0.1_NO_IMPL_ALK_NO_2ndREDOX_NoALK_NO-TOL 10000
+1) as 5) yesterday with 2 diff.-coeffs, k = 0.1 no denominator tolerance - job 9130 
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/05_OMEN_GENIE_Oct2016 1102_DOM_TEST_art_world_biotic_nogastra_noweath_min_w_k_0.1_NO_IMPL_ALK_NO_2ndREDOX_NoALK_NO-TOL_2diffcoef 10000
 
-10) as 6) with 2 diff.-coeffs, k = 1.0 no denominator tolerance - 
+2) as 6) with 2 diff.-coeffs, k = 1.0 no denominator tolerance - job 9131 
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/05_OMEN_GENIE_Oct2016 1102_DOM_TEST_art_world_biotic_nogastra_noweath_min_w_k_1.0_NO_IMPL_ALK_NO_2ndREDOX_NoALK_NO-TOL_2diffcoef 10000
 
-11) as 7) with 2 diff.-coeffs, k1=0.01, k2=0.001 no denominator tolerance - 
+3) as 7) with 2 diff.-coeffs, k1=0.01, k2=0.001 no denominator tolerance - job 9132 
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/05_OMEN_GENIE_Oct2016 1102_DOM_TEST_art_world_biotic_nogastra_noweath_min_w_small_k_01_001_NO_IMPL_ALK_NO_2ndREDOX_NoALK_NO-TOL_2diffcoef 10000
 
-12)  as 8) with 2 diff.-coeffs, k = 4.0 no denominator tolerance -  
+4)  as 8) with 2 diff.-coeffs, k = 4.0 no denominator tolerance - job 9133 
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/05_OMEN_GENIE_Oct2016 1102_DOM_TEST_art_world_biotic_nogastra_noweath_min_w_higher_k_4_NO_IMPL_ALK_NO_2ndREDOX_NoALK_NO-TOL_2diffcoef 10000
 

@@ -22,6 +22,7 @@ MODULE sedgem_box_benthic
     !zinf = 1000
     !zlow=100
     real Dbio                                 !bioturbation coefficient (cm2/yr)
+    real Dunbio                             ! 2nd diffusion coefficient in case used for 2nd Layer
     real por                                !porosity (-)
     real tort                              !tortuosity (-)
     real irrigationFactor                   !irrigation factor (-)
@@ -69,7 +70,7 @@ MODULE sedgem_box_benthic
 
 
     ! ORGANIC MATTER
-    real DC1                                           !TOC diffusion coefficient (cm2/yr)
+    real DC1, DC2                                           !TOC diffusion coefficient (cm2/yr)
     real C, C1, C2
     real k1                                             !TOC degradation rate constnat (1/yr)
     real k2                                              !TOC degradation rate constant (1/yr)
@@ -200,7 +201,7 @@ CONTAINS
         integer:: loc_k = 0
 
 
-        loc_print_results = .false.
+        loc_print_results = .true.
         calc_ALK = .true.
 
         loc_DIC_swiflux = 0.0
@@ -567,6 +568,7 @@ CONTAINS
         zbio = 10.0                                        ! bioturbation depth (cm)
 
         Dbio = 5.2*(10.0**(0.7624-0.0003972*dum_D))        !bioturbation coefficient (cm2/yr) - after Middelburg at al. 1997
+        Dunbio = 0.01                                       ! "diffusion coefficient" for unbioturbated layer - in case we use it
         por = 0.85                                           ! porosity (-) defined as: porewater_vol./(solid_sed_vol.+porewater_vol.)
         tort = 3.0                                          ! tortuosity (-)
         irrigationFactor = 1.0
@@ -584,8 +586,8 @@ CONTAINS
         dispFactor=por**(tort-1.0)*irrigationFactor             ! dispersion factor (-) - Ausbreitung - type of mixing that accompanies hydrodynamic                                    ! flows -> ~builds out paths of flow
         SD=(1-por)/por                                          ! volume factor solid->dissolved phase
         OC= SD*(138.0/106.0)!1.0*SD                                               ! O2/C (mol/mol)
-        NC1=0.0 !16.0/106.0*SD  ! 0.1509*SD                                        ! N/C first TOC fraction (mol/mol)
-        NC2=0.0 !16.0/106.0*SD  !0.13333*SD                                          ! N/C second TOC fraction (mol/mol)
+        NC1=16.0/106.0*SD  ! 0.1509*SD                                        ! N/C first TOC fraction (mol/mol)
+        NC2=16.0/106.0*SD  !0.13333*SD                                          ! N/C second TOC fraction (mol/mol)
         PC1=SD*1/106.0 !0.0094*SD                                          ! P/C first TOC fraction (mol/mol)
         PC2=SD*1/106.0 !0.0094*SD                                          ! P/C second TOC fraction (mol/mol)
         SO4C=SD*(138.0/212.0)!0.5*SD                                             ! SO4/C (mol/mol)
@@ -599,15 +601,16 @@ CONTAINS
         Z_P=1.0                                                   ! Phosphorous Redfield stoichiometry
 
         ALKROX=-(Y_N+2*Z_P)/X_C                                 ! Aerobic degradation
-        ALKRNIT=0.0 !-2.0                                            ! Nitrification
+        ALKRNIT=-2.0   ! 0.0 !                                         ! Nitrification
         ALKRDEN=(4*X_C+3*Y_N-10*Z_P)/(5*X_C)                    ! Denitrification
         ALKRSUL=(X_C+Y_N-2*Z_P)/X_C                             ! Sulfato reduction
-        ALKRH2S=0.0 !-2.0                                           ! H2S oxydation (CHECK THIS VALUE!!!)
-        ALKRMET=0.0 !(Y_N-2*Z_P)/X_C                                 ! Methanogenesis
-        ALKRAOM=0.0 !2.0;                                            ! AOM
+        ALKRH2S=-2.0 !0.0                                          ! H2S oxydation (CHECK THIS VALUE!!!)
+        ALKRMET=(Y_N-2*Z_P)/X_C   !0.0                              ! Methanogenesis
+        ALKRAOM=2.0     !0.0                                       ! AOM
         
         ! ORGANIC MATTER
         DC1 = Dbio
+        DC2 = Dunbio
         k1=0.1
         k2=0.1
 
@@ -751,9 +754,9 @@ CONTAINS
                         w*por*aa11*exp(aa11*zbio) - w*por*bb11*exp(bb11*zbio))
 !        print*,'dum_POC1_conc_swi = ', dum_POC1_conc_swi
 
-        A11 = -(dum_POC1_conc_swi*bb11*exp(bb11*zbio))/(aa11*exp(aa11*zbio)-bb11*exp(bb11*zbio)) !+const_real_nullsmall/100000000)
+        A11 = -(dum_POC1_conc_swi*bb11*exp(bb11*zbio))/(aa11*exp(aa11*zbio)-bb11*exp(bb11*zbio)+const_real_nullsmall/100000000)
 !        if(exp(aa21*zbio) > const_real_nullsmall) then
-        A21=(A11*(exp(aa11*zbio)-exp(bb11*zbio))+dum_POC1_conc_swi*exp(bb11*zbio))/(exp(aa21*zbio)) !+const_real_nullsmall/100000000)
+        A21=(A11*(exp(aa11*zbio)-exp(bb11*zbio))+dum_POC1_conc_swi*exp(bb11*zbio))/(exp(aa21*zbio)+const_real_nullsmall/100000000)
 !        else
 !            A21=(A11*(exp(aa11*zbio)-exp(bb11*zbio))+dum_POC1_conc_swi*exp(bb11*zbio))/const_real_nullsmall
 !            print*,'in small exp(aa21*zbio)', +exp(aa21*zbio)
@@ -768,8 +771,8 @@ CONTAINS
                         w*por*aa12*exp(aa12*zbio) - w*por*bb12*exp(bb12*zbio))
 !        print*,'dum_POC2_conc_swi = ', dum_POC2_conc_swi
 
-        A12=-(dum_POC2_conc_swi*bb12*exp(bb12*zbio))/(aa12*exp(aa12*zbio)-bb12*exp(bb12*zbio)) !+const_real_nullsmall/100000000)
-        A22=(A12*(exp(aa12*zbio)-exp(bb12*zbio))+dum_POC2_conc_swi*exp(bb12*zbio))/(exp(aa22*zbio)) !+const_real_nullsmall/100000000)
+        A12=-(dum_POC2_conc_swi*bb12*exp(bb12*zbio))/(aa12*exp(aa12*zbio)-bb12*exp(bb12*zbio)+const_real_nullsmall/100000000)
+        A22=(A12*(exp(aa12*zbio)-exp(bb12*zbio))+dum_POC2_conc_swi*exp(bb12*zbio))/(exp(aa22*zbio)+const_real_nullsmall/100000000)
 
         !!! no need for this as this is SWI concentration for z0 = 0!
         !!!    ! % Calculate concentration at z0
@@ -832,7 +835,134 @@ CONTAINS
 
 
     end SUBROUTINE sub_huelseetal2016_zTOC
+
+
     
+    SUBROUTINE sub_huelseetal2016_zTOC_2Diffcoeff(dum_POC1_flux_swi, dum_POC2_flux_swi, dum_sed_pres_fracC)
+        ! THIS ROUTINE USES A SMALL DIFFUSION COEFFICIENT FOR THE UNBIOTURBATED LAYER TO DEAL WITH NUMERICAL INACCURACIES!
+        !   __________________________________________________________
+        !
+        !   calculate benthic burial/recycling fluxes (see documentation for details!)
+        !   __________________________________________________________
+
+        !   organic matter burial 2 fractions
+
+        ! dummy arguments
+        real,INTENT(in)::dum_POC1_flux_swi, dum_POC2_flux_swi               ! POC flux at SWI   [mol/(cm2 yr)]
+        real,INTENT(inout)::dum_sed_pres_fracC                              ! POC concentrations at zinf
+
+        ! local variables
+!        real loc_POC1_conc_swi, dum_POC2_conc_swi                           ! POC concentration at SWI   [mol/cm3]
+        real loc_POC1_conc_zinf, loc_POC2_conc_zinf
+        !    real aa11, bb11, aa21, A11, A21, aa12, bb12, aa22, A12, A22
+        real dC1dz, C1flx, dC2dz, C2flx, Cflx                             ! Cflx: Sed input flux to upper boundary, per cm^2 water column
+        real F_TOC1, F_TOC2, F_TOC                                        ! Flux through lower boundary zinf, per cm^2 water-column
+
+
+!                print*,' ------------------ START zTOC 2 diff coeffs---------------------'
+!                print*,' DC2 ', DC2
+        !        print*,' sedimentation rate/burial velocity w = ', w
+
+        ! Dom: Use this when comparing with MATLAB, here we use wt% of g -> *1/12
+!        loc_POC1_conc_swi=0.01*dum_POC1_wtpct_swi/12.0*rho_sed              ! %TOC concentration frac1 at SWI (wt%) -> (mol/cm3 bulk phase)
+!        dum_POC2_conc_swi=0.01*dum_POC2_wtpct_swi/12.0*rho_sed              ! %TOC concentration frac2 at SWI (wt%) -> (mol/cm3 bulk phase)
+        !        print*, 'loc_POC1_conc_swi', char(9), loc_POC1_conc_swi
+        !        print*, 'dum_POC2_conc_swi', char(9), dum_POC2_conc_swi
+
+        aa11 = (w-sqrt(w**2+4*DC1*k1))/(2*DC1)
+        bb11 = (w+sqrt(w**2+4*DC1*k1))/(2*DC1)
+        aa21 = (w-sqrt(w**2+4*DC2*k1))/(2*DC2)
+
+!        print*,'DC1, aa11, bb11, aa21 = ', DC1, aa11, bb11, aa21
+
+
+        ! calculate TOC SWI concentration from flux
+        dum_POC1_conc_swi = (dum_POC1_flux_swi*(-aa11*exp(aa11*zbio)+bb11*exp(bb11*zbio)))/(-DC1*bb11*aa11*exp(bb11*zbio) + DC1*bb11*aa11*exp(aa11*zbio) + &
+                        DC1*bb11*aa11*por*exp(bb11*zbio) - DC1*bb11*aa11*por*exp(aa11*zbio) - w*aa11*exp(aa11*zbio) + w*bb11*exp(bb11*zbio) + &
+                        w*por*aa11*exp(aa11*zbio) - w*por*bb11*exp(bb11*zbio))
+!        print*,'dum_POC1_conc_swi = ', dum_POC1_conc_swi
+
+        A11=((DC2*aa21-DC1*bb11)*(dum_POC1_conc_swi*exp(bb11*zbio)))/(DC1*(aa11*exp(aa11*zbio)-bb11*exp(bb11*zbio))-DC2*aa21*(exp(aa11*zbio)-exp(bb11*zbio)))
+!        if(exp(aa21*zbio) > const_real_nullsmall) then
+        A21=(A11*(exp(aa11*zbio)-exp(bb11*zbio))+dum_POC1_conc_swi*exp(bb11*zbio))/(exp(aa21*zbio)) !+const_real_nullsmall/100000000)
+!        else
+!            A21=(A11*(exp(aa11*zbio)-exp(bb11*zbio))+dum_POC1_conc_swi*exp(bb11*zbio))/const_real_nullsmall
+!            print*,'in small exp(aa21*zbio)', +exp(aa21*zbio)
+!        end if
+        aa12 = (w-sqrt(w**2+4*DC1*k2))/(2*DC1)
+        bb12 = (w+sqrt(w**2+4*DC1*k2))/(2*DC1)
+        aa22 = (w-sqrt(w**2+4*DC2*k2))/(2*DC2)
+
+        ! calculate TOC SWI concentration from flux
+        dum_POC2_conc_swi = (dum_POC2_flux_swi*(-aa12*exp(aa12*zbio)+bb12*exp(bb12*zbio)))/(-DC1*bb12*aa12*exp(bb12*zbio) + DC1*bb12*aa12*exp(aa12*zbio) + &
+                        DC1*bb12*aa12*por*exp(bb12*zbio) - DC1*bb12*aa12*por*exp(aa12*zbio) - w*aa12*exp(aa12*zbio) + w*bb12*exp(bb12*zbio) + &
+                        w*por*aa12*exp(aa12*zbio) - w*por*bb12*exp(bb12*zbio))
+!        print*,'dum_POC2_conc_swi = ', dum_POC2_conc_swi
+
+        A12=((DC2*aa22-DC1*bb12)*(dum_POC2_conc_swi*exp(bb12*zbio)))/(DC1*(aa12*exp(aa12*zbio)-bb12*exp(bb12*zbio))-DC2*aa22*(exp(aa12*zbio)-exp(bb12*zbio)))
+        A22=(A12*(exp(aa12*zbio)-exp(bb12*zbio))+dum_POC2_conc_swi*exp(bb12*zbio))/(exp(aa22*zbio)) !+const_real_nullsmall/100000000)
+
+        !!! no need for this as this is SWI concentration for z0 = 0!
+        !!!    ! % Calculate concentration at z0
+        !!!    if(z0<=zbio) then
+        !!!        C1=A11*(exp(aa11*z0)-exp(bb11*z0))+dum_POC1_conc_swi*exp(bb11*z0)
+        !!!        C2=A12*(exp(aa12*z0)-exp(bb12*z0))+dum_POC2_conc_swi*exp(bb12*z0)
+        !!!    else
+        !!!        C1=A21*exp(aa21*z0)
+        !!!        C2=A22*exp(aa22*z0)
+        !!!    end if
+        !!!    C = C1 + C2
+        !!!
+        !!!    print*, 'C = C1 + C2 ', C
+        !!!    print*, ' '
+
+        ! Cflx: Sed input flux to upper boundary, per cm^2 water column
+        if(z0 < zbio) then
+            dC1dz =  A11*(aa11*exp(aa11*z0)-bb11*exp(bb11*z0))+dum_POC1_conc_swi*bb11*exp(bb11*z0)
+            C1flx = - (1-por)*(-DC1*dC1dz + w*dum_POC1_conc_swi)
+            dC2dz =  A12*(aa12*exp(aa12*z0)-bb12*exp(bb12*z0))+dum_POC2_conc_swi*bb12*exp(bb12*z0)
+            C2flx = - (1-por)*(-DC1*dC2dz + w*dum_POC2_conc_swi)
+        else
+            C1flx = - (1-por)*w*dum_POC1_conc_swi
+            C2flx = - (1-por)*w*dum_POC2_conc_swi
+        end if
+        Cflx = C1flx + C2flx
+
+        !        print*, 'Cflx swi', char(9), Cflx
+        !        print*, 'C1flx swi', char(9), C1flx
+        !        print*, 'C2flx swi', char(9), C2flx
+
+
+        ! Flux through lower boundary zinf, per cm^2 water-column
+        F_TOC1 = -(1-por)*w*A21*exp(aa21*zinf)
+        F_TOC2 = -(1-por)*w*A22*exp(aa22*zinf)
+        F_TOC = F_TOC1 + F_TOC2
+        !        print*, 'F_TOC1 zinf', char(9), F_TOC1
+        !        print*, 'F_TOC2 zinf', char(9), F_TOC2
+        !        print*, 'F_TOC zinf', char(9), F_TOC
+
+        ! Concentration at lower boundary zinf
+        if(zinf<zbio) then
+            loc_POC1_conc_zinf=A11*(exp(aa11*zinf)-exp(bb11*zinf))+dum_POC1_conc_swi*exp(bb11*zinf)
+            loc_POC2_conc_zinf=A12*(exp(aa12*zinf)-exp(bb12*zinf))+dum_POC2_conc_swi*exp(bb12*zinf)
+        else
+            loc_POC1_conc_zinf=A21*exp(aa21*zinf)
+            loc_POC2_conc_zinf=A22*exp(aa22*zinf)
+        end if
+
+        ! DH: need to give back fraction buried of initially deposited (so fraction of the input values to this subroutine)
+        !        print*, 'loc_POC1_conc_zinf ', char(9), loc_POC1_conc_zinf
+        !        print*, 'loc_POC2_conc_zinf ', char(9), loc_POC2_conc_zinf
+
+        dum_sed_pres_fracC = (loc_POC1_conc_zinf+loc_POC2_conc_zinf)/(dum_POC1_conc_swi+dum_POC2_conc_swi+const_real_nullsmall)
+
+    !    print*, ' '
+    !    print*, 'F_TOC1', char(9), F_TOC1
+    !    print*, 'F_TOC2', char(9), F_TOC2
+    !    print*, 'F_TOC', char(9), F_TOC
+
+
+    end SUBROUTINE sub_huelseetal2016_zTOC_2Diffcoeff
 
 
 
@@ -1214,8 +1344,8 @@ CONTAINS
         !tmpreac1=OC+2*gamma*NC1
         !tmpreac2=OC+2*gamma*NC2
         !FLUX of NH4 and Reduced species from ZOX to ZINF
-        FUN_huelseetal2016_calcFO2 = 0.0    ! for no oxidation of reduced species.
-        ! FUN_huelseetal2016_calcFO2 = z/(zoxgf + z + const_real_nullsmall) * FUN_calcReac(z, zinf, tmpreac1, tmpreac2)
+        ! FUN_huelseetal2016_calcFO2 = 0.0    ! for no oxidation of reduced species.
+        FUN_huelseetal2016_calcFO2 = z/(zoxgf + z + const_real_nullsmall) * FUN_calcReac(z, zinf, tmpreac1, tmpreac2)
 
     !    print*,'calcFO2', calcFO2
 
@@ -1616,9 +1746,9 @@ CONTAINS
         ! flux of H2S to oxic interface (Source of SO4)
         ! NB: include methane region as AOM will produce sulphide as well..
 
-        FH2S = 0.0  ! no secondary redox!
-!        FH2S = FUN_calcReac(zno3, zso4, SO4C, SO4C) & ! MULTIPLY BY 1/POR ????
-!        + gammaCH4*FUN_calcReac(zso4, zinf, MC, MC)
+!        FH2S = 0.0  ! no secondary redox!
+        FH2S = FUN_calcReac(zno3, zso4, SO4C, SO4C) & ! MULTIPLY BY 1/POR ????
+        + gammaCH4*FUN_calcReac(zso4, zinf, MC, MC)
 
         !    print*,' '
         !    print*,'FH2S ', FH2S
@@ -1987,8 +2117,8 @@ CONTAINS
         !    print*, 'e4_zso4, dedz4_zso4, f4_zso4, dfdz4_zso4, g4_zso4, dgdz4_zso4 ', e4_zso4, dedz4_zso4, f4_zso4, dfdz4_zso4, g4_zso4, dgdz4_zso4
 
         ! flux of H2S produced by AOM interface (Source of H2S)
-        zso4FH2S = 0.0 ! no secondary redox
-!        zso4FH2S = FUN_calcReac(zso4, zinf, MC, MC) ! MULTIPLY BY 1/POR ????
+!        zso4FH2S = 0.0 ! no secondary redox
+        zso4FH2S = FUN_calcReac(zso4, zinf, MC, MC) ! MULTIPLY BY 1/POR ????
         !   print*,'flux of H2S produced by AOM interface zso4FH2S = ', zso4FH2S
 
         ! match solutions at zso4 - continuous concentration and flux
@@ -2025,8 +2155,8 @@ CONTAINS
         ! Match at zox, layer 1 - layer 2 (continuity, flux discontinuity from H2S source)
         ! flux of H2S to oxic interface (from all sources of H2S below)
         ! NB: include methane region as AOM will produce sulphide as well..
-        zoxFH2S = 0.0   ! no secondary redox
-!        zoxFH2S = FUN_calcReac(zno3, zso4, SO4C, SO4C)  + FUN_calcReac(zso4, zinf, MC, MC)
+!        zoxFH2S = 0.0   ! no secondary redox
+        zoxFH2S = FUN_calcReac(zno3, zso4, SO4C, SO4C)  + FUN_calcReac(zso4, zinf, MC, MC)
         !    zoxFH2S = FUN_calcReac(zno3, zinf, SO4C, SO4C)  ! MULTIPLY BY 1/POR ????
         !    print*,' '
         !    print*,'flux of H2S to oxic interface zoxFH2S = ', zoxFH2S
