@@ -132,10 +132,12 @@ classdef benthic_zALK
             
             [ rALK.A4, rALK.B4]      = benthic_utils.solve2eqn(dedz4_zinf, dfdz4_zinf, e1_0, f1_0, -dgdz4_zinf, swi.ALK0 - g1_0);
                        
-            
+          	% calculate concentration at zinf
+            r.conczinfALK = rALK.A4.*e4_zinf+rALK.B4.*f4_zinf + g4_zinf;
+          
             % flux at swi - DO include por so this is per cm^2 water column area
             % DH: added advective flux 28.05.2016
-            r.flxswiALK = bsd.por.*(obj.DALK1.*(rALK.A4.*dedz1_0+rALK.B4.*dfdz1_0 + dgdz1_0) - bsd.w.*swi.ALK0);   % NB: use A4, B4 as these are _xformed_ layer 1 basis functions
+            r.flxswiALK = bsd.por.*(obj.DALK1.*(rALK.A4.*dedz1_0+rALK.B4.*dfdz1_0 + dgdz1_0) - bsd.w.*(swi.ALK0 - r.conczinfALK));   % NB: use A4, B4 as these are _xformed_ layer 1 basis functions
             
             % save coeffs for layers 3, 2 and 1
             rALK.A3 = zso4.a.*rALK.A4 + zso4.b.*rALK.B4 + zso4.e;

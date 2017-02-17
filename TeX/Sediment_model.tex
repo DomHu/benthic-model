@@ -1017,7 +1017,7 @@ solution type to use.
 Here the coupling of OMEN-SED (1.0) to the GENIE Earth System model is described, in particular its incorporation into the sediment geochemistry model \citep[SEDGEM,][]{ridgwell_regulation_2007}. 
 Results from pre-industrial experiments are presented in section \ref{subsec:GENIE-pre-ind}. OMEN-SED (1.0) is called by SEDGEM for each grid point instead of remineralising the settling flux of OM at the seafloor, passing over the 
 bottom water concentrations of solutes (in $\frac{mol}{kg}$) and the flux of OM (\chem{POC_{flux}}, in $\frac{cm^3}{cm^2\,yr}$, see Fig. \ref{fig:OMEN-GENIE-coupling}). 
-To be used by OMEN-SED (1.0) dissolved species and OM flux need to be converted into $\frac{mol}{cm^3}$. 
+To be used by OMEN-SED (1.0), dissolved species and OM flux need to be converted into $\frac{mol}{cm^3}$. 
 For the solutes this is trivial; the OM flux is converted into a concentration (\chem{POC_{con}}, in $\frac{mol}{cm^3}$) using the sediment accumulation rate from GENIE ($w$, in $\frac{cm}{yr}$) as:
 \begin{equation}
  \chem{POC_{con}} = \frac{1}{12}\cdot(1-\phi)\cdot \frac{\chem{POC_{flux}}}{w}

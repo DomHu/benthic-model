@@ -87,10 +87,12 @@ classdef benthic_zNH4
             
           
             
+          	% calculate concentration at zinf
+            r.conczinfNH4 = rNH4.A3.*e3_zinf+rNH4.B3.*f3_zinf + g3_zinf;
+
             % flux at swi - DO include por so this is per cm^2 water column area
             % DH: added advective flux 28.05.2016
-            r.flxswiNH4 = bsd.por.*(obj.DNH41.*(rNH4.A3.*dedz1_0+rNH4.B3.*dfdz1_0 + dgdz1_0) - bsd.w.*swi.NH40);
-            %DH 25.05. should be: r.flxswiNH4 = bsd.por.*(obj.DNH41.*(rNH4.A3.*dedz1_0+rNH4.B3.*dfdz1_0 + dgdz1_0) - bsd.w.*swi.NH40);   % NB: use A3, B3 as these are _xformed_ layer 1 basis functions
+            r.flxswiNH4 = bsd.por.*(obj.DNH41.*(rNH4.A3.*dedz1_0+rNH4.B3.*dfdz1_0 + dgdz1_0) - bsd.w.*(swi.NH40 - r.conczinfNH4));
             
             % save coeffs for layers 2 and 1
             rNH4.A2 = zno3.a.*rNH4.A3 + zno3.b.*rNH4.B3 + zno3.e;

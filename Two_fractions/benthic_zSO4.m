@@ -25,6 +25,11 @@ classdef benthic_zSO4
         
         function r = calc(obj, bsd, swi, r)
            % Iteratively solve for zso4
+           
+           % try zero flux at zinf and see if we have any SO4 left, also
+           % calculate [SO4] at zinf for advective loss
+           [flxzso4, conczinf, flxswi,rtmp] = obj.calcbc(bsd.zinf, bsd, swi, r, 2);
+
                   
            if r.zno3 == bsd.zinf
                r.zso4 = bsd.zinf;
@@ -33,26 +38,33 @@ classdef benthic_zSO4
                        
             fun=@(zso4)-obj.calcbc(zso4,bsd,swi,r,1) - obj.calcFSO4(zso4,bsd, swi, r);
               
-            % try zero flux at zinf and see if we have any SO4 left
-            [flxzso4, conczso4, flxswi,rtmp] = obj.calcbc(bsd.zinf, bsd, swi, r, 2);
+%             % try zero flux at zinf and see if we have any SO4 left
+%             [flxzso4, conczinf, flxswi,rtmp] = obj.calcbc(bsd.zinf, bsd, swi, r, 2);
             if bsd.usescalarcode                
-                if conczso4 >=0
+                if conczinf >=0
                     r.zso4 = bsd.zinf;
                     bctype = 2;
                 else
                     bctype = 1;
+                    conczinf = 0.0;
                     funzno3=fun(r.zno3)
                     funzinf=fun(bsd.zinf)
                     r.zso4=fzero(fun,[max(r.zno3, 1e-10), bsd.zinf],bsd.fzerooptions);
                 end
             else  % vectorized version
-                bctype = (conczso4 < 0)*1 + (conczso4>=0)*2;
+                bctype = (conczinf < 0)*1 + (conczso4>=0)*2;
                 zso4=fzero_vec(fun,max(r.zno3, 1e-10), bsd.zinf,bsd.fzerooptions);
                 r.zso4 = (bctype==1).*zso4 + (bctype==2).*bsd.zinf;
             end
             
             end
             [flxzso4, conczso4, flxswiSO4, r] = obj.calcbc(r.zso4, bsd, swi, r, bctype);    % Dom18.05.2016: not necessary for bctype 2 (done in line 32 already)
+            
+            flxswiSO4 = flxswiSO4 - bsd.por.*bsd.w.*(swi.SO40-conczinf);
+            if(abs(flxswiSO4) <= bsd.tol_const)
+                flxswiSO4 = 0.0
+            end
+
             r.flxzso4 = flxzso4;
             r.conczso4 = conczso4;
             r.flxswiSO4 = flxswiSO4;
@@ -91,8 +103,9 @@ classdef benthic_zSO4
             % Match at zox, layer 1 - layer 2 (continuity, flux discontinuity from H2S source)
             % flux of H2S to oxic interface (Source of SO4)
             % NB: include methane region as AOM will produce sulphide as well..
-            FH2S = r.zTOC.calcReac(r.zno3, zso4, bsd.SO4C, bsd.SO4C, bsd, swi, r) ... % MULTIPLY BY 1/POR ????
-               + bsd.gammaCH4.*r.zTOC.calcReac(zso4, bsd.zinf, bsd.MC, bsd.MC, bsd, swi, r); % Dominik 25.02.2016
+            FH2S = r.zTOC.calcReac(r.zno3, zso4, bsd.SO4C, bsd.SO4C, bsd, swi, r) + 0.0; % no secondary redox!
+%             FH2S = r.zTOC.calcReac(r.zno3, zso4, bsd.SO4C, bsd.SO4C, bsd, swi, r) ... % MULTIPLY BY 1/POR ????
+%                + bsd.gammaCH4.*r.zTOC.calcReac(zso4, bsd.zinf, bsd.MC, bsd.MC, bsd, swi, r); % Dominik 25.02.2016
             % basis functions at bottom of layer 1
             [ e1_zox, dedz1_zox, f1_zox, dfdz1_zox, g1_zox, dgdz1_zox] ...
                 = r.zTOC.calcfg_l12(r.zox, bsd, swi, r, 0 , 0 , 0, rSO4.ls1);
@@ -144,7 +157,7 @@ classdef benthic_zSO4
             
             % flux at swi - DO include por so this is per cm^2 water column area
             % DH: added advective flux 28.05.2016
-            flxswi = bsd.por.*(obj.DSO41.*(rSO4.A3.*dedz1_0+rSO4.B3.*dfdz1_0 + dgdz1_0) - bsd.w.*swi.SO40);   % NB: use A3, B3 as these are _xformed_ layer 1 basis functions
+            flxswi = bsd.por.*(obj.DSO41.*(rSO4.A3.*dedz1_0+rSO4.B3.*dfdz1_0 + dgdz1_0)); % - bsd.w.*swi.SO40);   % NB: use A3, B3 as these are _xformed_ layer 1 basis functions
             
             % save coeffs for layers 2 and 1
             rSO4.A2 = zno3.a.*rSO4.A3 + zno3.b.*rSO4.B3 + zno3.e;
@@ -166,8 +179,8 @@ classdef benthic_zSO4
            
             tmpreac1    = bsd.MC.*bsd.gammaCH4;
             tmpreac2    = bsd.MC.*bsd.gammaCH4;
-       
-            FSO4 = r.zTOC.calcReac(zso4, bsd.zinf, tmpreac1, tmpreac2, bsd, swi, r);
+            FSO4 = 0.0;    % no secondary redox!
+            % FSO4 = r.zTOC.calcReac(zso4, bsd.zinf, tmpreac1, tmpreac2, bsd, swi, r);
             % TODO confirm (1-bsd.por)*  has been added (to k1 & k2 ?)
         end
         

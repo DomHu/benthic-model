@@ -240,10 +240,13 @@ classdef benthic_zPO4_M
 % % % %             D = (bsd.zinf <= bsd.zbio).*obj.DPO41 + (zPO4 > bsd.zbio).*obj.DPO42;
 % % % %             flxzPO4 = D.*(rPO4_M.A3.*dedz3_zPO4+rPO4_M.B3.*dfdz3_zPO4 + dgdz3_zPO4);        % includes 1/por ie flux per (cm^2 pore area)
             
+          	% calculate concentration at zinf
+            r.conczinfPO4 = rPO4_M.A2.*e2_zinf_P+rPO4_M.B2.*f2_zinf_P + g2_zinf_P;
+
 
             % DH 2405: need to check if anoxic bc of adsorption coeff? flux PO4 at swi - DO include por so this is per cm^2 water column area
             % DH: added advective flux 28.05.2016
-            r.flxswi_P = bsd.por.*(obj.DPO41/(1+obj.KPO4_ox).*(rPO4_M.A2.*dEFPQdz_P(1)+rPO4_M.B2.*dEFPQdz_P(2) + rPO4_M.C2.*dEFPQdz_P(3)+rPO4_M.D2.*dEFPQdz_P(4) + dgdz1_0_P) - bsd.w.*swi.PO40);   % NB: use A2, B2, C2, D2 as these are _xformed_ layer 1 basis functions
+            r.flxswi_P = bsd.por.*(obj.DPO41/(1+obj.KPO4_ox).*(rPO4_M.A2.*dEFPQdz_P(1)+rPO4_M.B2.*dEFPQdz_P(2) + rPO4_M.C2.*dEFPQdz_P(3)+rPO4_M.D2.*dEFPQdz_P(4) + dgdz1_0_P) - bsd.w.*(swi.PO40 - r.conczinfPO4));   % NB: use A2, B2, C2, D2 as these are _xformed_ layer 1 basis functions
             
             % flux M at swi - DO include por so this is per cm^2 water column area
             r.flxswi_M = bsd.por.*bsd.Dbio*(rPO4_M.A2.*dEFPQdz_M(1)+rPO4_M.B2.*dEFPQdz_M(2) + rPO4_M.C2.*dEFPQdz_M(3)+rPO4_M.D2.*dEFPQdz_M(4) + dgdz1_0_M);   % NB: use A2, B2, C2, D2 as these are _xformed_ layer 1 basis functions

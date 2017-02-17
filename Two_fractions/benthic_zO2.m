@@ -45,7 +45,7 @@ classdef benthic_zO2
                     r.zox=fzero(fun,[1e-10 bsd.zinf],bsd.fzerooptions);
                 end
             else % same logic, in vector form
-                lzinf = conczox >=0;  % true for each x(i) that still has O2 at zinf
+                lzinf = concinf >=0;  % true for each x(i) that still has O2 at zinf
                 
                 zox=fzero_vec(fun,1e-10, bsd.zinf,bsd.fzerooptions);
                 lz0 = fun0 >= 0;      % true for each x(i) with ~zero oxygen at swi
@@ -130,8 +130,8 @@ classdef benthic_zO2
            %tmpreac2=bsd.OC+2*bsd.gamma*bsd.NC2;
             %FLUX of NH4 and Reduced species from ZOX to ZINF
             
-            % FO2 = 0.0; % for no oxidation of reduced species.
-            FO2 = zox./(bsd.zoxgf + zox).*r.zTOC.calcReac(zox, bsd.zinf, tmpreac1, tmpreac2, bsd, swi, r); 
+            FO2 = 0.0; % no secondary redox!
+            % FO2 = zox./(bsd.zoxgf + zox).*r.zTOC.calcReac(zox, bsd.zinf, tmpreac1, tmpreac2, bsd, swi, r); 
             % NB (1-bsd.por)/bsd.por  has been included in OC etc stoich factors, so this is flux / cm^2 pore area
            
         end

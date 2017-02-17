@@ -201,7 +201,7 @@ CONTAINS
         integer:: loc_k = 0
 
 
-        loc_print_results = .true.
+        loc_print_results = .false.
         calc_ALK = .true.
 
         loc_DIC_swiflux = 0.0
@@ -611,8 +611,8 @@ CONTAINS
         ! ORGANIC MATTER
         DC1 = Dbio
         DC2 = Dunbio
-        k1=0.1
-        k2=0.1
+        k1=0.01
+        k2=0.001
 
         ! GLOBAL DIFFUSION COEFFICIENTS
         ! O2
@@ -1141,12 +1141,14 @@ CONTAINS
 !            print*,'dum_POC1_conc_swi ', dum_POC1_conc_swi
 !            print*,'dum_POC2_conc_swi ', dum_POC2_conc_swi
             zox = zinf
+            zno3 = zinf
             bctype = 2
         else                        ! search zox in the interval
             bctype = 1
             zL=1e-10
             tol=1e-16
             zox = FUN_zbrent(FUN_zO2, zL, zinf, tol)
+            zno3 = zox
         !            print*,'$$$$$$$$$$$$$ zox < zinf ', zox
         !            stop
         end if
@@ -1344,7 +1346,7 @@ CONTAINS
         !tmpreac1=OC+2*gamma*NC1
         !tmpreac2=OC+2*gamma*NC2
         !FLUX of NH4 and Reduced species from ZOX to ZINF
-        ! FUN_huelseetal2016_calcFO2 = 0.0    ! for no oxidation of reduced species.
+        ! FUN_huelseetal2016_calcFO2 = 0.0    ! no secondary redox!
         FUN_huelseetal2016_calcFO2 = z/(zoxgf + z + const_real_nullsmall) * FUN_calcReac(z, zinf, tmpreac1, tmpreac2)
 
     !    print*,'calcFO2', calcFO2
@@ -1398,15 +1400,16 @@ CONTAINS
         !    print*, '------------------------------------------------------------------'
         !    print*, '---------------------- START zNO3 ------------------------------- '
 
+        ! Try zero flux at zinf and see if we have any NO3 left - in
+        ! the rare case of zox < zinf but zNO3 = zinf, also
+        ! calculate [NO3] at zinf for advective loss
+        bctype = 2
+        call sub_huelseetal2016_zNO3_calcbc(zinf, bctype, flxzinf, conczinf, loc_new_swiflux_NO3)
+
         IF(zox == zinf)THEN
             zno3 = zinf
             bctype = 2
         ELSE
-            bctype = 2
-            ! Try zero flux at zinf and see if we have any NO3 left
-            !    print*,'Try zero flux at zinf and see if we have any NO3 left'
-            call sub_huelseetal2016_zNO3_calcbc(zinf, bctype, flxzinf, conczinf, loc_new_swiflux_NO3)
-
             !    print*,'RESULTS Try zero flux at zinf zNO3_calcbc flxzinf, conczinf, loc_new_swiflux_NO3', flxzinf, conczinf, loc_new_swiflux_NO3
 
             IF (conczinf > 0.0) THEN
@@ -1419,10 +1422,18 @@ CONTAINS
                 !        print*,'$$$$ calculated zno3 =', zno3
                 !        zno3 = 7.4319         ! use qualifier d0 fuer double: 7.4319d0
                 bctype = 1;
+                conczinf = 0.0
             END IF
         END IF ! (zox == zinf)
 
         call sub_huelseetal2016_zNO3_calcbc(zno3, bctype, flxzno3, conczno3, loc_new_swiflux_NO3)
+        loc_new_swiflux_NO3 = loc_new_swiflux_NO3 - por*w*(dum_swiconc_NO3-conczinf)
+
+        IF(ABS(loc_new_swiflux_NO3) .LE. const_real_nullsmall)then
+!            print*,'small loc_new_swiflux_NO3', loc_new_swiflux_NO3
+            loc_new_swiflux_NO3 = 0.0
+        END IF
+
 
     !    print*,' ---- FINAL RESULTS zNO3: ----'
     !    print*,'zno3', char(9), zno3
@@ -1563,7 +1574,7 @@ CONTAINS
 
         conczno3 = rNO3_A2*e2_zno3+rNO3_B2*f2_zno3 + g2_zno3
         ! flux at swi - DO include por so this is per cm^2 water column area
-        loc_new_swiflux_NO3 = por*(DN1*(rNO3_A2*dedz1_0+rNO3_B2*dfdz1_0 + dgdz1_0) - w*dum_swiconc_NO3)              ! NB: use A2, B2 as these are _xformed_ layer 1 basis functions
+        loc_new_swiflux_NO3 = por*(DN1*(rNO3_A2*dedz1_0+rNO3_B2*dfdz1_0 + dgdz1_0)) ! - w*dum_swiconc_NO3)              ! NB: use A2, B2 as these are _xformed_ layer 1 basis functions
 
         !    print*,'flxzno3', flxzno3
         !    print*,'conczno3', conczno3
@@ -1616,7 +1627,7 @@ CONTAINS
     
 
         ! local variables
-        real flxzso4, conczso4, zL, tol
+        real flxzso4, conczso4, loc_conczinf, zL, tol
         integer bctype
 
 
@@ -1625,25 +1636,26 @@ CONTAINS
         !        print*, ' BWI SO4 concentration = ', dum_swiconc_SO4
  
         ! Iteratively solve for zso4
+
+        ! try zero flux at zinf and see if we have any SO4 left, also
+        ! calculate [SO4] at zinf for advective loss
+        bctype = 2
+        call sub_huelseetal2016_zSO4_calcbc(zinf, bctype, flxzso4, loc_conczinf, loc_new_swiflux_SO4)
+
+
         IF(zno3 == zinf)THEN
             zso4 = zinf
             bctype = 2
         ELSE
 
-            ! try zero flux at zinf and see if we have any SO4 left
-            !    print*, ''
-            !    print*, '-----try zero flux at zinf and see if we have any SO4 left------'
-            bctype = 2
+           !        print*,'conczso4 at zinf', char(9), conczso4
 
-            call sub_huelseetal2016_zSO4_calcbc(zinf, bctype, flxzso4, conczso4, loc_new_swiflux_SO4)
-        
-            !        print*,'conczso4 at zinf', char(9), conczso4
-
-            IF(conczso4 .ge. 0)THEN
+            IF(loc_conczinf .ge. 0)THEN
                 zso4 = zinf
                 bctype = 2
             ELSE
                 bctype = 1
+                loc_conczinf = 0.0
                 zL=1e-10
                 tol=1e-16
                 zso4 = FUN_zbrent(FUN_zSO4, max(zno3,zL), zinf, tol)
@@ -1652,6 +1664,13 @@ CONTAINS
         !    print*,'bctype, zso4 ', bctype, zso4
         END IF !(zno3 == zinf)
         call sub_huelseetal2016_zSO4_calcbc(zso4, bctype, flxzso4, conczso4, loc_new_swiflux_SO4)
+        loc_new_swiflux_SO4 = loc_new_swiflux_SO4 - por*w*(dum_swiconc_SO4 - loc_conczinf)
+
+        IF(ABS(loc_new_swiflux_SO4) .LE. const_real_nullsmall)then
+!            print*,'small loc_new_swiflux_SO4', loc_new_swiflux_SO4
+            loc_new_swiflux_SO4 = 0.0
+        END IF
+
 
         !    print*,' '
         !    print*,'-------------------------------- FINAL RESULTS zSO4 --------------------------------'
@@ -1746,7 +1765,7 @@ CONTAINS
         ! flux of H2S to oxic interface (Source of SO4)
         ! NB: include methane region as AOM will produce sulphide as well..
 
-!        FH2S = 0.0  ! no secondary redox!
+!        FH2S = FUN_calcReac(zno3, zso4, SO4C, SO4C) + 0.0  ! no secondary redox!
         FH2S = FUN_calcReac(zno3, zso4, SO4C, SO4C) & ! MULTIPLY BY 1/POR ????
         + gammaCH4*FUN_calcReac(zso4, zinf, MC, MC)
 
@@ -1822,7 +1841,7 @@ CONTAINS
         END IF
 
         ! flux at swi - DO include por so this is per cm^2 water column area
-        flxswi = por*(DSO41*(rSO4_A3*dedz1_0+rSO4_B3*dfdz1_0 + dgdz1_0) - w*dum_swiconc_SO4)   ! NB: use A3, B3 as these are _xformed_ layer 1 basis functions
+        flxswi = por*(DSO41*(rSO4_A3*dedz1_0+rSO4_B3*dfdz1_0 + dgdz1_0)) ! - w*dum_swiconc_SO4)   ! NB: use A3, B3 as these are _xformed_ layer 1 basis functions
 
         !    print*,' '
         !    print*,'RESULTS zso4_calcbc_: conczso4, flxzso4, flxswi', conczso4, flxzso4, flxswi
@@ -1855,7 +1874,7 @@ CONTAINS
 
         tmpreac1    = MC*gammaCH4
         tmpreac2    = MC*gammaCH4
-
+!        FUN_calcFSO4 = 0.0 ! no secondary redox!
         FUN_calcFSO4 = FUN_calcReac(z, zinf, tmpreac1, tmpreac2)
     ! TODO confirm (1-por)*  has been added (to k1 & k2 ?)
     !    print*,'=============== IN FUN_calcFSO4 =====', FUN_calcFSO4
@@ -1903,6 +1922,7 @@ CONTAINS
         !    real, intent(in)::zox, zno3
 
         ! local variables
+        real loc_conczinf
         integer ltype1, ltype2, ltype3
         real ls_a1, ls_b1, ls_c1, ls_d1, ls_e1, ls_f1
         real ls_a2, ls_b2, ls_c2, ls_d2, ls_e2, ls_f2
@@ -2003,8 +2023,16 @@ CONTAINS
 
         call sub_solve2eqn(dedz3_zinf, dfdz3_zinf, e1_0, f1_0, -dgdz3_zinf,  - g1_0, rNH4_A3, rNH4_B3)
 
+        !calculate concentration at zinf
+        loc_conczinf = rNH4_A3*e3_zinf+rNH4_B3*f3_zinf + g3_zinf
+
+
         ! flux at swi - DO include por so this is per cm^2 water column area
-        loc_new_swiflux_NH4 = por*(DNH41*(rNH4_A3*dedz1_0+rNH4_B3*dfdz1_0 + dgdz1_0) - w*dum_swiconc_NH4)   ! NB: use A3, B3 as these are _xformed_ layer 1 basis functions
+        loc_new_swiflux_NH4 = por*(DNH41*(rNH4_A3*dedz1_0+rNH4_B3*dfdz1_0 + dgdz1_0) - w*(dum_swiconc_NH4 - loc_conczinf))   ! NB: use A3, B3 as these are _xformed_ layer 1 basis functions
+        IF(ABS(loc_new_swiflux_NH4) .LE. const_real_nullsmall)then
+!            print*,'small loc_new_swiflux_NH4', loc_new_swiflux_NH4
+            loc_new_swiflux_NH4 = 0.0
+        END IF
 
         ! save coeffs for layers 2 and 1
         rNH4_A2 = zno3_a*rNH4_A3 + zno3_b*rNH4_B3 + zno3_e
@@ -2046,6 +2074,7 @@ CONTAINS
 
 
         ! local variables
+        real loc_conczinf
         real reac1_h2s, reac2_h2s                 ! reactive terms: OM degradation
         integer ltype1, ltype2, ltype3, ltype4
         real ls_a1, ls_b1, ls_c1, ls_d1, ls_e1, ls_f1
@@ -2155,9 +2184,8 @@ CONTAINS
         ! Match at zox, layer 1 - layer 2 (continuity, flux discontinuity from H2S source)
         ! flux of H2S to oxic interface (from all sources of H2S below)
         ! NB: include methane region as AOM will produce sulphide as well..
-!        zoxFH2S = 0.0   ! no secondary redox
+!        zoxFH2S = FUN_calcReac(zno3, zso4, SO4C, SO4C)  + 0.0   ! no secondary redox
         zoxFH2S = FUN_calcReac(zno3, zso4, SO4C, SO4C)  + FUN_calcReac(zso4, zinf, MC, MC)
-        !    zoxFH2S = FUN_calcReac(zno3, zinf, SO4C, SO4C)  ! MULTIPLY BY 1/POR ????
         !    print*,' '
         !    print*,'flux of H2S to oxic interface zoxFH2S = ', zoxFH2S
         !    print*,' '
@@ -2204,10 +2232,18 @@ CONTAINS
         !  | e1_0     f1_0         |  |BH2S|     | swi.dum_swiconc_H2S - g1_0 |
 
         call sub_solve2eqn(dedz4_zinf, dfdz4_zinf, e1_0, f1_0, -dgdz4_zinf, dum_swiconc_H2S - g1_0, rH2S_A4, rH2S_B4)
-
         !   print*,' dedz4_zinf, dfdz4_zinf, e1_0, f1_0, dgdz4_zinf, dum_swiconc_H2S, g1_0 ',  dedz4_zinf, dfdz4_zinf, e1_0, f1_0, dgdz4_zinf, dum_swiconc_H2S, g1_0
+
+        ! calculate concentration at zinf
+        loc_conczinf = rH2S_A4*e4_zinf+rH2S_B4*f4_zinf + g4_zinf
+
         ! flux at swi - DO include por so this is per cm^2 water column area
-        loc_new_swiflux_H2S = por*(DH2S1*(rH2S_A4*dedz1_0+rH2S_B4*dfdz1_0 + dgdz1_0) - w*dum_swiconc_H2S)   ! NB: use A4, B4 as these are _xformed_ layer 1 basis functions
+        loc_new_swiflux_H2S = por*(DH2S1*(rH2S_A4*dedz1_0+rH2S_B4*dfdz1_0 + dgdz1_0) - w*(dum_swiconc_H2S - loc_conczinf))   ! NB: use A4, B4 as these are _xformed_ layer 1 basis functions
+        IF(ABS(loc_new_swiflux_H2S) .LE. const_real_nullsmall)then
+!            print*,'small loc_new_swiflux_H2S', loc_new_swiflux_H2S
+            loc_new_swiflux_H2S = 0.0
+        END IF
+
 
         ! save coeffs for layers 3, 2 and 1
         rH2S_A3 = zso4_a*rH2S_A4 + zso4_b*rH2S_B4 + zso4_e
@@ -2254,6 +2290,7 @@ CONTAINS
         real,INTENT(inout)::loc_new_swiflux_M         ! PO4 flux: TODO check! (+) sediment -> bottom waters
 
         ! local variables
+        real loc_conczinf
         ! Integration constants
         real rPO4_M_A2, rPO4_M_B2, rPO4_M_C2, rPO4_M_D2
         real rPO4_M_A1, rPO4_M_B1, rPO4_M_C1, rPO4_M_D1
@@ -2473,10 +2510,13 @@ CONTAINS
         ! save IC in a vector for a later calculation
         loc_Layer2_IC = (/ rPO4_M_A2, rPO4_M_B2, rPO4_M_C2, rPO4_M_D2 /)
 
+        ! calculate concentration at zinf
+        loc_conczinf = rPO4_M_A2*e2_zinf_P+rPO4_M_B2*f2_zinf_P + g2_zinf_P
+
         ! CALCULATE FINAL SWI fluxes and save the coefficients for
         ! DH: use A2, B2, C2, D2 as these are _xformed_ layer 1 basis functions
         loc_new_swiflux_PO4 = por*(DPO41/(1+KPO4_ox)*(rPO4_M_A2*loc_dEFPQdz_P_t(1)+rPO4_M_B2*loc_dEFPQdz_P_t(2) &
-                    + rPO4_M_C2*loc_dEFPQdz_P_t(3)+rPO4_M_D2*loc_dEFPQdz_P_t(4) + dgdz_P) - w*dum_swiconc_PO4)
+                    + rPO4_M_C2*loc_dEFPQdz_P_t(3)+rPO4_M_D2*loc_dEFPQdz_P_t(4) + dgdz_P) - w*(dum_swiconc_PO4 - loc_conczinf))
         ! Does actually not exist, as it is a solid, just calculate for debugging
         loc_new_swiflux_M = por*Dbio*(rPO4_M_A2*loc_dEFPQdz_M_t(1)+rPO4_M_B2*loc_dEFPQdz_M_t(2) + &
                         rPO4_M_C2*loc_dEFPQdz_M_t(3) + rPO4_M_D2*loc_dEFPQdz_M_t(4) + dgdz_M)
@@ -2516,6 +2556,7 @@ CONTAINS
         real,INTENT(inout)::loc_new_swiflux_DIC         ! DIC flux
 
         ! local variables
+        real loc_conczinf
         real reac1_dic, reac2_dic                 ! reactive terms: OM degradation
         integer ltype1, ltype2, ltype3, ltype4
         real ls_a1, ls_b1, ls_c1, ls_d1, ls_e1, ls_f1
@@ -2593,9 +2634,12 @@ CONTAINS
 
         call sub_solve2eqn(dedz2_zinf, dfdz2_zinf, e1_0, f1_0, -dgdz2_zinf, dum_swiconc_DIC - g1_0, rDIC_A2, rDIC_B2)
 
+        ! calculate concentration at zinf
+        loc_conczinf = rDIC_A2*e2_zinf+rDIC_B2*f2_zinf + g2_zinf
+
         ! flux at swi - DO include por so this is per cm^2 water column area
         ! DH: added advective flux 28.05.2016
-        loc_new_swiflux_DIC = por*(DDIC1*(rDIC_A2*dedz1_0+rDIC_B2*dfdz1_0 + dgdz1_0) - w*dum_swiconc_DIC)   ! NB: use A2, B2 as these are _xformed_ layer 1 basis functions
+        loc_new_swiflux_DIC = por*(DDIC1*(rDIC_A2*dedz1_0+rDIC_B2*dfdz1_0 + dgdz1_0) - w*(dum_swiconc_DIC - loc_conczinf))   ! NB: use A2, B2 as these are _xformed_ layer 1 basis functions
 
         ! save coeffs for layers 1
         rDIC_A1 = zso4_a*rDIC_A2 + zso4_b*rDIC_B2 + zso4_e
@@ -2626,6 +2670,7 @@ CONTAINS
         real,INTENT(inout)::loc_new_swiflux_ALK         ! ALK flux
 
         ! local variables
+        real loc_conczinf
         real reac11_alk, reac12_alk, reac21_alk, reac22_alk, reac3_alk, reac4_alk                 ! reactive terms: OM degradation
         integer ltype1, ltype2, ltype3, ltype4
         real ls_a1, ls_b1, ls_c1, ls_d1, ls_e1, ls_f1
@@ -2783,8 +2828,11 @@ CONTAINS
 
         call sub_solve2eqn(dedz4_zinf, dfdz4_zinf, e1_0, f1_0, -dgdz4_zinf, dum_swiconc_ALK - g1_0, rALK_A4, rALK_B4)
 
+        ! calculate concentration at zinf
+        loc_conczinf = rALK_A4*e4_zinf+rALK_B4*f4_zinf + g4_zinf
+
         ! flux at swi - DO include por so this is per cm^2 water column area
-        loc_new_swiflux_ALK = por*(DALK1*(rALK_A4*dedz1_0+rALK_B4*dfdz1_0 + dgdz1_0) - w*dum_swiconc_ALK)   ! NB: use A4, B4 as these are _xformed_ layer 1 basis functions
+        loc_new_swiflux_ALK = por*(DALK1*(rALK_A4*dedz1_0+rALK_B4*dfdz1_0 + dgdz1_0) - w*(dum_swiconc_ALK - loc_conczinf))   ! NB: use A4, B4 as these are _xformed_ layer 1 basis functions
 
         ! save coeffs for layers 3, 2 and 1
         rALK_A3 = zso4_a*rALK_A4 + zso4_b*rALK_B4 + zso4_e

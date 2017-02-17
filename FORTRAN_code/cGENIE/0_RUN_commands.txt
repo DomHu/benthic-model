@@ -293,7 +293,6 @@ qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg
 qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/05_OMEN_GENIE_Oct2016 1002_DOM_TEST_art_world_biotic_nogastra_noweath_min_w_k_higher_k_4_NO_IMPL_ALK_NO_2ndREDOX_NoALK 10000
 
 
-TODOOOOOOOOOOOOOOOOO:
 
 ---------------- NOW WITHOUT DENOMINATOR!!!! ----> CRASHED FOR 1 diffusion coefficient -> do with 2 diffusion coefficients!
 
@@ -311,4 +310,61 @@ qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg
 
 4)  as 8) with 2 diff.-coeffs, k = 4.0 no denominator tolerance - job 9133 
 qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/05_OMEN_GENIE_Oct2016 1102_DOM_TEST_art_world_biotic_nogastra_noweath_min_w_higher_k_4_NO_IMPL_ALK_NO_2ndREDOX_NoALK_NO-TOL_2diffcoef 10000
+
+
+
+########################################################################################################################################
+########################################################################################################################################
+
+################# 		16.02.2017: ADDED ADVECTIVE LOSS at zinf also for H2S, SO4, ALK, DIC, PO4 
+#################			---- also: now set all oxidation of H2S to SO4 or CH4 to SO4 at boundaries to zero: % no secondary redox!
+					 (i.e. MATLAB: SO4: FH2S to zox line 106; 	FSO4 at zso4 line 181
+						       H2S: zso4FH2S at zso4 line 53;	zoxFH2S at zox line 79
+							O2: FO2 at zox line 133
+FORTRAN:
+in initialize: NC1, NC2, ALKRNIT, ALKRH2S, ALKRMET, ALKRAOM
+O2: FUN_huelseetal2016_calcFO2 lines 1349
+SO4: FH2S to zox lines 1768; FUN_calcFSO4 to zso4 lines 1877
+H2S: zso4FH2S to zso4 line 2149; zoxFH2S to zox line 2188
+################# 		--> should at least get mass conservation of SO4 + H2S, also check how ALK changed
+
+########################################################################################################################################
+########################################################################################################################################
+
+############ 16/02/2017 - still no shelves: cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES
+
+1) Biotic , open system, no weathering, no air-sea gas exchange - with OMEN all remineralised k = 0.1 - No secondary redox reactions (flux of reduced substances at boundaries for O2, SO4 and H2S to zero) ALSO set ALK stoichiometry for sec. redox and CH4 to 0.0 
+ job 9317
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/07_OMEN_GENIE_Feb2017 1602_01_art_world__nogas_noweath_No2ndRedox_NoALK_k_0.1 10000
+
+2) as 1) with k=1.0 
+ job 9318 
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/07_OMEN_GENIE_Feb2017 1602_02_art_world__nogas_noweath_No2ndRedox_NoALK_k_1.0 10000
+
+3) as 1) with k = 4.0 
+ job 9319 
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/07_OMEN_GENIE_Feb2017 1602_03_art_world__nogas_noweath_No2ndRedox_NoALK_k_4.0 10000
+
+4) as 1) with k = 0.01, 0.001
+ job 9320
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/07_OMEN_GENIE_Feb2017 1602_04_art_world__nogas_noweath_No2ndRedox_NoALK_k_01_001 10000
+
+
+####### same as 1) - 4) but now with realistic OMEN-SED (i.e. 2nd redox reactions and all ALK inlcuded)
+
+5) k=0.1 as 1) above NOW with 2nd redox reactions and all ALK-paramaters <> 0
+ job 9321
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/07_OMEN_GENIE_Feb2017 1602_05_art_world__nogas_noweath_WITH2ndRedox+ALK_k_0.1 10000
+
+6) as 5) with k=1.0
+ job 9322
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/07_OMEN_GENIE_Feb2017 1602_06_art_world__nogas_noweath_WITH2ndRedox+ALK_k_1.0 10000
+
+7) as 5) with k=4.0
+ job 9323
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/07_OMEN_GENIE_Feb2017 1602_07_art_world__nogas_noweath_WITH2ndRedox+ALK_k_4.0 10000
+
+8) as 5) with k = 0.01, 0.001
+ job 9324 
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/07_OMEN_GENIE_Feb2017 1602_08_art_world__nogas_noweath_WITH2ndRedox+ALK_k_01_001 10000
 

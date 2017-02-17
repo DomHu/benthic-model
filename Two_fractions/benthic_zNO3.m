@@ -21,6 +21,12 @@ classdef benthic_zNO3
         function r = calc(obj, bsd, swi, r)
            % Iteratively solve for zno3
            
+            % Try zero flux at zinf and see if we have any NO3 left - in
+            % the rare case of zox < zinf but zNO3 = zinf, also
+            % calculate [NO3] at zinf for advective loss
+            [flxzinf, conczinf, flxswi,rtmp] = obj.calcbc(bsd.zinf, bsd, swi, r,2);
+
+           
            if r.zox == bsd.zinf
                r.zno3 = bsd.zinf;
                bctype = 2;
@@ -28,9 +34,9 @@ classdef benthic_zNO3
            
                 fun=@(zno3)-obj.calcbc(zno3,bsd,swi,r,1);
 
-                % Try zero flux at zinf and see if we have any NO3 left - in
-                % the rare case of zox < zinf but zNO3 = zinf
-                [flxzinf, conczinf, flxswi,rtmp] = obj.calcbc(bsd.zinf, bsd, swi, r,2);
+%                 % Try zero flux at zinf and see if we have any NO3 left - in
+%                 % the rare case of zox < zinf but zNO3 = zinf
+%                 [flxzinf, conczinf, flxswi,rtmp] = obj.calcbc(bsd.zinf, bsd, swi, r,2);
 
                 if bsd.usescalarcode
                     if conczinf > 0     % Dom 30062016: change this as can be neg as well (NO3 different) -> check for zox == zinf
@@ -39,6 +45,7 @@ classdef benthic_zNO3
                     else
                         r.zno3=fzero(fun, [max(r.zox, 1e-10), bsd.zinf] ,bsd.fzerooptions);
                         bctype = 1; % BC: zero concentration
+                        conczinf = 0.0;
                     end
                 else  % same logic, in vector form
                     zno3=fzero_vec(fun,max(r.zox, 1e-10), bsd.zinf,bsd.fzerooptions);
@@ -48,6 +55,12 @@ classdef benthic_zNO3
             
             end
             [flxzno3, conczno3, flxswiNO3, r] = obj.calcbc(r.zno3, bsd, swi, r, bctype); 
+            
+          	flxswiNO3 = flxswiNO3 - bsd.por.*bsd.w.*(swi.NO30-conczinf);
+            if(abs(flxswiNO3) <= bsd.tol_const)
+                flxswiNO3 = 0.0
+            end
+
             r.flxzno3 = flxzno3;  % should be zero - not if zno3 = zinf
             r.conczno3 = conczno3; % may be non-zero if eg fully oxic sediment
             r.flxswiNO3 = flxswiNO3;
@@ -125,7 +138,7 @@ classdef benthic_zNO3
             conczno3 = rNO3.A2.*e2_zno3+rNO3.B2.*f2_zno3 + g2_zno3;
             % flux at swi - DO include por so this is per cm^2 water column area
             % DH: added advective flux 28.05.2016
-            flxswi = bsd.por.*(obj.DN1.*(rNO3.A2.*dedz1_0+rNO3.B2.*dfdz1_0 + dgdz1_0) - bsd.w.*swi.NO30);   % NB: use A2, B2 as these are _xformed_ layer 1 basis functions
+            flxswi = bsd.por.*(obj.DN1.*(rNO3.A2.*dedz1_0+rNO3.B2.*dfdz1_0 + dgdz1_0)); % - bsd.w.*swi.NO30);   % NB: use A2, B2 as these are _xformed_ layer 1 basis functions
 
             % save coeffs for layer 1             
             rNO3.A1 = zox.a.*rNO3.A2 + zox.b.*rNO3.B2 + zox.e;
