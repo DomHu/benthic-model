@@ -321,11 +321,13 @@ qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg
 					 (i.e. MATLAB: SO4: FH2S to zox line 106; 	FSO4 at zso4 line 181
 						       H2S: zso4FH2S at zso4 line 53;	zoxFH2S at zox line 79
 							O2: FO2 at zox line 133
+							ALK: line 71, 97
 FORTRAN:
 in initialize: NC1, NC2, ALKRNIT, ALKRH2S, ALKRMET, ALKRAOM
 O2: FUN_huelseetal2016_calcFO2 lines 1349
 SO4: FH2S to zox lines 1768; FUN_calcFSO4 to zso4 lines 1877
 H2S: zso4FH2S to zso4 line 2149; zoxFH2S to zox line 2188
+ALK: line 2752, 2781
 ################# 		--> should at least get mass conservation of SO4 + H2S, also check how ALK changed
 
 ########################################################################################################################################
@@ -367,4 +369,188 @@ qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg
 8) as 5) with k = 0.01, 0.001
  job 9324 
 qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/07_OMEN_GENIE_Feb2017 1602_08_art_world__nogas_noweath_WITH2ndRedox+ALK_k_01_001 10000
+
+9) Abiotic ocean, with FULL OMEN all remineralised k1,2 = 0.1
+job 9348
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/07_OMEN_GENIE_Feb2017 1602_09_art_world__nogas_noweath_WITH2ndRedox+ALK_k_0.1_abiotic 10000
+
+
+############ 21/02/2017 - still no shelves: cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES
+Biotic , open system, no weathering, no air-sea gas exchange
+
+####### now switch all secondary redox off (i.e. in SO4 line 106 = 0.0 and H2S line 79), before H2S produced until zSO4 was still oxidised to SO4 but not taken into account as O2 loss --> lead probably to less O2 consumption when SO4-reduction (see k=0.1)
+
+1) OMEN all remineralised k = 0.1 - No secondary redox reactions (flux of reduced substances at boundaries for O2, SO4 and H2S to zero) ALSO set ALK stoichiometry for sec. redox and CH4 to 0.0 
+ job 9420
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/07_OMEN_GENIE_Feb2017 2102_01_art_world__nogas_noweath_No2ndRedox_NoALK_k_0.1 10000
+
+2) as 1) k=1.0
+ job 9421
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/07_OMEN_GENIE_Feb2017 2102_02_art_world__nogas_noweath_No2ndRedox_NoALK_k_1.0 10000
+
+3) as 1) with k = 4.0 
+ job  9422
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/07_OMEN_GENIE_Feb2017 2102_03_art_world__nogas_noweath_No2ndRedox_NoALK_k_4.0 10000
+
+4) as 1) with k = 0.01, 0.001
+ job 9427
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/07_OMEN_GENIE_Feb2017 2102_04_art_world__nogas_noweath_No2ndRedox_NoALK_k_01_001 10000
+
+5) as 1) with k = 0.001, 0.00001
+ job 9439
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/07_OMEN_GENIE_Feb2017 2102_05_art_world__nogas_noweath_No2ndRedox_NoALK_k_001_00001 10000
+
+
+############ 22/02/2017 NOW using simple Ocean setup with shelves: cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES
+
+1) OMEN all remineralised k = 0.1 - No secondary redox reactions (flux of reduced substances at boundaries for O2, SO4 and H2S to zero) ALSO set ALK stoichiometry for sec. redox and CH4 to 0.0 
+job 9441
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/07_OMEN_GENIE_Feb2017 2202_01_art_world_shelves_nogas_noweath_No2ndRedox_NoALK_k_0.1 10000
+
+2) as 1) k=1.0
+ job 9442
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/07_OMEN_GENIE_Feb2017 2202_02_art_world_shelves_nogas_noweath_No2ndRedox_NoALK_k_1.0 10000
+
+3) as 1) with k = 4.0 
+ job  9443
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/07_OMEN_GENIE_Feb2017 2202_03_art_world_shelves_nogas_noweath_No2ndRedox_NoALK_k_4.0 10000
+
+4) as 1) with k = 0.01, 0.001
+ job 9444
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/07_OMEN_GENIE_Feb2017 2202_04_art_world_shelves_nogas_noweath_No2ndRedox_NoALK_k_01_001 10000
+CRASH AFTER YEAR 16
+
+5) as 1) with k = 0.001, 0.00001
+ job 
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/07_OMEN_GENIE_Feb2017 2202_05_art_world_shelves_nogas_noweath_No2ndRedox_NoALK_k_001_00001 10000
+
+6) Abiotic ocean, no 2nd redox OMEN all remineralised k1,2 = 0.1
+job 
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/07_OMEN_GENIE_Feb2017 2202_06_art_world_shelves_nogas_noweath_No2ndRedox_NoALK_k_0.1_abiotic 10000
+crash 10 years:  netcdf error: NetCDF: Numeric conversion not representable                                    
+ trace string: putvar2d fsedocn_O2
+
+
+############ 08/03/2017 ADDED volume conversion factor to ALKALINITY! 
+No secondary redox reactions (flux of reduced substances at boundaries for O2, SO4 and H2S to zero) ALSO set ALK
+#### without shelves - to check what ALK does: cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES
+
+1) now ALK with SD in stoichiometry! k = 0.1
+ job 9622
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/08_OMEN_GENIE_March2017 0803_01_art_world__nogas_noweath_No2ndRedox_NoALK_k_0.1 10000
+
+2) as 1) k=1.0
+ job 9623
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/08_OMEN_GENIE_March2017 0803_02_art_world__nogas_noweath_No2ndRedox_NoALK_k_1.0 10000
+
+3) as 1) k=4.0
+ job 9624
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/08_OMEN_GENIE_March2017 0803_03_art_world__nogas_noweath_No2ndRedox_NoALK_k_4.0 10000
+
+4) as 1) with k = 0.01, 0.001
+ job 9625
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/08_OMEN_GENIE_March2017 0803_04_art_world__nogas_noweath_No2ndRedox_NoALK_k_01_001 10000
+
+5) as 1) with k = 0.001, 0.00001
+ job 9626
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlmb.BASES DOM/08_OMEN_GENIE_March2017 0803_05_art_world__nogas_noweath_No2ndRedox_NoALK_k_001_00001 10000
+
+----------------------------------------------------
+----------------------------------------------------
+ NOW using simple Ocean setup with shelves: cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES
+6) now ALK with SD in stoichiometry! k = 0.1
+job 9627
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 0803_06_art_world_shelves_nogas_noweath_No2ndRedox_NoALK_k_0.1 10000
+
+7) as 6) with  k=1.0
+ job 9628
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 0803_07_art_world_shelves_nogas_noweath_No2ndRedox_NoALK_k_1.0 10000
+
+8) as 6) with  k=4.0  ---------> CRASH AFTER 2 YEARS DUE to VERY HIGH ALK, here we have methanogenesis.... TODO: CHECK!
+ job 
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 0803_08_art_world_shelves_nogas_noweath_No2ndRedox_NoALK_k_4.0 10000
+
+9) as 6) with  k = 0.01, 0.001
+ job 9629
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 0803_09_art_world_shelves_nogas_noweath_No2ndRedox_NoALK_k_01_001 10000
+
+10) as 6) with  k = 0.001, 0.00001
+ job 9630
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 0803_10_art_world_shelves_nogas_noweath_No2ndRedox_NoALK_k_001_00001 10000
+
+############ 09/03/2017 CHECK FOR NO POC DEPOSITED -> SWI FLUX = 0.0
+NOW using simple Ocean setup with shelves: cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES
+1) k = 0.1 - abiotic ocean 
+ job 9660
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 0903_01_art_world_shelves_nogas_noweath_No2ndRedox_NoALK_k_0.1_abiotic 10000
+
+---------: CHECK SHELVES RUN yester day with k = 0.1 and k=0.01, 0.001 as the seemed to be weird (maybe problem with k-values yesterday!?)
+2) biotic, shelves: k=0.1
+ job 9661
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 0903_02_art_world_shelves_nogas_noweath_No2ndRedox_NoALK_k_0.1_NEW 10000
+
+3)  biotic, shelves: k=1.0
+ job 9662
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 0903_03_art_world_shelves_nogas_noweath_No2ndRedox_NoALK_k_1.0_NEW 10000
+
+4)  biotic, shelves: k=4.0 ----> produce CH4 ---> crash 
+ job 
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 0903_04_art_world_shelves_nogas_noweath_No2ndRedox_NoALK_k_4.0_NEW 10000
+
+5) biotic, shelves: k=0.01, 0.001
+ job 9663
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 0903_05_art_world_shelves_nogas_noweath_No2ndRedox_NoALK_k_01_001_NEW 10000
+
+6) biotic, shelves: k=0.001, 0.00001
+ job 9664
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 0903_06_art_world_shelves_nogas_noweath_No2ndRedox_NoALK_k_001_00001_NEW 10000
+
+
+
+############ 10/03/2017 NEW stoichiometry: ALK(ox) = -16/106 (instead of -18/106) using simple Ocean setup with shelves: cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES
+
+1) biotic, shelves: k=0.1
+ job 9667
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 1003_01_art_world_shelves_nogas_noweath_No2ndRedox_NoALK_k_0.1 10000
+
+2)  biotic, shelves: k=1.0
+ job 9668
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 1003_02_art_world_shelves_nogas_noweath_No2ndRedox_NoALK_k_1.0 10000
+
+3)  biotic, shelves: k=4.0 ----> produce CH4 ---> crash 
+ job 
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 1003_03_art_world_shelves_nogas_noweath_No2ndRedox_NoALK_k_4.0 10000
+
+4) biotic, shelves: k=0.01, 0.001
+ job 9669
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 1003_04_art_world_shelves_nogas_noweath_No2ndRedox_NoALK_k_01_001 10000
+
+5) biotic, shelves: k=0.001, 0.00001
+ job 9670
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 1003_05_art_world_shelves_nogas_noweath_No2ndRedox_NoALK_k_001_00001 10000
+
+
+-----------------------------------------------
+-----------------------------------------------
+########### Run now without stupid division /100000000 when calculating A1i, A2i and NEW stoichiometry: ALK(ox) = -16/106 (instead of -18/106) 
+
+1) biotic, shelves: k=0.1
+ job 9671
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 1003_01_art_world_shelves_nogas_noweath_No2ndRedox_NoALK_k_0.1_NoDivision 10000
+
+2)  biotic, shelves: k=1.0
+ job 9672
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 1003_02_art_world_shelves_nogas_noweath_No2ndRedox_NoALK_k_1.0_NoDivision 10000
+
+3)  biotic, shelves: k=4.0 ----> produce CH4 ---> crash  think DIC is the problem
+ job 
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 1003_03_art_world_shelves_nogas_noweath_No2ndRedox_NoALK_k_4.0_NoDivision 10000
+
+4) biotic, shelves: k=0.01, 0.001
+ job 9675
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 1003_04_art_world_shelves_nogas_noweath_No2ndRedox_NoALK_k_01_001_NoDivision 10000
+
+5) biotic, shelves: k=0.001, 0.00001
+ job 9674
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 1003_05_art_world_shelves_nogas_noweath_No2ndRedox_NoALK_k_001_00001_NoDivision 10000
 

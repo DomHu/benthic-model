@@ -80,13 +80,15 @@
 
 % \Author[affil]{given_name}{surname}
 \Author[1]{Dominik}{H\"ulse}
-\Author[1]{Sandra}{Arndt}
-\Author[2]{Stuart}{Daines}
-\Author[1, 3]{Andy}{Ridgwell}
+\Author[1, 2]{Sandra}{Arndt}
+\Author[3]{Stuart}{Daines}
+\Author[1, 4]{Andy}{Ridgwell}
+\Author[2]{Pierre}{Regnier}
 
 \affil[1]{School of Geographical Sciences, University of Bristol, Clifton, Bristol BS8 1SS, UK}
-\affil[2]{Earth System Science, University of Exeter, North Park Road, Exeter EX4 4QE, UK}
-\affil[3]{Department of Earth Sciences, University of California, Riverside, CA 92521, USA}
+\affil[2]{Department of Earth and Environmental Sciences, Universit\'e Libre de Bruxelles, Brussels, Belgium}
+\affil[3]{Earth System Science, University of Exeter, North Park Road, Exeter EX4 4QE, UK}
+\affil[4]{Department of Earth Sciences, University of California, Riverside, CA 92521, USA}
 
 %% The [] brackets identify the author with the corresponding affiliation. 1, 2, 3, etc. should be inserted.
 
@@ -96,7 +98,7 @@
 
 \runningauthor{H\"ulse et al.}
 
-\correspondence{Sandra Arndt (s.arndt@bristol.ac.uk)}
+\correspondence{Dominik H\"ulse (Dominik.Huelse@bristol.ac.uk)}
 
 
 
@@ -124,7 +126,7 @@ Here we describe the first version of the Organic Matter ENabled SEDiment model 
 \introduction  %% \introduction[modified heading if necessary]
 %>>>
 \marginnote{\textbf{DH}: How to include comments.}[-1cm]%<<<
-\textbf{Role of marine sediments for climate and global biogeochemical cycles:}\\
+%\textbf{Role of marine sediments for climate and global biogeochemical cycles:}\\
 Marine surface sediments are key components in the Earth system. They host the largest carbon reservoir within the surficial Earth system, provide the only long term sink for atmospheric \chem{CO_2}, 
 recycle nutrients and represent the most important geochemical archive used for deciphering past changes in biogeochemical cycles and climate. 
 Physical and chemical processes in sediments (i.e. diagenetic processes) depend on the water column and vice versa: Diagenesis is mainly donor controlled, as it is fuelled by the external supply of solid material 
@@ -151,12 +153,11 @@ As such, changes in the degradation rate of OM can profoundly affect the oxygen 
 %Furthermore, burial of OM represents an important connection between carbon stored in more climate-relevant reservoirs like oceans, atmosphere, 
 %and surficial sediments and carbon that is sequestered for much longer, geological timescales in sedimentary rock or coal \citep{mackenzie_sediments_2005, burdige_preservation_2007}. 
 
-\textcolor{red}{TODO:} Something on: Role of marine sediments for another time period , e.g. glacial/interglacial atmospheric p\chem{CO_2} cycles
-
+%\textcolor{red}{TODO:} Something on: Role of marine sediments for another time period , e.g. glacial/interglacial atmospheric p\chem{CO_2} cycles
 Nutrient recycling from the sediments has been invoked by modelling and data studies to explain the occurance of extreme events in Earth history, for instance Oceanic Anoxic Events (OAEs) 
 \citep[e.g.][]{mort_phosphorus_2007, tsandev_modeling_2009}. OAEs represent severe disturbances of the global carbon, oxygen and nutrient cycles of the ocean and are usually characterized 
 by widespread bottom water anoxia and photic zone euxinia \citep{jenkyns_geochemistry_2010}. 
-One way to explain the genesis and retention of OAEs is increased oxygen demand due to enhanced primary productivity (PP). Increased nutrient inputs to fuel PP may have come from marine sediments as the 
+One way to explain the genesis and persistence of OAEs is increased oxygen demand due to enhanced primary productivity (PP). Increased nutrient inputs to fuel PP may have come from marine sediments as the 
 burial efficiency of phosphorus declines when bottom waters become anoxic \citep{ingall_evidence_1994, van_cappellen_benthic_1994}. 
 The recovery from OAE like conditions is thought to involve the permanent removal of excess \chem{CO_2} from the atmosphere and ocean by burying carbon in the form of organic matter in marine sediments 
 \citep[e.g.][]{arthur_geochemical_1988, jarvis_black_2011}, which is consistent with the geological record of widespread black shale formation \citep{stein_accumulation_1986}. 
@@ -173,7 +174,7 @@ However, the overall amount, exact timing and the rate of organic matter burial 
 % % - \\
 % % - Carbon burial events 
 
-\textbf{Diagenetic Models:}\\
+%\textbf{Diagenetic Models:}\\
 Therefore, globally quantifying the burial and degradation of organic matter in marine sediments and related biogeochemical dynamics is important for understanding climate and the cycling of many chemical elements on various timescales.
 Such studies and quantifications are possible through the application of idealised mathematical representations of diagenesis, or so-called diagenetic models \citep[e.g.][]{berner_early_1980, boudreau1997diagenetic}.
 The number of research questions that can be addressed with diagenetic models is infinite and a plethora of different approaches have been developed, mainly following two distinct directions \citep{arndt_quantifying_2013}. 
@@ -185,35 +186,35 @@ the most realistic benthic-pelagic coupling. However, the global applicability o
 The second group of models is less sophisticated and comprehensive than the ``complete'', non-steady-state diagenetic models and is used for the coupling to global Earth System Models 
 (e.g. DCESS, \citeauthor{shaffer_presentation_2008}, \citeyear{shaffer_presentation_2008}; MEDUSA, \citeauthor{munhoven_glacialinterglacial_2007}, \citeyear{munhoven_glacialinterglacial_2007} or the model of \citet{heinze_global_1999}). 
 In particular, these analytic models consider fewer biogeochemical reactions and assume that the sedimentary organic matter pool is composed 
-of just a single or two discrete compound classes (1G or 2G approach respectively). \\[2ex]% apply the so-called 1G approach, thus just representing a single organic matter pool which is degraded at a constant rate. 
-
+of just a single or two discrete compound classes (1G or 2G approach respectively). % apply the so-called 1G approach, thus just representing a single organic matter pool which is degraded at a constant rate. 
 
 % From Soetart-review:  this evidence of mutual interaction between the water column and the sediment
 % beneath, most biogeochemical models for water column processes either neglect the sediments or apply
 % a rather crude approximation for the benthic response.
-\textbf{How are sediments resolved in Earth System models:}\\
+
+%\textbf{How are sediments resolved in Earth System models:}\\
 Even though there is potential to use more appropriate global sediment representations, in most current Earth System models sediment-water exchange of OM and chemical elements is either neglected or treated in a very 
-simplistic way \citep{soetaert_coupling_2000, huelse_biopump_models_2016}. 
+simplistic way \citep{soetaert_coupling_2000, huelse_biopump_models_2017}. 
 Most Earth system Models of Intermediate Complexity (EMICs) and also some of the higher resolution global carbon cycle models represent the sediment-water interface either as a reflective or a conservative/semi-reflective boundary 
-\citep{huelse_biopump_models_2016}. 
+\citep{huelse_biopump_models_2017}. 
 Thus, all particulate material deposited on the seafloor is either instantaneously consumed (reflective boundary), or a fixed fraction is buried in the sediments (conservative/semi-reflective boundary). 
 Both highly simplified approaches furthermore completely neglect the exchange of solute species through the sediment-water interface and, therefore, cannot resolve the complex benthic-pelagic coupling. 
 However, due to their computational efficiency, both representations are often used in global biogeochemical models \citep[e.g.][]{najjar_impact_2007, ridgwell_marine_2007, goosse_description_2010}. 
-A superior approach is the vertically integrated dynamic model, which represents the whole sediment column as a single box \citep{huelse_biopump_models_2016}. Here, OM deposited on the seafloor is added 
+A superior approach is the vertically integrated dynamic model, which represents the whole sediment column as a single box \citep{huelse_biopump_models_2017}. Here, OM deposited on the seafloor is added 
 to the sediment box where it gets degraded and dissolved species diffuse through the sediment-water interface in accordance with these transformations. 
 This approach thus ignores the vertical extent of the sediments and the temporary storage of dissolved species \citep{soetaert_coupling_2000}. Yet, it is computationally efficient and 
 also allows differentiating between various fractions of organic matter. Most EMICs incorporate a vertically integrated dynamic model for particulate inorganic carbon only (i.e. mainly \chem{CaCO_3}) and just a few  
-consider oxic-only sediment degradation of organic matter \citep{huelse_biopump_models_2016}. 
+consider oxic-only sediment degradation of organic matter \citep{huelse_biopump_models_2017}. 
 The most complex description of marine sediments in Earth System models are vertically resolved diagenetic models, solving the one-dimensional, fully coupled reaction-transport equation for multiple solid and dissolved species 
 \citep[e.g.][]{berner_early_1980, boudreau1997diagenetic}. These models account for important transport processes (e.g. bioturbation, molecular diffusion and bioirrigation), resolve the coupled biogeochemical dynamics of dissolved species
-and usually at least a part of the resulting characteristic redox-zonation of marine sediments \citep{soetaert_coupling_2000, huelse_biopump_models_2016}. Examples of global carbon cycle models employing a vertically resolved diagenetic model are 
+and usually at least a part of the resulting characteristic redox-zonation of marine sediments \citep{soetaert_coupling_2000}. Examples of global carbon cycle models employing a vertically resolved diagenetic model are 
 PISCES \citep{gehlen_reconciling_2006} and CLIMBER 3$\alpha$ \citep{ilyina_global_2013}, both using a version of \citet{heinze_global_1999}, however, just utilizing a 1G approach with a constant degradation rate constant. % and NORESM \citep{tjiputra_evaluation_2013} does not say anything if they just use the original oxic-only
-None of the EMICs reviewed by \citet{huelse_biopump_models_2016} use such a sediment representation. 
+None of the EMICs reviewed by \citet{huelse_biopump_models_2017} use such a sediment representation. 
 
 % Sandra review: large scale of published model parameters illustrates the complex nature of organic matter dynamics! Very difficult to find global relationships to relate model parameters 
 % to available environmental characteristics, such as water depth, deposition rate. 
 
-\textbf{Problem with that:} \\
+%\textbf{Problem with that:} \\
 Obviously, such simplifications can neither account for the observed vast structural complexity in natural organic matter and its resulting different degradation rates nor for the rapid decrease in 
 OM degradability in the uppermost centimeters of the sediments \citep{arndt_quantifying_2013}. At least a 3G approach is necessary to accurately represent organic matter dynamics in this part of the sediments where most OM is 
 degraded \citep[e.g.][]{soetaert_model_1996}. 
@@ -236,7 +237,7 @@ Other model parameters implicitly accounting for processes not explicitly descri
 
 %\textcolor{red}{TODO???:} \textbf{Alternative Model approaches} e.g. from coastal research\\[2ex]
 
-\textbf{Solution presented here:}\\
+%\textbf{Solution presented here:}\\
 Here, we present the OrganicMatter ENabled SEDiment model (OMEN-SED 1.0), a new, one-dimensional, numerically efficient reactive transport model (RTM) 
 that describes OM cycling as well as the associated dynamics of the most important terminal electron acceptors (TEAs, i.e. \chem{O_2}, \chem{NO_3}, \chem{SO_4}, \chem{CH_4}), 
 related reduced substances (\chem{NH_4} \chem{H_2S}), macronutrients (\chem{PO_4}) and associated pore water quantities (\chem{ALK}, \chem{DIC}).  
@@ -391,17 +392,16 @@ $z=z_{\mathrm{bio}}$&continuity& 2)& $C_i(z_{\mathrm{bio}}^-)$=$C_i(z_{\mathrm{b
 
 
 \subsubsection{Oxygen}
-In marine sediments, oxygen is consumed through the aerobic degradation of organic matter and a number of secondary redox reactions. 
+In marine sediments, oxygen is consumed via aerobic degradation of organic matter and a number of secondary redox reactions. 
 In the oxic layer ($z<z_{ox}$), the model explicitly accounts for the aerobic degradation of OM, which consumes oxygen with a fixed \chem{O_2:C} ratio (\chem{O_2C}, Tab. \ref{table:reaction_parameters}) 
 and produces ammonium, which is partially nitrified to nitrate ($\gamma_\chem{NH_4}$).
 %nitrification of parts of ammonium produced in the oxic layer of the sediment. 
 %Oxygen serves as the most powerful terminal electron acceptor for the heterotrophic degradation of organic carbon. In addition, the oxidation of reduced species produced through microbial activity throughout the 
 %sediment column further contributes to the consumption of oxygen. The model explicitly accounts for the consumption of oxygen by heterotrophic degradation and nitrification of ammonium in the oxic layer of the sediment. 
 %The nitrification of 1 mol of ammonium in the oxic layer consumes 2 mol of oxygen. 
-In addition, the oxygen consumption through the oxidation of reduced species (\chem{NH_4}, \chem{H_2S}) produced in the suboxic and anoxic layers of the sediment is implicitly taken into account 
+In addition, the oxygen consumption due to oxidation of reduced species (\chem{NH_4}, \chem{H_2S}) produced in the suboxic and anoxic layers of the sediment is implicitly taken into account 
 through the flux boundary condition at the dynamic oxygen penetration depth $z_{\mathrm{ox}}$. This simplification can be justified as it has been shown that these secondary redox reactions mainly occur at the oxic/suboxic 
-interface \citep{soetaert_model_1996}.  
-The factor $\frac{1-\phi}{\phi}$ accounts for the volume conversion from the solid to the dissolved phase. 
+interface \citep{soetaert_model_1996}. The factor $\frac{1-\phi}{\phi}$ accounts for the volume conversion from the solid to the dissolved phase. 
 %Oxygen is described in mol\,cm$^{-3}$ liquid and conversion from the solid phase of mineralized organic matter (expressed in mol\,cm$^{-3}$ bulk sediment) to consumption of dissolved oxygen (or later nutrients) introduce 
 %a factor of $\frac{1-\phi}{\phi}$, where $\phi$ is the sediment porosity. 
 Oxygen dynamics are thus described by:
@@ -414,11 +414,11 @@ Oxygen dynamics are thus described by:
 %  D_{ \chem{O_2}}&=D_{ \chem{O_2}, 0}                &\text{if ($z > z_{\mathrm{bio}}$)} 
 % \end{align}  
 The analytical solution of Eq. \eqref{eq:ODE_O2_1} requires the definition of boundary conditions (Table \ref{Tab:BC_O2}). 
-The model assumes a known bottom water concentration and the complete consumption of oxygen at the oxygen penetration depth (or zero flux if $z_{\mathrm{ox}}=z_\infty$). 
-It considers equal oxygen concentration and diffusive flux above ($z_{\mathrm{bio}}^-$) and 
-below ($z_{\mathrm{bio}}^+$) the bioturbation boundary. In addition, the model imposes a flux of reduced species through the bottom of the oxic zone that is calculated as the reduced substances produced through anoxic mineralization 
-of organic matter below $z_{\mathrm{ox}}$. Thus, assuming that fractions ($\gamma_{\chem{NH_4}}$ and $\gamma_{\chem{H_2S}}$) of these reduced species are oxidised at the oxic/suboxic interface.
-%\textcolor{red}{does not $\gamma_{\chem{NH_4}}, \delta$ account for part which is not oxidised?}
+OMEN-SED (1.0) assumes a known bottom water concentration and the complete consumption of oxygen at the oxygen penetration depth (or zero flux if $z_{\mathrm{ox}}=z_\infty$). 
+Equal oxygen concentration and diffusive flux above ($z_{\mathrm{bio}}^-$) and below ($z_{\mathrm{bio}}^+$) the bioturbation boundary is considered. 
+In addition, the model accounts for reduced species produced by anaerobic mineralization diffusing into the oxic layer from below, 
+assuming that respective fractions ($\gamma_{\chem{NH_4}}$ and $\gamma_{\chem{H_2S}}$) are re-oxidised at the oxic/suboxic interface. 
+
 % was Sandra: In addition, it imposes a flux of reduce species through the bottom of the oxic zone that is calculated by integrating organic matter degradation rate and, thus, 
 %assumes a complete oxidation of these species at the oxic/suboxic interface:   
 \begin{table}[tbp]
@@ -453,7 +453,9 @@ $z=z_{\mathrm{ox}}$&  \chem{O_2} consumption & 4)&\textbf{IF} $ (\chem{O_2}(z_\i
 To model nitrate and ammonium dynamics the sediment is partitioned into two geochemical layers (oxic and suboxic), where different equations describe the biogeochemical processes. 
 Above the oxygen penetration depth organic matter mineralization produces ammonium, which is partly nitrified to nitrate (the fraction $\gamma_{\chem{NH_4}}$). 
 In the suboxic zone ($z>z_{\mathrm{ox}}$), oxygen concentration is zero and nitrate serves as the electron acceptor to respire organic matter, thus nitrate is consumed by denitrification and ammonium is produced. Below the nitrate 
-penetration depth $z_{\chem{NO_3}}$, ammonium is still produced through OM mineralization. Therefore the diagenetic equations for nitrate and ammonium are given by:
+penetration depth $z_{\chem{NO_3}}$, ammonium is still produced via OM mineralization. The model assumes that adsorption of ammonium to sediment particles is fast compared with the characteristic transport time scales. 
+Thus, a constant equilibrium adsorption coefficient $K_\chem{NH_4}$ is used to parameterize the loss of dissolved \chem{NH_4} to adsorped \chem{NH_4} \citep{wang_multicomponent_1996}.
+Therefore the diagenetic equations for nitrate and ammonium are given by:
 \begin{align}
 \intertext{1. Layer ($z \leq z_{\mathrm{ox}}$)}
  \frac{\partial NO_3^I}{\partial t} &= 0 = D_{NO_3} \frac{\partial^2NO_3^I }{\partial z^2} - w\frac{\partial NO_3^I }{\partial z} + \gamma_{\chem{NH_4}} \frac{1-\phi}{\phi} \cdot \sum_i \chem{NC_i} \cdot k_i \cdot C_{i}(z)\label{eq:NO3_ODE1_L1}\\ %\qquad &\text{1. Layer ($z\leq z_{\mathrm{ox}}$)}\\
@@ -533,7 +535,7 @@ The re-oxidation of reduced \chem{H_2S} to \chem{SO_4} is considered in the
 oxic-suboxic boundary condition for both species, here including the methanic zone, as \chem{H_2S} is also produced during anaerobic oxidation of methane (AOM). 
 Furthermore, sulfate is used at $z_{\chem{SO_4}}$ to oxidize methane from below and thus producing \chem{H_2S}. 
 In case $z_{\chem{SO_4}}<z_\infty$, sulfate concentration is zero at $z_{\chem{SO_4}}$ and its diffusive flux must equal the amount of methane produced below; or, in case $z_{\chem{SO_4}}=z_\infty$, 
-a zero flux condition for sulfate is considered. At lower boundary ($z_\infty$) zero flux of \chem{H_2S} is considered. 
+a zero flux condition for sulfate is considered. At the lower boundary $z_\infty$ zero flux of \chem{H_2S} is considered. 
 %Additionally H$_2$S is produced by AOM which is considered in the flux boundary condition at $z_{\chem{SO_4}}$. 
 \textcolor{red}{correct??}\\
 
@@ -607,12 +609,13 @@ $z=z_{\infty}$& zero \chem{H_2S} flux & 10)& $\frac{\partial \chem{H_2S}}{\parti
 	\label{fig:P-cycle}
 	\end{center}
 \end{figure}
-To model phosphorus (P) in the sediments the model takes into account the change with depth of phosphate (PO$_4$) and iron-bound P, thereby mainly following the description of \citet{caroline_p_slomp_key_1996} 
+To model phosphorus (P) dynamics in the sediments OMEN-SED takes into account the change with depth of phosphate (PO$_4$) and iron-bound P, thereby mainly following the description of \citet{caroline_p_slomp_key_1996} 
 and \citet{gypens_simple_2008}. Throughout the sediment column organic matter is mineralized resulting in a release of phosphate to the pore water. In the oxic part of the sediment, this PO$_4$ either 
-diffuses upward to the water column or is adsorped to Fe oxides forming Fe-bound P (or M) \citep{slomp1998role}. In the suboxic/anoxic zone, PO$_4$ is not only produced through organic matter degradation but is 
+diffuses upward to the water column or is adsorped to Fe oxides forming Fe-bound P (or M) \citep{slomp1998role}. In the suboxic/anoxic zone, PO$_4$ is not only produced via organic matter degradation but is 
 also released from the Fe-bound P pool due to the reduction of Fe oxides. Furthermore, phosphate concentrations can become high enough in this layer for authigenic mineral formation to occur \citep{cappellen_mathematical_1988}. 
-This phosphorus bound in authigenic minerals represents a permanent sink for reactive phosphorus \citep{caroline_p_slomp_key_1996}. See Figure \ref{fig:P-cycle} for a schematic overview of the sedimentary P cycle.
-Therefore the diagenetic equations for phosphorus are written:
+This phosphorus bound in authigenic minerals represents a permanent sink for reactive phosphorus \citep{caroline_p_slomp_key_1996}. See Figure \ref{fig:P-cycle} for a schematic overview of the sedimentary P cycle. 
+As for ammonium, the adsorption of P to the sediment matrix is treated as an equilibrium processes, parameterized with dimensionless adsorption coefficients for the oxic and anoxic zone 
+\citep[$K_{\chem{PO_4}}^I$, $K_{\chem{PO_4}}^{II}$][]{slomp1998role}. Therefore the diagenetic equations for phosphate are written as:
 \begin{align}
 \intertext{1. Layer ($z \leq z_{\mathrm{ox}}$)}
  \frac{\partial \chem{PO_4}^I}{\partial t} &= \frac{D_{\chem{PO_4}}}{1+K_{\chem{PO_4}}^I} \frac{\partial^2\chem{PO_4}^I }{\partial z^2} - w\frac{\partial \chem{PO_4}^I }{\partial z} + \frac{1-\phi}{\phi}\frac{1}{1+K_{\chem{PO_4}}^I}\sum_i 
@@ -631,10 +634,10 @@ Therefore the diagenetic equations for phosphorus are written:
 %  D_{\chem{PO_4}}&=D_{\chem{PO_4}, 0} &\text{ and }\quad D_{M}&= 0 &\text{if ($z > z_{\mathrm{bio}}$)} 
 % \end{align}
 The boundary conditions to solve Equations \ref{eq:PO4_ODE_L1} - \ref{eq:PO4_ODE_L2} are summarized in Table \ref{Tab:BC_PO4+M}. 
-The model assumes known bottom water concentrations and equal concentrations and diffusive fluxes at $z_{\mathrm{bio}}$ and $z_{\mathrm{ox}}$ for both species. Additionally it considers no change in phosphate flux and an assymptotic Fe-bound P 
-concentration at $z_\infty$. \\
+The model assumes known bottom water concentrations and equal concentrations and diffusive fluxes at $z_{\mathrm{bio}}$ and $z_{\mathrm{ox}}$ for both species. 
+Additionally it considers no change in phosphate flux and an assymptotic Fe-bound P concentration at $z_\infty$. \\
 
-\textcolor{red}{@ Sandra: SWI Flux for M does not exist, right???}
+% TODO: \textcolor{red}{@ Sandra: SWI Flux for M does not exist, right???}
 
 \begin{table}[tbp]
 \caption{Boundary conditions for phosphate and Fe-bound P (M). For the boundaries we define:  $z^-_{\_\_} := \lim_{h\to0} (z_{\_\_}-h)$ and $z^+_{\_\_} := \lim_{h\to0} (z_{\_\_}+h)$.}
@@ -671,14 +674,18 @@ $z=z_{\infty}$& assymptotic concentration & 10) $M(z_\infty)=M_\infty$\\
 % solution\\
 
 \subsubsection{Dissolved Inorganic Carbon (DIC)}
-Dissolved inorganic carbon (DIC) is produced when organic matter is degraded. DIC dynamics are described by: 
+Organic matter degradation produces dissolved inorganic carbon (DIC) with a stoichiometric DIC:C ratio of 1:2 in the methanic zone and 1:1 in the rest of the sediment column. 
+DIC dynamics in OMEN-SED (1.0) are thus described by equations \ref{eq:DIC_ODE1_L1} and \ref{eq:DIC_ODE1_L1} and boundary conditions as summarized in Table \ref{Tab:BC_DIC}. 
+The model assumes a known DIC concentration at the sediment-water interface, a zero flux condition at the lower boundary $z_\infty$ and continuity across the bioturbation and sulfate penetration depth. 
+In addition, the anaerobic oxidation of methane at $z_{\chem{SO_4}}$ produces DIC (with 1:1 stoichiometry) which is accounted for through the flux boundary condition 
+at $z_{\chem{SO_4}}$ (Table \ref{Tab:BC_DIC} eq. 5)
+
 \begin{align}
 \intertext{1. Layer ($z \leq z_{\chem{SO_4}}$)}
   \frac{\partial DIC^I}{\partial t} &= 0 = D_{DIC} \frac{\partial^2DIC^I }{\partial z^2} - w\frac{\partial DIC^I }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i \chem{DICC^I} \cdot k_i \cdot C_{i}(z)\label{eq:DIC_ODE1_L1}\\ %\qquad &\text{1. Layer ($z\leq z_{\mathrm{ox}}$)}\\
  \intertext{2. Layer ($z_{\chem{SO_4}} < z \leq z_\infty$)} 
   \frac{\partial DIC^{II}}{\partial t} &= 0 = D_{DIC} \frac{\partial^2DIC^{II} }{\partial z^2} - w\frac{\partial DIC^{II} }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i \chem{DICC^{II}} \cdot k_i \cdot C_{i}(z)\label{eq:DIC_ODE1_L2} %\qquad &\text{1. Layer ($z\leq z_{\mathrm{ox}}$)}\\
 \end{align}
-To solve equations \ref{eq:DIC_ODE1_L1} and \ref{eq:DIC_ODE1_L2} the model assumes the boundary conditions summarised in Table \ref{Tab:BC_DIC}.
 
 \begin{table}[tbp]
 \caption{Boundary conditions for \chem{DIC}. For the boundaries we define:  $z^-_{\_\_} := \lim_{h\to0} (z_{\_\_}-h)$ and $z^+_{\_\_} := \lim_{h\to0} (z_{\_\_}+h)$.}
@@ -692,10 +699,10 @@ To solve equations \ref{eq:DIC_ODE1_L1} and \ref{eq:DIC_ODE1_L2} the model assum
 $z=0$& known concentration& 1)& $\chem{DIC}(0)=\chem{DIC}_{0}$  \\
 $z=z_{\mathrm{bio}}$&continuity& 2)& $\chem{DIC}(z_{\mathrm{bio}}^-)$=$\chem{DIC}(z_{\mathrm{bio}}^+)$\\
                & flux & 3)& $-\left(D_{\chem{DIC},0}+D_{\mathrm{bio}}\right )\cdot \frac{\partial \chem{DIC}}{\partial z}|_{z_{\mathrm{bio}}^-}=-D_{\chem{DIC},0} \cdot \frac{\partial \chem{DIC}}{\partial z}|_{z_{\mathrm{bio}}^+}$\\
-$z=z_{\chem{SO_4}}$& continuity & 8)& $\chem{DIC}(z_{\chem{SO_4}}^-)$=$\chem{DIC}(z_{\chem{SO_4}}^+)$\\ %$\frac{\partial \chem{DIC}}{\partial z}|_{z_{\chem{DIC}}}=0$\\
-               & flux (with AOM) & 9)&  $-D_{\chem{DIC}}\cdot \frac{\partial \chem{DIC}}{\partial z}|_{z_{\chem{SO_4}}^-} + \gamma_\chem{CH_4}\cdot F_{\chem{CH_4}}(z_{\chem{SO_4}})=-D_{\chem{DIC}} \cdot \frac{\partial \chem{DIC}}{\partial z}|_{z_{\chem{SO_4}}^+}$\\
+$z=z_{\chem{SO_4}}$& continuity & 4)& $\chem{DIC}(z_{\chem{SO_4}}^-)$=$\chem{DIC}(z_{\chem{SO_4}}^+)$\\ %$\frac{\partial \chem{DIC}}{\partial z}|_{z_{\chem{DIC}}}=0$\\
+               & flux (with AOM) & 5)&  $-D_{\chem{DIC}}\cdot \frac{\partial \chem{DIC}}{\partial z}|_{z_{\chem{SO_4}}^-} + \gamma_\chem{CH_4}\cdot F_{\chem{CH_4}}(z_{\chem{SO_4}})=-D_{\chem{DIC}} \cdot \frac{\partial \chem{DIC}}{\partial z}|_{z_{\chem{SO_4}}^+}$\\
 &where: & &$\quad F_{\chem{CH_4}}(z_{\chem{SO_4}})=\frac{1-\phi}{\phi} \cdot \int_{z_{\chem{SO_4}}}^{\infty}  \sum_i \chem{MC} \cdot k_i \cdot C_i\ dz$ \\          
-$z=z_{\infty}$& zero \chem{DIC} flux & 10)& $\frac{\partial \chem{DIC}}{\partial z}|_{z_\infty}=0$\\
+$z=z_{\infty}$& zero \chem{DIC} flux & 6)& $\frac{\partial \chem{DIC}}{\partial z}|_{z_\infty}=0$\\
 \hline
 \end{tabular}
 \label{Tab:BC_DIC}
@@ -703,11 +710,13 @@ $z=z_{\infty}$& zero \chem{DIC} flux & 10)& $\frac{\partial \chem{DIC}}{\partial
 
 
 \subsubsection{Alkalinity}
-Alkalinity is produced and consumed when organic matter is degraded. 
-\textcolor{red}{TODO: Explain why it is produced/consumed, where and how in the different layers} $j \in \{I,\ II,\ III,\ IV\}$ and talk earlier on in the model description why it matters.
-% \begin{equation}
-%   \frac{\partial \chem{ALK}^{}}{\partial t} = 0 = D_{\chem{ALK}} \frac{\partial^2\chem{ALK}^{I} }{\partial z^2} - w\frac{\partial \chem{ALK}^{I} }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i \mathrm{REAC_{ALK}} \cdot k_i \cdot C_{i}(z) \label{eq:ALK_ODE}
-% \end{equation}
+Organic matter degradation and secondary redox reactions exert a complex influence on alkalinity with opposite effects depending on the TEA involved \citep{wolf-gladrow_total_2007}. 
+%The dynamics are further complicated by the influence of secondary redox reactions. 
+To model alkalinity in OMEN-SED the sediment column is partitioned into four geochemical layers, where different equations describe the biogeochemical processes using variable stoichiometric coefficients 
+(compare Tables \ref{table:reaction_parameters} and \ref{table:Reaction_Network}). 
+Above $z_{\mathrm{ox}}$, aerobic OM mineralization decreases alkalinity according to $\chem{ALK}^\mathrm{OX}$ whereas nitrification increases alkalinity with stoichiometry $\chem{ALK}^\mathrm{NIT}$.
+In the remaining three zones anaerobic OM mineralization increases alkalinity with variable stoichiometric coefficients (i.e. $\chem{ALK}^\mathrm{DEN}$, $\chem{ALK}^\mathrm{SUL}$, $\chem{ALK}^\mathrm{MET}$). 
+Thus, the diagenetic equations for alkalinity are written as:
 \begin{align}
  \intertext{1. Layer ($z \leq z_{\chem{ox}}$)} 
 \frac{\partial \chem{ALK}^{I}}{\partial t} &= 0 = D_{\chem{ALK}} \frac{\partial^2\chem{ALK}^{I} }{\partial z^2} - w\frac{\partial \chem{ALK}^{I} }{\partial z} \notag\\
@@ -715,11 +724,16 @@ Alkalinity is produced and consumed when organic matter is degraded.
  \intertext{2. Layer ($z_{\chem{ox}} < z \leq z_{\chem{NO_3}} $)} 
 \frac{\partial \chem{ALK}^{II}}{\partial t} &= 0 = D_{\chem{ALK}} \frac{\partial^2\chem{ALK}^{II} }{\partial z^2} - w\frac{\partial \chem{ALK}^{II} }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i \chem{ALK}^\mathrm{DEN}\cdot k_i \cdot C_{i}(z)\label{eq:ALK_ODE1_L2}
  \intertext{3. Layer ($z_{\chem{NO_3}} < z \leq z_{\chem{SO_4}} $)} 
-\frac{\partial \chem{ALK}^{III}}{\partial t} &= 0 = D_{\chem{ALK}} \frac{\partial^2\chem{ALK}^{III} }{\partial z^2} - w\frac{\partial \chem{ALK}^{III} }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i \chem{ALK}^\mathrm{SUL}\cdot k_i \cdot C_{i}(z)\label{eq:ALK_ODE1_L2}
+\frac{\partial \chem{ALK}^{III}}{\partial t} &= 0 = D_{\chem{ALK}} \frac{\partial^2\chem{ALK}^{III} }{\partial z^2} - w\frac{\partial \chem{ALK}^{III} }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i \chem{ALK}^\mathrm{SUL}\cdot k_i \cdot C_{i}(z)\label{eq:ALK_ODE1_L3}
  \intertext{4. Layer ($z_{\chem{SO_4}} < z \leq z_{\infty} $)} 
-\frac{\partial \chem{ALK}^{IV}}{\partial t} &= 0 = D_{\chem{ALK}} \frac{\partial^2\chem{ALK}^{IV} }{\partial z^2} - w\frac{\partial \chem{ALK}^{IV} }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i \chem{ALK}^\mathrm{MET}\cdot k_i \cdot C_{i}(z)\label{eq:ALK_ODE1_L2}
+\frac{\partial \chem{ALK}^{IV}}{\partial t} &= 0 = D_{\chem{ALK}} \frac{\partial^2\chem{ALK}^{IV} }{\partial z^2} - w\frac{\partial \chem{ALK}^{IV} }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i \chem{ALK}^\mathrm{MET}\cdot k_i \cdot C_{i}(z)\label{eq:ALK_ODE1_L4}
 \end{align}
-To solve equations \ref{eq:ALK_ODE1_L1} and \ref{eq:ALK_ODE1_L2} the model assumes the boundary conditions summarised in Table \ref{Tab:BC_ALK}.
+To solve equations \ref{eq:ALK_ODE1_L1} - \ref{eq:ALK_ODE1_L4} the model assumes a known concentration at the sediment-water interface and continuity 
+across the bioturbation depth and the penetration depths of \chem{O_2}, \chem{NO_3} and \chem{SO_4} (see Table \ref{Tab:BC_ALK}). 
+The decrease of alkalinity due to oxidation of reduced species produced in the suboxic and anoxic layers is implicitly taken into account 
+through the flux boundary condition at $z_{\mathrm{ox}}$ (Table \ref{Tab:BC_ALK} eq. 5). 
+Furthermore, the oxidation of methane by sulphate reduction increases alkalinity with stoichiometry $\chem{ALK}^\mathrm{AOM}$ which is accounted for through the flux boundary condition 
+at $z_{\chem{SO_4}}$ (Table \ref{Tab:BC_ALK} eq. 9). At the lower boundary $z_\infty$ a zero flux condition is applied. 
 
 \begin{table}[tbp]
 \caption{Boundary conditions for alkalinity. For the boundaries we define:  $z^-_{\_\_} := \lim_{h\to0} (z_{\_\_}-h)$ and $z^+_{\_\_} := \lim_{h\to0} (z_{\_\_}+h)$.}
@@ -835,10 +849,9 @@ $D_{\chem{PO_4}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 5.586252 &Diffus
 
 
 \subsubsection {Reaction Parameters}
-%The parameters relating to organic matter 
-%The overall reactions implemented in OMEN-SED (1.0) are listed in Table \ref{table:reactions_processes}. 
-The applied multi-G approach for organic matter degradation considers specific degradation rate constants $k_i$ (yr$^{-1}$) for each compound class. 
-\textcolor{red}{TODO: } \textit{ The degradation constants are generally taken from the coupled Earth System model} 
+%The parameters relating to organic matter %The overall reactions implemented in OMEN-SED (1.0) are listed in Table \ref{table:reactions_processes}. 
+\textcolor{red}{TODO: could relate k to water-depth, sedimentation rate, OM-flux... Do maybe some simple SA experiments.} 
+The applied multi-G approach for organic matter degradation considers specific degradation rate constants $k_i$ (yr$^{-1}$) for each compound class 
 and are assumed invariant along the sediment column, therefore independent of the nature of the terminal electron acceptor. 
 The stoichiometry of organic matter is represented by the factors \chem{NC_i} and \chem{PC_i} denoting the molecular nitrogen to carbon and phosphorus to carbon ratio. 
 In the sulfidic and methanic zone the 
@@ -910,7 +923,7 @@ $\gamma_{\chem{CH_4}}$ & - & 0.99 & fraction of \chem{CH_4} that is oxidised\\
 
 \subsection{Module Structure}\label{subsec:module_Structure}
 %Sandra: Technical description, e.g. how is it implemented and how can it be coupled to model\\
-\textcolor{red}{TODO: }
+\textcolor{red}{TODO: Go over again!}
 %Describe in which order we calculate the different profiles/exchange fluxes (first calculating OM profile, then different TEA profiles).\\ 
 An analytical steady-state solution is found for the reaction-transport equation of each chemical species in each layer. 
 At each boundary (i.e. $z_{\mathrm{ox}}, z_{\mathrm{bio}}, z_{\chem{NO_3}}$ and $z_{\chem{SO_4}}$) the model has to match continuity and flux for different ODE solutions of the layer above and below the specific boundary. 
@@ -1206,14 +1219,11 @@ Application to Seitert, 2004 OM, burwiczk see rate data and evaluation based on 
 
 \subsection{GENIE pre-industrial}\label{subsec:GENIE-pre-ind}
 
-\subsection{GENIE-Cretaceous test?}
-
 \section{Scope of applicability and model limitations}
 
 
-
 \conclusions  %% \conclusions[modified heading if necessary]
-TEXT
+Not too bad this model...
 
 \section {Code Availability}
 
@@ -1264,7 +1274,7 @@ AOM & $\chem{CH_4 + CO_2 + SO_4^{2-}} \rightarrow \chem{2HCO_3^- + H_2S}$\\
 
 
 \begin{acknowledgements}
-TEXT
+Thank you...
 \end{acknowledgements}
 
 

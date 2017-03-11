@@ -8,18 +8,18 @@ classdef benthic_zPO4_M
         DPO41;                      %PO4 diffusion coefficient in bioturbated layer (cm2/yr)
         DPO42;                      %PO4 diffusion coefficient in non-bioturbated layer (cm2/yr)
         
-        KPO4_ox=200.0;  % was 10.0     %Adsorption coefficient in oxic layer (-) 
-        KPO4_anox=1.3;          %Adsorption coefficient in anoxic layer (-)
-        ksPO4=1.0; %0.26*365;      %Rate constant for kinetic P sorption (1/yr)   0.12 fits 1.CASE; 2.2 fits 2. CASE DOM: was 0.5*365 from Nicolas; Slomp ea 1996 0.26
+        KPO4_ox=0.0; %200.0;  % was 10.0     %Adsorption coefficient in oxic layer (-) 
+        KPO4_anox=0.0; %1.3;          %Adsorption coefficient in anoxic layer (-)
+        ksPO4=1e-18; %1.0; %0.26*365;      %Rate constant for kinetic P sorption (1/yr)   0.12 fits 1.CASE; 2.2 fits 2. CASE DOM: was 0.5*365 from Nicolas; Slomp ea 1996 0.26
        % ksPO4=1e-15;
         %kmPO4= 1e-15 ;
-        kmPO4=2.2e-6*24*365;          % Dom was from Slomp 0.00053*365;	%Rate constant for Fe-bound P release upon Fe oxide reduction   DOM: was 1.8e-6 Slomp ea 1996 0.00053*365 
+        kmPO4=1e-18; %2.2e-6*24*365;          % Dom was from Slomp 0.00053*365;	%Rate constant for Fe-bound P release upon Fe oxide reduction   DOM: was 1.8e-6 Slomp ea 1996 0.00053*365 
         %kaPO4 = 0.0;
-        kaPO4=10.0; % Dom was 0.001*365;	%Rate constant for authigenic P formation (1/yr)    DOM: was 0.004*365 from Nicolas; Slomp ea 1996 0.001
-        PO4s=1.0e-9;        %Equilibrium concentration for P sorption (mol/cm3)       was 1.5e-9; ; Slomp ea 1996
-        PO4a= 9.0e-8; %47e-9;  %was 3.7e-9      %Equilibrium concentration for authigenic P formation (mol/cm3) was 0.7e-9
+        kaPO4=1e-18; %10.0; % Dom was 0.001*365;	%Rate constant for authigenic P formation (1/yr)    DOM: was 0.004*365 from Nicolas; Slomp ea 1996 0.001
+        PO4s=0.0; %1.0e-9;        %Equilibrium concentration for P sorption (mol/cm3)       was 1.5e-9; ; Slomp ea 1996
+        PO4a= 0.0; %9.0e-8; %47e-9;  %was 3.7e-9      %Equilibrium concentration for authigenic P formation (mol/cm3) was 0.7e-9
         %Minf = 0;
-        Minf=1.0e-10;       % asymptotic concentration for Fe-bound P (mol/cm3)      TODO/CHECK: good value? is from Slomp et al. 1996 Dom was 1.99e-6
+        Minf=0.0; %1.0e-10;       % asymptotic concentration for Fe-bound P (mol/cm3)      TODO/CHECK: good value? is from Slomp et al. 1996 Dom was 1.99e-6
 
    % OLD FROM NICOLAS     
 %        FePFlux=0.01/1000;                                          %mol/m2/hr     Flux to the surface
@@ -52,11 +52,11 @@ classdef benthic_zPO4_M
         
         function r = calc(obj, bsd, swi, r)
             
-            if(r.zox == bsd.zinf)
-                obj.Minf=1.0e-10; %1.99e-6;       % asymptotic concentration for Fe-bound P (mol/cm3)      TODO/CHECK: good value? is from Slomp et al. 1996 Dom was 1.99e-6
-            else
-                obj.Minf=1.0e-10;       % asymptotic concentration in anoxic conditions 
-            end
+%             if(r.zox == bsd.zinf)
+%                 obj.Minf=1.0e-10; %1.99e-6;       % asymptotic concentration for Fe-bound P (mol/cm3)      TODO/CHECK: good value? is from Slomp et al. 1996 Dom was 1.99e-6
+%             else
+%                 obj.Minf=1.0e-10;       % asymptotic concentration in anoxic conditions 
+%             end
 
             % Preparation: for each layer, sort out solution-matching across bioturbation boundary if necessary
             

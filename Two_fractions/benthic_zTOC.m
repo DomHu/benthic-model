@@ -9,8 +9,8 @@ classdef benthic_zTOC < handle
     properties
         DC1;                                                   %TOC diffusion coefficient (cm2/yr)
        
-        k1= 0.01; %0.035; % 0.01 0.006;                                                  %TOC degradation rate constnat (1/yr)
-        k2= 0.001;   %0.0006;                                                %TOC degradation rate constant (1/yr)  
+        k1= 1.0; %0.035; % 0.01 0.006;                                                  %TOC degradation rate constnat (1/yr)
+        k2= 1.0;   %0.0006;                                                %TOC degradation rate constant (1/yr)  
        
     end
     
@@ -78,14 +78,14 @@ classdef benthic_zTOC < handle
                         C1(i)=rTOC.A21*exp(rTOC.a21*z(i));
                     end
                 end
-                figure
-                plot(C1,-z)
-                 hold on
-                t=xlim;
-                plot([0,t(1,2)], [-bsd.zbio,-bsd.zbio], 'k--') 
-                xlabel ('[TOC] in zTOC')
-                ylabel('Depth (cm)')
-                hold off
+%                 figure
+%                 plot(C1,-z)
+%                  hold on
+%                 t=xlim;
+%                 plot([0,t(1,2)], [-bsd.zbio,-bsd.zbio], 'k--') 
+%                 xlabel ('[TOC] in zTOC')
+%                 ylabel('Depth (cm)')
+%                 hold off
             end
             
         end

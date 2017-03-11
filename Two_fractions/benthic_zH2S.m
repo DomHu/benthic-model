@@ -76,7 +76,7 @@ classdef benthic_zH2S
             % Match at zox, layer 1 - layer 2 (continuity, flux discontinuity from H2S source)
             %flux of H2S to oxic interface (from all sources of H2S below)
             % NB: include methane region as AOM will produce sulphide as well..
-            zoxFH2S = r.zTOC.calcReac(r.zno3, r.zso4, bsd.SO4C, bsd.SO4C, bsd, swi, r) + 0.0; % no secondary redox!
+            zoxFH2S = 0.0; %r.zTOC.calcReac(r.zno3, r.zso4, bsd.SO4C, bsd.SO4C, bsd, swi, r) + 0.0; % no secondary redox!
             % zoxFH2S = r.zTOC.calcReac(r.zno3, r.zso4, bsd.SO4C, bsd.SO4C, bsd, swi, r) ... % MULTIPLY BY 1/POR ????
             %    + r.zTOC.calcReac(r.zso4, bsd.zinf, bsd.MC, bsd.MC, bsd, swi, r); % Dominik 25.02.2016
             

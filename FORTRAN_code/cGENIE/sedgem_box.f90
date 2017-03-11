@@ -228,7 +228,7 @@ CONTAINS
              if (sed_type(is) == par_sed_type_scavenged) then
                 loc_dis_sed(is) = 0.0
              else
-                loc_sed_dis_frac     = 1.0 - loc_sed_pres_fracC
+                loc_sed_dis_frac = 1.0 - loc_sed_pres_fracC
                 loc_dis_sed(is) = loc_sed_dis_frac*loc_new_sed(is)
              end if
           end if
@@ -258,15 +258,21 @@ CONTAINS
              else
                 ! NOTE: adjust 'new' sed to be the preserved fraction, and set dissolved sed flux to zero,
                 !       the latter change needed becasue the Huelse et al. [2016] sed model calculates the dissolved fluxes itself
-                loc_new_sed(is) = loc_sed_pres_fracC*loc_new_sed(is)
+                if (is == is_POP) then
+                   loc_new_sed(is_POP) = loc_sed_pres_fracP*loc_new_sed(is_POP)
+                else
+                   loc_new_sed(is) = loc_sed_pres_fracC*loc_new_sed(is)
+                end if
                 loc_dis_sed(is) = 0.0
              end if
           end if
-          if (is == is_POP) loc_new_sed(is_POP) = loc_sed_pres_fracP*loc_new_sed(is_POP)
        end DO
        ! correct dissovled flux units (mol cm-2 per year -> mol cm-2 per time-step) and set output array
        sedocn_fnet(:,dum_i,dum_j) = sedocn_fnet(:,dum_i,dum_j) + dum_dtyr*loc_exe_ocn(:)
+       ! set fraction of POC available for CaCO3 diagenesis
+       loc_sed_diagen_fracC = 1.0 - loc_sed_pres_fracC
     case default
+       ! set fraction of POC available for CaCO3 diagenesis
        loc_sed_diagen_fracC = 1.0
        DO l=1,n_l_sed
           is = conv_iselected_is(l)
@@ -283,11 +289,6 @@ CONTAINS
                 ! ################################################################################################################ !
              else
                 loc_dis_sed(is) = loc_new_sed(is)
-!                if (.NOT. ctrl_sed_Fcaco3) then
-!                   loc_dis_sed(is) = loc_new_sed(is)
-!                else
-!                   loc_dis_sed(is) = 0.0                
-!               endif
              end if
           end if
        end DO
@@ -1297,7 +1298,7 @@ CONTAINS
             & /),.TRUE. &
             & )
     END IF
-    
+
     ! *** CALCULATE DISSOLUTION FLUXES ********************************************************************************************
     ! *** diagenesis - organic matter remineralization ***
     !     NOTE: particulate fluxes have been converted to units of (cm3 cm-2)
@@ -1406,11 +1407,14 @@ CONTAINS
              else
                 ! NOTE: adjust 'new' sed to be the preserved fraction, and set dissolved sed flux to zero,
                 !       the latter change needed becasue the Huelse et al. [2016] sed model calculates the dissolved fluxes itself
-                loc_new_sed(is) = loc_sed_pres_fracC*loc_new_sed(is)
+                if (is == is_POP) then
+                   loc_new_sed(is_POP) = loc_sed_pres_fracP*loc_new_sed(is_POP)
+                else
+                   loc_new_sed(is) = loc_sed_pres_fracC*loc_new_sed(is)
+                end if
                 loc_dis_sed(is) = 0.0
              end if
           end if
-          if (is == is_POP) loc_new_sed(is_POP) = loc_sed_pres_fracP*loc_new_sed(is_POP)
        end DO
        ! correct dissovled flux units (mol cm-2 per year -> mol cm-2 per time-step) and set output array
        sedocn_fnet(:,dum_i,dum_j) = sedocn_fnet(:,dum_i,dum_j) + dum_dtyr*loc_exe_ocn(:)
