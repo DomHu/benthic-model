@@ -105,7 +105,7 @@ classdef benthic_main < handle
             
             obj.ALKROX=-(obj.Y_N+2*obj.Z_P)/obj.X_C*obj.SD;                        % -18/106; was +15      % Aerobic degradation                     
             obj.ALKRNIT=0.0; %-2.0;  % no ALK                                             % Nitrification    
-            obj.ALKRDEN=(4*obj.X_C+3*obj.Y_N-10*obj.Z_P)/(5*obj.X_C)*obj.SD;       %  462/530 was 93.4;    % Denitrification
+            obj.ALKRDEN=0.0; %(4*obj.X_C+3*obj.Y_N-10*obj.Z_P)/(5*obj.X_C)*obj.SD;       %  462/530 was 93.4;    % Denitrification
             obj.ALKRSUL=(obj.X_C+obj.Y_N-2*obj.Z_P)/obj.X_C*obj.SD;                % 120/106  was 15      	% Sulfato reduction
             obj.ALKRH2S=0.0; %-2.0;      % no ALK                                         % H2S oxydation (CHECK THIS VALUE!!!)
             obj.ALKRMET=0.0; %(obj.Y_N-2*obj.Z_P)/obj.X_C;      % no ALK                	% 14/106 was 14       	% Methanogenesis
