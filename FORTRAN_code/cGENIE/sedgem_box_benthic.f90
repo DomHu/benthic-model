@@ -156,8 +156,8 @@ CONTAINS
 
     !    SUBROUTINE sub_huelseetal2016_main(dum_POC1_wtpct_swi, dum_POC2_wtpct_swi, dum_sfcsumocn, dum_sed_pres_fracC, dum_new_swifluxes)
     SUBROUTINE sub_huelseetal2016_main &
-    & (dum_i, dum_j, dum_dtyr, dum_D, loc_new_sed, dum_sfcsumocn, dum_sed_pres_fracC, dum_sed_pres_fracP, dum_new_swifluxes)
-!    SUBROUTINE sub_huelseetal2016_main(dum_dtyr, dum_D, loc_new_sed, dum_sfcsumocn, dum_sed_pres_fracC, dum_new_swifluxes)
+    (dum_i, dum_j, dum_dtyr, dum_D, loc_new_sed, dum_sfcsumocn, dum_sed_pres_fracC, dum_sed_pres_fracP, dum_new_swifluxes)
+        !    SUBROUTINE sub_huelseetal2016_main(dum_dtyr, dum_D, loc_new_sed, dum_sfcsumocn, dum_sed_pres_fracC, dum_new_swifluxes)
         !   __________________________________________________________
         !
         !   Main subroutine: 
@@ -192,7 +192,8 @@ CONTAINS
         real::loc_M_swiflux                                         ! SWI return fluxes of M - DOES NOT EXIST, JUST FOR DEBUGGING
         real::loc_DIC_swiflux                                       ! SWI return fluxes of DIC [mol/(cm^2 yr)]
         real::loc_ALK_swiflux                                       ! SWI return fluxes of ALK [mol/(cm^2 yr)]
-
+        logical::loc_sed_pres_insane                       ! true if integration constants are too high -> calculate SWI-flux manually
+        
         real::loc_fPOC                                              ! Corg flux to the sediment [cm3 cm-2]
         !        real::dum_POC1_wtpct_swi, dum_POC2_wtpct_swi             ! POC concentrations at SWI [wt%]
         logical :: loc_print_results, calc_ALK
@@ -200,7 +201,7 @@ CONTAINS
         REAL::loc_depth_comparison
         integer:: loc_k = 0
 
-
+        loc_sed_pres_insane = .false.
         loc_print_results = .false.
         calc_ALK = .true.
 
@@ -208,7 +209,7 @@ CONTAINS
         loc_ALK_swiflux = 0.0
         loc_M_swiflux = 0.0
 
-!        print*,'---------- IN OMEN MAIN ----------- '
+        !        print*,'---------- IN OMEN MAIN ----------- '
         
         ! initialize BW concentrations 
         !   THE FOLLOWING VALUES WILL BE PASSED DOWN FROM GENIE
@@ -240,53 +241,53 @@ CONTAINS
 
         if(loc_new_sed_vol .LE. 4.0e-4)then
             loc_new_sed_vol =  4.0e-4
- !            print*,' grid point (i,j)', dum_i, dum_j
+        !            print*,' grid point (i,j)', dum_i, dum_j
         end if
 
 
         ! DH Change for comparison
-!        dum_swiconc_O2 = 300.0e-9
-!        dum_swiconc_NO3 = 40.0e-9
-!        dum_swiconc_SO4 = 28000.0e-9
-!        dum_swiconc_NH4 = 0.0
-!        dum_swiconc_H2S = 0.0e-9
-!        dum_swiconc_PO4 = 40.0e-9
-!        loc_depth_comparison = 600.0
+        !        dum_swiconc_O2 = 300.0e-9
+        !        dum_swiconc_NO3 = 40.0e-9
+        !        dum_swiconc_SO4 = 28000.0e-9
+        !        dum_swiconc_NH4 = 0.0
+        !        dum_swiconc_H2S = 0.0e-9
+        !        dum_swiconc_PO4 = 40.0e-9
+        !        loc_depth_comparison = 600.0
 
-!        if(loc_print_results) then
-!            if(loc_new_sed_vol .LE. 4.0e-4)then
-!                        print*,' '
-!                        print*,' '
-!                        print*,'!!!!!!!!!!!!!!!!!! loc_new_sed_vol <  4.0e-4 !!!!!!!!!!!'
-!                        print*,'dum_D = ', dum_D
-!                        print*,' grid point (i,j)', dum_i, dum_j
-!                        print*,'GENIE loc_new_sed_vol (or deposition rate) = ', loc_new_sed(is_POC)
-!                        print*,' '
-!                        loc_new_sed_vol =  4.0e-4
-!            end if
-!        end if
+        !        if(loc_print_results) then
+        !            if(loc_new_sed_vol .LE. 4.0e-4)then
+        !                        print*,' '
+        !                        print*,' '
+        !                        print*,'!!!!!!!!!!!!!!!!!! loc_new_sed_vol <  4.0e-4 !!!!!!!!!!!'
+        !                        print*,'dum_D = ', dum_D
+        !                        print*,' grid point (i,j)', dum_i, dum_j
+        !                        print*,'GENIE loc_new_sed_vol (or deposition rate) = ', loc_new_sed(is_POC)
+        !                        print*,' '
+        !                        loc_new_sed_vol =  4.0e-4
+        !            end if
+        !        end if
         ! DH TODO: some of initialize should be called just once, not for every grid point
         call sub_huelseetal2016_initialize(dum_D, dum_sfcsumocn(io_T), loc_new_sed_vol/dum_dtyr)
-!        call sub_huelseetal2016_initialize(loc_depth_comparison, dum_sfcsumocn(io_T), loc_new_sed_vol/dum_dtyr)
+        !        call sub_huelseetal2016_initialize(loc_depth_comparison, dum_sfcsumocn(io_T), loc_new_sed_vol/dum_dtyr)
 
         ! below test with specific temperature to compare with matlab
         !!!!        call sub_huelseetal2016_initialize(600.0, 293.15)
         !        print*,'loc_new_sed(is_POC_frac2) ', loc_new_sed(is_POC_frac2)
         !        print*,'is_POC ',loc_new_sed(is_POC)/dum_dtyr,loc_new_sed(is_POC),dum_dtyr
 
-!!!!!!  OLD version: using TOC concentration instead of flux:
-!        loc_wtpct = fun_sed_calcCorgwt(loc_fPOC, loc_new_sed_vol, por, rho_sed)
-!        !        ! DH 28.05.2016 with Middelburgh:
-!        !        loc_wtpct_Middel = fun_sed_calcCorgwt(loc_fPOC, w, por, rho_sed)
-!        loc_POC1_wtpct_swi = (1-loc_new_sed(is_POC_frac2))*loc_wtpct
-!        loc_POC2_wtpct_swi = loc_new_sed(is_POC_frac2)*loc_wtpct
+        !!!!!!  OLD version: using TOC concentration instead of flux:
+        !        loc_wtpct = fun_sed_calcCorgwt(loc_fPOC, loc_new_sed_vol, por, rho_sed)
+        !        !        ! DH 28.05.2016 with Middelburgh:
+        !        !        loc_wtpct_Middel = fun_sed_calcCorgwt(loc_fPOC, w, por, rho_sed)
+        !        loc_POC1_wtpct_swi = (1-loc_new_sed(is_POC_frac2))*loc_wtpct
+        !        loc_POC2_wtpct_swi = loc_new_sed(is_POC_frac2)*loc_wtpct
 
-!!!!!!  NEW version: using TOC-flux, convert units from cm3 to mol
+        !!!!!!  NEW version: using TOC-flux, convert units from cm3 to mol
         loc_POC1_flux_swi = conv_POC_cm3_mol*(1-loc_new_sed(is_POC_frac2))*loc_fPOC
         loc_POC2_flux_swi = conv_POC_cm3_mol*loc_new_sed(is_POC_frac2)*loc_fPOC
         ! DH Change for comparison
-!        loc_POC1_wtpct_swi = 1.0
-!        loc_POC2_wtpct_swi = 1.0
+        !        loc_POC1_wtpct_swi = 1.0
+        !        loc_POC2_wtpct_swi = 1.0
         !        print*,'loc_new_sed(is_POC) = ', loc_new_sed(is_POC)
         !        print*,'loc_fPOC = ', loc_fPOC
         !        print*,'loc_wtpct = ', loc_wtpct
@@ -294,27 +295,27 @@ CONTAINS
         !        print*,'loc_POC2_wtpct_swi = ', loc_POC2_wtpct_swi
 
         if(loc_print_results) then
-        if(dum_D < 1000.0)then
-            print*,' '
-!            print*,' NO3 selected? ', ocn_select(io_NO3)
-            print*,'dum_D = ', dum_D
-            print*,' grid point (i,j) = ', dum_i, dum_j
-            print*,'Temp C =', dum_sfcsumocn(io_T) - 273.15
-            print*,'loc_POC1_flux_swi = ', loc_POC1_flux_swi
-            print*,'loc_POC2_flux_swi = ', loc_POC2_flux_swi
-            print*,'loc_new_sed_vol (deposition rate) (cm3 cm-2) = ', loc_new_sed_vol
-            !            print*,'loc_new_sed(is_CaCO3)= ', loc_new_sed(is_CaCO3)
-            !            print*,'loc_new_sed(is_opal)= ', loc_new_sed(is_opal)
-!            print*,'loc_wtpct = ', loc_wtpct
-!            print*,'SWI wt% POC frac 1 = ', loc_POC1_wtpct_swi
-!            print*,'SWI wt% POC frac 2 = ', loc_POC2_wtpct_swi
-            print*,'dum_swiconc_O2 = ', dum_swiconc_O2      
-            print*,'dum_swiconc_SO4 = ', dum_swiconc_SO4       
-            print*,'dum_swiconc_H2S = ', dum_swiconc_H2S
-            print*,'dum_swiconc_PO4 = ', dum_swiconc_PO4
-            print*,'dum_swiflux_M = ', dum_swiflux_M
-            print*,'dum_swiconc_DIC = ', dum_swiconc_DIC
-            print*,'dum_swiconc_ALK = ', dum_swiconc_ALK
+            if(dum_D < 1000.0)then
+                print*,' '
+                !            print*,' NO3 selected? ', ocn_select(io_NO3)
+                print*,'dum_D = ', dum_D
+                print*,' grid point (i,j) = ', dum_i, dum_j
+                print*,'Temp C =', dum_sfcsumocn(io_T) - 273.15
+                print*,'loc_POC1_flux_swi = ', loc_POC1_flux_swi
+                print*,'loc_POC2_flux_swi = ', loc_POC2_flux_swi
+                print*,'loc_new_sed_vol (deposition rate) (cm3 cm-2) = ', loc_new_sed_vol
+                !            print*,'loc_new_sed(is_CaCO3)= ', loc_new_sed(is_CaCO3)
+                !            print*,'loc_new_sed(is_opal)= ', loc_new_sed(is_opal)
+                !            print*,'loc_wtpct = ', loc_wtpct
+                !            print*,'SWI wt% POC frac 1 = ', loc_POC1_wtpct_swi
+                !            print*,'SWI wt% POC frac 2 = ', loc_POC2_wtpct_swi
+                print*,'dum_swiconc_O2 = ', dum_swiconc_O2      
+                print*,'dum_swiconc_SO4 = ', dum_swiconc_SO4       
+                print*,'dum_swiconc_H2S = ', dum_swiconc_H2S
+                print*,'dum_swiconc_PO4 = ', dum_swiconc_PO4
+                print*,'dum_swiflux_M = ', dum_swiflux_M
+                print*,'dum_swiconc_DIC = ', dum_swiconc_DIC
+                print*,'dum_swiconc_ALK = ', dum_swiconc_ALK
             !            print*, 'grid-point depth',dum_D
             end if
         end if
@@ -322,9 +323,9 @@ CONTAINS
         
         ! Check for no POC deposited -> nothing preserved
         if(loc_POC1_flux_swi .LE. const_real_nullsmall .AND. loc_POC2_flux_swi .LE. const_real_nullsmall)then
-!            print*,' '
-!            print*,'no POC deposited  dum_D ', dum_D
-!            print*,' grid point (i,j) ', dum_i, dum_j
+            !            print*,' '
+            !            print*,'no POC deposited  dum_D ', dum_D
+            !            print*,' grid point (i,j) ', dum_i, dum_j
             dum_sed_pres_fracC = 0.0
             ! what TODO when no POC, still call sediment model for solutes - no, set everything to zero
             loc_O2_swiflux = 0.0
@@ -337,125 +338,161 @@ CONTAINS
             loc_DIC_swiflux = 0.0
             loc_ALK_swiflux = 0.0
         else
-!!!! OLD version: TOC concentration:  call sub_huelseetal2016_zTOC(loc_POC1_wtpct_swi, loc_POC2_wtpct_swi, dum_sed_pres_fracC)
+            !!!! OLD version: TOC concentration:  call sub_huelseetal2016_zTOC(loc_POC1_wtpct_swi, loc_POC2_wtpct_swi, dum_sed_pres_fracC)
 
-!!! TODO:
-!            print*,' '
-!            print*,'dum_D = ', dum_D
-!            print*,' grid point (i,j) = ', dum_i, dum_j
+            !!! TODO:
+            !            print*,' '
+            !            print*,'dum_D = ', dum_D
+            !            print*,' grid point (i,j) = ', dum_i, dum_j
 
-            call sub_huelseetal2016_zTOC(dum_D, loc_POC1_flux_swi, loc_POC2_flux_swi, dum_sed_pres_fracC)
+            call sub_huelseetal2016_zTOC(dum_D, loc_POC1_flux_swi, loc_POC2_flux_swi, dum_sed_pres_fracC, loc_sed_pres_insane)
             ! below test with specific wt% to compare with matlab
             !!!!            call sub_huelseetal2016_zTOC(0.006, 0.002, dum_sed_pres_fracC)
-            !        print*,'loc_sed_pres_fracC FIX', loc_sed_pres_fracC
 
-!            if(dum_sed_pres_fracC .NE. 0.0)then
-!                print*,'Something is preserved', dum_sed_pres_fracC, dum_i, dum_j
-! !                STOP
-!            end if
-
-            if(dum_swiconc_O2 .LE. const_real_nullsmall) then
-                loc_O2_swiflux = 0.0            ! if negative [O2] -> no SWI flux
-            else
-                ! Dom TODO: can do it as a function as don't need to give values. BW-O2 is global variable
-!               Hack
-!                    loc_O2_swiflux = loc_new_sed(is_POC)*conv_POC_cm3_mol*(-138.0/106.0) !*SD
-!                print*,' '
-!                print*,'dum_D ', dum_D
-!                    print*,'CALC loc_O2_swiflux = ', loc_O2_swiflux
-                call sub_huelseetal2016_zO2(dum_i, dum_j, dum_D, dum_swiconc_O2, loc_O2_swiflux)
-!                    print*,'OMEN loc_O2_swiflux = ', loc_O2_swiflux
-!                if(abs(loc_O2_swiflux) .LE. const_real_nullsmall)then
-!                    print*,'loc_O2_swiflux too small ', loc_O2_swiflux
-!    !                STOP
+!            print*,'dum_sed_pres_fracC ', dum_sed_pres_fracC          
+            
+            ! CHECK IF TOC preservation results in insane values, i.e. everything remineralized
+            ! Then calculate SWI-fluxes "manually"
+!            if(dum_sed_pres_fracC .NE. dum_sed_pres_fracC)then
+            if(loc_sed_pres_insane .OR. (dum_sed_pres_fracC .NE. dum_sed_pres_fracC) )then
+                print*,'A21 too large, pres_fracC ', dum_sed_pres_fracC, dum_D
+!                print*,'dum_D, dum_i, dum_j', dum_D, dum_i, dum_j
+                
+                dum_sed_pres_fracC = 0.0        ! sed TOC preservation to zero
+                loc_O2_swiflux = conv_POC_cm3_mol*loc_fPOC*(-OC/SD)
+                if(ocn_select(io_NO3))then
+                    loc_NO3_swiflux = 0.0
+                    loc_NH4_swiflux = 0.0
+                end if
+                if(ocn_select(io_SO4))then
+                    loc_SO4_swiflux = 0.0 !conv_POC_cm3_mol*loc_fPOC*(-SO4C/SD)
+                    loc_H2S_swiflux = -loc_SO4_swiflux
+                end if
+                if(ocn_select(io_PO4))then
+                    loc_PO4_swiflux = conv_POC_cm3_mol*loc_fPOC*PC1/SD
+                end if 
+                if(ocn_select(io_DIC))then
+                    loc_DIC_swiflux = conv_POC_cm3_mol*loc_fPOC*DICC1/SD
+                end if            
+                if(ocn_select(io_ALK))then
+                    loc_ALK_swiflux = 2.0*loc_H2S_swiflux + conv_POC_cm3_mol*loc_fPOC*ALKROX/SD   !16/106
+                end if
+            
+            else ! dum_sed_pres_fracC <> NaN
+                print*,'Normal sed_pres ', dum_sed_pres_fracC, dum_D, dum_i, dum_j
+                
+!                if(dum_sed_pres_fracC .NE. 0.0)then
+!                    print*,'Something is preserved', dum_sed_pres_fracC, dum_i, dum_j
+!            ! !                STOP
 !                end if
-            end if
+                
 
-            if(ocn_select(io_NO3))then
-                call sub_huelseetal2016_zNO3(dum_swiconc_NO3, loc_NO3_swiflux)
-            else
-                zno3 = zox
-            end if
+                if(dum_swiconc_O2 .LE. const_real_nullsmall) then
+                    loc_O2_swiflux = 0.0            ! if negative [O2] -> no SWI flux
+                else
+                    ! Dom TODO: can do it as a function as don't need to give values. BW-O2 is global variable
+                    !               Hack
+                    !                    loc_O2_swiflux = loc_new_sed(is_POC)*conv_POC_cm3_mol*(-138.0/106.0) !*SD
+                    !                print*,' '
+                    !                print*,'dum_D ', dum_D
+                    !                    print*,'CALC loc_O2_swiflux = ', loc_O2_swiflux
+                    call sub_huelseetal2016_zO2(dum_i, dum_j, dum_D, dum_swiconc_O2, loc_O2_swiflux)
+                !                    print*,'OMEN loc_O2_swiflux = ', loc_O2_swiflux
+                !                if(abs(loc_O2_swiflux) .LE. const_real_nullsmall)then
+                !                    print*,'loc_O2_swiflux too small ', loc_O2_swiflux
+                !    !                STOP
+                !                end if
+                end if
 
-            ! here check for SWI concentration, as problem with root-finding
-            ! when is zero. And as no SO4 produced no need to call subroutine anyway
-            if(ocn_select(io_SO4))then
-                if(dum_swiconc_SO4 > const_real_nullsmall)then
-!               Hack
-!                    loc_SO4_swiflux = loc_new_sed(is_POC)*conv_POC_cm3_mol*(-138.0/212.0)
-!                print*,' '
-!                print*,'dum_D ', dum_D
-!                    print*,'CALC loc_SO4_swiflux = ', loc_SO4_swiflux
-                    call sub_huelseetal2016_zSO4(dum_swiconc_SO4, loc_SO4_swiflux)
-!                    print*,'OMEN loc_SO4_swiflux = ', loc_SO4_swiflux
+                if(ocn_select(io_NO3))then
+                    call sub_huelseetal2016_zNO3(dum_swiconc_NO3, loc_NO3_swiflux)
+                else
+                    zno3 = zox
+                end if
+
+                ! here check for SWI concentration, as problem with root-finding
+                ! when is zero. And as no SO4 produced no need to call subroutine anyway
+                if(ocn_select(io_SO4))then
+                    if(dum_swiconc_SO4 > const_real_nullsmall)then
+                        !               Hack
+                        !                    loc_SO4_swiflux = loc_new_sed(is_POC)*conv_POC_cm3_mol*(-138.0/212.0)
+                        !                print*,' '
+                        !                print*,'dum_D ', dum_D
+                        !                    print*,'CALC loc_SO4_swiflux = ', loc_SO4_swiflux
+                        call sub_huelseetal2016_zSO4(dum_swiconc_SO4, loc_SO4_swiflux)
+                    !                    print*,'OMEN loc_SO4_swiflux = ', loc_SO4_swiflux
+                    else
+                        zso4 = zno3
+                    end if
                 else
                     zso4 = zno3
                 end if
-            else
-                zso4 = zno3
-            end if
 
-            if(ocn_select(io_NH4))then
-                call sub_huelseetal2016_zNH4(dum_swiconc_NH4, loc_NH4_swiflux)
-            else
-                ! If not selected nothing needs to be done
-            end if
+                if(ocn_select(io_NH4))then
+                    call sub_huelseetal2016_zNH4(dum_swiconc_NH4, loc_NH4_swiflux)
+                else
+                    ! If not selected nothing needs to be done
+                end if
 
-            if(ocn_select(io_H2S))then
-!               Hack
-!                    loc_H2S_swiflux = loc_new_sed(is_POC)*conv_POC_cm3_mol*(138.0/212.0)
-!                print*,' '
-!                print*,'dum_D ', dum_D
-!                    print*,'CALC loc_H2S_swiflux = ', loc_H2S_swiflux
-                call sub_huelseetal2016_zH2S(dum_swiconc_H2S, loc_H2S_swiflux)
-!                    print*,'OMEN loc_H2S_swiflux = ', loc_H2S_swiflux
-            else
-                ! If not selected nothing needs to be done
-            end if
+                if(ocn_select(io_H2S))then
+                    !               Hack
+                    !                    loc_H2S_swiflux = loc_new_sed(is_POC)*conv_POC_cm3_mol*(138.0/212.0)
+                    !                print*,' '
+                    !                print*,'dum_D ', dum_D
+                    !                    print*,'CALC loc_H2S_swiflux = ', loc_H2S_swiflux
+                    call sub_huelseetal2016_zH2S(dum_swiconc_H2S, loc_H2S_swiflux)
+                !                    print*,'OMEN loc_H2S_swiflux = ', loc_H2S_swiflux
+                else
+                    ! If not selected nothing needs to be done
+                end if
 
-            if(ocn_select(io_PO4))then
-!               PO4 hack
-!                loc_PO4_swiflux = loc_new_sed(is_POP)*conv_POC_cm3_mol
-!                print*,' '
-!                print*,'dum_D ', dum_D
-!                print*,'CALC loc_PO4_swiflux = ', loc_PO4_swiflux
-                call sub_huelseetal2016_zPO4_M(dum_swiconc_PO4, loc_PO4_swiflux, dum_swiflux_M, loc_M_swiflux)
-!                print*,' '
-!                print*,'OMEN loc_PO4_swiflux = ', loc_PO4_swiflux
-                ! 30/11/2016: remineralise all POC and calculate PO4 return flux
-!               PO4 hack
-!                loc_PO4_swiflux = loc_fPOC*conv_POC_cm3_mol*1/106
-!                print*,'CALC POC loc_PO4_swiflux = ', loc_PO4_swiflux
-!                loc_PO4_swiflux = loc_new_sed(is_POP)*conv_POC_cm3_mol
-!                print*,'CALC PO4 loc_PO4_swiflux = ', loc_PO4_swiflux
-            else
-                ! If not selected nothing needs to be done
-            end if
+                if(ocn_select(io_PO4))then
+                    !               PO4 hack
+                    !                loc_PO4_swiflux = loc_new_sed(is_POP)*conv_POC_cm3_mol
+                    !                print*,' '
+                    !                print*,'dum_D ', dum_D
+                    !                print*,'CALC loc_PO4_swiflux = ', loc_PO4_swiflux
+                    call sub_huelseetal2016_zPO4_M(dum_swiconc_PO4, loc_PO4_swiflux, dum_swiflux_M, loc_M_swiflux)
+                !                print*,' '
+                !                print*,'OMEN loc_PO4_swiflux = ', loc_PO4_swiflux
+                    ! 30/11/2016: remineralise all POC and calculate PO4 return flux
+                !               PO4 hack
+                !                loc_PO4_swiflux = loc_fPOC*conv_POC_cm3_mol*1/106
+                !                print*,'CALC POC loc_PO4_swiflux = ', loc_PO4_swiflux
+                !                loc_PO4_swiflux = loc_new_sed(is_POP)*conv_POC_cm3_mol
+                !                print*,'CALC PO4 loc_PO4_swiflux = ', loc_PO4_swiflux
+                else
+                    ! If not selected nothing needs to be done
+                end if
 
-            if(ocn_select(io_DIC))then
-                call sub_huelseetal2016_zDIC(dum_swiconc_DIC, loc_DIC_swiflux)
-            !                print*,'OMEN loc_DIC_swiflux = ', loc_DIC_swiflux
-            !                print*,'OMEN loc_POC_swiflux = ', loc_new_sed(is_POC)*conv_POC_cm3_mol*SD
-            !                loc_DIC_swiflux = loc_new_sed(is_POC)*conv_POC_cm3_mol ! *SD   DIC hack
-            else
-                ! If not selected nothing needs to be done
-            end if
+                if(ocn_select(io_DIC))then
+                    call sub_huelseetal2016_zDIC(dum_swiconc_DIC, loc_DIC_swiflux)
+                !                print*,'OMEN loc_DIC_swiflux = ', loc_DIC_swiflux
+                !                print*,'OMEN loc_POC_swiflux = ', loc_new_sed(is_POC)*conv_POC_cm3_mol*SD
+                !                loc_DIC_swiflux = loc_new_sed(is_POC)*conv_POC_cm3_mol ! *SD   DIC hack
+                else
+                    ! If not selected nothing needs to be done
+                end if
 
-        if(calc_ALK)then
-            if(ocn_select(io_ALK))then
-                call sub_huelseetal2016_zALK(dum_swiconc_ALK, loc_ALK_swiflux)
-!                print*,'OMEN loc_ALK_swiflux = ', loc_ALK_swiflux
-!                loc_ALK_swiflux = 2.0*loc_H2S_swiflux + loc_new_sed(is_POC)*conv_POC_cm3_mol*16/106 !NC1
-!                print*,'CALC loc_ALK_swiflux = ', loc_ALK_swiflux
-            else
-                ! If not selected nothing needs to be done
-            end if
-        else    ! use ALK hack
-             loc_ALK_swiflux = 2.0*loc_H2S_swiflux + loc_new_sed(is_POC)*conv_POC_cm3_mol*16/106 !NC1
-        end if      ! calc_ALK
+                if(calc_ALK)then
+                    if(ocn_select(io_ALK))then
+                        call sub_huelseetal2016_zALK(dum_swiconc_ALK, loc_ALK_swiflux)
+                    !                print*,'OMEN loc_ALK_swiflux = ', loc_ALK_swiflux
+                    !                loc_ALK_swiflux = 2.0*loc_H2S_swiflux + loc_new_sed(is_POC)*conv_POC_cm3_mol*16/106 !NC1
+                    !                print*,'CALC loc_ALK_swiflux = ', loc_ALK_swiflux
+                    else
+                        ! If not selected nothing needs to be done
+                    end if
+                else    ! use ALK hack
+                    loc_ALK_swiflux = 2.0*loc_H2S_swiflux + loc_new_sed(is_POC)*conv_POC_cm3_mol*ALKROX  !16/106 !NC1
+                end if      ! calc_ALK
 
+            end if  ! dum_sed_pres_fracC <> NaN
+        
         end if  ! loc_POC1/2_wtpct_swi .LE. const_real_nullsmall
 
+
+        
         ! Now pass back the values to the global field
         dum_new_swifluxes(io_O2) = loc_O2_swiflux                                   ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
         if(ocn_select(io_NO3))then
@@ -472,68 +509,68 @@ CONTAINS
         if(ocn_select(io_DIC))then
             dum_new_swifluxes(io_DIC) = loc_DIC_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
         end if
-!        if(calc_ALK)then
-            if(ocn_select(io_ALK))then
-                dum_new_swifluxes(io_ALK) = loc_ALK_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
-            end if
-!        end if      ! calc_ALK
+        !        if(calc_ALK)then
+        if(ocn_select(io_ALK))then
+            dum_new_swifluxes(io_ALK) = loc_ALK_swiflux                             ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
+        end if
+        !        end if      ! calc_ALK
         if(loc_print_results) then
-                if(dum_D < 1000.0)then
-            !            loc_new_sed_vol = fun_calc_sed_vol(loc_new_sed(:))
-            !            print*,'dum_D = ', dum_D
-            !            print*,'conv_sed_mask(:) = ', conv_sed_mask(:)
-            !            print*,'conv_POC_cm3_mol = ', conv_POC_cm3_mol
-            !            print*,'GENIE loc_new_sed_vol (or deposition rate) = ', loc_new_sed_vol
-            !            print*,'loc_new_sed(is_POC)= ', loc_new_sed(is_POC)
-            !            print*,'loc_new_sed(is_det)= ', loc_new_sed(is_det)
-            !            print*,'loc_new_sed(is_CaCO3)= ', loc_new_sed(is_CaCO3)
-            !            print*,'loc_new_sed(is_opal)= ', loc_new_sed(is_opal)
-            !            print*,'loc_wtpct(%) = 100*loc_new_sed(is_POC)/(loc_new_sed(is_POC)+loc_new_sed(is_det)+loc_new_sed(is_CaCO3)) = ', 100*loc_new_sed(is_POC)/(loc_new_sed(is_POC)+loc_new_sed(is_det)+loc_new_sed(is_CaCO3))
-            !            print*,'loc_wtpct(%) = 100*loc_new_sed(is_POC)/ loc_new_sed_vol = ', 100*loc_new_sed(is_POC)/ loc_new_sed_vol
-            !            print*,'loc_wtpct(%) = 100*loc_new_sed(is_det)/ loc_new_sed_vol = ', 100*loc_new_sed(is_det)/ loc_new_sed_vol
-            !            print*,'loc_wtpct(%) = 100*loc_new_sed(is_CaCO3)/ loc_new_sed_vol = ', 100*loc_new_sed(is_CaCO3)/ loc_new_sed_vol
-            !            print*,'loc_wtpct = ', loc_wtpct
-            !            print*,'dum_swiconc_O2 = ', dum_swiconc_O2
-            !            print*,'dum_swiconc_NO3 = ', dum_swiconc_NO3
-            !            print*, 'grid-point depth',dum_D
-            !            print*,'POC concentration frac 1 2 at SWI [wt% in mol] ', loc_POC1_wtpct_swi, loc_POC2_wtpct_swi
-            print*,' '
-            print*,'zox = ', zox
-            print*,'FINAL O2 SWI flux = ', dum_new_swifluxes(io_O2)
-            print*,'zno3 = ', zno3
-            print*,'FINAL NO3 SWI flux = ', loc_NO3_swiflux
-            print*,'zso4 = ', zso4
-            print*,'FINAL SO4 SWI flux = ', dum_new_swifluxes(io_SO4)
-            print*,'FINAL NH4 SWI flux = ', loc_NH4_swiflux
-            print*,'FINAL H2S SWI flux = ', dum_new_swifluxes(io_H2S)           
-            print*,'FINAL PO4 SWI flux = ', dum_new_swifluxes(io_PO4)
-            print*,'FINAL M SWI flux = ', loc_M_swiflux
-            print*,'FINAL DIC SWI flux = ', dum_new_swifluxes(io_DIC)
-            print*,'FINAL ALK SWI flux = ', loc_ALK_swiflux
-            print*,'Fraction POC-preserved/POC-deposited =' , dum_sed_pres_fracC
-            print*,' '
-!            print*,' '
+            if(dum_D < 1000.0)then
+                !            loc_new_sed_vol = fun_calc_sed_vol(loc_new_sed(:))
+                !            print*,'dum_D = ', dum_D
+                !            print*,'conv_sed_mask(:) = ', conv_sed_mask(:)
+                !            print*,'conv_POC_cm3_mol = ', conv_POC_cm3_mol
+                !            print*,'GENIE loc_new_sed_vol (or deposition rate) = ', loc_new_sed_vol
+                !            print*,'loc_new_sed(is_POC)= ', loc_new_sed(is_POC)
+                !            print*,'loc_new_sed(is_det)= ', loc_new_sed(is_det)
+                !            print*,'loc_new_sed(is_CaCO3)= ', loc_new_sed(is_CaCO3)
+                !            print*,'loc_new_sed(is_opal)= ', loc_new_sed(is_opal)
+                !            print*,'loc_wtpct(%) = 100*loc_new_sed(is_POC)/(loc_new_sed(is_POC)+loc_new_sed(is_det)+loc_new_sed(is_CaCO3)) = ', 100*loc_new_sed(is_POC)/(loc_new_sed(is_POC)+loc_new_sed(is_det)+loc_new_sed(is_CaCO3))
+                !            print*,'loc_wtpct(%) = 100*loc_new_sed(is_POC)/ loc_new_sed_vol = ', 100*loc_new_sed(is_POC)/ loc_new_sed_vol
+                !            print*,'loc_wtpct(%) = 100*loc_new_sed(is_det)/ loc_new_sed_vol = ', 100*loc_new_sed(is_det)/ loc_new_sed_vol
+                !            print*,'loc_wtpct(%) = 100*loc_new_sed(is_CaCO3)/ loc_new_sed_vol = ', 100*loc_new_sed(is_CaCO3)/ loc_new_sed_vol
+                !            print*,'loc_wtpct = ', loc_wtpct
+                !            print*,'dum_swiconc_O2 = ', dum_swiconc_O2
+                !            print*,'dum_swiconc_NO3 = ', dum_swiconc_NO3
+                !            print*, 'grid-point depth',dum_D
+                !            print*,'POC concentration frac 1 2 at SWI [wt% in mol] ', loc_POC1_wtpct_swi, loc_POC2_wtpct_swi
+                print*,' '
+                print*,'zox = ', zox
+                print*,'FINAL O2 SWI flux = ', dum_new_swifluxes(io_O2)
+                print*,'zno3 = ', zno3
+                print*,'FINAL NO3 SWI flux = ', loc_NO3_swiflux
+                print*,'zso4 = ', zso4
+                print*,'FINAL SO4 SWI flux = ', dum_new_swifluxes(io_SO4)
+                print*,'FINAL NH4 SWI flux = ', loc_NH4_swiflux
+                print*,'FINAL H2S SWI flux = ', dum_new_swifluxes(io_H2S)           
+                print*,'FINAL PO4 SWI flux = ', dum_new_swifluxes(io_PO4)
+                print*,'FINAL M SWI flux = ', loc_M_swiflux
+                print*,'FINAL DIC SWI flux = ', dum_new_swifluxes(io_DIC)
+                print*,'FINAL ALK SWI flux = ', loc_ALK_swiflux
+                print*,'Fraction POC-preserved/POC-deposited =' , dum_sed_pres_fracC
+                print*,' '
+            !            print*,' '
             
-        !loc_filename=trim(par_outdir_name)//'ecogem_series_resources_'//fun_conv_num_char_n(2,i)//fun_conv_num_char_n(2,j)
-        !OPEN(88,file=loc_filename,action='write',position='append',iostat=ios)
-        !CALL check_iostat(ios,__LINE__,__FILE__)
-        !WRITE(88,fmt='(f12.3,2e15.7)',iostat=ios) &
-        !    & dum_t-(dum_dtyr*par_data_save_slice_n)/2, &
-        !    & int_resources(loc,:)
-        !CALL check_iostat(ios,__LINE__,__FILE__)
-        !CLOSE(88,iostat=ios)
-        !CALL check_iostat(ios,__LINE__,__FILE__)
-        end if
+            !loc_filename=trim(par_outdir_name)//'ecogem_series_resources_'//fun_conv_num_char_n(2,i)//fun_conv_num_char_n(2,j)
+            !OPEN(88,file=loc_filename,action='write',position='append',iostat=ios)
+            !CALL check_iostat(ios,__LINE__,__FILE__)
+            !WRITE(88,fmt='(f12.3,2e15.7)',iostat=ios) &
+            !    & dum_t-(dum_dtyr*par_data_save_slice_n)/2, &
+            !    & int_resources(loc,:)
+            !CALL check_iostat(ios,__LINE__,__FILE__)
+            !CLOSE(88,iostat=ios)
+            !CALL check_iostat(ios,__LINE__,__FILE__)
+            end if
         end if
 
-    dum_sed_pres_fracP = dum_sed_pres_fracC
+        dum_sed_pres_fracP = dum_sed_pres_fracC
 
-!    if(dum_i == 16 .AND. dum_j ==18)then
-!        loc_k=loc_k+1
-!        if(loc_k==2)then
-!            STOP
-!        end if
-!    end if
+    !    if(dum_i == 16 .AND. dum_j ==18)then
+    !        loc_k=loc_k+1
+    !        if(loc_k==2)then
+    !            STOP
+    !        end if
+    !    end if
 
     end SUBROUTINE sub_huelseetal2016_main
     
@@ -622,8 +659,8 @@ CONTAINS
         ! ORGANIC MATTER
         DC1 = Dbio
         DC2 = Dunbio
-        k1=0.01
-        k2=0.001
+        k1=0.1
+        k2=0.1
 
         ! GLOBAL DIFFUSION COEFFICIENTS
         ! O2
@@ -668,8 +705,8 @@ CONTAINS
         !        w=10.0**(-0.87478367-0.00043512*dum_D)*3.3              ! sedimentation rate, cm/yr / burial velocity / advection (Middelburg et al., Deep Sea Res. 1, 1997)
 
         ! DH Change for comparison (i.e. use the above)
-!        loc_TempC = 8.0
-!        w = 10.0**(-0.87478367-0.00043512*dum_D)*3.3              ! sedimentation rate, cm/yr / burial velocity / advection (Middelburg et al., Deep Sea Res. 1, 1997)
+        !        loc_TempC = 8.0
+        !        w = 10.0**(-0.87478367-0.00043512*dum_D)*3.3              ! sedimentation rate, cm/yr / burial velocity / advection (Middelburg et al., Deep Sea Res. 1, 1997)
 
 
         ! Diffusion coefficients
@@ -723,7 +760,7 @@ CONTAINS
     !   *****************************************************************
     !------------------------------------------------------------------------------------
 
-    SUBROUTINE sub_huelseetal2016_zTOC(dum_D, dum_POC1_flux_swi, dum_POC2_flux_swi, dum_sed_pres_fracC)
+    SUBROUTINE sub_huelseetal2016_zTOC(dum_D, dum_POC1_flux_swi, dum_POC2_flux_swi, dum_sed_pres_fracC, dum_sed_pres_insane)
         !   __________________________________________________________
         !
         !   calculate benthic burial/recycling fluxes (see documentation for details!)
@@ -735,9 +772,9 @@ CONTAINS
         real,INTENT(in)::dum_POC1_flux_swi, dum_POC2_flux_swi               ! POC flux at SWI   [mol/(cm2 yr)]
         real,INTENT(inout)::dum_sed_pres_fracC                              ! POC concentrations at zinf
         REAL,INTENT(in)::dum_D                                     ! depth
-
+        logical, INTENT(inout) :: dum_sed_pres_insane                       ! true if integration constants are too high -> calculate SWI-flux manually
         ! local variables
-!        real loc_POC1_conc_swi, dum_POC2_conc_swi                           ! POC concentration at SWI   [mol/cm3]
+        !        real loc_POC1_conc_swi, dum_POC2_conc_swi                           ! POC concentration at SWI   [mol/cm3]
         real loc_POC1_conc_zinf, loc_POC2_conc_zinf
         !    real aa11, bb11, aa21, A11, A21, aa12, bb12, aa22, A12, A22
         real dC1dz, C1flx, dC2dz, C2flx, Cflx                             ! Cflx: Sed input flux to upper boundary, per cm^2 water column
@@ -748,8 +785,8 @@ CONTAINS
         !        print*,' sedimentation rate/burial velocity w = ', w
 
         ! Dom: Use this when comparing with MATLAB, here we use wt% of g -> *1/12
-!        loc_POC1_conc_swi=0.01*dum_POC1_wtpct_swi/12.0*rho_sed              ! %TOC concentration frac1 at SWI (wt%) -> (mol/cm3 bulk phase)
-!        dum_POC2_conc_swi=0.01*dum_POC2_wtpct_swi/12.0*rho_sed              ! %TOC concentration frac2 at SWI (wt%) -> (mol/cm3 bulk phase)
+        !        loc_POC1_conc_swi=0.01*dum_POC1_wtpct_swi/12.0*rho_sed              ! %TOC concentration frac1 at SWI (wt%) -> (mol/cm3 bulk phase)
+        !        dum_POC2_conc_swi=0.01*dum_POC2_wtpct_swi/12.0*rho_sed              ! %TOC concentration frac2 at SWI (wt%) -> (mol/cm3 bulk phase)
         !        print*, 'loc_POC1_conc_swi', char(9), loc_POC1_conc_swi
         !        print*, 'dum_POC2_conc_swi', char(9), dum_POC2_conc_swi
 
@@ -757,41 +794,43 @@ CONTAINS
         bb11 = (w+sqrt(w**2+4*DC1*k1))/(2*DC1)
         aa21 = (-k1/w)
 
-!        print*,'DC1, aa11, bb11, aa21 = ', DC1, aa11, bb11, aa21
+        !        print*,'DC1, aa11, bb11, aa21 = ', DC1, aa11, bb11, aa21
 
 
         ! calculate TOC SWI concentration from flux
         dum_POC1_conc_swi = (dum_POC1_flux_swi*(-aa11*exp(aa11*zbio)+bb11*exp(bb11*zbio)))/(-DC1*bb11*aa11*exp(bb11*zbio) + DC1*bb11*aa11*exp(aa11*zbio) + &
-                        DC1*bb11*aa11*por*exp(bb11*zbio) - DC1*bb11*aa11*por*exp(aa11*zbio) - w*aa11*exp(aa11*zbio) + w*bb11*exp(bb11*zbio) + &
-                        w*por*aa11*exp(aa11*zbio) - w*por*bb11*exp(bb11*zbio))
-!        print*,'dum_POC1_conc_swi = ', dum_POC1_conc_swi
+        DC1*bb11*aa11*por*exp(bb11*zbio) - DC1*bb11*aa11*por*exp(aa11*zbio) - w*aa11*exp(aa11*zbio) + w*bb11*exp(bb11*zbio) + &
+        w*por*aa11*exp(aa11*zbio) - w*por*bb11*exp(bb11*zbio))
+        !        print*,'dum_POC1_conc_swi = ', dum_POC1_conc_swi
 
-        A11 = -(dum_POC1_conc_swi*bb11*exp(bb11*zbio))/(aa11*exp(aa11*zbio)-bb11*exp(bb11*zbio)+const_real_nullsmall) !/100000000)
-!        if(exp(aa21*zbio) > const_real_nullsmall) then
-        A21=(A11*(exp(aa11*zbio)-exp(bb11*zbio))+dum_POC1_conc_swi*exp(bb11*zbio))/(exp(aa21*zbio)+const_real_nullsmall) !/100000000)
-!        else
-!            A21=(A11*(exp(aa11*zbio)-exp(bb11*zbio))+dum_POC1_conc_swi*exp(bb11*zbio))/const_real_nullsmall
-!            print*,'in small exp(aa21*zbio)', +exp(aa21*zbio)
-!        end if
+        A11 = -(dum_POC1_conc_swi*bb11*exp(bb11*zbio))/(aa11*exp(aa11*zbio)-bb11*exp(bb11*zbio)) !+const_real_nullsmall) !/100000000)
+        !        if(exp(aa21*zbio) > const_real_nullsmall) then
+        A21=(A11*(exp(aa11*zbio)-exp(bb11*zbio))+dum_POC1_conc_swi*exp(bb11*zbio))/(exp(aa21*zbio)) !+const_real_nullsmall) !/100000000)
+        !        else
+        !            A21=(A11*(exp(aa11*zbio)-exp(bb11*zbio))+dum_POC1_conc_swi*exp(bb11*zbio))/const_real_nullsmall
+        !            print*,'in small exp(aa21*zbio)', +exp(aa21*zbio)
+        !        end if
         aa12 = (w-sqrt(w**2+4*DC1*k2))/(2*DC1)
         bb12 = (w+sqrt(w**2+4*DC1*k2))/(2*DC1)
         aa22 = (-k2/w)
 
         ! calculate TOC SWI concentration from flux
         dum_POC2_conc_swi = (dum_POC2_flux_swi*(-aa12*exp(aa12*zbio)+bb12*exp(bb12*zbio)))/(-DC1*bb12*aa12*exp(bb12*zbio) + DC1*bb12*aa12*exp(aa12*zbio) + &
-                        DC1*bb12*aa12*por*exp(bb12*zbio) - DC1*bb12*aa12*por*exp(aa12*zbio) - w*aa12*exp(aa12*zbio) + w*bb12*exp(bb12*zbio) + &
-                        w*por*aa12*exp(aa12*zbio) - w*por*bb12*exp(bb12*zbio))
-!        print*,'dum_POC2_conc_swi = ', dum_POC2_conc_swi
+        DC1*bb12*aa12*por*exp(bb12*zbio) - DC1*bb12*aa12*por*exp(aa12*zbio) - w*aa12*exp(aa12*zbio) + w*bb12*exp(bb12*zbio) + &
+        w*por*aa12*exp(aa12*zbio) - w*por*bb12*exp(bb12*zbio))
+        !        print*,'dum_POC2_conc_swi = ', dum_POC2_conc_swi
 
-        A12=-(dum_POC2_conc_swi*bb12*exp(bb12*zbio))/(aa12*exp(aa12*zbio)-bb12*exp(bb12*zbio)+const_real_nullsmall) !/100000000)
-        A22=(A12*(exp(aa12*zbio)-exp(bb12*zbio))+dum_POC2_conc_swi*exp(bb12*zbio))/(exp(aa22*zbio)+const_real_nullsmall) !/100000000)
+        A12=-(dum_POC2_conc_swi*bb12*exp(bb12*zbio))/(aa12*exp(aa12*zbio)-bb12*exp(bb12*zbio)) !+const_real_nullsmall) !/100000000)
+        A22=(A12*(exp(aa12*zbio)-exp(bb12*zbio))+dum_POC2_conc_swi*exp(bb12*zbio))/(exp(aa22*zbio)) !+const_real_nullsmall) !/100000000)
 
-!        print*, 'const_real_nullsmall', const_real_nullsmall
-!        if(A21 .LE. 10e+5 .OR. A22 .LE. 10e+5)then
+        !        print*, 'const_real_nullsmall', const_real_nullsmall
+!        print*,' '
+        if(abs(A21) .GE. 1/const_real_nullsmall .OR. abs(A22) .GE. 1/const_real_nullsmall)then
 !            print*, 'dum_D ', dum_D
-!            print*, 'A2i .LE. 10e+5 !'
+!            print*, 'A2i .gE. ', 1/const_real_nullsmall
 !            print*, 'A21, A22 ', A21, A22
-!        end if
+            dum_sed_pres_insane = .TRUE.
+        end if
 
         !!! no need for this as this is SWI concentration for z0 = 0!
         !!!    ! % Calculate concentration at z0
@@ -871,20 +910,20 @@ CONTAINS
         real,INTENT(inout)::dum_sed_pres_fracC                              ! POC concentrations at zinf
 
         ! local variables
-!        real loc_POC1_conc_swi, dum_POC2_conc_swi                           ! POC concentration at SWI   [mol/cm3]
+        !        real loc_POC1_conc_swi, dum_POC2_conc_swi                           ! POC concentration at SWI   [mol/cm3]
         real loc_POC1_conc_zinf, loc_POC2_conc_zinf
         !    real aa11, bb11, aa21, A11, A21, aa12, bb12, aa22, A12, A22
         real dC1dz, C1flx, dC2dz, C2flx, Cflx                             ! Cflx: Sed input flux to upper boundary, per cm^2 water column
         real F_TOC1, F_TOC2, F_TOC                                        ! Flux through lower boundary zinf, per cm^2 water-column
 
 
-!                print*,' ------------------ START zTOC 2 diff coeffs---------------------'
-!                print*,' DC2 ', DC2
+        !                print*,' ------------------ START zTOC 2 diff coeffs---------------------'
+        !                print*,' DC2 ', DC2
         !        print*,' sedimentation rate/burial velocity w = ', w
 
         ! Dom: Use this when comparing with MATLAB, here we use wt% of g -> *1/12
-!        loc_POC1_conc_swi=0.01*dum_POC1_wtpct_swi/12.0*rho_sed              ! %TOC concentration frac1 at SWI (wt%) -> (mol/cm3 bulk phase)
-!        dum_POC2_conc_swi=0.01*dum_POC2_wtpct_swi/12.0*rho_sed              ! %TOC concentration frac2 at SWI (wt%) -> (mol/cm3 bulk phase)
+        !        loc_POC1_conc_swi=0.01*dum_POC1_wtpct_swi/12.0*rho_sed              ! %TOC concentration frac1 at SWI (wt%) -> (mol/cm3 bulk phase)
+        !        dum_POC2_conc_swi=0.01*dum_POC2_wtpct_swi/12.0*rho_sed              ! %TOC concentration frac2 at SWI (wt%) -> (mol/cm3 bulk phase)
         !        print*, 'loc_POC1_conc_swi', char(9), loc_POC1_conc_swi
         !        print*, 'dum_POC2_conc_swi', char(9), dum_POC2_conc_swi
 
@@ -892,31 +931,31 @@ CONTAINS
         bb11 = (w+sqrt(w**2+4*DC1*k1))/(2*DC1)
         aa21 = (w-sqrt(w**2+4*DC2*k1))/(2*DC2)
 
-!        print*,'DC1, aa11, bb11, aa21 = ', DC1, aa11, bb11, aa21
+        !        print*,'DC1, aa11, bb11, aa21 = ', DC1, aa11, bb11, aa21
 
 
         ! calculate TOC SWI concentration from flux
         dum_POC1_conc_swi = (dum_POC1_flux_swi*(-aa11*exp(aa11*zbio)+bb11*exp(bb11*zbio)))/(-DC1*bb11*aa11*exp(bb11*zbio) + DC1*bb11*aa11*exp(aa11*zbio) + &
-                        DC1*bb11*aa11*por*exp(bb11*zbio) - DC1*bb11*aa11*por*exp(aa11*zbio) - w*aa11*exp(aa11*zbio) + w*bb11*exp(bb11*zbio) + &
-                        w*por*aa11*exp(aa11*zbio) - w*por*bb11*exp(bb11*zbio))
-!        print*,'dum_POC1_conc_swi = ', dum_POC1_conc_swi
+        DC1*bb11*aa11*por*exp(bb11*zbio) - DC1*bb11*aa11*por*exp(aa11*zbio) - w*aa11*exp(aa11*zbio) + w*bb11*exp(bb11*zbio) + &
+        w*por*aa11*exp(aa11*zbio) - w*por*bb11*exp(bb11*zbio))
+        !        print*,'dum_POC1_conc_swi = ', dum_POC1_conc_swi
 
         A11=((DC2*aa21-DC1*bb11)*(dum_POC1_conc_swi*exp(bb11*zbio)))/(DC1*(aa11*exp(aa11*zbio)-bb11*exp(bb11*zbio))-DC2*aa21*(exp(aa11*zbio)-exp(bb11*zbio)))
-!        if(exp(aa21*zbio) > const_real_nullsmall) then
+        !        if(exp(aa21*zbio) > const_real_nullsmall) then
         A21=(A11*(exp(aa11*zbio)-exp(bb11*zbio))+dum_POC1_conc_swi*exp(bb11*zbio))/(exp(aa21*zbio)) !+const_real_nullsmall/100000000)
-!        else
-!            A21=(A11*(exp(aa11*zbio)-exp(bb11*zbio))+dum_POC1_conc_swi*exp(bb11*zbio))/const_real_nullsmall
-!            print*,'in small exp(aa21*zbio)', +exp(aa21*zbio)
-!        end if
+        !        else
+        !            A21=(A11*(exp(aa11*zbio)-exp(bb11*zbio))+dum_POC1_conc_swi*exp(bb11*zbio))/const_real_nullsmall
+        !            print*,'in small exp(aa21*zbio)', +exp(aa21*zbio)
+        !        end if
         aa12 = (w-sqrt(w**2+4*DC1*k2))/(2*DC1)
         bb12 = (w+sqrt(w**2+4*DC1*k2))/(2*DC1)
         aa22 = (w-sqrt(w**2+4*DC2*k2))/(2*DC2)
 
         ! calculate TOC SWI concentration from flux
         dum_POC2_conc_swi = (dum_POC2_flux_swi*(-aa12*exp(aa12*zbio)+bb12*exp(bb12*zbio)))/(-DC1*bb12*aa12*exp(bb12*zbio) + DC1*bb12*aa12*exp(aa12*zbio) + &
-                        DC1*bb12*aa12*por*exp(bb12*zbio) - DC1*bb12*aa12*por*exp(aa12*zbio) - w*aa12*exp(aa12*zbio) + w*bb12*exp(bb12*zbio) + &
-                        w*por*aa12*exp(aa12*zbio) - w*por*bb12*exp(bb12*zbio))
-!        print*,'dum_POC2_conc_swi = ', dum_POC2_conc_swi
+        DC1*bb12*aa12*por*exp(bb12*zbio) - DC1*bb12*aa12*por*exp(aa12*zbio) - w*aa12*exp(aa12*zbio) + w*bb12*exp(bb12*zbio) + &
+        w*por*aa12*exp(aa12*zbio) - w*por*bb12*exp(bb12*zbio))
+        !        print*,'dum_POC2_conc_swi = ', dum_POC2_conc_swi
 
         A12=((DC2*aa22-DC1*bb12)*(dum_POC2_conc_swi*exp(bb12*zbio)))/(DC1*(aa12*exp(aa12*zbio)-bb12*exp(bb12*zbio))-DC2*aa22*(exp(aa12*zbio)-exp(bb12*zbio)))
         A22=(A12*(exp(aa12*zbio)-exp(bb12*zbio))+dum_POC2_conc_swi*exp(bb12*zbio))/(exp(aa22*zbio)) !+const_real_nullsmall/100000000)
@@ -986,11 +1025,11 @@ CONTAINS
 
 
     SUBROUTINE sub_huelseetal2016_zTOC_CONCENTRATION(dum_POC1_wtpct_swi, dum_POC2_wtpct_swi, dum_sed_pres_fracC)
-!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-!       OLD APPROACH, USING TOC CONCENTRATION AT SWI
-!
-!!!!!!!!!!!!!!!!!!!!!!!!!
+        !!!!!!!!!!!!!!!!!!!!!!!!!
+        !
+        !       OLD APPROACH, USING TOC CONCENTRATION AT SWI
+        !
+        !!!!!!!!!!!!!!!!!!!!!!!!!
         !   __________________________________________________________
         !
         !   calculate benthic burial/recycling fluxes (see documentation for details!)
@@ -1025,12 +1064,12 @@ CONTAINS
         bb11 = (w+sqrt(w**2+4*DC1*k1))/(2*DC1)
         aa21 = (-k1/w)
         A11 = -(dum_POC1_conc_swi*bb11*exp(bb11*zbio))/(aa11*exp(aa11*zbio)-bb11*exp(bb11*zbio)+const_real_nullsmall)
-!        if(exp(aa21*zbio) > const_real_nullsmall) then
+        !        if(exp(aa21*zbio) > const_real_nullsmall) then
         A21=(A11*(exp(aa11*zbio)-exp(bb11*zbio))+dum_POC1_conc_swi*exp(bb11*zbio))/(exp(aa21*zbio)+const_real_nullsmall)
-!        else
-!            A21=(A11*(exp(aa11*zbio)-exp(bb11*zbio))+dum_POC1_conc_swi*exp(bb11*zbio))/const_real_nullsmall
-!            print*,'in small exp(aa21*zbio)', +exp(aa21*zbio)
-!        end if
+        !        else
+        !            A21=(A11*(exp(aa11*zbio)-exp(bb11*zbio))+dum_POC1_conc_swi*exp(bb11*zbio))/const_real_nullsmall
+        !            print*,'in small exp(aa21*zbio)', +exp(aa21*zbio)
+        !        end if
         aa12 = (w-sqrt(w**2+4*DC1*k2))/(2*DC1)
         bb12 = (w+sqrt(w**2+4*DC1*k2))/(2*DC1)
         aa22 = (-k2/w)
@@ -1146,7 +1185,7 @@ CONTAINS
         !    print*,'Try zero flux at zinf and see if we have any O2 left'
         ! Try zero flux at zinf and see if we have any O2 left
         bctype = 2
-!        print*,'Try zero flux at zinf: '
+        !        print*,'Try zero flux at zinf: '
         call sub_huelseetal2016_zO2_calcbc(dum_D, zinf, bctype, flxzox, loc_conczinf, loc_new_swiflux_O2, r_zxf);
         !    print*,'flxzox', flxzox
         !    print*,'conczox at zinf ', conczox
@@ -1156,9 +1195,9 @@ CONTAINS
             zox = 0.0   ! DH 241016 was 1e-10
             bctype = 1
         elseif (loc_conczinf .ge. 0.0)then      ! still O2 at zinf -> zox = zinf
-!            print*,'in here mate: dum_i, dum_j ', dum_i, dum_j
-!            print*,'dum_POC1_conc_swi ', dum_POC1_conc_swi
-!            print*,'dum_POC2_conc_swi ', dum_POC2_conc_swi
+            !            print*,'in here mate: dum_i, dum_j ', dum_i, dum_j
+            !            print*,'dum_POC1_conc_swi ', dum_POC1_conc_swi
+            !            print*,'dum_POC2_conc_swi ', dum_POC2_conc_swi
             zox = zinf
             zno3 = zinf
             bctype = 2
@@ -1175,9 +1214,9 @@ CONTAINS
         call sub_huelseetal2016_zO2_calcbc(dum_D, zox, bctype, flxzox, conczox, loc_new_swiflux_O2, r_zxf)
 
         loc_new_swiflux_O2 = loc_new_swiflux_O2 - por*w*(dum_swiconc_O2-loc_conczinf)
-!        print*,' loc_new_swiflux_O2', loc_new_swiflux_O2
-!        print*,' dum_swiconc_O2', dum_swiconc_O2
-!        print*,' loc_conczinf', loc_conczinf
+    !        print*,' loc_new_swiflux_O2', loc_new_swiflux_O2
+    !        print*,' dum_swiconc_O2', dum_swiconc_O2
+    !        print*,' loc_conczinf', loc_conczinf
         !    print*,'---------- FINAL RESULTS zO2 --------- '
     !        print*,'zox ', char(9), zox
         !        print*,'r_zxf', char(9), r_zxf
@@ -1240,9 +1279,9 @@ CONTAINS
         call sub_prepfg_l12(reac1, reac2, 0.0, z0, zox, DO21, DO22, ls_a, ls_b, ls_c, ls_d, ls_e, ls_f, ltype)
 
         ! basis functions at upper boundary
-!        print*, 'z0, reac1, reac2 ', z0, reac1, reac2
-!        print*, 'ls_a, ls_b, ls_c, ls_d, ls_e, ls_f, DO21, DO22', ls_a, ls_b, ls_c, ls_d, ls_e, ls_f, DO21, DO22
-!        print*, 'ltype, DO21, DO22, ltype', ltype, DO21, DO22, ltype
+        !        print*, 'z0, reac1, reac2 ', z0, reac1, reac2
+        !        print*, 'ls_a, ls_b, ls_c, ls_d, ls_e, ls_f, DO21, DO22', ls_a, ls_b, ls_c, ls_d, ls_e, ls_f, DO21, DO22
+        !        print*, 'ltype, DO21, DO22, ltype', ltype, DO21, DO22, ltype
         call sub_calcfg_l12(z0, reac1, reac2, 0.0, ls_a, ls_b, ls_c, ls_d, ls_e, ls_f, DO21, DO22, ltype, &
         e_0, dedz_0, f_0, dfdz_0, g_0, dgdz_0)
 
@@ -1266,8 +1305,8 @@ CONTAINS
             ! AO2*dedz_zox +  BO2*dfz_zox + dgz_zox = 0;
             ! AO2*e_0     +   BO2*f_0     + g_0     = swi.O20;
                          ! a            b       c   d       e           f
-!            print*, 'dedz_zox, dfdz_zox, e_0, f_0, -dgdz_zox, dum_swiconc_O2 - g_0:', dedz_zox, dfdz_zox, e_0, f_0, -dgdz_zox, dum_swiconc_O2 - g_0
-!            print*, 'dum_swiconc_O2, g_0:', dum_swiconc_O2, g_0
+            !            print*, 'dedz_zox, dfdz_zox, e_0, f_0, -dgdz_zox, dum_swiconc_O2 - g_0:', dedz_zox, dfdz_zox, e_0, f_0, -dgdz_zox, dum_swiconc_O2 - g_0
+            !            print*, 'dum_swiconc_O2, g_0:', dum_swiconc_O2, g_0
             call sub_solve2eqn(dedz_zox, dfdz_zox, e_0, f_0, -dgdz_zox, dum_swiconc_O2 - g_0, rO2_AO2, rO2_BO2)
         END IF
 
@@ -1279,8 +1318,8 @@ CONTAINS
 
         flxzox =  Dzox*(rO2_AO2*dedz_zox + rO2_BO2*dfdz_zox + dgdz_zox)         ! no por factor as this is per cm^2 pore area
         conczox = rO2_AO2*e_zox + rO2_BO2 * f_zox + g_zox
-!        print*, 'conczox:', conczox
-!        print*, 'rO2_AO2, e_zox, rO2_BO2, f_zox, g_zox:', rO2_AO2, e_zox, rO2_BO2, f_zox, g_zox
+        !        print*, 'conczox:', conczox
+        !        print*, 'rO2_AO2, e_zox, rO2_BO2, f_zox, g_zox:', rO2_AO2, e_zox, rO2_BO2, f_zox, g_zox
        
         if(0 < zbio)then
             Dswi = DO21
@@ -1449,7 +1488,7 @@ CONTAINS
         loc_new_swiflux_NO3 = loc_new_swiflux_NO3 - por*w*(dum_swiconc_NO3-conczinf)
 
         IF(ABS(loc_new_swiflux_NO3) .LE. const_real_nullsmall)then
-!            print*,'small loc_new_swiflux_NO3', loc_new_swiflux_NO3
+            !            print*,'small loc_new_swiflux_NO3', loc_new_swiflux_NO3
             loc_new_swiflux_NO3 = 0.0
         END IF
 
@@ -1667,7 +1706,7 @@ CONTAINS
             bctype = 2
         ELSE
 
-           !        print*,'conczso4 at zinf', char(9), conczso4
+            !        print*,'conczso4 at zinf', char(9), conczso4
 
             IF(loc_conczinf .ge. 0)THEN
                 zso4 = zinf
@@ -1686,7 +1725,7 @@ CONTAINS
         loc_new_swiflux_SO4 = loc_new_swiflux_SO4 - por*w*(dum_swiconc_SO4 - loc_conczinf)
 
         IF(ABS(loc_new_swiflux_SO4) .LE. const_real_nullsmall)then
-!            print*,'small loc_new_swiflux_SO4', loc_new_swiflux_SO4
+            !            print*,'small loc_new_swiflux_SO4', loc_new_swiflux_SO4
             loc_new_swiflux_SO4 = 0.0
         END IF
 
@@ -1785,8 +1824,8 @@ CONTAINS
         ! NB: include methane region as AOM will produce sulphide as well..
 
         FH2S = 0.0  !FUN_calcReac(zno3, zso4, SO4C, SO4C) + 0.0  ! no secondary redox!
-!        FH2S = FUN_calcReac(zno3, zso4, SO4C, SO4C) & ! MULTIPLY BY 1/POR ????
-!        + gammaCH4*FUN_calcReac(zso4, zinf, MC, MC)
+        !        FH2S = FUN_calcReac(zno3, zso4, SO4C, SO4C) & ! MULTIPLY BY 1/POR ????
+        !        + gammaCH4*FUN_calcReac(zso4, zinf, MC, MC)
 
         !    print*,' '
         !    print*,'FH2S ', FH2S
@@ -1888,13 +1927,13 @@ CONTAINS
 
         ! Calculate SO4 consumption below zso4, by organic matter and indirectly via methane oxidation
 
-            print*,' '
-            print*,'..... START FUN_calcFSO4'
+        print*,' '
+        print*,'..... START FUN_calcFSO4'
 
         tmpreac1    = MC*gammaCH4
         tmpreac2    = MC*gammaCH4
         FUN_calcFSO4 = 0.0 ! no secondary redox!
-!        FUN_calcFSO4 = FUN_calcReac(z, zinf, tmpreac1, tmpreac2)
+    !        FUN_calcFSO4 = FUN_calcReac(z, zinf, tmpreac1, tmpreac2)
     ! TODO confirm (1-por)*  has been added (to k1 & k2 ?)
     !    print*,'=============== IN FUN_calcFSO4 =====', FUN_calcFSO4
 
@@ -2049,7 +2088,7 @@ CONTAINS
         ! flux at swi - DO include por so this is per cm^2 water column area
         loc_new_swiflux_NH4 = por*(DNH41*(rNH4_A3*dedz1_0+rNH4_B3*dfdz1_0 + dgdz1_0) - w*(dum_swiconc_NH4 - loc_conczinf))   ! NB: use A3, B3 as these are _xformed_ layer 1 basis functions
         IF(ABS(loc_new_swiflux_NH4) .LE. const_real_nullsmall)then
-!            print*,'small loc_new_swiflux_NH4', loc_new_swiflux_NH4
+            !            print*,'small loc_new_swiflux_NH4', loc_new_swiflux_NH4
             loc_new_swiflux_NH4 = 0.0
         END IF
 
@@ -2166,7 +2205,7 @@ CONTAINS
 
         ! flux of H2S produced by AOM interface (Source of H2S)
         zso4FH2S = 0.0 ! no secondary redox
-!        zso4FH2S = FUN_calcReac(zso4, zinf, MC, MC) ! MULTIPLY BY 1/POR ????
+        !        zso4FH2S = FUN_calcReac(zso4, zinf, MC, MC) ! MULTIPLY BY 1/POR ????
         !   print*,'flux of H2S produced by AOM interface zso4FH2S = ', zso4FH2S
 
         ! match solutions at zso4 - continuous concentration and flux
@@ -2204,7 +2243,7 @@ CONTAINS
         ! flux of H2S to oxic interface (from all sources of H2S below)
         ! NB: include methane region as AOM will produce sulphide as well..
         zoxFH2S = 0.0   !FUN_calcReac(zno3, zso4, SO4C, SO4C)  + 0.0   ! no secondary redox
-!        zoxFH2S = FUN_calcReac(zno3, zso4, SO4C, SO4C)  + FUN_calcReac(zso4, zinf, MC, MC)
+        !        zoxFH2S = FUN_calcReac(zno3, zso4, SO4C, SO4C)  + FUN_calcReac(zso4, zinf, MC, MC)
         !    print*,' '
         !    print*,'flux of H2S to oxic interface zoxFH2S = ', zoxFH2S
         !    print*,' '
@@ -2259,7 +2298,7 @@ CONTAINS
         ! flux at swi - DO include por so this is per cm^2 water column area
         loc_new_swiflux_H2S = por*(DH2S1*(rH2S_A4*dedz1_0+rH2S_B4*dfdz1_0 + dgdz1_0) - w*(dum_swiconc_H2S - loc_conczinf))   ! NB: use A4, B4 as these are _xformed_ layer 1 basis functions
         IF(ABS(loc_new_swiflux_H2S) .LE. const_real_nullsmall)then
-!            print*,'small loc_new_swiflux_H2S', loc_new_swiflux_H2S
+            !            print*,'small loc_new_swiflux_H2S', loc_new_swiflux_H2S
             loc_new_swiflux_H2S = 0.0
         END IF
 
@@ -2390,42 +2429,42 @@ CONTAINS
         !   layer 1: 0 < z < zox, OM degradation (-) Sorption to sediment Fe-oxides (ktemp)
 
         call sub_prepfg_l12_PO4_M(reac1_po4_ox, reac2_po4_ox, ksPO4/(1+KPO4_ox), PO4s*ksPO4/(1+KPO4_ox), 0.0, zox, &
-                                DPO41/(1+KPO4_ox), DPO42/(1+KPO4_ox), 0.0, 0.0, 0.0, Dbio, 0.0, (1/SD)*ksPO4, &
-                                dum_mat_C1, dum_vec_D1, dum_ltype1)
+        DPO41/(1+KPO4_ox), DPO42/(1+KPO4_ox), 0.0, 0.0, 0.0, Dbio, 0.0, (1/SD)*ksPO4, &
+        dum_mat_C1, dum_vec_D1, dum_ltype1)
 
         !   layer 2: zox < z < zinf,
         !   OM degradation (-) authigenic P formation (ktemp) (+) P desorption due to Fe-bound P release upon Fe oxide reduction
         !       rPO4_M.ls2 = r.zTOC.sub_prepfg_l12_PO4_M(bsd, swi, r, reac1_anox, reac2_anox, kaPO4/(1+KPO4_anox), PO4a*kaPO4/(1+KPO4_anox), r.zox, zinf, DPO41/(1+KPO4_anox), DPO42/(1+KPO4_anox), SD*kmPO4/(1+KPO4_anox), ...
         !                                           kmPO4, kmPO4.*Minf, Dbio, 0, 0);
         call sub_prepfg_l12_PO4_M(reac1_po4_anox, reac2_po4_anox, kaPO4/(1+KPO4_anox), PO4a*kaPO4/(1+KPO4_anox), zox, zinf, &
-                                DPO41/(1+KPO4_anox), DPO42/(1+KPO4_anox), SD*kmPO4/(1+KPO4_anox), kmPO4, kmPO4*Minf, Dbio, &
-                                0.0, 0.0, dum_mat_C2, dum_vec_D2, dum_ltype2)
+        DPO41/(1+KPO4_anox), DPO42/(1+KPO4_anox), SD*kmPO4/(1+KPO4_anox), kmPO4, kmPO4*Minf, Dbio, &
+        0.0, 0.0, dum_mat_C2, dum_vec_D2, dum_ltype2)
 
             ! Work up from the bottom, matching solutions at boundaries
             ! Basis functions at bottom of layer 2 zinf
         call sub_calcfg_l12_PO4_M(zinf, reac1_po4_anox, reac2_po4_anox, kaPO4/(1+KPO4_anox), PO4a*kaPO4/(1+KPO4_anox), &
-                                DPO41/(1+KPO4_anox), DPO42/(1+KPO4_anox), SD*kmPO4/(1+KPO4_anox), dum_mat_C2, dum_vec_D2, &
-                                dum_ltype2, kmPO4, kmPO4*Minf, Dbio, 0.0, 0.0, e2_zinf_P, dedz2_zinf_P, f2_zinf_P, &
-                                dfdz2_zinf_P, g2_zinf_P, dgdz2_zinf_P, p2_zinf_P, dpdz2_zinf_P, q2_zinf_P, dqdz2_zinf_P, &
-                                e2_zinf_M, dedz2_zinf_M, f2_zinf_M, dfdz2_zinf_M, g2_zinf_M, dgdz2_zinf_M, &
-                                p2_zinf_M, dpdz2_zinf_M, q2_zinf_M, dqdz2_zinf_M)
+        DPO41/(1+KPO4_anox), DPO42/(1+KPO4_anox), SD*kmPO4/(1+KPO4_anox), dum_mat_C2, dum_vec_D2, &
+        dum_ltype2, kmPO4, kmPO4*Minf, Dbio, 0.0, 0.0, e2_zinf_P, dedz2_zinf_P, f2_zinf_P, &
+        dfdz2_zinf_P, g2_zinf_P, dgdz2_zinf_P, p2_zinf_P, dpdz2_zinf_P, q2_zinf_P, dqdz2_zinf_P, &
+        e2_zinf_M, dedz2_zinf_M, f2_zinf_M, dfdz2_zinf_M, g2_zinf_M, dgdz2_zinf_M, &
+        p2_zinf_M, dpdz2_zinf_M, q2_zinf_M, dqdz2_zinf_M)
 
         ! Match at zox, layer 1 - layer 2 (continuity and flux)
         ! basis functions at bottom of layer 1
         call sub_calcfg_l12_PO4_M(zox, reac1_po4_ox, reac2_po4_ox, ksPO4/(1+KPO4_ox), PO4s*ksPO4/(1+KPO4_ox), &
-                                DPO41/(1+KPO4_ox), DPO42/(1+KPO4_ox), 0.0, dum_mat_C1, dum_vec_D1, &
-                                dum_ltype1, 0.0, 0.0, Dbio, 0.0, (1/SD)*ksPO4, e1_zox_P, dedz1_zox_P, f1_zox_P, &
-                                dfdz1_zox_P, g1_zox_P, dgdz1_zox_P, p1_zox_P, dpdz1_zox_P, q1_zox_P, dqdz1_zox_P, &
-                                e1_zox_M, dedz1_zox_M, f1_zox_M, dfdz1_zox_M, g1_zox_M, dgdz1_zox_M, &
-                                p1_zox_M, dpdz1_zox_M, q1_zox_M, dqdz1_zox_M)
+        DPO41/(1+KPO4_ox), DPO42/(1+KPO4_ox), 0.0, dum_mat_C1, dum_vec_D1, &
+        dum_ltype1, 0.0, 0.0, Dbio, 0.0, (1/SD)*ksPO4, e1_zox_P, dedz1_zox_P, f1_zox_P, &
+        dfdz1_zox_P, g1_zox_P, dgdz1_zox_P, p1_zox_P, dpdz1_zox_P, q1_zox_P, dqdz1_zox_P, &
+        e1_zox_M, dedz1_zox_M, f1_zox_M, dfdz1_zox_M, g1_zox_M, dgdz1_zox_M, &
+        p1_zox_M, dpdz1_zox_M, q1_zox_M, dqdz1_zox_M)
 
         !  and top of layer 2
-         call sub_calcfg_l12_PO4_M(zox, reac1_po4_anox, reac2_po4_anox, kaPO4/(1+KPO4_anox), PO4a*kaPO4/(1+KPO4_anox), &
-                                DPO41/(1+KPO4_anox), DPO42/(1+KPO4_anox), SD*kmPO4/(1+KPO4_anox), dum_mat_C2, dum_vec_D2, &
-                                dum_ltype2, kmPO4, kmPO4*Minf, Dbio, 0.0, 0.0, e2_zox_P, dedz2_zox_P, f2_zox_P, &
-                                dfdz2_zox_P, g2_zox_P, dgdz2_zox_P, p2_zox_P, dpdz2_zox_P, q2_zox_P, dqdz2_zox_P, &
-                                e2_zox_M, dedz2_zox_M, f2_zox_M, dfdz2_zox_M, g2_zox_M, dgdz2_zox_M, &
-                                p2_zox_M, dpdz2_zox_M, q2_zox_M, dqdz2_zox_M)
+        call sub_calcfg_l12_PO4_M(zox, reac1_po4_anox, reac2_po4_anox, kaPO4/(1+KPO4_anox), PO4a*kaPO4/(1+KPO4_anox), &
+        DPO41/(1+KPO4_anox), DPO42/(1+KPO4_anox), SD*kmPO4/(1+KPO4_anox), dum_mat_C2, dum_vec_D2, &
+        dum_ltype2, kmPO4, kmPO4*Minf, Dbio, 0.0, 0.0, e2_zox_P, dedz2_zox_P, f2_zox_P, &
+        dfdz2_zox_P, g2_zox_P, dgdz2_zox_P, p2_zox_P, dpdz2_zox_P, q2_zox_P, dqdz2_zox_P, &
+        e2_zox_M, dedz2_zox_M, f2_zox_M, dfdz2_zox_M, g2_zox_M, dgdz2_zox_M, &
+        p2_zox_M, dpdz2_zox_M, q2_zox_M, dqdz2_zox_M)
 
         ! match solutions at zox - continuous concentration and flux
         ! organize the data in matrices and let the intrinsic fortran function do the calculation
@@ -2475,7 +2514,7 @@ CONTAINS
 
             call sub_matchsoln_PO4_M(loc_mat_X_3x3, loc_mat_Y_3x3, loc_vec_Z_3, loc_dim, loc_mat_C_3x3, loc_vec_D_3)
 
-! integrate the 3x3 matrix in the 4x4 matrix
+            ! integrate the 3x3 matrix in the 4x4 matrix
             do loc_i = 1,3
                 do loc_j = 1,3
                     loc_mat_C_4x4(loc_i, loc_j) = loc_mat_C_3x3(loc_i, loc_j)
@@ -2485,20 +2524,20 @@ CONTAINS
 
         end if !(zox < zbio)
 
-!201     format (6f12.6)
-!        print*,'final loc_mat_C_4x4 '
-!        do loc_i=1,4
-!            write (*,201) (loc_mat_C_4x4(loc_i,loc_j),loc_j=1,4)
-!        end do
-!        print*,'loc_vec_D_4 ', char(9), loc_vec_D_4
+        !201     format (6f12.6)
+        !        print*,'final loc_mat_C_4x4 '
+        !        do loc_i=1,4
+        !            write (*,201) (loc_mat_C_4x4(loc_i,loc_j),loc_j=1,4)
+        !        end do
+        !        print*,'loc_vec_D_4 ', char(9), loc_vec_D_4
 
         ! Solution at SWI, top of layer 1
         call sub_calcfg_l12_PO4_M(z0, reac1_po4_ox, reac2_po4_ox, ksPO4/(1+KPO4_ox), PO4s*ksPO4/(1+KPO4_ox), &
-                                DPO41/(1+KPO4_ox), DPO42/(1+KPO4_ox), 0.0, dum_mat_C1, dum_vec_D1, &
-                                dum_ltype1, 0.0, 0.0, Dbio, 0.0, (1/SD)*ksPO4, e1_z0_P, dedz1_z0_P, f1_z0_P, &
-                                dfdz1_z0_P, g1_z0_P, dgdz1_z0_P, p1_z0_P, dpdz1_z0_P, q1_z0_P, dqdz1_z0_P, &
-                                e1_z0_M, dedz1_z0_M, f1_z0_M, dfdz1_z0_M, g1_z0_M, dgdz1_z0_M, &
-                                p1_z0_M, dpdz1_z0_M, q1_z0_M, dqdz1_z0_M)
+        DPO41/(1+KPO4_ox), DPO42/(1+KPO4_ox), 0.0, dum_mat_C1, dum_vec_D1, &
+        dum_ltype1, 0.0, 0.0, Dbio, 0.0, (1/SD)*ksPO4, e1_z0_P, dedz1_z0_P, f1_z0_P, &
+        dfdz1_z0_P, g1_z0_P, dgdz1_z0_P, p1_z0_P, dpdz1_z0_P, q1_z0_P, dqdz1_z0_P, &
+        e1_z0_M, dedz1_z0_M, f1_z0_M, dfdz1_z0_M, g1_z0_M, dgdz1_z0_M, &
+        p1_z0_M, dpdz1_z0_M, q1_z0_M, dqdz1_z0_M)
 
         ! transform to use coeffs from l2
         ! Now find 'transformed' basis functions such that in layer 1 (here for O2, PO4 is a bit more complex)
@@ -2509,17 +2548,17 @@ CONTAINS
         loc_dEFPQdz_M = (/dedz1_z0_M, dfdz1_z0_M, dpdz1_z0_M, dqdz1_z0_M /)
 
         call sub_xformsoln_PO4_M(loc_EFPQ_P, loc_EFPQ_M, loc_dEFPQdz_P, loc_dEFPQdz_M, &
-                g1_z0_P, g1_z0_M, dgdz1_z0_P, dgdz1_z0_M, loc_mat_C_4x4, loc_vec_D_4, &
-                loc_EFPQ_P_t, g_P, loc_dEFPQdz_P_t, dgdz_P, loc_EFPQ_M_t, &
-                g_M, loc_dEFPQdz_M_t, dgdz_M)
+        g1_z0_P, g1_z0_M, dgdz1_z0_P, dgdz1_z0_M, loc_mat_C_4x4, loc_vec_D_4, &
+        loc_EFPQ_P_t, g_P, loc_dEFPQdz_P_t, dgdz_P, loc_EFPQ_M_t, &
+        g_M, loc_dEFPQdz_M_t, dgdz_M)
 
         ! SD assume D2 == 0 (as q, dqdz2_zinf = 0 ) and solve for 3 unknowns
         loc_mat_X_3x3 =  transpose(reshape((/ dedz2_zinf_P, dfdz2_zinf_P, dpdz2_zinf_P, &
-            loc_EFPQ_P_t(1), loc_EFPQ_P_t(2), loc_EFPQ_P_t(3), &
-            w*loc_EFPQ_M_t(1), w*loc_EFPQ_M_t(2), w*loc_EFPQ_M_t(3) /), shape(loc_mat_X_3x3)))
+        loc_EFPQ_P_t(1), loc_EFPQ_P_t(2), loc_EFPQ_P_t(3), &
+        w*loc_EFPQ_M_t(1), w*loc_EFPQ_M_t(2), w*loc_EFPQ_M_t(3) /), shape(loc_mat_X_3x3)))
         loc_vec_Z_3= (/ -dgdz2_zinf_P, &
-                            dum_swiconc_PO4 - g_P, &
-                           dum_swiflux_M - w*g_M  /)
+        dum_swiconc_PO4 - g_P, &
+        dum_swiflux_M - w*g_M  /)
 
         ! calculate the integration conctants for Layer 2
         ! just need it once, so actually no need for subroutine, but maybe for later
@@ -2535,19 +2574,19 @@ CONTAINS
         ! CALCULATE FINAL SWI fluxes and save the coefficients for
         ! DH: use A2, B2, C2, D2 as these are _xformed_ layer 1 basis functions
         loc_new_swiflux_PO4 = por*(DPO41/(1+KPO4_ox)*(rPO4_M_A2*loc_dEFPQdz_P_t(1)+rPO4_M_B2*loc_dEFPQdz_P_t(2) &
-                    + rPO4_M_C2*loc_dEFPQdz_P_t(3)+rPO4_M_D2*loc_dEFPQdz_P_t(4) + dgdz_P) - w*(dum_swiconc_PO4 - loc_conczinf))
+        + rPO4_M_C2*loc_dEFPQdz_P_t(3)+rPO4_M_D2*loc_dEFPQdz_P_t(4) + dgdz_P) - w*(dum_swiconc_PO4 - loc_conczinf))
         ! Does actually not exist, as it is a solid, just calculate for debugging
         loc_new_swiflux_M = por*Dbio*(rPO4_M_A2*loc_dEFPQdz_M_t(1)+rPO4_M_B2*loc_dEFPQdz_M_t(2) + &
-                        rPO4_M_C2*loc_dEFPQdz_M_t(3) + rPO4_M_D2*loc_dEFPQdz_M_t(4) + dgdz_M)
+        rPO4_M_C2*loc_dEFPQdz_M_t(3) + rPO4_M_D2*loc_dEFPQdz_M_t(4) + dgdz_M)
 
         ! save coeffs for layer 1 - in case I want to calculate a profile later
         loc_Layer1_IC = matmul(loc_mat_C_4x4, loc_Layer2_IC) + loc_vec_D_4
 
-!        print*,' '
-!        print*,'loc_new_swiflux_PO4 ', char(9), loc_new_swiflux_PO4
-!        print*,'loc_new_swiflux_M ', char(9), loc_new_swiflux_M
-!        print*,'loc_Layer1_IC ', char(9), loc_Layer1_IC
-!        print*,'loc_Layer2_IC ', char(9), loc_Layer2_IC
+    !        print*,' '
+    !        print*,'loc_new_swiflux_PO4 ', char(9), loc_new_swiflux_PO4
+    !        print*,'loc_new_swiflux_M ', char(9), loc_new_swiflux_M
+    !        print*,'loc_Layer1_IC ', char(9), loc_Layer1_IC
+    !        print*,'loc_Layer2_IC ', char(9), loc_Layer2_IC
 
     END SUBROUTINE sub_huelseetal2016_zPO4_M
 
@@ -2586,7 +2625,7 @@ CONTAINS
         real e2_zso4, dedz2_zso4, f2_zso4, dfdz2_zso4, g2_zso4, dgdz2_zso4
         real e1_00, dedz1_00, f1_00, dfdz1_00, g1_00, dgdz1_00
         real e1_0, dedz1_0, f1_0, dfdz1_0, g1_0, dgdz1_0
-!
+        !
         real rDIC_A2, rDIC_B2
         real rDIC_A1, rDIC_B1
 
@@ -2665,7 +2704,7 @@ CONTAINS
         rDIC_B1 = zso4_c*rDIC_A2 + zso4_d*rDIC_B2 + zso4_f
 
         !    print*,' ---------------- RESULTS: benthic_zDIC ---------------- '
-!        print*,'flxswiDIC ', char(9), flxswiDIC
+    !        print*,'flxswiDIC ', char(9), flxswiDIC
     !    print*,'rH2S_A4, rH2S_B4, rH2S_A3, rH2S_B3, rH2S_A2, rH2S_B2, rH2S_A1, rH2S_B1', &
     !          &  rH2S_A4, rH2S_B4, rH2S_A3, rH2S_B3, rH2S_A2, rH2S_B2, rH2S_A1, rH2S_B1
 
@@ -2724,12 +2763,12 @@ CONTAINS
         reac22_alk = ALKRDEN                                     ! zox < z < zno3: Denitrification (+93.4/106)
         reac3_alk = ALKRSUL                                    ! zno3 < z < zso4: Sulfate reduction (+15/106)
         reac4_alk = ALKRMET                                      ! zso4 < z < zinf: Methanogenesis (+14/106)
-!
-!        reac11_alk = gamma*NC1/(1+KNH4)*ALKRNIT+ALKROX*SD           ! z < zox:  Nitrification (-2) Aerobic degradation (+15/106)
-!        reac12_alk = gamma*NC2/(1+KNH4)*ALKRNIT+ALKROX*SD           ! z < zox:  Nitrification (-2) Aerobic degradation (+15/106)
-!        reac2_alk = SD*ALKRDEN                                      ! zox < z < zno3: Denitrification (+93.4/106)
-!        reac3_alk = SD*ALKRSUL                                      ! zno3 < z < zso4: Sulfate reduction (+15/106)
-!        reac4_alk = SD*ALKRMET                                      ! zso4 < z < zinf: Methanogenesis (+14/106)
+        !
+        !        reac11_alk = gamma*NC1/(1+KNH4)*ALKRNIT+ALKROX*SD           ! z < zox:  Nitrification (-2) Aerobic degradation (+15/106)
+        !        reac12_alk = gamma*NC2/(1+KNH4)*ALKRNIT+ALKROX*SD           ! z < zox:  Nitrification (-2) Aerobic degradation (+15/106)
+        !        reac2_alk = SD*ALKRDEN                                      ! zox < z < zno3: Denitrification (+93.4/106)
+        !        reac3_alk = SD*ALKRSUL                                      ! zno3 < z < zso4: Sulfate reduction (+15/106)
+        !        reac4_alk = SD*ALKRMET                                      ! zso4 < z < zinf: Methanogenesis (+14/106)
 
         !    print*, ''
         !    print*, '------------------------------------------------------------------'
@@ -2798,8 +2837,8 @@ CONTAINS
         ! Match at zox, layer 1 - layer 2 (continuity, flux discontinuity from ALK source)
         ! flux of ALK to oxic interface (from all sources of ALK below) from NH4 and H2S
         zoxFALK = 0.0       !no secondary redox!
-!        zoxFALK = ALKRNIT*gamma*FUN_calcReac(zno3, zinf, NC1/(1+KNH4),NC2/(1+KNH4)) &      ! MULTIPLY BY 1/POR ????
-!                    + ALKRH2S*gammaH2S*FUN_calcReac(zno3, zso4, SO4C, SO4C)                 ! Dominik 25.02.2016
+        !        zoxFALK = ALKRNIT*gamma*FUN_calcReac(zno3, zinf, NC1/(1+KNH4),NC2/(1+KNH4)) &      ! MULTIPLY BY 1/POR ????
+        !                    + ALKRH2S*gammaH2S*FUN_calcReac(zno3, zso4, SO4C, SO4C)                 ! Dominik 25.02.2016
         ! DH 24.02.2016: actually should be 2 integrals for ALK produced: ALK-reduction + AOM (see documentation, but has the same reac const = 0.5) :
 
         !    print*,' '
@@ -2866,7 +2905,7 @@ CONTAINS
         rALK_B1 = zox_c*rALK_A4 + zox_d*rALK_B4 + zox_f
 
         !    print*,' ---------------- RESULTS: benthic_zALK ---------------- '
-!        print*,'flxswiALK ', char(9), flxswiALK
+    !        print*,'flxswiALK ', char(9), flxswiALK
     !    print*,'rALK_A4, rALK_B4, rALK_A3, rALK_B3, rALK_A2, rALK_B2, rALK_A1, rALK_B1', &
     !          &  rALK_A4, rALK_B4, rALK_A3, rALK_B3, rALK_A2, rALK_B2, rALK_A1, rALK_B1
 
@@ -3043,9 +3082,9 @@ CONTAINS
         ea12z = exp(aa12*z)
         eb12z = exp(bb12*z)
 
-!        print*, 'PhiI1, PhiII1, PhiIII1', PhiI1, PhiII1, PhiIII1
-!        print*, 'PhiI2, PhiII2, PhiIII2', PhiI2, PhiII2, PhiIII2
-!        print*, 'ea11z, eb11z, ea12z, eb12z', ea11z, eb11z, ea12z, eb12z
+        !        print*, 'PhiI1, PhiII1, PhiIII1', PhiI1, PhiII1, PhiIII1
+        !        print*, 'PhiI2, PhiII2, PhiIII2', PhiI2, PhiII2, PhiIII2
+        !        print*, 'ea11z, eb11z, ea12z, eb12z', ea11z, eb11z, ea12z, eb12z
 
         g =  PhiI1*ea11z + PhiII1*eb11z + PhiIII1*eb11z + &
         PhiI2*ea12z + PhiII2*eb12z + PhiIII2*eb12z
@@ -3054,8 +3093,8 @@ CONTAINS
         PhiI2*aa12*ea12z + PhiII2*bb12*eb12z + PhiIII2*bb12*eb12z
 
     !            print*, 'INPUT sub_calcfg_l1', z, reac1, reac2, Dtemp, ktemp
-!                print*, 'IN  sub_calcfg_l1 g', g
-!                print*, 'IN  sub_calcfg_l1 dgdz', dgdz
+    !                print*, 'IN  sub_calcfg_l1 g', g
+    !                print*, 'IN  sub_calcfg_l1 dgdz', dgdz
 
     end SUBROUTINE sub_calcfg_l1
 
@@ -3125,13 +3164,13 @@ CONTAINS
             call sub_calcfg_l2(zbio, reac1, reac2, D2, ktemp, e_zbio_l2, dedz_zbio_l2, f_zbio_l2, dfdz_zbio_l2, g_zbio_l2, dgdz_zbio_l2)
 
             ! match solutions at zbio - continuous concentration and flux
-!            print*, 'in prepfg: '
-!            print*, 'e_zbio_l1, dedz_zbio_l1', e_zbio_l1, dedz_zbio_l1
-!            print*, 'f_zbio_l1, dfdz_zbio_l1', f_zbio_l1, dfdz_zbio_l1
-!            print*, 'g_zbio_l1, dgdz_zbio_l1', g_zbio_l1, dgdz_zbio_l1
-!            print*, 'e_zbio_l2, dedz_zbio_l2', e_zbio_l2, dedz_zbio_l2
-!            print*, 'f_zbio_l2, dfdz_zbio_l2', f_zbio_l2, dfdz_zbio_l2
-!            print*, 'g_zbio_l2, dgdz_zbio_l2', g_zbio_l2, dgdz_zbio_l2
+            !            print*, 'in prepfg: '
+            !            print*, 'e_zbio_l1, dedz_zbio_l1', e_zbio_l1, dedz_zbio_l1
+            !            print*, 'f_zbio_l1, dfdz_zbio_l1', f_zbio_l1, dfdz_zbio_l1
+            !            print*, 'g_zbio_l1, dgdz_zbio_l1', g_zbio_l1, dgdz_zbio_l1
+            !            print*, 'e_zbio_l2, dedz_zbio_l2', e_zbio_l2, dedz_zbio_l2
+            !            print*, 'f_zbio_l2, dfdz_zbio_l2', f_zbio_l2, dfdz_zbio_l2
+            !            print*, 'g_zbio_l2, dgdz_zbio_l2', g_zbio_l2, dgdz_zbio_l2
 
             call sub_matchsoln(e_zbio_l1, f_zbio_l1, g_zbio_l1, D1*dedz_zbio_l1, D1*dfdz_zbio_l1, D1*dgdz_zbio_l1, &
             e_zbio_l2, f_zbio_l2, g_zbio_l2, D2*dedz_zbio_l2, D2*dfdz_zbio_l2, D2*dgdz_zbio_l2, &
@@ -3368,24 +3407,24 @@ CONTAINS
 
                 END IF  ! (z > zbio)
             case default
-            print*, ' unrecognized ltype in  sub_calcfg_l2_PO4 ', dum_ltype
+                print*, ' unrecognized ltype in  sub_calcfg_l2_PO4 ', dum_ltype
                 STOP
         end select
 
-!        print*, ' '
-!        print*, 'IN  calcfg_l12_PO4 --------'
-!        print*, ' z = ', z
-!        print*,'e_P, dedz_P ', char(9), e_P, dedz_P
-!        print*,'f_P, dfdz_P', char(9), f_P, dfdz_P
-!        print*,'g_P, dgdz_P', char(9), g_P, dgdz_P
-!        print*,'p_P, dpdz_P', char(9), p_P, dpdz_P
-!        print*,' q_P, dqdz_P ', char(9), q_P, dqdz_P
-!        print*, ' '
-!        print*,'e_M, dedz_M ', char(9), e_M, dedz_M
-!        print*,'f_M, dfdz_M', char(9), f_M, dfdz_M
-!        print*,'g_M, dgdz_M', char(9), g_M, dgdz_M
-!        print*,'p_M, dpdz_M', char(9), p_M, dpdz_M
-!        print*,' q_M, dqdz_M ', char(9), q_M, dqdz_M
+    !        print*, ' '
+    !        print*, 'IN  calcfg_l12_PO4 --------'
+    !        print*, ' z = ', z
+    !        print*,'e_P, dedz_P ', char(9), e_P, dedz_P
+    !        print*,'f_P, dfdz_P', char(9), f_P, dfdz_P
+    !        print*,'g_P, dgdz_P', char(9), g_P, dgdz_P
+    !        print*,'p_P, dpdz_P', char(9), p_P, dpdz_P
+    !        print*,' q_P, dqdz_P ', char(9), q_P, dqdz_P
+    !        print*, ' '
+    !        print*,'e_M, dedz_M ', char(9), e_M, dedz_M
+    !        print*,'f_M, dfdz_M', char(9), f_M, dfdz_M
+    !        print*,'g_M, dgdz_M', char(9), g_M, dgdz_M
+    !        print*,'p_M, dpdz_M', char(9), p_M, dpdz_M
+    !        print*,' q_M, dqdz_M ', char(9), q_M, dqdz_M
 
 
     END SUBROUTINE sub_calcfg_l12_PO4_M
@@ -3757,17 +3796,17 @@ CONTAINS
             D2M*dgdz_zbio_l2_M - D1M*dgdz_zbio_l1_M + Fb - w*Vb /)
 
 
-!            201         format (6f12.6)
-!                        print*,'mat_X '
-!                        do loc_i=1,4
-!                            write (*,201) (mat_X(loc_i,loc_j),loc_j=1,4)
-!                        end do
-!                        print*,'mat_Y '
-!                        do loc_i=1,4
-!                            write (*,201) (mat_Y(loc_i,loc_j),loc_j=1,4)
-!                        end do
-!                        print*,'vec_Z ', char(9), vec_Z
-!                        print*,' '
+            !            201         format (6f12.6)
+            !                        print*,'mat_X '
+            !                        do loc_i=1,4
+            !                            write (*,201) (mat_X(loc_i,loc_j),loc_j=1,4)
+            !                        end do
+            !                        print*,'mat_Y '
+            !                        do loc_i=1,4
+            !                            write (*,201) (mat_Y(loc_i,loc_j),loc_j=1,4)
+            !                        end do
+            !                        print*,'vec_Z ', char(9), vec_Z
+            !                        print*,' '
 
             loc_dim = 4
             call sub_matchsoln_PO4_M(mat_X, mat_Y, vec_Z, loc_dim, loc_mat_C, loc_vec_D)
@@ -3954,17 +3993,17 @@ CONTAINS
         loc_G_M_t = dot_product(dum_vec_D, dum_EFPQ_M) + dum_g_M
         loc_dG_M_t = dot_product(dum_vec_D,dum_dEFPQdz_M) + dum_dgdz_M
 
-!        print*,' '
-!        print*, 'IN sub_xformsoln_PO4_M '
-!        print*, 'loc_EFPQ_P_t', loc_EFPQ_P_t
-!        print*, 'loc_dEFPQ_P_t', loc_dEFPQ_P_t
-!        print*, 'loc_G_P_t', loc_G_P_t
-!        print*, 'loc_dG_P_t', loc_dG_P_t
-!        print*,' '
-!        print*, 'loc_EFPQ_M_t', loc_EFPQ_M_t
-!        print*, 'loc_dEFPQ_M_t', loc_dEFPQ_M_t
-!        print*, 'loc_G_M_t', loc_G_M_t
-!        print*, 'loc_dG_M_t', loc_dG_M_t
+    !        print*,' '
+    !        print*, 'IN sub_xformsoln_PO4_M '
+    !        print*, 'loc_EFPQ_P_t', loc_EFPQ_P_t
+    !        print*, 'loc_dEFPQ_P_t', loc_dEFPQ_P_t
+    !        print*, 'loc_G_P_t', loc_G_P_t
+    !        print*, 'loc_dG_P_t', loc_dG_P_t
+    !        print*,' '
+    !        print*, 'loc_EFPQ_M_t', loc_EFPQ_M_t
+    !        print*, 'loc_dEFPQ_M_t', loc_dEFPQ_M_t
+    !        print*, 'loc_G_M_t', loc_G_M_t
+    !        print*, 'loc_dG_M_t', loc_dG_M_t
 
     END SUBROUTINE sub_xformsoln_PO4_M
 
@@ -3999,10 +4038,10 @@ CONTAINS
         dum_B = loc_vec_Z(2)
         dum_C = loc_vec_Z(3)
 
-!        print*,' IN SOLVE2EQN_PO4_M '
-!        print*,'dum_A ', dum_A
-!        print*,'dum_B', dum_B
-!        print*,'dum_C', dum_C
+    !        print*,' IN SOLVE2EQN_PO4_M '
+    !        print*,'dum_A ', dum_A
+    !        print*,'dum_B', dum_B
+    !        print*,'dum_C', dum_C
 
     END SUBROUTINE sub_solve2eqn_PO4_M
 
@@ -4031,19 +4070,19 @@ CONTAINS
         integer n
         real, dimension (1:n,1:n) :: a, c
 
-!        ! local variables
-!        double precision a(n,n), c(n,n)
+        !        ! local variables
+        !        double precision a(n,n), c(n,n)
         real, dimension (1:n,1:n) :: L, U
         real, dimension (1:n) :: b, d, x
         real coeff
-!        double precision a(n,n), c(n,n)
-!        double precision L(n,n), U(n,n), b(n), d(n), x(n)
-!        double precision coeff
+        !        double precision a(n,n), c(n,n)
+        !        double precision L(n,n), U(n,n), b(n), d(n), x(n)
+        !        double precision coeff
         integer i, j, k
 
-!        ! DH: Cast input real to double precision
-!        a = dble(dum_a)
-!        c = dble(dum_c)
+        !        ! DH: Cast input real to double precision
+        !        a = dble(dum_a)
+        !        c = dble(dum_c)
 
         ! step 0: initialization for matrices L and U and b
         ! Fortran 90/95 aloows such operations on matrices
@@ -4088,12 +4127,12 @@ CONTAINS
             end do
             ! Step 3b: Solve Ux=d using the back substitution
             ! DH: check for division by zero
-!            if(U(n,n) > const_real_nullsmall) then
+            !            if(U(n,n) > const_real_nullsmall) then
             x(n)=d(n)/(U(n,n)+const_real_nullsmall)
-!            else
-!                print*,'U(n,n) small ', U(n,n)
-!                x(n)=d(n)/const_real_nullsmall
-!            end if
+            !            else
+            !                print*,'U(n,n) small ', U(n,n)
+            !                x(n)=d(n)/const_real_nullsmall
+            !            end if
             do i = n-1,1,-1
                 x(i) = d(i)
                 do j=n,i+1,-1
@@ -4108,8 +4147,8 @@ CONTAINS
             b(k)=0.0
         end do
 
-!        ! DH cast back to real
-!        dum_c = real(c)
+    !        ! DH cast back to real
+    !        dum_c = real(c)
     end subroutine sub_inverse
     
     

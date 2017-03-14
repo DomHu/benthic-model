@@ -554,3 +554,40 @@ qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg
  job 9674
 qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 1003_05_art_world_shelves_nogas_noweath_No2ndRedox_NoALK_k_001_00001_NoDivision 10000
 
+
+############ 14/03/2017 NEW stoichiometry: ALK(ox) = -16/106 (instead of -18/106) using simple Ocean setup with shelves: cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES
+############ don't divide with const_real_null_small anymore, rather check it TOC_preservation = NaN, then remineralize everything on seafloor
+#### HERE I CHECK FOR dum_sed_pres_fracC .NE. dum_sed_pres_fracC
+
+1) DEFAULT: EVERYTHING REMINERALIZED, using the "HACKS" in OMEN
+ job 9693
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 1403_01_DEFAULT_ALL-REMIN_No-PON-ALK 10000
+
+2) DEFAULT: EVERYTHING REMINERALIZED, using the "HACKS" in OMEN
+ job 9694
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 1403_02_DEFAULT_ALL-REMIN_With-PON-ALK 10000
+
+3) biotic, shelves: k=0.1 , using the "HACKS" in OMEN
+ job 9695
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 1403_03_art_world_shelves_nogas_noweath_No2ndRedox_NoALK_k_0.1_INF_HACK 10000
+
+4)  biotic, shelves: k=1.0, using the "HACKS" in OMEN
+ job 9696
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 1403_04_art_world_shelves_nogas_noweath_No2ndRedox_NoALK_k_1.0_INF_HACK 10000
+
+5)  biotic, shelves: k=4.0, using the "HACKS" in OMEN
+ job 9697
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 1403_05_art_world_shelves_nogas_noweath_No2ndRedox_NoALK_k_4.0_INF_HACK 10000
+
+6) biotic, shelves: k=0.01, 0.001, using the "HACKS" in OMEN
+ job 9698
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 1403_06_art_world_shelves_nogas_noweath_No2ndRedox_NoALK_k_01_001_INF_HACK 10000
+
+7) biotic, shelves: k=0.001, 0.00001, using the "HACKS" in OMEN
+ job 9699
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 1403_07_art_world_shelves_nogas_noweath_No2ndRedox_NoALK_k_001_00001_INF_HACK 10000
+
+8) BIOTIC, without OMEN
+ job 9700
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 14_08_BIOTIC_NO_OMEN 10000
+
