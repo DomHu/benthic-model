@@ -353,9 +353,9 @@ CONTAINS
             
             ! CHECK IF TOC preservation results in insane values, i.e. everything remineralized
             ! Then calculate SWI-fluxes "manually"
-!            if(dum_sed_pres_fracC .NE. dum_sed_pres_fracC)then
-            if(loc_sed_pres_insane .OR. (dum_sed_pres_fracC .NE. dum_sed_pres_fracC) )then
-                print*,'A21 too large, pres_fracC ', dum_sed_pres_fracC, dum_D
+            if(dum_sed_pres_fracC .NE. dum_sed_pres_fracC)then
+!            if(loc_sed_pres_insane .OR. (dum_sed_pres_fracC .NE. dum_sed_pres_fracC) )then
+!                print*,'A21 too large, pres_fracC ', dum_sed_pres_fracC, dum_D
 !                print*,'dum_D, dum_i, dum_j', dum_D, dum_i, dum_j
                 
                 dum_sed_pres_fracC = 0.0        ! sed TOC preservation to zero
@@ -379,7 +379,7 @@ CONTAINS
                 end if
             
             else ! dum_sed_pres_fracC <> NaN
-                print*,'Normal sed_pres ', dum_sed_pres_fracC, dum_D, dum_i, dum_j
+!                print*,'Normal sed_pres ', dum_sed_pres_fracC, dum_D, dum_i, dum_j
                 
 !                if(dum_sed_pres_fracC .NE. 0.0)then
 !                    print*,'Something is preserved', dum_sed_pres_fracC, dum_i, dum_j
@@ -659,8 +659,8 @@ CONTAINS
         ! ORGANIC MATTER
         DC1 = Dbio
         DC2 = Dunbio
-        k1=0.1
-        k2=0.1
+        k1=0.001
+        k2=0.00001
 
         ! GLOBAL DIFFUSION COEFFICIENTS
         ! O2

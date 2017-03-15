@@ -18,7 +18,7 @@
             % was here: swi=benthic_test.default_swi()
 %% Step 1:  initialise main model parameters with standard values & run model
             bsd = benthic_main();
-            Obs = 6;       
+            Obs = 1;       
             %sediment characteristics
             switch Obs
                     case 1  % OMEXDIA_2809_108m all solutes in Micromoles/litre
@@ -42,10 +42,12 @@
 
                         %bottom water concentrations
                         swi.T=12.5; %20.0;                         %temperature (degree C)
-                        swi.C01= 2.64*1e-2/12*bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*bsd.rho_sed; %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-                        swi.C02= 1.8*1e-2/12*bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-                        %swi.C01=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-                        %swi.C02=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+                        swi.C01_nonbio= 2.64*1e-2/12*bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*bsd.rho_sed; %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+                        swi.C02_nonbio= 1.8*1e-2/12*bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+                     	swi.Fnonbio1 = swi.C01_nonbio*(1-bsd.por)*bsd.w;    % [mol/(cm2 yr)] according non-bioturbated flux
+                        swi.Fnonbio2 = swi.C02_nonbio*(1-bsd.por)*bsd.w;
+                        swi.C01 = swi.C01_nonbio; %0.0;  % resulting bioturbated SWI-concentration, to be calculated in benthic_zTOC.m
+                        swi.C02 = swi.C02_nonbio; %0.0;
                         swi.O20=210.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
                         swi.NO30=9.6e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
                         swi.Nitrogen=true;
@@ -55,7 +57,7 @@
                         swi.H2S0=0.0e-13;         %was 0.0e-9                            %H2S concentration at SWI (mol/cm^3)
                         swi.PO40=0.0e-9 ;%0.06e-8; % Dom was 1e-9;    % Sandra played with 3e-9                                              %PO4 concentration at SWI (mol/cm^3)
                         swi.Mflux0=365*0.2e-10; % Sandra played with 10e-9; ;   % = 7.3e-9    %flux of M to the sediment (mol/(cm2*yr))   TODO/CHECK: good value+right conversion? is from Slomp et al. 1996
-                        swi.DIC0=2000.0e-9;                                             %DIC concentration at SWI (mol/cm^3)
+                        swi.DIC0=2400.0e-9;                                             %DIC concentration at SWI (mol/cm^3)
                         swi.ALK0=2400.0e-9;                                             %ALK concentration at SWI (mol/cm^3)
                         swi.S0=35;                                                      %Salinity at SWI
                         
@@ -330,13 +332,13 @@
 
            switch Obs
                     case 1  % OMEXDIA_2809_108m all solutes in Micromoles/litre
-                        str_date = '108m_OMEXDIA_2110_';
+                        str_date = '108m_OMEXDIA_1503_';
                         data.TOC=xlsread('../Observations/OMEXDIA/5_PE138_99-06_108m.xlsx','Corg','C2:D24');     % in wt%
                         data.O2=xlsread('../Observations/OMEXDIA/5_PE138_99-06_108m.xlsx','O2','C2:D126'); 
                         data.NO3=xlsread('../Observations/OMEXDIA/5_PE138_99-06_108m.xlsx','NO3','C2:D25'); 
                         data.NH4=xlsread('../Observations/OMEXDIA/5_PE138_99-06_108m.xlsx','NH4','C2:D25');
                         data.PO4=xlsread('../Observations/OMEXDIA/5_PE138_99-06_108m.xlsx','PO4','C2:D25');
-            %            data.SO4=PW_data(:,[1 10]);
+                        data.DIC=xlsread('../Observations/OMEXDIA/5_PE138_99-06_108m.xlsx','PO4','C2:D25');
             %            data.H2S=PW_data(:,[1 11]);
                         
                     case 2 % OMEXDIA_2809_2213m
@@ -632,9 +634,9 @@
                 for i=1:length(zgrid)
                     [DIC(i), flxDIC(i)] = res.zDIC.calcDIC(zgrid(i), bsd, res.swi, res);
                 end
-    %             if(Obs == 6 || Obs == 9)
-    %                 scatter(data.DIC(:,2).*1e-9, -data.DIC(:,1),'k','filled')
-    %             end
+                if(Obs == 1)
+                    scatter(data.DIC(:,2).*1e-9, -data.DIC(:,1),'k','filled')
+                end
                 hold on
                 plot(DIC, -zgrid, 'b')
     %            xlim([2.0e-5 3.0e-5])     
