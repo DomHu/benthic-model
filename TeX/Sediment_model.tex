@@ -855,7 +855,7 @@ The applied multi-G approach for organic matter degradation considers specific d
 and are assumed invariant along the sediment column, therefore independent of the nature of the terminal electron acceptor. 
 The stoichiometry of organic matter is represented by the factors \chem{NC_i} and \chem{PC_i} denoting the molecular nitrogen to carbon and phosphorus to carbon ratio. 
 In the sulfidic and methanic zone the 
-reduction of 1 mol organic matter additionally produces $\frac{138}{212}$ mol of hydrogen sulfide (\chem{SO_4C}) and 0.5 mol of methane (\chem{MC}). 
+reduction of 1 mol organic matter additionally produces $\chem{SO_4C}=\frac{138}{212}$ mol of hydrogen sulfide and \chem{MC} = 0.5 mol of methane. 
 In the total sediment column organic matter mineralization consumes the specific TEA with a fixed ratio (\chem{O_2C}, \chem{NO_3C} and \chem{SO_4C} respectively). 
 See Table \ref{table:reaction_parameters} for a complete summary of the parameters and their values.
 % \textcolor{red}{Or bit longer:}\\
@@ -866,7 +866,8 @@ See Table \ref{table:reaction_parameters} for a complete summary of the paramete
 %\textcolor{red}{Next bit from Gypens:} Re-oxidation occurs in a ratio of 1 mol of oxygen per mol of carbon anoxically mineralized. Similarly, 2 mol of oxygen
 %are consumed during nitrification of \chem{NH_4} produced in the anoxic zone. As nitrification may be incomplete in the oxic layer, we similarly allow for part of the ammonium flux to escape re-oxidation. 
 \begin{table}[btp]
-\caption{Values for biogeochemical parameters used in OMEN-SED (1.0). The variables $x$, $y$ and $z$ denote the atomic ratio of carbon, nitrogen and phosphorous of the degrading organic matter (here set to $C:N:P = 106:16:1$).
+\caption{Values for biogeochemical parameters used in OMEN-SED (1.0). The variables $x$, $y$ and $z$ denote the atomic ratio of carbon, nitrogen and phosphorous of the degrading 
+organic matter (here set to $C:N:P = 106:16:1$).
 %\textcolor{red}{Stoichiometric factor for oxygen and sulfate relates to mol of terminal electron acceptor consumed for 1 mol of organic matter mineralized. 
 %NC and MC related to mol of reduced species produces per mol organic matter mineralized. correct???}
 }
@@ -926,8 +927,10 @@ $\gamma_{\chem{CH_4}}$ & - & 0.99 & fraction of \chem{CH_4} that is oxidised\\
 \textcolor{red}{TODO: Go over again!}
 %Describe in which order we calculate the different profiles/exchange fluxes (first calculating OM profile, then different TEA profiles).\\ 
 An analytical steady-state solution is found for the reaction-transport equation of each chemical species in each layer. 
-At each boundary (i.e. $z_{\mathrm{ox}}, z_{\mathrm{bio}}, z_{\chem{NO_3}}$ and $z_{\chem{SO_4}}$) the model has to match continuity and flux for different ODE solutions of the layer above and below the specific boundary. 
-In particular the bioturbation boundary is problematic as it can theoretically occur in any geochemical layer (compare Fig. \ref{fig:Boundary_matching_algo}). In order to simplify this recurring boundary matching problem it is implemented in an independent algorithm 
+At each boundary (i.e. $z_{\mathrm{ox}}, z_{\mathrm{bio}}, z_{\chem{NO_3}}$ and $z_{\chem{SO_4}}$) the model has to match continuity and flux for different 
+ODE solutions of the layer above and below the specific boundary. 
+In particular the bioturbation boundary is problematic as it can theoretically occur in any geochemical layer (compare Fig. \ref{fig:Boundary_matching_algo}). 
+In order to simplify this recurring boundary matching problem it is implemented in an independent algorithm 
 which is described in Section \ref{subsec:GBCM}. Instructions and requirements for coupling OMEN-SED (1.0) to a global Earth Sytem Model are given in Section \ref{subsubsec:ESM_coupling}.
 
 \subsubsection{Generic boundary condition matching (GBCM)}\label{subsec:GBCM}
@@ -1028,7 +1031,8 @@ solution type to use.
 \end{figure}
 \textcolor{red}{TODO: Now: use flux, not POC-concentration.}
 Here the coupling of OMEN-SED (1.0) to the GENIE Earth System model is described, in particular its incorporation into the sediment geochemistry model \citep[SEDGEM,][]{ridgwell_regulation_2007}. 
-Results from pre-industrial experiments are presented in section \ref{subsec:GENIE-pre-ind}. OMEN-SED (1.0) is called by SEDGEM for each grid point instead of remineralising the settling flux of OM at the seafloor, passing over the 
+Results from pre-industrial experiments are presented in section \ref{subsec:GENIE-pre-ind}. OMEN-SED (1.0) is called by SEDGEM for each grid point instead of remineralising 
+the settling flux of OM at the seafloor, passing over the 
 bottom water concentrations of solutes (in $\frac{mol}{kg}$) and the flux of OM (\chem{POC_{flux}}, in $\frac{cm^3}{cm^2\,yr}$, see Fig. \ref{fig:OMEN-GENIE-coupling}). 
 To be used by OMEN-SED (1.0), dissolved species and OM flux need to be converted into $\frac{mol}{cm^3}$. 
 For the solutes this is trivial; the OM flux is converted into a concentration (\chem{POC_{con}}, in $\frac{mol}{cm^3}$) using the sediment accumulation rate from GENIE ($w$, in $\frac{cm}{yr}$) as:
@@ -1041,7 +1045,7 @@ OMEN-SED (1.0) then computes the resulting SWI-fluxes of solutes (in $\frac{mol}
 In order to reduce memory requirements the sediment profiles (e.g. as shown in Fig. \ref{fig:Sediment_profiles}) are by default not calculated by OMEN-SED (1.0), however, the information needed to do this once the experiment 
 has terminated is passed over and saved in SEDGEM (i.e. the integration constants from the lowest layer $A_L,\ B_L$ and the ODE solutions $E_i,\ F_i,\ G_i$ for the different sediment layers $i$).
 \textcolor{red}{TODO: check that is correct... e.g. need all ODE solutions but just IC from lowest layer? - why not calculated like this in matlab when calc. the profiles...?}
-
+Write about stoichiometries need the match with the ocean biogeochemical model. 
 
 
 \section {Test Cases}
@@ -1060,21 +1064,20 @@ Phosphorus is adsorbed to \chem{Fe} oxides and incorporated into carbonate fluor
 For the Naza\'e Canyon station (4298 m) satisfactory fits could be realised apart from \chem{NH_4}. However, also the original study \citep{epping_oxidation_2002} had the same problem using a more 
 complex diagenetic model and suggested non-local solute exchange being responsible for the higher observed \chem{NH_4} concentrations.
 
-\begin{figure}[htbp]
-\begin{center}
-	\includegraphics[width=1.0\textwidth]{figures/Profiles/0_ALL_PROFILES_COMBINED.pdf}
+\begin{sidewaysfigure}[tbp]
+	\includegraphics[width=1.0\textwidth]{figures/Profiles/0_ALL_PROFILES_COMBINED_1503.pdf}
 	\caption{Modelled (curves) and measured (filled dots) dissolved and solid phase pore water profiles for four different sediment cores. Note that different 
 	scales are used for different stations. The blue TOC curve represents the sum of the refractory (green) and labile (red) TOC fraction.}
 	\label{fig:Sediment_profiles}
-	\end{center}
-\end{figure}
+\end{sidewaysfigure}
 
 \begin{table}[btp]
-\caption{Model boundary conditions for the sampling stations in Figure \ref{fig:Sediment_profiles}.} 
+\caption{Model boundary conditions for the sampling stations in Figure \ref{fig:Sediment_profiles}. (For all sites DIC bottom water concentration of 
+2,400 nanomole cm$^{-3}$ is assumed.)} 
 % Note: Constant concentrations at all sites for \chem{SO_4} ($28000 \mu$mol cm$^{-3}$) and \chem{H_2S} (0.0 $\mu$mol cm$^{-3}$).}
 \centering
 % used for centering table
-\begin{tabular}{l c c c c c c c}
+\begin{tabular}{l c c c c c c c c} 
 % centered columns (15 columns)
 \hline\hline
 \multicolumn{8}{l}{\textbf{Sediment characteristics:}}\\
@@ -1086,14 +1089,14 @@ Depth & Temp. & $z_{\mathrm{bio}}$ & $D_{\mathrm{bio}}$  & \chem{TOC_1} & \chem{
 2213 & 3.2 & 10.0 & 0.17 & 0.45 & 0.5 & 0.1 & $4.0e^{-4}$\\
 4298 & 2.5 & 4.2 & 0.18 & 0.83 & 1.2 & 0.052 & $1e^{-5}$\\
 \hline\hline
-\multicolumn{8}{l}{\textbf{Bottom water concentrations of solutes} (all in $\mu$mol cm$^{-3}$):}\\
-Depth & \chem{O_2} & \chem{NO_3} & \chem{SO_4} & \chem{NH_4} & \chem{H_2S} & \chem{PO_4} & \chem{PO_4^a}\\
+\multicolumn{8}{l}{\textbf{Bottom water concentrations of solutes} (all in nanomole cm$^{-3}$):}\\
+Depth & \chem{O_2} & \chem{NO_3} & \chem{SO_4} & \chem{NH_4} & \chem{H_2S} & \chem{PO_4} & \chem{PO_4^a} & \chem{Alkalinity}\\
 %(m) & ($\frac{\mu mol}{cm^3}$) &  ($\frac{\mu mol}{cm^3}$) &  ($\frac{\mu mol}{cm^3}$) &  ($\frac{\mu mol}{cm^3}$) &  ($\frac{\mu mol}{cm^3}$)  &   ($\frac{\mu mol}{cm^3}$) &   ($\frac{\mu mol}{cm^3}$) \\
 \hline
-108 & 210.0 & 9.6 & 28,000 & 0.4 & 0.0 & 0.0 & 15.0 \\
-585 & 10.0 & 25.0 & 28,000 & 0.0 & 0.0 & 50.0 & 90.0 \\
-2213 & 250 & 25.0 & 28,000 & 0.6 & 0.0 & 0.0 & 5.0 \\
-4298 & 243 & 30.1 & 28,000 & 0.22 & 0.0 & 5.0 \\
+108 & 210 & 9.6 & 28,000 & 0.4 & 0.0 & 0.0 & 15.0 & 2,400\\
+585 & 10 & 25.0 & 28,000 & 0.0 & 0.0 & 50.0 & 90.0 & 2,480\\
+2213 & 250 & 25.0 & 28,000 & 0.6 & 0.0 & 0.0 & 5.0 & 2,400\\
+4298 & 243 & 30.1 & 28,000 & 0.22 & 0.0 & 0.0 & 5.0 & 2,400\\
 % inserts double horizontal lines
 \end{tabular}
 \label{table:Profiles_BC}
@@ -1157,7 +1160,7 @@ Sources: &\multicolumn{5}{l}{(1) \citet{arndt_quantifying_2013}; (2): \citet{cap
 
 \begin{table}[btp]
 \caption{\textcolor{red}{Maybe in Suppl.} Model boundary conditions for the two idealised sediment conditions used for the sensitivity analysis (Figure \ref{fig:Sensitivity_Analysis}). 
-All solute concentrations are in $\mu$mol cm$^{-3}$.} 
+All solute concentrations are in nanomole cm$^{-3}$.} 
 % Note: Constant concentrations at all sites for \chem{SO_4} ($28000 \mu$mol cm$^{-3}$) and \chem{H_2S} (0.0 $\mu$mol cm$^{-3}$).}
 \centering
 % used for centering table
