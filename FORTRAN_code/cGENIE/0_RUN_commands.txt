@@ -559,6 +559,8 @@ qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg
 ############ don't divide with const_real_null_small anymore, rather check it TOC_preservation = NaN, then remineralize everything on seafloor
 #### HERE I CHECK FOR dum_sed_pres_fracC .NE. dum_sed_pres_fracC
 
+bg_par_bio_red_PON_ALK = 0.0
+
 1) DEFAULT: EVERYTHING REMINERALIZED, using the "HACKS" in OMEN
  job 9693
 qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 1403_01_DEFAULT_ALL-REMIN_No-PON-ALK 10000
@@ -596,6 +598,8 @@ qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg
 ############ don't divide with const_real_null_small anymore, rather check it TOC_preservation = NaN, then remineralize everything on seafloor - HERE I CHECK FOR dum_sed_pres_fracC .NE. dum_sed_pres_fracC
 
 Experiments as yesterday but set bg_par_bio_red_PON_ALK again to default
+
+
 1) biotic, shelves: k=0.1 , using the "HACKS" in OMEN
  job 9701
 qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 1503_01_art_world_shelves_nogas_noweath_No2ndRedox_PONALK_k_0.1_INF_HACK 10000
@@ -619,4 +623,181 @@ qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg
 6) BIOTIC, without OMEN
  job 9706
 qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 1503_06_BIOTIC_NO_OMEN_PONALK 10000
+
+
+############ 17/03/2017 using simple Ocean setup with shelves: cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES
+############ don't divide with const_real_null_small anymore, rather check it TOC_preservation = NaN, then remineralize everything on seafloor - HERE I CHECK FOR dum_sed_pres_fracC .NE. dum_sed_pres_fracC
+---------- use again ALKROX= -((Y_N+2*Z_P)/X_C)*SD = -18/106*SD as this accounts implicitly for nitrification AND 
+ALKRSUL= ((X_C-Y_N-2*Z_P)/X_C)*SD = 88/106*SD instead of ALKRSUL= ((X_C+Y_N-2*Z_P)/X_C)*SD = 120/106*SD also to account implicitly for nitrification
+-------------> ALK decreases
+1) biotic, shelves: k=0.1 , using the "HACKS" in OMEN
+ job 9760
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 1703_01_shelves_nogasweath2ndRedox_PONALK_k_0.1_INF_HACK_diffALKSO4 10000
+
+2)  biotic, shelves: k=1.0, using the "HACKS" in OMEN
+ job 9761
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 1703_02_shelves_nogasweath2ndRedox_PONALK_k_1.0_INF_HACK_diffALKSO4 10000
+
+3)  biotic, shelves: k=4.0, using the "HACKS" in OMEN
+ job 9762
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 1703_03_shelves_nogasweath2ndRedox_PONALK_k_4.0_INF_HACK_diffALKSO4 10000
+
+4) biotic, shelves: k=0.01, 0.001, using the "HACKS" in OMEN
+ job 9763
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 1703_04_shelves_nogasweath2ndRedox_PONALK_k_01_001_INF_HACK_diffALKSO4 10000
+
+5) biotic, shelves: k=0.001, 0.00001, using the "HACKS" in OMEN
+ job 9764
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 1703_05_shelves_nogasweath2ndRedox_PONALK_k_001_00001_INF_HACK_diffALKSO4 10000
+
+6) ABIOTIC, with OMEN
+ job 9765
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 1703_06_shelves_nogasweath2ndRedox_PONALK_abiotic_withOMEN 10000
+
+7) ABIOTIC, without OMEN
+ job 9766
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 1703_07_shelves_nogasweath2ndRedox_PONALK_abiotic_NoOMEN 10000
+
+-------> loose too much ALK
+
+
+###### calculate all secondary redox related ALK reactions in OMEN use stoichiometries as in manuscript
+
+10) biotic, shelves: k=0.1 using the "HACKS" in OMEN
+ job 9769
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 1703_10_shelves_nogasweath2ndRedox_PONALK_k_0.1_INF_HACK_AllALKreac 10000
+
+11) biotic, shelves: k=1.0 using the "HACKS" in OMEN
+ job 9770
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 1703_11_shelves_nogasweath2ndRedox_PONALK_k_1.0_INF_HACK_AllALKreac 10000
+
+-------> loose a lot ALK for k=0.1 (SO4 reduction!?) 
+
+
+###### use again ALKRSUL= ((X_C+Y_N-2*Z_P)/X_C)*SD AND ALK(ox) = -18/106
+
+8) biotic, shelves: k=0.1 using the "HACKS" in OMEN
+ job 9767
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 1703_08_shelves_nogasweath2ndRedox_PONALK_k_0.1_INF_HACK_ALKox18 10000
+
+9) biotic, shelves: k=1.0 using the "HACKS" in OMEN
+ job 9768
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 1703_09_shelves_nogasweath2ndRedox_PONALK_k_1.0_INF_HACK_ALKox18 10000
+
+-------> closer to actual ALK
+
+12) biotic, shelves: k=4.0 using the "HACKS" in OMEN
+ job 9771
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 1703_12_shelves_nogasweath2ndRedox_PONALK_k_4.0_INF_HACK_ALKox18 10000
+
+13) biotic, shelves: k=0.01, 0.001 using the "HACKS" in OMEN
+ job 9772
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 1703_13_shelves_nogasweath2ndRedox_PONALK_k_01_001_INF_HACK_ALKox18 10000
+
+----- ase 8,9,12,13 but use now just 1z for P release
+14) k = 0.1 	ALKROX= -((Y_N+Z_P)/X_C)*SD     ALKRSUL= ((X_C+Y_N-Z_P)/X_C)*SD
+ job 9773
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 1703_14_shelves_nogasweath2ndRedox_PONALK_k_0.1_INF_HACK_JUST_1z_inOXSO4 10000
+
+15) k=0.1	ALKROX= -((Y_N+Z_P)/X_C)*SD  
+ job 9774
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 1703_15_shelves_nogasweath2ndRedox_PONALK_k_0.1_INF_HACK_JUST_1z_inOX 10000
+
+
+############ 20/03/2017 using simple Ocean setup with shelves: cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES
+
+---------- PLAY with ALKROX and ALKRSUL
+
+ ALK(ox) = -(y+z)/x*SD = -17/106 ALK(SO4)=(x-y+2z)/x*SD = 92/106
+
+1) k=0.1
+ job 9777
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 2003_01_shelves_nogasweath2ndRedox_PONALK_k_0.1_OX_17_SO4_92 10000
+
+2) k=1.0
+ job 9778
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 2003_02_shelves_nogasweath2ndRedox_PONALK_k_1.0_OX_17_SO4_92 10000
+
+
+ ALK(ox) = -(y)/x*SD = -16/106 ALK(SO4)=(x-y+2z)/x*SD = 92/106
+
+3) k=0.1
+ job 9779
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 2003_03_shelves_nogasweath2ndRedox_PONALK_k_0.1_OX_16_SO4_92 10000
+
+4) k=1.0
+ job 9780
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 2003_04_shelves_nogasweath2ndRedox_PONALK_k_1.0_OX_16_SO4_92 10000
+
+
+ ALK(ox) = -(y+z)/x*SD = -17/106 ALK(SO4)=(x+y-2z)/x*SD = 120/106
+
+5) k=0.1
+ job 9782
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 2003_05_shelves_nogasweath2ndRedox_PONALK_k_0.1_OX_17_SO4_120 10000
+
+6) k=1.0
+ job 9783
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 2003_06_shelves_nogasweath2ndRedox_PONALK_k_1.0_OX_17_SO4_120 10000
+
+
+############ 21/03/2017 using simple Ocean setup with shelves: cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES
+
+check DEFAULT SEDIMENT REMIN: calc_ALK = .FALSE. 
+ALKROX= -((Y_N+2*Z_P)/X_C)*SD = -18/106*SD	loc_ALK_swiflux = 2.0*loc_H2S_swiflux + loc_new_sed(is_POC)*conv_POC_cm3_mol*ALKROX/SD
+1)    k = 0.1
+ job 9789
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 2103_01_shelves_nogasweath2ndRedox_PONALK_k_0.1_OX_18 10000
+
+2)    k = 1.0
+ job 9790
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 2103_02_shelves_nogasweath2ndRedox_PONALK_k_1.0_OX_18 10000
+
+
+ALKROX= -((Y_N)/X_C)*SD = -17/106*SD	loc_ALK_swiflux = 2.0*loc_H2S_swiflux + loc_new_sed(is_POC)*conv_POC_cm3_mol*ALKROX/SD
+3)    k = 0.1
+ job 9791
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 2103_03_shelves_nogasweath2ndRedox_PONALK_k_0.1_OX_17 10000
+
+4)    k = 1.0
+ job 9792
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 2103_04_shelves_nogasweath2ndRedox_PONALK_k_1.0_OX_17 10000
+
+
+ALKROX= -((Y_N)/X_C)*SD = -16/106*SD	loc_ALK_swiflux = 2.0*loc_H2S_swiflux + loc_new_sed(is_POC)*conv_POC_cm3_mol*ALKROX/SD
+5)    k = 0.1
+ job 9793
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 2103_05_shelves_nogasweath2ndRedox_PONALK_k_0.1_OX_16 10000
+
+6)    k = 1.0
+ job 9794
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 2103_06_shelves_nogasweath2ndRedox_PONALK_k_1.0_OX_16 10000
+
+
+------------------- ALKROX= -((Y_N)/X_C)*SD = -16/106*SD and  ALK(SO4)=(x+y)/x*SD = 122/106*SD = 138/106-16/106
+
+7) k=0.1
+ job 9795
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 2103_07_shelves_nogasweath2ndRedox_PONALK_k_0.1_OX_16_SO4_122 10000
+
+8) k=1.0
+ job 9796
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 2103_08_shelves_nogasweath2ndRedox_PONALK_k_1.0_OX_16_SO4_122 10000
+
+9) k=4.0
+ job 9797
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 2103_09_shelves_nogasweath2ndRedox_PONALK_k_4.0_OX_16_SO4_122 10000
+
+10) k=0.01, 0.001
+ job 9798
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 2103_10_shelves_nogasweath2ndRedox_PONALK_k_01_001_OX_16_SO4_122 10000
+
+11) k=0.5
+ job 9799
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 2103_11_shelves_nogasweath2ndRedox_PONALK_k_0.5_OX_16_SO4_122 10000
+
+12) k=0.05
+ job 9800
+qsub -j y -o cgenie_output -V -S /bin/bash runmuffin.sh cgenie.eb_go_gs_ac_bg_sg_rg_gl._rwlma.BASES DOM/08_OMEN_GENIE_March2017 2103_12_shelves_nogasweath2ndRedox_PONALK_k_0.05_OX_16_SO4_122 10000
+
 

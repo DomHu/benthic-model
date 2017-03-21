@@ -209,7 +209,7 @@ CONTAINS
         loc_ALK_swiflux = 0.0
         loc_M_swiflux = 0.0
 
-        !        print*,'---------- IN OMEN MAIN ----------- '
+!                print*,'---------- IN OMEN MAIN ----------- '
         
         ! initialize BW concentrations 
         !   THE FOLLOWING VALUES WILL BE PASSED DOWN FROM GENIE
@@ -323,9 +323,9 @@ CONTAINS
         
         ! Check for no POC deposited -> nothing preserved
         if(loc_POC1_flux_swi .LE. const_real_nullsmall .AND. loc_POC2_flux_swi .LE. const_real_nullsmall)then
-            !            print*,' '
-            !            print*,'no POC deposited  dum_D ', dum_D
-            !            print*,' grid point (i,j) ', dum_i, dum_j
+!            print*,'no POC deposited  dum_D ', dum_D
+!            print*,' grid point (i,j) ', dum_i, dum_j
+!            print*,' '
             dum_sed_pres_fracC = 0.0
             ! what TODO when no POC, still call sediment model for solutes - no, set everything to zero
             loc_O2_swiflux = 0.0
@@ -357,10 +357,12 @@ CONTAINS
 !            if(loc_sed_pres_insane .OR. (dum_sed_pres_fracC .NE. dum_sed_pres_fracC) )then
 !                print*,'A21 too large, pres_fracC ', dum_sed_pres_fracC, dum_D
 !                print*,'dum_D, dum_i, dum_j', dum_D, dum_i, dum_j
+!                print*,' '
                 
                 dum_sed_pres_fracC = 0.0        ! sed TOC preservation to zero
                 loc_O2_swiflux = conv_POC_cm3_mol*loc_fPOC*(-OC/SD)
                 if(ocn_select(io_NO3))then
+                    ! TODO: change if NO3 is selected
                     loc_NO3_swiflux = 0.0
                     loc_NH4_swiflux = 0.0
                 end if
@@ -380,11 +382,12 @@ CONTAINS
             
             else ! dum_sed_pres_fracC <> NaN
 !                print*,'Normal sed_pres ', dum_sed_pres_fracC, dum_D, dum_i, dum_j
+!                print*,' '
                 
-!                if(dum_sed_pres_fracC .NE. 0.0)then
-!                    print*,'Something is preserved', dum_sed_pres_fracC, dum_i, dum_j
+                if(dum_sed_pres_fracC .NE. 0.0)then
+                    print*,'Something is preserved', dum_sed_pres_fracC, dum_i, dum_j
 !            ! !                STOP
-!                end if
+                end if
                 
 
                 if(dum_swiconc_O2 .LE. const_real_nullsmall) then
@@ -484,7 +487,7 @@ CONTAINS
                         ! If not selected nothing needs to be done
                     end if
                 else    ! use ALK hack
-                    loc_ALK_swiflux = 2.0*loc_H2S_swiflux + loc_new_sed(is_POC)*conv_POC_cm3_mol*ALKROX  !16/106 !NC1
+                    loc_ALK_swiflux = 2.0*loc_H2S_swiflux + loc_new_sed(is_POC)*conv_POC_cm3_mol*ALKROX/SD  !16/106 !NC1
                 end if      ! calc_ALK
 
             end if  ! dum_sed_pres_fracC <> NaN
@@ -648,10 +651,10 @@ CONTAINS
         Y_N=16.0                                                  ! Nitrogen Redfield stoichiometry
         Z_P=1.0                                                   ! Phosphorous Redfield stoichiometry
 
-        ALKROX= -16/106*SD ! -((Y_N+2*Z_P)/X_C)*SD                                 ! Aerobic degradation
+        ALKROX= -((Y_N)/X_C)*SD !  -((Y_N)/X_C)*SD    !-16/106*SD !                               ! Aerobic degradation
         ALKRNIT=0.0 ! -2.0   ! 0.0 !                                         ! Nitrification
         ALKRDEN=0.0 !(4*X_C+3*Y_N-10*Z_P)/(5*X_C)*SD                   ! Denitrification
-        ALKRSUL= ((X_C+Y_N-2*Z_P)/X_C)*SD ! 2.0*SO4C!                            ! Sulfato reduction
+        ALKRSUL= ((X_C+Y_N)/X_C)*SD ! ((X_C+Y_N-2*Z_P)/X_C)*SD ! 2.0*SO4C!                            ! Sulfato reduction
         ALKRH2S=0.0 ! -2.0 !0.0                                          ! H2S oxydation (CHECK THIS VALUE!!!)
         ALKRMET=0.0 ! ((Y_N-2*Z_P)/X_C)*SD   !0.0                              ! Methanogenesis
         ALKRAOM=0.0 ! 2.0     !0.0                                       ! AOM
@@ -659,8 +662,9 @@ CONTAINS
         ! ORGANIC MATTER
         DC1 = Dbio
         DC2 = Dunbio
-        k1=0.001
-        k2=0.00001
+        k1=4.0
+        k2=4.0
+
 
         ! GLOBAL DIFFUSION COEFFICIENTS
         ! O2
@@ -2808,7 +2812,7 @@ CONTAINS
 
         ! flux of ALK produced by AOM interface (Source of ALK)
         zso4FALK = 0.0      !no secondary redox!
-        ! zso4FALK = ALKRAOM*gammaCH4*FUN_calcReac(zso4, zinf, SD, SD) ! MULTIPLY BY 1/POR ????
+!        zso4FALK = ALKRAOM*gammaCH4*FUN_calcReac(zso4, zinf, SD, SD) ! MULTIPLY BY 1/POR ????
         !    print*,'flux of ALK produced by AOM interface zso4FALK = ', zso4FALK
 
         ! match solutions at zso4 - continuous concentration and flux
@@ -2837,8 +2841,10 @@ CONTAINS
         ! Match at zox, layer 1 - layer 2 (continuity, flux discontinuity from ALK source)
         ! flux of ALK to oxic interface (from all sources of ALK below) from NH4 and H2S
         zoxFALK = 0.0       !no secondary redox!
-        !        zoxFALK = ALKRNIT*gamma*FUN_calcReac(zno3, zinf, NC1/(1+KNH4),NC2/(1+KNH4)) &      ! MULTIPLY BY 1/POR ????
-        !                    + ALKRH2S*gammaH2S*FUN_calcReac(zno3, zso4, SO4C, SO4C)                 ! Dominik 25.02.2016
+!        zoxFALK = -2.0*gamma*FUN_calcReac(zno3, zinf, 16/106*SD/(1+KNH4),16/106*SD/(1+KNH4)) &      ! MULTIPLY BY 1/POR ????
+!                  + ALKRH2S*gammaH2S*FUN_calcReac(zno3, zso4, SO4C, SO4C)                 ! Dominik 25.02.2016
+!        zoxFALK = ALKRNIT*gamma*FUN_calcReac(zno3, zinf, NC1/(1+KNH4),NC2/(1+KNH4)) &      ! MULTIPLY BY 1/POR ????
+!                  + ALKRH2S*gammaH2S*FUN_calcReac(zno3, zso4, SO4C, SO4C)                 ! Dominik 25.02.2016
         ! DH 24.02.2016: actually should be 2 integrals for ALK produced: ALK-reduction + AOM (see documentation, but has the same reac const = 0.5) :
 
         !    print*,' '
