@@ -210,7 +210,7 @@ CONTAINS
         loc_M_swiflux = 0.0
 
 !                print*,'---------- IN OMEN MAIN ----------- '
-        
+!        print*,'dum_D, dum_i, dum_j', dum_D, dum_i, dum_j
         ! initialize BW concentrations 
         !   THE FOLLOWING VALUES WILL BE PASSED DOWN FROM GENIE
         ! *****************************************************************
@@ -294,8 +294,9 @@ CONTAINS
         !        print*,'loc_POC1_wtpct_swi = ', loc_POC1_wtpct_swi
         !        print*,'loc_POC2_wtpct_swi = ', loc_POC2_wtpct_swi
 
+!        if(.false.) then
         if(loc_print_results) then
-            if(dum_D < 1000.0)then
+!            if(dum_D < 1000.0)then
                 print*,' '
                 !            print*,' NO3 selected? ', ocn_select(io_NO3)
                 print*,'dum_D = ', dum_D
@@ -317,7 +318,7 @@ CONTAINS
                 print*,'dum_swiconc_DIC = ', dum_swiconc_DIC
                 print*,'dum_swiconc_ALK = ', dum_swiconc_ALK
             !            print*, 'grid-point depth',dum_D
-            end if
+!            end if
         end if
 
         
@@ -384,13 +385,13 @@ CONTAINS
 !                print*,'Normal sed_pres ', dum_sed_pres_fracC, dum_D, dum_i, dum_j
 !                print*,' '
                 
-                if(dum_sed_pres_fracC .NE. 0.0)then
-                    print*,'Something is preserved', dum_sed_pres_fracC, dum_i, dum_j
+!                if(dum_sed_pres_fracC .NE. 0.0)then
+!                    print*,'Something is preserved', dum_sed_pres_fracC, dum_i, dum_j
 !            ! !                STOP
-                end if
+!                end if
                 
 
-                if(dum_swiconc_O2 .LE. const_real_nullsmall) then
+                if(dum_swiconc_O2 .LE. const_real_nullsmall) then   ! 10.0E-9
                     loc_O2_swiflux = 0.0            ! if negative [O2] -> no SWI flux
                 else
                     ! Dom TODO: can do it as a function as don't need to give values. BW-O2 is global variable
@@ -401,10 +402,12 @@ CONTAINS
                     !                    print*,'CALC loc_O2_swiflux = ', loc_O2_swiflux
                     call sub_huelseetal2016_zO2(dum_i, dum_j, dum_D, dum_swiconc_O2, loc_O2_swiflux)
                 !                    print*,'OMEN loc_O2_swiflux = ', loc_O2_swiflux
-                !                if(abs(loc_O2_swiflux) .LE. const_real_nullsmall)then
-                !                    print*,'loc_O2_swiflux too small ', loc_O2_swiflux
-                !    !                STOP
-                !                end if
+!                                if(loc_O2_swiflux .GE. 0.0)then
+!                                    print*,'loc_O2_swiflux positiv ', loc_O2_swiflux
+!                                    print*,'dum_D, dum_i, dum_j', dum_D, dum_i, dum_j
+!                                    print*,' '
+!                !    !                STOP
+!                                end if
                 end if
 
                 if(ocn_select(io_NO3))then
@@ -518,25 +521,39 @@ CONTAINS
         end if
         !        end if      ! calc_ALK
         if(loc_print_results) then
-            if(dum_D < 1000.0)then
+!            if(dum_D < 1000.0)then
+            if(loc_O2_swiflux > 0.0)then
                 !            loc_new_sed_vol = fun_calc_sed_vol(loc_new_sed(:))
-                !            print*,'dum_D = ', dum_D
-                !            print*,'conv_sed_mask(:) = ', conv_sed_mask(:)
+                !           print*,'dum_D = ', dum_D
                 !            print*,'conv_POC_cm3_mol = ', conv_POC_cm3_mol
                 !            print*,'GENIE loc_new_sed_vol (or deposition rate) = ', loc_new_sed_vol
                 !            print*,'loc_new_sed(is_POC)= ', loc_new_sed(is_POC)
                 !            print*,'loc_new_sed(is_det)= ', loc_new_sed(is_det)
                 !            print*,'loc_new_sed(is_CaCO3)= ', loc_new_sed(is_CaCO3)
                 !            print*,'loc_new_sed(is_opal)= ', loc_new_sed(is_opal)
-                !            print*,'loc_wtpct(%) = 100*loc_new_sed(is_POC)/(loc_new_sed(is_POC)+loc_new_sed(is_det)+loc_new_sed(is_CaCO3)) = ', 100*loc_new_sed(is_POC)/(loc_new_sed(is_POC)+loc_new_sed(is_det)+loc_new_sed(is_CaCO3))
-                !            print*,'loc_wtpct(%) = 100*loc_new_sed(is_POC)/ loc_new_sed_vol = ', 100*loc_new_sed(is_POC)/ loc_new_sed_vol
-                !            print*,'loc_wtpct(%) = 100*loc_new_sed(is_det)/ loc_new_sed_vol = ', 100*loc_new_sed(is_det)/ loc_new_sed_vol
-                !            print*,'loc_wtpct(%) = 100*loc_new_sed(is_CaCO3)/ loc_new_sed_vol = ', 100*loc_new_sed(is_CaCO3)/ loc_new_sed_vol
-                !            print*,'loc_wtpct = ', loc_wtpct
-                !            print*,'dum_swiconc_O2 = ', dum_swiconc_O2
+               !            print*,'dum_swiconc_O2 = ', dum_swiconc_O2
                 !            print*,'dum_swiconc_NO3 = ', dum_swiconc_NO3
                 !            print*, 'grid-point depth',dum_D
-                !            print*,'POC concentration frac 1 2 at SWI [wt% in mol] ', loc_POC1_wtpct_swi, loc_POC2_wtpct_swi
+                print*,'const_real_nullsmall ', const_real_nullsmall
+                print*,'dum_D = ', dum_D
+                print*,' grid point (i,j) = ', dum_i, dum_j
+                print*,'Temp C =', dum_sfcsumocn(io_T) - 273.15
+                print*,'loc_POC1_flux_swi = ', loc_POC1_flux_swi
+                print*,'loc_POC2_flux_swi = ', loc_POC2_flux_swi
+                print*,'loc_new_sed_vol (deposition rate) (cm3 cm-2) = ', loc_new_sed_vol
+                !            print*,'loc_new_sed(is_CaCO3)= ', loc_new_sed(is_CaCO3)
+                !            print*,'loc_new_sed(is_opal)= ', loc_new_sed(is_opal)
+                !            print*,'loc_wtpct = ', loc_wtpct
+                !            print*,'SWI wt% POC frac 1 = ', loc_POC1_wtpct_swi
+                !            print*,'SWI wt% POC frac 2 = ', loc_POC2_wtpct_swi
+                print*,'dum_swiconc_O2 = ', dum_swiconc_O2
+                print*,'dum_swiconc_SO4 = ', dum_swiconc_SO4
+                print*,'dum_swiconc_H2S = ', dum_swiconc_H2S
+                print*,'dum_swiconc_PO4 = ', dum_swiconc_PO4
+                print*,'dum_swiflux_M = ', dum_swiflux_M
+                print*,'dum_swiconc_DIC = ', dum_swiconc_DIC
+                print*,'dum_swiconc_ALK = ', dum_swiconc_ALK
+
                 print*,' '
                 print*,'zox = ', zox
                 print*,'FINAL O2 SWI flux = ', dum_new_swifluxes(io_O2)
@@ -662,8 +679,8 @@ CONTAINS
         ! ORGANIC MATTER
         DC1 = Dbio
         DC2 = Dunbio
-        k1=4.0
-        k2=4.0
+        k1=0.01
+        k2=0.01
 
 
         ! GLOBAL DIFFUSION COEFFICIENTS
