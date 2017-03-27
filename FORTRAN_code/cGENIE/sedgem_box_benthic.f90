@@ -205,6 +205,7 @@ CONTAINS
         loc_print_results = .false.
         calc_ALK = .true.
 
+        loc_O2_swiflux = 0.0
         loc_DIC_swiflux = 0.0
         loc_ALK_swiflux = 0.0
         loc_M_swiflux = 0.0
@@ -239,9 +240,12 @@ CONTAINS
         ! calculate sediment accumulation in (cm3 cm-2)
         loc_new_sed_vol = fun_calc_sed_vol(loc_new_sed(:))
 
-        if(loc_new_sed_vol .LE. 4.0e-4)then
-            loc_new_sed_vol =  4.0e-4
-        !            print*,' grid point (i,j)', dum_i, dum_j
+        if(loc_new_sed_vol .LE. 5.0e-4)then
+!            print*,' loc_new_sed_vol, grid point (i,j)', loc_new_sed_vol, dum_i, dum_j, dum_D
+            loc_new_sed_vol =  5.0e-4
+!            loc_k = loc_k + 1
+!            print*,' '
+!            STOP
         end if
 
 
@@ -294,9 +298,9 @@ CONTAINS
         !        print*,'loc_POC1_wtpct_swi = ', loc_POC1_wtpct_swi
         !        print*,'loc_POC2_wtpct_swi = ', loc_POC2_wtpct_swi
 
-!        if(.false.) then
-        if(loc_print_results) then
-!            if(dum_D < 1000.0)then
+        if(.false.) then
+!        if(loc_print_results) then
+!            if(dum_D < 500.0)then
                 print*,' '
                 !            print*,' NO3 selected? ', ocn_select(io_NO3)
                 print*,'dum_D = ', dum_D
@@ -402,12 +406,12 @@ CONTAINS
                     !                    print*,'CALC loc_O2_swiflux = ', loc_O2_swiflux
                     call sub_huelseetal2016_zO2(dum_i, dum_j, dum_D, dum_swiconc_O2, loc_O2_swiflux)
                 !                    print*,'OMEN loc_O2_swiflux = ', loc_O2_swiflux
-!                                if(loc_O2_swiflux .GE. 0.0)then
-!                                    print*,'loc_O2_swiflux positiv ', loc_O2_swiflux
-!                                    print*,'dum_D, dum_i, dum_j', dum_D, dum_i, dum_j
+                                if(loc_O2_swiflux .GE. 0.0)then
+                                    print*,'loc_O2_swiflux positiv ', loc_O2_swiflux
+                                    print*,'dum_D, dum_i, dum_j', dum_D, dum_i, dum_j
 !                                    print*,' '
 !                !    !                STOP
-!                                end if
+                                end if
                 end if
 
                 if(ocn_select(io_NO3))then
@@ -569,6 +573,7 @@ CONTAINS
                 print*,'FINAL ALK SWI flux = ', loc_ALK_swiflux
                 print*,'Fraction POC-preserved/POC-deposited =' , dum_sed_pres_fracC
                 print*,' '
+                STOP
             !            print*,' '
             
             !loc_filename=trim(par_outdir_name)//'ecogem_series_resources_'//fun_conv_num_char_n(2,i)//fun_conv_num_char_n(2,j)
@@ -672,15 +677,15 @@ CONTAINS
         ALKRNIT=0.0 ! -2.0   ! 0.0 !                                         ! Nitrification
         ALKRDEN=0.0 !(4*X_C+3*Y_N-10*Z_P)/(5*X_C)*SD                   ! Denitrification
         ALKRSUL= ((X_C+Y_N)/X_C)*SD ! ((X_C+Y_N-2*Z_P)/X_C)*SD ! 2.0*SO4C!                            ! Sulfato reduction
-        ALKRH2S=0.0 ! -2.0 !0.0                                          ! H2S oxydation (CHECK THIS VALUE!!!)
-        ALKRMET=0.0 ! ((Y_N-2*Z_P)/X_C)*SD   !0.0                              ! Methanogenesis
-        ALKRAOM=0.0 ! 2.0     !0.0                                       ! AOM
+        ALKRH2S= -2.0 !0.0                                          ! H2S oxydation (CHECK THIS VALUE!!!)
+        ALKRMET= ((Y_N-2*Z_P)/X_C)*SD   !0.0                              ! Methanogenesis
+        ALKRAOM= 2.0     !0.0                                       ! AOM
         
         ! ORGANIC MATTER
         DC1 = Dbio
         DC2 = Dunbio
-        k1=0.01
-        k2=0.01
+        k1=4.0
+        k2=4.0
 
 
         ! GLOBAL DIFFUSION COEFFICIENTS
@@ -1425,8 +1430,8 @@ CONTAINS
         !tmpreac1=OC+2*gamma*NC1
         !tmpreac2=OC+2*gamma*NC2
         !FLUX of NH4 and Reduced species from ZOX to ZINF
-        FUN_huelseetal2016_calcFO2 = 0.0    ! no secondary redox!
-        ! FUN_huelseetal2016_calcFO2 = z/(zoxgf + z + const_real_nullsmall) * FUN_calcReac(z, zinf, tmpreac1, tmpreac2)
+!        FUN_huelseetal2016_calcFO2 = 0.0    ! no secondary redox!
+        FUN_huelseetal2016_calcFO2 = z/(zoxgf + z + const_real_nullsmall) * FUN_calcReac(z, zinf, tmpreac1, tmpreac2)
 
     !    print*,'calcFO2', calcFO2
 
@@ -1844,9 +1849,9 @@ CONTAINS
         ! flux of H2S to oxic interface (Source of SO4)
         ! NB: include methane region as AOM will produce sulphide as well..
 
-        FH2S = 0.0  !FUN_calcReac(zno3, zso4, SO4C, SO4C) + 0.0  ! no secondary redox!
-        !        FH2S = FUN_calcReac(zno3, zso4, SO4C, SO4C) & ! MULTIPLY BY 1/POR ????
-        !        + gammaCH4*FUN_calcReac(zso4, zinf, MC, MC)
+!        FH2S = 0.0  !FUN_calcReac(zno3, zso4, SO4C, SO4C) + 0.0  ! no secondary redox!
+        FH2S = FUN_calcReac(zno3, zso4, SO4C, SO4C) & ! MULTIPLY BY 1/POR ????
+               + gammaCH4*FUN_calcReac(zso4, zinf, MC, MC)
 
         !    print*,' '
         !    print*,'FH2S ', FH2S
@@ -1953,8 +1958,8 @@ CONTAINS
 
         tmpreac1    = MC*gammaCH4
         tmpreac2    = MC*gammaCH4
-        FUN_calcFSO4 = 0.0 ! no secondary redox!
-    !        FUN_calcFSO4 = FUN_calcReac(z, zinf, tmpreac1, tmpreac2)
+!        FUN_calcFSO4 = 0.0 ! no secondary redox!
+        FUN_calcFSO4 = FUN_calcReac(z, zinf, tmpreac1, tmpreac2)
     ! TODO confirm (1-por)*  has been added (to k1 & k2 ?)
     !    print*,'=============== IN FUN_calcFSO4 =====', FUN_calcFSO4
 
@@ -2225,8 +2230,8 @@ CONTAINS
         !    print*, 'e4_zso4, dedz4_zso4, f4_zso4, dfdz4_zso4, g4_zso4, dgdz4_zso4 ', e4_zso4, dedz4_zso4, f4_zso4, dfdz4_zso4, g4_zso4, dgdz4_zso4
 
         ! flux of H2S produced by AOM interface (Source of H2S)
-        zso4FH2S = 0.0 ! no secondary redox
-        !        zso4FH2S = FUN_calcReac(zso4, zinf, MC, MC) ! MULTIPLY BY 1/POR ????
+!        zso4FH2S = 0.0 ! no secondary redox
+        zso4FH2S = FUN_calcReac(zso4, zinf, MC, MC) ! MULTIPLY BY 1/POR ????
         !   print*,'flux of H2S produced by AOM interface zso4FH2S = ', zso4FH2S
 
         ! match solutions at zso4 - continuous concentration and flux
@@ -2263,8 +2268,8 @@ CONTAINS
         ! Match at zox, layer 1 - layer 2 (continuity, flux discontinuity from H2S source)
         ! flux of H2S to oxic interface (from all sources of H2S below)
         ! NB: include methane region as AOM will produce sulphide as well..
-        zoxFH2S = 0.0   !FUN_calcReac(zno3, zso4, SO4C, SO4C)  + 0.0   ! no secondary redox
-        !        zoxFH2S = FUN_calcReac(zno3, zso4, SO4C, SO4C)  + FUN_calcReac(zso4, zinf, MC, MC)
+        ! zoxFH2S = 0.0   !FUN_calcReac(zno3, zso4, SO4C, SO4C)  + 0.0   ! no secondary redox
+        zoxFH2S = FUN_calcReac(zno3, zso4, SO4C, SO4C)  + FUN_calcReac(zso4, zinf, MC, MC)
         !    print*,' '
         !    print*,'flux of H2S to oxic interface zoxFH2S = ', zoxFH2S
         !    print*,' '
@@ -2828,8 +2833,8 @@ CONTAINS
         e4_zso4, dedz4_zso4, f4_zso4, dfdz4_zso4, g4_zso4, dgdz4_zso4)
 
         ! flux of ALK produced by AOM interface (Source of ALK)
-        zso4FALK = 0.0      !no secondary redox!
-!        zso4FALK = ALKRAOM*gammaCH4*FUN_calcReac(zso4, zinf, SD, SD) ! MULTIPLY BY 1/POR ????
+!        zso4FALK = 0.0      !no secondary redox!
+        zso4FALK = ALKRAOM*gammaCH4*FUN_calcReac(zso4, zinf, SD, SD) ! MULTIPLY BY 1/POR ????
         !    print*,'flux of ALK produced by AOM interface zso4FALK = ', zso4FALK
 
         ! match solutions at zso4 - continuous concentration and flux
@@ -2857,9 +2862,9 @@ CONTAINS
 
         ! Match at zox, layer 1 - layer 2 (continuity, flux discontinuity from ALK source)
         ! flux of ALK to oxic interface (from all sources of ALK below) from NH4 and H2S
-        zoxFALK = 0.0       !no secondary redox!
-!        zoxFALK = -2.0*gamma*FUN_calcReac(zno3, zinf, 16/106*SD/(1+KNH4),16/106*SD/(1+KNH4)) &      ! MULTIPLY BY 1/POR ????
-!                  + ALKRH2S*gammaH2S*FUN_calcReac(zno3, zso4, SO4C, SO4C)                 ! Dominik 25.02.2016
+!        zoxFALK = 0.0       !no secondary redox!
+        zoxFALK = -1.0*gamma*FUN_calcReac(zno3, zinf, 16/106*SD/(1+KNH4),16/106*SD/(1+KNH4)) &      ! was -2.0* gamma ... MULTIPLY BY 1/POR ????
+                  + ALKRH2S*gammaH2S*FUN_calcReac(zno3, zso4, SO4C, SO4C)                 ! Dominik 25.02.2016
 !        zoxFALK = ALKRNIT*gamma*FUN_calcReac(zno3, zinf, NC1/(1+KNH4),NC2/(1+KNH4)) &      ! MULTIPLY BY 1/POR ????
 !                  + ALKRH2S*gammaH2S*FUN_calcReac(zno3, zso4, SO4C, SO4C)                 ! Dominik 25.02.2016
         ! DH 24.02.2016: actually should be 2 integrals for ALK produced: ALK-reduction + AOM (see documentation, but has the same reac const = 0.5) :
