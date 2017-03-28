@@ -38,6 +38,7 @@ classdef benthic_main < handle
         PC1;                                    %P/C first TOC fraction (mol/mol)
         PC2;                                    %P/C second TOC fraction (mol/mol)
         SO4C;                                   %SO4/C (mol/mol)
+        O2H2S;                                  % O2/H2S ratio for oxidation of H2S (mol/mol)
         DICC1;                                  %DIC/C until zSO4 (mol/mol)
         DICC2;                                  %DIC/C below zSO4 (mol/mol)
         MC;                                     %CH4/C (mol/mol)
@@ -55,7 +56,7 @@ classdef benthic_main < handle
         ALKRAOM;                                                  % AOM
 
         
-        zoxgf = 0.1;                            % cm, rolloff NH4, H2S oxidation for small zox depth
+        zoxgf = 0.0;              % was 0.1              % cm, rolloff NH4, H2S oxidation for small zox depth
         
         % Diagnostic output from root finder
         %fzerooptions;
@@ -98,18 +99,19 @@ classdef benthic_main < handle
             obj.PC1=1/106*obj.SD;  % was 0.0094 Sandra played with 1e-20;             %P/C first TOC fraction  1/106 (mol/mol)
             obj.PC2=1/106*obj.SD;  % was 0.0094 Sandra played with  1e-20;            %P/C second TOC fraction 1/106 (mol/mol)
             obj.SO4C=(138.0/212.0)*obj.SD; % 0.5*obj.SD;                                                %SO4/C (mol/mol)
+            obj.O2H2S=1.0;
             obj.DICC1=1.0*obj.SD;                                               %DIC/C until zSO4 (mol/mol)
             obj.DICC2=0.5*obj.SD;                                               %DIC/C below zSO4 (mol/mol)
             obj.MC=0.5*obj.SD;                                                  %CH4/C (mol/mol)
             obj.NO3CR=(94.4/106)*obj.SD;                                        % NO3 consumed by Denitrification
             
-            obj.ALKROX=-(obj.Y_N+2*obj.Z_P)/obj.X_C*obj.SD;                        % -18/106; was +15      % Aerobic degradation                     
+            obj.ALKROX=-(obj.Y_N)/obj.X_C*obj.SD;                        % -(obj.Y_N+2*obj.Z_P)/obj.X_C*obj.SD was +15      % Aerobic degradation                     
             obj.ALKRNIT=0.0; %-2.0;  % no ALK                                             % Nitrification    
             obj.ALKRDEN=0.0; %(4*obj.X_C+3*obj.Y_N-10*obj.Z_P)/(5*obj.X_C)*obj.SD;       %  462/530 was 93.4;    % Denitrification
-            obj.ALKRSUL=(obj.X_C+obj.Y_N-2*obj.Z_P)/obj.X_C*obj.SD;                % 120/106  was 15      	% Sulfato reduction
-            obj.ALKRH2S=0.0; %-2.0;      % no ALK                                         % H2S oxydation (CHECK THIS VALUE!!!)
-            obj.ALKRMET=0.0; %(obj.Y_N-2*obj.Z_P)/obj.X_C;      % no ALK                	% 14/106 was 14       	% Methanogenesis
-            obj.ALKRAOM=0.0; %2.0;        % no ALK                                       	% AOM
+            obj.ALKRSUL=(obj.X_C+obj.Y_N)/obj.X_C*obj.SD;                % 120/106  was 15      	% Sulfato reduction
+            obj.ALKRH2S=-2.0;      % no ALK                                         % H2S oxydation (CHECK THIS VALUE!!!)
+            obj.ALKRMET= (obj.Y_N-2*obj.Z_P)/obj.X_C;      % no ALK                	% 14/106 was 14       	% Methanogenesis
+            obj.ALKRAOM= 2.0;        % no ALK                                       	% AOM
 
         end
     end

@@ -1069,6 +1069,12 @@ CONTAINS
        bio_part_red(is_CaCO3,is_LiCO3,dum_i,dum_j) = par_bio_red_CaCO3_LiCO3 + par_bio_red_CaCO3_LiCO3_alpha* &
             & ocn(io_Li,dum_i,dum_j,n_k)/ocn(io_Ca,dum_i,dum_j,n_k)
     end if
+    !
+    ! TRACE METALS: Sr
+    if (ocn_select(io_Sr) .AND. ocn_select(io_Sr)) then
+       bio_part_red(is_CaCO3,is_SrCO3,dum_i,dum_j) = par_bio_red_CaCO3_SrCO3 + par_bio_red_CaCO3_SrCO3_alpha* &
+            & ocn(io_Sr,dum_i,dum_j,n_k)/ocn(io_Ca,dum_i,dum_j,n_k)
+    end if
 
     ! *** CALCULATE ISOTOPIC FRACTIONATION ************************************************************************************** !
     ! NOTE: implement isotopic fraction as a 'Redfield' ratio (populate array <bio_part_red>)
@@ -1204,6 +1210,21 @@ CONTAINS
        loc_alpha = 1.0 + par_d7Li_LiCO3_epsilon/1000.0
        loc_R = loc_r7Li/(1.0 - loc_r7Li)
        bio_part_red(is_LiCO3,is_LiCO3_7Li,dum_i,dum_j) = loc_alpha*loc_R/(1.0 + loc_alpha*loc_R)
+    end if
+    !
+    ! 87 + 88Sr [CaCO3]
+    ! NOTE: 87 has half the fractionation as for 88
+    if (sed_select(is_SrCO3_87Sr) .AND. sed_select(is_SrCO3_87Sr)) then
+       ! 
+       if (ocn(io_Sr,dum_i,dum_j,n_k) > const_real_nullsmall) then
+          loc_alpha = par_d88Sr_SrCO3_alpha
+          bio_part_red(is_SrCO3,is_SrCO3_88Sr,dum_i,dum_j) = loc_alpha*ocn(io_Sr_88Sr,dum_i,dum_j,n_k)/ocn(io_Sr,dum_i,dum_j,n_k)
+          loc_alpha = 1.0 - (0.5*(1.0 - par_d88Sr_SrCO3_alpha))
+          bio_part_red(is_SrCO3,is_SrCO3_87Sr,dum_i,dum_j) = loc_alpha*ocn(io_Sr_87Sr,dum_i,dum_j,n_k)/ocn(io_Sr,dum_i,dum_j,n_k)
+       else
+          bio_part_red(is_SrCO3,is_SrCO3_87Sr,dum_i,dum_j) = 0.0
+          bio_part_red(is_SrCO3,is_SrCO3_88Sr,dum_i,dum_j) = 0.0
+       end if
     end if
 
     ! ### INSERT CODE TO DEAL WITH ADDITIONAL ISOTOPES ########################################################################### !
@@ -3838,7 +3859,8 @@ CONTAINS
     ! NOTE: cap H2S removal at the minimum of ([H2S], [labile POC])
     SELECT CASE (opt_bio_remin_scavenge_H2StoPOMS)
     CASE ('oxidationanalogue')
-       ! simply substituting [O2] for POC concentration!
+!        print*, 'oxidationanalogue '
+               ! simply substituting [O2] for POC concentration!
        ! NOTE: H2S oxidation analogue: -d[H2S]/dt = k1[H2S][O2]
        ! NOTE: par_bio_remin_kH2StoSO4 units are (M-1 yr-1)
        ! NOTE: the concentration that dum_bio_part represents is actually spread across multiple cells during each time step
@@ -4543,7 +4565,7 @@ CONTAINS
     !       (the variables in question are only used depending on a specific compile-time option)
     loc_ocn_mean_S = 0.0
     loc_ocn_tot_V  = 0.0
-    if (ctrl_misc_Snorm) then
+    if (ctrl_misc_Snorm .AND. (n_l_ocn > 2)) then
        ! [SALINITY NORMALIZED SCHEME]
        ! calculate total ocean mass
        loc_ocn_tot_V = sum(phys_ocn(ipo_V,:,:,:))

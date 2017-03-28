@@ -42,7 +42,7 @@ classdef benthic_test
 %            % set date-time
 %            str_date = datestr(now,'ddmmyy_HH_MM_SS');
             res=benthic_test.test_benthic(1,swi);
-            benthic_test.plot_column(res, false, swi, 'k_1.0_1.0_no2ndredox_shelf_0903')
+            benthic_test.plot_column(res, false, swi, 'k_0.01_with2ndredox_shelf_2803')
         end
 
         function test_k_SWIflux()            

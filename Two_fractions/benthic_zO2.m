@@ -37,12 +37,14 @@ classdef benthic_zO2
                 if fun0 >= 0   % i.e. zero oxygen at swi bc O2 flows into sediments (so -)
                     r.zox = 0;
                     bctype = 1;
+                    conczinf = 0.0;
                 elseif conczinf >=0      % still O2 at zinf -> zox = zinf
                     r.zox = bsd.zinf;
                     bctype = 2;
                 else                    % search zox in the interval
                     bctype = 1;
                     r.zox=fzero(fun,[1e-10 bsd.zinf],bsd.fzerooptions);
+                    conczinf = 0.0;
                 end
             else % same logic, in vector form
                 lzinf = concinf >=0;  % true for each x(i) that still has O2 at zinf
@@ -120,18 +122,18 @@ classdef benthic_zO2
                       
         
         function FO2 = calcFO2(obj, zox, bsd, swi, r)            
-            % Oxydation of reduced species at zox (NEED A RATIO for ODU! and add NH4
-            % adsporption!
-           tmpreac1=bsd.gammaH2S*1*bsd.SO4C+2*bsd.gamma*bsd.NC1;
-           tmpreac2=bsd.gammaH2S*1*bsd.SO4C+2*bsd.gamma*bsd.NC2;
+            % Oxydation of reduced species at zox (NEED A RATIO for ODU! and add NH4 adsporption!
+            % O2H2S = 2.0 mole of O2 to oxidize 1 mol H2S
+           tmpreac1=bsd.gammaH2S*bsd.O2H2S*bsd.SO4C+2*bsd.gamma*bsd.NC1;
+           tmpreac2=bsd.gammaH2S*bsd.O2H2S*bsd.SO4C+2*bsd.gamma*bsd.NC2;
            % tmpreac1=0.2;
            % tmpreac2=0.2;
            %tmpreac1=bsd.OC+2*bsd.gamma*bsd.NC1;
            %tmpreac2=bsd.OC+2*bsd.gamma*bsd.NC2;
             %FLUX of NH4 and Reduced species from ZOX to ZINF
             
-            FO2 = 0.0; % no secondary redox!
-            % FO2 = zox./(bsd.zoxgf + zox).*r.zTOC.calcReac(zox, bsd.zinf, tmpreac1, tmpreac2, bsd, swi, r); 
+%            FO2 = 0.0; % no secondary redox!
+            FO2 = zox./(bsd.zoxgf + zox).*r.zTOC.calcReac(zox, bsd.zinf, tmpreac1, tmpreac2, bsd, swi, r); 
             % NB (1-bsd.por)/bsd.por  has been included in OC etc stoich factors, so this is flux / cm^2 pore area
            
         end
@@ -141,8 +143,8 @@ classdef benthic_zO2
             
             tmpreac1_N=2*bsd.gamma*bsd.NC1;
             tmpreac2_N=2*bsd.gamma*bsd.NC2;
-            tmpreac1_S=1*bsd.SO4C;
-            tmpreac2_S=1*bsd.SO4C;
+            tmpreac1_S=bsd.O2H2S*bsd.SO4C;
+            tmpreac2_S=bsd.O2H2S*bsd.SO4C;
             
            %tmpreac1=bsd.OC+2*bsd.gamma*bsd.NC1;
            %tmpreac2=bsd.OC+2*bsd.gamma*bsd.NC2;

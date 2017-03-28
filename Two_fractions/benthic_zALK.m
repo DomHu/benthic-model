@@ -68,8 +68,8 @@ classdef benthic_zALK
             [ e4_zso4, dedz4_zso4, f4_zso4, dfdz4_zso4, g4_zso4, dgdz4_zso4] ...1
                 = r.zTOC.calcfg_l12(r.zso4, bsd, swi, r,  obj.reac4, obj.reac4, 0, rALK.ls4);
             %flux of ALK produced by AOM interface (Source of ALK)   
-            zso4FALK = 0.0;     % no secondary redox!
-%            zso4FALK = bsd.ALKRAOM.*bsd.gammaCH4.*r.zTOC.calcReac(r.zso4, bsd.zinf, bsd.SD, bsd.SD, bsd, swi, r); % MULTIPLY BY 1/POR ????
+%            zso4FALK = 0.0;     % no secondary redox!
+            zso4FALK = bsd.ALKRAOM.*bsd.gammaCH4.*r.zTOC.calcReac(r.zso4, bsd.zinf, bsd.SD, bsd.SD, bsd, swi, r); % MULTIPLY BY 1/POR ????
             % match solutions at zso4 - continuous concentration and flux
             [zso4.a, zso4.b, zso4.c, zso4.d, zso4.e, zso4.f] = benthic_utils.matchsoln(e3_zso4, f3_zso4, g3_zso4, dedz3_zso4, dfdz3_zso4, dgdz3_zso4, ...
                                                                 e4_zso4, f4_zso4, g4_zso4, dedz4_zso4, dfdz4_zso4, dgdz4_zso4, ...
@@ -94,9 +94,9 @@ classdef benthic_zALK
             % Match at zox, layer 1 - layer 2 (continuity, flux discontinuity from ALK source)
             %flux of ALK to oxic interface (from all sources of ALK below)
             % from NH4 and H2S
-            zoxFALK = 0.0;     % no secondary redox!
-%            zoxFALK = bsd.ALKRNIT.*bsd.gamma.*r.zTOC.calcReac(r.zno3, bsd.zinf, bsd.NC1/(1+obj.KNH4),bsd.NC2/(1+obj.KNH4), bsd, swi, r) ... % MULTIPLY BY 1/POR ????
-%                    + bsd.ALKRH2S.*bsd.gammaH2S.*r.zTOC.calcReac(r.zno3, r.zso4, bsd.SO4C, bsd.SO4C, bsd, swi, r); % Dominik 25.02.2016
+%            zoxFALK = 0.0;     % no secondary redox!
+            zoxFALK = bsd.ALKRNIT.*bsd.gamma.*r.zTOC.calcReac(r.zno3, bsd.zinf, bsd.NC1/(1+obj.KNH4),bsd.NC2/(1+obj.KNH4), bsd, swi, r) ... % MULTIPLY BY 1/POR ????
+                    + bsd.ALKRH2S.*bsd.gammaH2S.*r.zTOC.calcReac(r.zno3, r.zso4, bsd.SO4C, bsd.SO4C, bsd, swi, r); % Dominik 25.02.2016
              %Dom 24.02.2016: actually should be 2 integrals for ALK produced: ALK-reduction + AOM (see documentation, but has the same reac const = 0.5) :
             % basis functions at bottom of layer 1
             [ e1_zox, dedz1_zox, f1_zox, dfdz1_zox, g1_zox, dgdz1_zox] ...

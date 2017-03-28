@@ -50,8 +50,8 @@ classdef benthic_zH2S
             [ e4_zso4, dedz4_zso4, f4_zso4, dfdz4_zso4, g4_zso4, dgdz4_zso4] ...
                 = r.zTOC.calcfg_l12(r.zso4, bsd, swi, r,  0,  0, 0, rH2S.ls4);
             %flux of H2S produced by AOM interface (Source of H2S)   
-            zso4FH2S = 0.0;  % no secondary redox!
-            % zso4FH2S = r.zTOC.calcReac(r.zso4, bsd.zinf, bsd.MC, bsd.MC, bsd, swi, r); % MULTIPLY BY 1/POR ????
+%            zso4FH2S = 0.0;  % no secondary redox!
+            zso4FH2S = r.zTOC.calcReac(r.zso4, bsd.zinf, bsd.MC, bsd.MC, bsd, swi, r); % MULTIPLY BY 1/POR ????
             % match solutions at zso4 - continuous concentration and flux
             [zso4.a, zso4.b, zso4.c, zso4.d, zso4.e, zso4.f] = benthic_utils.matchsoln(e3_zso4, f3_zso4, g3_zso4, dedz3_zso4, dfdz3_zso4, dgdz3_zso4, ...
                                                                 e4_zso4, f4_zso4, g4_zso4, dedz4_zso4, dfdz4_zso4, dgdz4_zso4, ...
@@ -76,9 +76,9 @@ classdef benthic_zH2S
             % Match at zox, layer 1 - layer 2 (continuity, flux discontinuity from H2S source)
             %flux of H2S to oxic interface (from all sources of H2S below)
             % NB: include methane region as AOM will produce sulphide as well..
-            zoxFH2S = 0.0; %r.zTOC.calcReac(r.zno3, r.zso4, bsd.SO4C, bsd.SO4C, bsd, swi, r) + 0.0; % no secondary redox!
-            % zoxFH2S = r.zTOC.calcReac(r.zno3, r.zso4, bsd.SO4C, bsd.SO4C, bsd, swi, r) ... % MULTIPLY BY 1/POR ????
-            %    + r.zTOC.calcReac(r.zso4, bsd.zinf, bsd.MC, bsd.MC, bsd, swi, r); % Dominik 25.02.2016
+            % zoxFH2S = 0.0; %r.zTOC.calcReac(r.zno3, r.zso4, bsd.SO4C, bsd.SO4C, bsd, swi, r) + 0.0; % no secondary redox!
+            zoxFH2S = r.zTOC.calcReac(r.zno3, r.zso4, bsd.SO4C, bsd.SO4C, bsd, swi, r) ... % MULTIPLY BY 1/POR ????
+                + r.zTOC.calcReac(r.zso4, bsd.zinf, bsd.MC, bsd.MC, bsd, swi, r); % Dominik 25.02.2016
             
             % Dom 24.02.2016: actually should be 2 integrals for H2S produced: SO4-reduction + AOM (see documentation, but has the same reac const = 0.5) :
             % basis functions at bottom of layer 1

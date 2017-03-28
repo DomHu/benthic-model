@@ -37,6 +37,7 @@ MODULE sedgem_box_benthic
     real PC1                                    !P/C first TOC fraction (mol/mol)
     real PC2                                    !P/C second TOC fraction (mol/mol)
     real SO4C                                   !SO4/C (mol/mol)
+    real O2H2S                                  !O2/H2S O2 needed to oxidize H2S (mol/mol) 
     real DICC1                                  !DIC/C until zSO4 (mol/mol)
     real DICC2                                  !DIC/C below zSO$ (mol/mol)
     real MC                                     !CH4/C (mol/mol)
@@ -526,7 +527,7 @@ CONTAINS
         !        end if      ! calc_ALK
         if(loc_print_results) then
 !            if(dum_D < 1000.0)then
-            if(loc_O2_swiflux > 0.0)then
+!            if(loc_O2_swiflux > 0.0)then
                 !            loc_new_sed_vol = fun_calc_sed_vol(loc_new_sed(:))
                 !           print*,'dum_D = ', dum_D
                 !            print*,'conv_POC_cm3_mol = ', conv_POC_cm3_mol
@@ -538,7 +539,6 @@ CONTAINS
                !            print*,'dum_swiconc_O2 = ', dum_swiconc_O2
                 !            print*,'dum_swiconc_NO3 = ', dum_swiconc_NO3
                 !            print*, 'grid-point depth',dum_D
-                print*,'const_real_nullsmall ', const_real_nullsmall
                 print*,'dum_D = ', dum_D
                 print*,' grid point (i,j) = ', dum_i, dum_j
                 print*,'Temp C =', dum_sfcsumocn(io_T) - 273.15
@@ -585,7 +585,7 @@ CONTAINS
             !CALL check_iostat(ios,__LINE__,__FILE__)
             !CLOSE(88,iostat=ios)
             !CALL check_iostat(ios,__LINE__,__FILE__)
-            end if
+!            end if
         end if
 
         dum_sed_pres_fracP = dum_sed_pres_fracC
@@ -653,7 +653,7 @@ CONTAINS
 
         KNH4 = 1.3                                          !Adsorption coefficient (same in oxic and anoxic layer) (-)
 
-        zoxgf = 0.1                                         ! cm, rolloff NH4, H2S oxidation for small zox depth
+        zoxgf = 0.1            ! was 0.1                             ! cm, rolloff NH4, H2S oxidation for small zox depth
         r_zxf=0.0
 
         dispFactor=por**(tort-1.0)*irrigationFactor             ! dispersion factor (-) - Ausbreitung - type of mixing that accompanies hydrodynamic                                    ! flows -> ~builds out paths of flow
@@ -664,6 +664,7 @@ CONTAINS
         PC1=SD*1/106.0 !0.0094*SD                                          ! P/C first TOC fraction (mol/mol)
         PC2=SD*1/106.0 !0.0094*SD                                          ! P/C second TOC fraction (mol/mol)
         SO4C=SD*(138.0/212.0)!0.5*SD                                             ! SO4/C (mol/mol)
+        O2H2S=2.0                                               ! 2 mole O2 oxidize 1 mole H2S
         DICC1=1.0*SD                                           ! DIC/C until zSO4 (mol/mol)
         DICC2=0.5*SD                                           ! DIC/C below zSO4 (mol/mol)
         MC=0.5*SD                                              ! CH4/C (mol/mol)
@@ -684,8 +685,8 @@ CONTAINS
         ! ORGANIC MATTER
         DC1 = Dbio
         DC2 = Dunbio
-        k1=4.0
-        k2=4.0
+        k1=1.0
+        k2=1.0
 
 
         ! GLOBAL DIFFUSION COEFFICIENTS
@@ -1220,6 +1221,7 @@ CONTAINS
         if (fun0 .ge. 0.0)then   ! eg zero oxygen at swi
             zox = 0.0   ! DH 241016 was 1e-10
             bctype = 1
+            loc_conczinf = 0.0
         elseif (loc_conczinf .ge. 0.0)then      ! still O2 at zinf -> zox = zinf
             !            print*,'in here mate: dum_i, dum_j ', dum_i, dum_j
             !            print*,'dum_POC1_conc_swi ', dum_POC1_conc_swi
@@ -1233,6 +1235,7 @@ CONTAINS
             tol=1e-16
             zox = FUN_zbrent(FUN_zO2, zL, zinf, tol)
             zno3 = zox
+            loc_conczinf = 0.0
         !            print*,'$$$$$$$$$$$$$ zox < zinf ', zox
         !            stop
         end if
@@ -1355,8 +1358,7 @@ CONTAINS
 
         flxswi = por*(Dswi*(rO2_AO2*dedz_0+rO2_BO2*dfdz_0 + dgdz_0)) ! just diffusive flux - w*dum_swiconc_O2)   ! por fac so this is per cm^2 water column
 
-        r_zxf = zox/(zoxgf + zox + const_real_nullsmall)   ! roll off oxidation at low zox
-        
+        r_zxf = zox/(zoxgf + zox) ! + const_real_nullsmall)   ! roll off oxidation at low zox
                 ! TODO: ASK STUART or ANDY
         if( &
         (flxzox /= flxzox) .OR. &
@@ -1421,8 +1423,8 @@ CONTAINS
         FUN_huelseetal2016_calcFO2 = 0.0
         ! Oxydation of reduced species at zox (NEED A RATIO for ODU! and add NH4
         ! adsporption!
-        tmpreac1=gammaH2S*1.0*SO4C+2.0*gamma*NC1
-        tmpreac2=gammaH2S*1.0*SO4C+2.0*gamma*NC2
+        tmpreac1=gammaH2S*O2H2S*SO4C+2.0*gamma*NC1
+        tmpreac2=gammaH2S*O2H2S*SO4C+2.0*gamma*NC2
 
         !    print*,' '
         !    print*,'..... START calcFO2'
@@ -1431,7 +1433,7 @@ CONTAINS
         !tmpreac2=OC+2*gamma*NC2
         !FLUX of NH4 and Reduced species from ZOX to ZINF
 !        FUN_huelseetal2016_calcFO2 = 0.0    ! no secondary redox!
-        FUN_huelseetal2016_calcFO2 = z/(zoxgf + z + const_real_nullsmall) * FUN_calcReac(z, zinf, tmpreac1, tmpreac2)
+        FUN_huelseetal2016_calcFO2 = z/(zoxgf + z) * FUN_calcReac(z, zinf, tmpreac1, tmpreac2)   ! had in denominator: ... + const_real_nullsmall 
 
     !    print*,'calcFO2', calcFO2
 
