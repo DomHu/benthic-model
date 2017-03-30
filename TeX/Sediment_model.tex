@@ -1029,23 +1029,29 @@ solution type to use.
 	\label{fig:OMEN-GENIE-coupling}
 	\end{center}
 \end{figure}
-\textcolor{red}{TODO: Now: use flux, not POC-concentration.}
+
 Here the coupling of OMEN-SED (1.0) to the GENIE Earth System model is described, in particular its incorporation into the sediment geochemistry model \citep[SEDGEM,][]{ridgwell_regulation_2007}. 
-Results from pre-industrial experiments are presented in section \ref{subsec:GENIE-pre-ind}. OMEN-SED (1.0) is called by SEDGEM for each grid point instead of remineralising 
-the settling flux of OM at the seafloor, passing over the 
-bottom water concentrations of solutes (in $\frac{mol}{kg}$) and the flux of OM (\chem{POC_{flux}}, in $\frac{cm^3}{cm^2\,yr}$, see Fig. \ref{fig:OMEN-GENIE-coupling}). 
-To be used by OMEN-SED (1.0), dissolved species and OM flux need to be converted into $\frac{mol}{cm^3}$. 
-For the solutes this is trivial; the OM flux is converted into a concentration (\chem{POC_{con}}, in $\frac{mol}{cm^3}$) using the sediment accumulation rate from GENIE ($w$, in $\frac{cm}{yr}$) as:
-\begin{equation}
- \chem{POC_{con}} = \frac{1}{12}\cdot(1-\phi)\cdot \frac{\chem{POC_{flux}}}{w}
-\end{equation}
-where $\phi$ is the sediment porosity (-) and $\frac{1}{12}$ is the conversion of POC from $cm^3$ to $mol$ assuming the average density of POC as $1.0 \frac{cm^3}{g}$ .
-Other parameters needed from GENIE are the seafloor depth, the local temperature and the partitioning of bulk OM into the slower and faster degrading pool (and a third unreactive pool if modelled). 
+Results from pre-industrial experiments are presented in section \ref{subsec:GENIE-pre-ind}. Instead of remineralising POC completely at the seafloor, OMEN-SED (1.0) is called by SEDGEM for each grid point, 
+passing over the bottom water concentrations of solutes ($\frac{mol}{kg}$, which is converted to $\frac{mol}{cm^3}$) and the flux of POC (\chem{POC_{flux}}, $\frac{cm^3}{cm^2\,yr}$, see Fig. \ref{fig:OMEN-GENIE-coupling}). 
+\chem{POC_{flux}} is converted to $\frac{mol}{cm^2\,yr}$ assuming the average density of POC as 1.0 cm$^{3}$ g$^{-1}$. 
+Other parameters passed over from GENIE are seafloor depth, local temperature and the partitioning of bulk POC into the slower and faster degrading pool 
+(as GENIE represents a labile and a refractory POC fraction, see \citet{ridgwell_marine_2007}). 
+For bottom water oxygen concentrations below 5 $\mu$mol kg$^{-1}$ the bioturbation depth is changed from 10 to 0.01 cm to account for the reduced presence of organisms under anoxia.  
+The advection/sediment accumulation rate is taken from GENIE, whereas a minimum values of $w=0.5\frac{cm}{kyrs}$ is imposed as OMEN-SED (1.0) tends to be unstable for lower values. 
+If the POC depositional flux is zero, OMEN-SED (1.0) is not called and all SWI-fluxes of solutes and the fraction of POC preserved in the sediments (\chem{POC_{pres}}) are set to zero.
+Otherwise, the bulk \chem{POC_{flux}} is seperated into the labile and refractory component and the routine to calculate the sedimentary POC profiles is called. Here, the two POC depositional fluxes are first converted into SWI concentrations (in $\frac{mol}{cm^3}$) by solving Eq. (\ref{Eq_flux_divergence}) for z=0.
+\textcolor{red}{TODO: From here:} Write about coupling and stoichiometries need to match with the ocean biogeochemical model. 
+
+% For the solutes this is trivial; the OM flux is converted into a concentration (\chem{POC_{con}}, in $\frac{mol}{cm^3}$) using the sediment accumulation rate from GENIE ($w$, in $\frac{cm}{yr}$) as:
+% \begin{equation}
+%  \chem{POC_{con}} = \frac{1}{12}\cdot(1-\phi)\cdot \frac{\chem{POC_{flux}}}{w}
+% \end{equation}
+% where $\phi$ is the sediment porosity (-) and $\frac{1}{12}$ is the conversion of POC from $cm^3$ to $mol$ assuming the average density of POC as $1.0 \frac{cm^3}{g}$ .
 OMEN-SED (1.0) then computes the resulting SWI-fluxes of solutes (in $\frac{mol}{cm^2\,yr^1}$) and the fraction of POC preserved in the sediments at a depth of 100 cm which are given back to GENIE. 
 In order to reduce memory requirements the sediment profiles (e.g. as shown in Fig. \ref{fig:Sediment_profiles}) are by default not calculated by OMEN-SED (1.0), however, the information needed to do this once the experiment 
 has terminated is passed over and saved in SEDGEM (i.e. the integration constants from the lowest layer $A_L,\ B_L$ and the ODE solutions $E_i,\ F_i,\ G_i$ for the different sediment layers $i$).
 \textcolor{red}{TODO: check that is correct... e.g. need all ODE solutions but just IC from lowest layer? - why not calculated like this in matlab when calc. the profiles...?}
-Write about stoichiometries need the match with the ocean biogeochemical model. 
+
 
 
 \section {Test Cases}

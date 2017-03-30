@@ -295,7 +295,7 @@ CONTAINS
         !        loc_POC2_wtpct_swi = 1.0
         !        print*,'loc_new_sed(is_POC) = ', loc_new_sed(is_POC)
         !        print*,'loc_fPOC = ', loc_fPOC
-        !        print*,'loc_wtpct = ', loc_wtpct
+        !        print*,'const_real_nullsmall = ', const_real_nullsmall
         !        print*,'loc_POC1_wtpct_swi = ', loc_POC1_wtpct_swi
         !        print*,'loc_POC2_wtpct_swi = ', loc_POC2_wtpct_swi
 
