@@ -392,7 +392,7 @@ CONTAINS
                 
 !                if(dum_sed_pres_fracC .NE. 0.0)then
 !                    print*,'Something is preserved', dum_sed_pres_fracC, dum_i, dum_j
-!            ! !                STOP
+            ! !                STOP
 !                end if
                 
 
@@ -685,8 +685,8 @@ CONTAINS
         ! ORGANIC MATTER
         DC1 = Dbio
         DC2 = Dunbio
-        k1=1.0
-        k2=1.0
+        k1=0.01
+        k2=0.01
 
 
         ! GLOBAL DIFFUSION COEFFICIENTS
@@ -1433,7 +1433,7 @@ CONTAINS
         !tmpreac2=OC+2*gamma*NC2
         !FLUX of NH4 and Reduced species from ZOX to ZINF
 !        FUN_huelseetal2016_calcFO2 = 0.0    ! no secondary redox!
-        FUN_huelseetal2016_calcFO2 = z/(zoxgf + z) * FUN_calcReac(z, zinf, tmpreac1, tmpreac2)   ! had in denominator: ... + const_real_nullsmall 
+        FUN_huelseetal2016_calcFO2 = z/(zoxgf + z) * FUN_calcReac(z, zinf, tmpreac1, tmpreac2)   ! had in denominator: ... + const_real_nullsmall
 
     !    print*,'calcFO2', calcFO2
 
@@ -2232,7 +2232,7 @@ CONTAINS
         !    print*, 'e4_zso4, dedz4_zso4, f4_zso4, dfdz4_zso4, g4_zso4, dgdz4_zso4 ', e4_zso4, dedz4_zso4, f4_zso4, dfdz4_zso4, g4_zso4, dgdz4_zso4
 
         ! flux of H2S produced by AOM interface (Source of H2S)
-!        zso4FH2S = 0.0 ! no secondary redox
+!        zso4FH2S = 0.0 ! no secondary redox!
         zso4FH2S = FUN_calcReac(zso4, zinf, MC, MC) ! MULTIPLY BY 1/POR ????
         !   print*,'flux of H2S produced by AOM interface zso4FH2S = ', zso4FH2S
 
@@ -2270,7 +2270,7 @@ CONTAINS
         ! Match at zox, layer 1 - layer 2 (continuity, flux discontinuity from H2S source)
         ! flux of H2S to oxic interface (from all sources of H2S below)
         ! NB: include methane region as AOM will produce sulphide as well..
-        ! zoxFH2S = 0.0   !FUN_calcReac(zno3, zso4, SO4C, SO4C)  + 0.0   ! no secondary redox
+!        zoxFH2S = 0.0   !FUN_calcReac(zno3, zso4, SO4C, SO4C)  + 0.0   ! no secondary redox!
         zoxFH2S = FUN_calcReac(zno3, zso4, SO4C, SO4C)  + FUN_calcReac(zso4, zinf, MC, MC)
         !    print*,' '
         !    print*,'flux of H2S to oxic interface zoxFH2S = ', zoxFH2S
