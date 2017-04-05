@@ -16,8 +16,8 @@ classdef benthic_test
             % see caption for Fig 1.2 - two equal TOC fractions 0.02 0.2 2
             swi.C01_nonbio= 1.0*1e-2/12*bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*bsd.rho_sed;         %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
             swi.C02_nonbio= 1.0*1e-2/12*bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;          %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-            swi.Fnonbio1 = 1.45311238046968E-004; %swi.C01_nonbio*(1-bsd.por)*bsd.w;    % [mol/(cm2 yr)] according non-bioturbated flux
-            swi.Fnonbio2 = 8.57125492162531E-006; %swi.C02_nonbio*(1-bsd.por)*bsd.w;
+            swi.Fnonbio1 = 1.45311238046968E-007; %swi.C01_nonbio*(1-bsd.por)*bsd.w;    % [mol/(cm2 yr)] according non-bioturbated flux
+            swi.Fnonbio2 = 8.57125492162531E-007; %swi.C02_nonbio*(1-bsd.por)*bsd.w;
             swi.C01 = swi.C01_nonbio; %0.0;  % resulting bioturbated SWI-concentration, to be calculated in benthic_zTOC.m
             swi.C02 = swi.C02_nonbio; %0.0;
             %swi.C01=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
@@ -42,7 +42,15 @@ classdef benthic_test
 %            % set date-time
 %            str_date = datestr(now,'ddmmyy_HH_MM_SS');
             res=benthic_test.test_benthic(1,swi);
-            benthic_test.plot_column(res, false, swi, 'k_0.01_with2ndredox_shelf_2803')
+            benthic_test.plot_column(res, false, swi, 'FULL_OMEN_0504')
+            
+            % calculate depth integrated OM degradation rates
+            Cox_rate.Cox_total = res.zTOC.calcReac(0.0, res.bsd.zinf, 1, 1, res.bsd, swi, res);
+            Cox_rate.Cox_aerobic = res.zTOC.calcReac(0.0, res.zox, 1, 1, res.bsd, swi, res);
+            if(swi.Nitrogen)
+                Cox_rate.Cox_denitr = res.zTOC.calcReac(res.zox, res.zno3, 1, 1, res.bsd, swi, res);
+            end
+                Cox_rate.Cox_sulfred = res.zTOC.calcReac(res.zno3, res.bsd.zinf, 1, 1, res.bsd, swi, res)
         end
 
         function test_k_SWIflux()            
@@ -65,7 +73,86 @@ classdef benthic_test
          end
          
          
-         
+         function res = test_benthic( ncl, swi )
+            
+            if nargin < 1
+                ncl = 1;
+            end
+            
+            res.bsd = benthic_main(ncl);
+            res.bsd.usescalarcode = ncl==1;
+            
+            
+            if nargin < 2 || isempty(swi)
+                swi = benthic_test.default_swi();
+            end
+                                 
+            if ncl > 1  % set up O2 gradient for testing
+                O20 = swi.O20;
+                for i = 1:ncl
+                    swi.O20(i) = 10*(i-1)/(ncl-1)*O20;
+                end
+            end
+            
+            res.swi = swi;
+
+
+            
+            % calculate 
+            res.zTOC = benthic_zTOC(res.bsd);
+            res.zO2 = benthic_zO2(res.bsd, res.swi);           
+            res.zNO3 = benthic_zNO3(res.bsd, res.swi);
+            res.zSO4 = benthic_zSO4(res.bsd, res.swi);
+            res.zNH4 = benthic_zNH4(res.bsd, res.swi);
+            res.zH2S = benthic_zH2S(res.bsd, res.swi);
+            res.zPO4_M = benthic_zPO4_M(res.bsd, res.swi);
+            res.zDIC = benthic_zDIC(res.bsd, res.swi);
+            res.zALK = benthic_zALK(res.bsd, res.swi);
+   
+            tic;
+            res = res.zTOC.calc(res.bsd,res.swi, res);
+            % check O2 demand using O2 to C ratio and (convert POC concentr. to flux analog to fortran)
+            % POC_flux*OC = POC_conc * w * 1/(1 - por) * OC  
+            O2_demand_flux = -(res.swi.Fnonbio1+res.swi.Fnonbio2)*res.bsd.OC/((1-res.bsd.por)./res.bsd.por)
+%            O2_demand = (res.swi.C01+res.swi.C02)*res.bsd.OC
+%            O2_demand = (res.swi.C01+res.swi.C02)*res.bsd.w*res.bsd.OC
+
+            res = res.zO2.calc(res.bsd, res.swi, res);
+            if(swi.Nitrogen)
+                res = res.zNO3.calc(res.bsd, res.swi, res);
+            else
+                res.zno3=res.zox;
+% %                res.zso4=res.zox;   % for test-case with just TOC & O2
+            end
+             res = res.zSO4.calc(res.bsd, res.swi, res);
+             if(swi.Nitrogen)
+                 res = res.zNH4.calc(res.bsd, res.swi, res);
+             end
+             res = res.zH2S.calc(res.bsd, res.swi, res);
+             res = res.zPO4_M.calc(res.bsd, res.swi, res);
+             res = res.zDIC.calc(res.bsd, res.swi, res);
+             res = res.zALK.calc(res.bsd, res.swi, res);
+            toc;
+            
+            %%%%% WRITE OUTPUT:
+            answ = res
+            [Cinf, C1inf, C2inf] = res.zTOC.calcC( 100, res.bsd, res.swi, res);
+            [Cswi, C1swi, C2swi] = res.zTOC.calcC( 0, res.bsd, res.swi, res);
+            fprintf('frac1 concentration at zinf %g \n',  C1inf);
+            fprintf('frac2 concentration at zinf %g \n',  C2inf);
+            fprintf('both concentration at zinf %g \n',  Cinf);
+            fprintf('frac1 concentration at swi %g \n',  C1swi);
+            fprintf('frac2 concentration at swi %g \n',  C2swi);
+            fprintf('both concentration at swi %g \n',  Cswi);
+           
+            fprintf('sed preservation of POC %g \n',  Cinf/Cswi);
+%             %%% WRITE EXACT FLUX
+%             FO2_exact=res.zO2.calcFO2_exact(res.zox,res.bsd, res.swi, res);
+%             fprintf('exact F_O2 flux (mol cm^{-2} yr^{-1}) %g \n',  FO2_exact);
+            
+        end
+
+        
 %          function run_and_plot_column_Observations()
 %             % run OMEN + plot single sediment column vs Observations
 %             
@@ -590,87 +677,7 @@ classdef benthic_test
         end
 
         
-        
-        function res = test_benthic( ncl, swi )
-            
-            if nargin < 1
-                ncl = 1;
-            end
-            
-            res.bsd = benthic_main(ncl);
-            res.bsd.usescalarcode = ncl==1;
-            
-            
-            if nargin < 2 || isempty(swi)
-                swi = benthic_test.default_swi();
-            end
-                                 
-            if ncl > 1  % set up O2 gradient for testing
-                O20 = swi.O20;
-                for i = 1:ncl
-                    swi.O20(i) = 10*(i-1)/(ncl-1)*O20;
-                end
-            end
-            
-            res.swi = swi;
-
-
-            
-            % calculate 
-            res.zTOC = benthic_zTOC(res.bsd);
-            res.zO2 = benthic_zO2(res.bsd, res.swi);           
-            res.zNO3 = benthic_zNO3(res.bsd, res.swi);
-            res.zSO4 = benthic_zSO4(res.bsd, res.swi);
-            res.zNH4 = benthic_zNH4(res.bsd, res.swi);
-            res.zH2S = benthic_zH2S(res.bsd, res.swi);
-            res.zPO4_M = benthic_zPO4_M(res.bsd, res.swi);
-            res.zDIC = benthic_zDIC(res.bsd, res.swi);
-            res.zALK = benthic_zALK(res.bsd, res.swi);
-   
-            tic;
-            res = res.zTOC.calc(res.bsd,res.swi, res);
-            % check O2 demand using O2 to C ratio and (convert POC concentr. to flux analog to fortran)
-            % POC_flux*OC = POC_conc * w * 1/(1 - por) * OC  
-            O2_demand_flux = -(res.swi.Fnonbio1+res.swi.Fnonbio2)*res.bsd.OC/((1-res.bsd.por)./res.bsd.por)
-%            O2_demand = (res.swi.C01+res.swi.C02)*res.bsd.OC
-%            O2_demand = (res.swi.C01+res.swi.C02)*res.bsd.w*res.bsd.OC
-
-            res = res.zO2.calc(res.bsd, res.swi, res);
-            if(swi.Nitrogen)
-                res = res.zNO3.calc(res.bsd, res.swi, res);
-            else
-                res.zno3=res.zox;
-% %                res.zso4=res.zox;   % for test-case with just TOC & O2
-            end
-             res = res.zSO4.calc(res.bsd, res.swi, res);
-             if(swi.Nitrogen)
-                 res = res.zNH4.calc(res.bsd, res.swi, res);
-             end
-             res = res.zH2S.calc(res.bsd, res.swi, res);
-             res = res.zPO4_M.calc(res.bsd, res.swi, res);
-             res = res.zDIC.calc(res.bsd, res.swi, res);
-             res = res.zALK.calc(res.bsd, res.swi, res);
-            toc;
-            
-            %%%%% WRITE OUTPUT:
-            answ = res
-            [Cinf, C1inf, C2inf] = res.zTOC.calcC( 100, res.bsd, res.swi, res);
-            [Cswi, C1swi, C2swi] = res.zTOC.calcC( 0, res.bsd, res.swi, res);
-            fprintf('frac1 concentration at zinf %g \n',  C1inf);
-            fprintf('frac2 concentration at zinf %g \n',  C2inf);
-            fprintf('both concentration at zinf %g \n',  Cinf);
-            fprintf('frac1 concentration at swi %g \n',  C1swi);
-            fprintf('frac2 concentration at swi %g \n',  C2swi);
-            fprintf('both concentration at swi %g \n',  Cswi);
-           
-            fprintf('sed preservation of POC %g \n',  Cinf/Cswi);
-%             %%% WRITE EXACT FLUX
-%             FO2_exact=res.zO2.calcFO2_exact(res.zox,res.bsd, res.swi, res);
-%             fprintf('exact F_O2 flux (mol cm^{-2} yr^{-1}) %g \n',  FO2_exact);
-            
-        end
-
-        function res=test_budgets(gamma, zbio)
+                function res=test_budgets(gamma, zbio)
             % check conservation of fluxes at swi
             res.bsd = benthic_main(1);
             res.bsd.gamma = gamma;

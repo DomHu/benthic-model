@@ -260,6 +260,7 @@ CONTAINS
         !  NEW version: using TOC-flux, convert units from cm3 to mol
         loc_POC1_flux_swi = conv_POC_cm3_mol*(1-loc_new_sed(is_POC_frac2))*loc_fPOC
         loc_POC2_flux_swi = conv_POC_cm3_mol*loc_new_sed(is_POC_frac2)*loc_fPOC
+        
         ! k dependent on OM flux, after Boudreau 1997:
         loc_total_POC_flux = conv_POC_cm3_mol*loc_fPOC*10**6
         k1 = 2.2*1e-5*loc_total_POC_flux**2.1
@@ -620,8 +621,8 @@ CONTAINS
         ! ORGANIC MATTER
         DC1 = Dbio
         DC2 = Dunbio
- !       k1=0.001
- !       k2=0.00001
+!        k1=1.0
+!        k2=1.0
         ! After Tromp et al. 1995:
 !        k1 = 2.97*dum_depos_rate**0.62
 !        k2 = 0.057*dum_depos_rate**1.94
