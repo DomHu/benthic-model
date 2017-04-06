@@ -263,8 +263,8 @@ CONTAINS
         
         ! k dependent on OM flux, after Boudreau 1997:
         loc_total_POC_flux = conv_POC_cm3_mol*loc_fPOC*10**6
-        k1 = 2.2*1e-5*loc_total_POC_flux**2.1
-        k2 = k1/100
+!        k1 = 2.2*1e-5*loc_total_POC_flux**2.1
+!        k2 = k1/100
 !        if(dum_D<1000)then
 !            print*, 'dum_D, loc_total_POC_flux, k1, k2 ', dum_D, loc_total_POC_flux, k1, k2
 !            print*, ' '
@@ -621,15 +621,15 @@ CONTAINS
         ! ORGANIC MATTER
         DC1 = Dbio
         DC2 = Dunbio
-!        k1=1.0
-!        k2=1.0
+        k1=0.001
+        k2=0.00001
         ! After Tromp et al. 1995:
 !        k1 = 2.97*dum_depos_rate**0.62
 !        k2 = 0.057*dum_depos_rate**1.94
-        ! After Boudreau 1997:
-        k1 = 0.38*dum_depos_rate**0.59
+!        ! After Boudreau 1997:
+!        k1 = 0.38*dum_depos_rate**0.59
 !        k2 = 0.04*dum_depos_rate**2
-        k2 = k1/100
+!        k2 = k1/100
                
 !        if(dum_D<1000)then
 !            print*, 'dum_D, dum_depos_rate, k1, k2 ', dum_D, dum_depos_rate, k1, k2

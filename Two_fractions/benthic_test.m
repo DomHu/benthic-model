@@ -12,7 +12,7 @@ classdef benthic_test
             
             bsd = benthic_main();
             %bottom water concentrations
-            swi.T = 23.0690394407961; %20.0;                         %temperature (degree C)
+            swi.T = 8.0; %20.0;                         %temperature (degree C)
             % see caption for Fig 1.2 - two equal TOC fractions 0.02 0.2 2
             swi.C01_nonbio= 1.0*1e-2/12*bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*bsd.rho_sed;         %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
             swi.C02_nonbio= 1.0*1e-2/12*bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;          %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
@@ -22,14 +22,14 @@ classdef benthic_test
             swi.C02 = swi.C02_nonbio; %0.0;
             %swi.C01=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
             %swi.C02=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-            swi.O20=4.49586593604368E-007; %150.0E-009;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
-            swi.NO30=0.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
-            swi.Nitrogen=false;
-            swi.NH40=0.0e-9;                                                %NH4 concentration at SWI (mol/cm^3)
-            swi.SO40=1.53773292622984E-005; %2.9E-005;                                            %SO4 concentration at SWI (mol/cm^3)
-            swi.H2S0=1.17824827277229E-010; %2.0E-012;         %was 0.0e-9                            %H2S concentration at SWI (mol/cm^3)
-            swi.PO40=2.15698220771682E-010; %0.06e-8; % Dom was 1e-9;    % Sandra played with 3e-9                                              %PO4 concentration at SWI (mol/cm^3)
-            swi.Mflux0=0.0; %365*0.2e-10; % Sandra played with 10e-9; ;   % = 7.3e-9    %flux of M to the sediment (mol/(cm2*yr))   TODO/CHECK: good value+right conversion? is from Slomp et al. 1996        
+            swi.O20=1E-12; %150.0E-009;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
+            swi.NO30=40.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
+            swi.Nitrogen=true;
+            swi.NH40=40.0e-9;                                                %NH4 concentration at SWI (mol/cm^3)
+            swi.SO40=2.8E-005;                                            %SO4 concentration at SWI (mol/cm^3)
+            swi.H2S0=0.0; %2.0E-012;         %was 0.0e-9                            %H2S concentration at SWI (mol/cm^3)
+            swi.PO40=40.0e-9; %0.06e-8; % Dom was 1e-9;    % Sandra played with 3e-9                                              %PO4 concentration at SWI (mol/cm^3)
+            swi.Mflux0=365*0.2e-10; % Sandra played with 10e-9; ;   % = 7.3e-9    %flux of M to the sediment (mol/(cm2*yr))   TODO/CHECK: good value+right conversion? is from Slomp et al. 1996        
             swi.DIC0=2.06211079621586E-006;                                             %DIC concentration at SWI (mol/cm^3)
             swi.ALK0=2.13405741261806E-006;                                             %ALK concentration at SWI (mol/cm^3)
             swi.S0=35;                                                      %Salinity at SWI
@@ -116,8 +116,15 @@ classdef benthic_test
             O2_demand_flux = -(res.swi.Fnonbio1+res.swi.Fnonbio2)*res.bsd.OC/((1-res.bsd.por)./res.bsd.por)
 %            O2_demand = (res.swi.C01+res.swi.C02)*res.bsd.OC
 %            O2_demand = (res.swi.C01+res.swi.C02)*res.bsd.w*res.bsd.OC
-
-            res = res.zO2.calc(res.bsd, res.swi, res);
+            if(res.swi.O20<=0.0)
+                res.zox=0.0;
+                res.flxzox = 0.0;
+                res.conczox = 0.0;
+                res.flxswiO2=0.0;
+                res.zxf=0.0;
+            else
+                res = res.zO2.calc(res.bsd, res.swi, res);
+            end
             if(swi.Nitrogen)
                 res = res.zNO3.calc(res.bsd, res.swi, res);
             else
@@ -421,8 +428,8 @@ classdef benthic_test
                 res.zTOC.k1 = Params.k1(i);
                 res.zTOC.k2 = Params.k1(i)*0.01;                
                 res.zNO3.KNH4 = Params.KNH4(i);
-                res.zPO4_M.KPO41 = Params.KPO4ox(i);
-                res.zPO4_M.KPO42 = Params.KPO4anox(i);
+                res.zPO4_M.KPO4_ox = Params.KPO4ox(i);
+                res.zPO4_M.KPO4_anox = Params.KPO4anox(i);
                 res.zPO4_M.ksPO4 = Params.ksPO4(i);
                 res.zPO4_M.kmPO4 = Params.kmPO4(i);
                 res.zPO4_M.kaPO4 = Params.kaPO4(i);

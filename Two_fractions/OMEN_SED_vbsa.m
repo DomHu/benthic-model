@@ -1,5 +1,6 @@
 function [y] = OMEN_SED_vbsa(x,res)
 %
+% This is called from ../safe_R1.1/workflow_pawn_OMEN
 % This function runs the OMEN-SED sediment model
 % and returns the associated SWI interface flux (TODO: include other
 % variables as well)
@@ -38,8 +39,8 @@ res.bsd.gamma = x(5);
 res.bsd.gammaH2S = x(6);
 
 % PO4 use just anoxic 400m setup
-res.zPO4_M.KPO41 = x(7);
-res.zPO4_M.KPO42 = x(8);
+res.zPO4_M.KPO4_ox = x(7);
+res.zPO4_M.KPO4_anox = x(8);
 res.zPO4_M.ksPO4 = x(9);
 res.zPO4_M.kmPO4 = x(10);
 res.zPO4_M.kaPO4 = x(11);

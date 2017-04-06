@@ -62,7 +62,7 @@ swi=benthic_test.default_swi();
 Params.wtpc = ones(1,n);     % Overall POC wt\% reaching the SWI
 
 % % set date-time
- str_date = '0307_Shallow'; %datestr(now,'ddmmyy_HH_MM_SS');
+ str_date = '0604_Shallow'; %datestr(now,'ddmmyy_HH_MM_SS');
 swi=benthic_test.sensitivity_swi(swi, Params, str_date);
 
 
