@@ -155,6 +155,8 @@ MODULE sedgem_lib
   real::par_sed_ohmegamin                                        ! forced minimum saturation (calcite ohmega) anywhere
   real::par_sed_ohmegamin_flux                                   ! imposed sed->ocn flux (mol Ca cm-2 per time-step) for saturation
   NAMELIST /ini_sedgem_nml/par_sed_ohmegamin,par_sed_ohmegamin_flux
+  logical::ctrl_sed_Fdet,ctrl_sed_Fcaco3,ctrl_sed_Fopal          ! alt sedimentation fields
+  NAMELIST /ini_sedgem_nml/ctrl_sed_Fdet,ctrl_sed_Fcaco3,ctrl_sed_Fopal
   ! ------------------- I/O: DIRECTORY DEFINITIONS ------------------------------------------------------------------------------- !
   CHARACTER(len=255)::par_indir_name                             ! 
   CHARACTER(len=255)::par_outdir_name                            ! 
@@ -170,6 +172,8 @@ MODULE sedgem_lib
   CHARACTER(len=127)::par_output_years_file_0d                   ! file containing years for 0D output (to summary file)
   CHARACTER(len=127)::par_output_years_file_2d                   ! file containing years for 2D output (to netcdf/ascii)
   NAMELIST /ini_sedgem_nml/par_output_years_file_0d,par_output_years_file_2d
+  CHARACTER(len=127)::par_sed_Fdet_name,par_sed_Fcaco3_name,par_sed_Fopal_name ! alt sedimentation field file names
+  NAMELIST /ini_sedgem_nml/par_sed_Fdet_name,par_sed_Fcaco3_name,par_sed_Fopal_name
   ! ------------------- I/O: MISC ------------------------------------------------------------------------------------------------ !
   logical::ctrl_append_data                                      ! append data to output files on restart
   logical::ctrl_timeseries_output                                ! save timeseries output
@@ -350,6 +354,9 @@ MODULE sedgem_lib
   LOGICAL,ALLOCATABLE,DIMENSION(:,:)::sed_save_mask            ! sediment data save mask (.TRUE. == save sediment grid point)
   REAL,ALLOCATABLE,DIMENSION(:,:,:)::sed_fsed_OLD              ! 
   REAL,ALLOCATABLE,DIMENSION(:,:,:)::sed_fdis_OLD              ! 
+  REAL,ALLOCATABLE,DIMENSION(:,:)::sed_Fsed_det                ! alt detrital burial flux field
+  REAL,ALLOCATABLE,DIMENSION(:,:)::sed_Fsed_caco3              ! alt caco3 burial flux field
+  REAL,ALLOCATABLE,DIMENSION(:,:)::sed_Fsed_opal               ! alt opal burial flux field
   ! allocatable sedcoe arrays
   REAL,ALLOCATABLE,DIMENSION(:,:,:)::sedcore                   ! sedcore sediment layer stack (num sedcores x layers x variables)
   ! sediments - conversion

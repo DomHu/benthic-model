@@ -231,6 +231,7 @@ CONTAINS
         dum_swiconc_DIC = dum_sfcsumocn(io_DIC)*1e-3
         dum_swiconc_ALK = dum_sfcsumocn(io_ALK)*1e-3
 
+!        print*,'dum_i, dum_j, dum_D ', dum_i, dum_j, dum_D
 
         ! calculate wt% of mol from POC flux (both fractions)
         ! NOTE: the units of the Corg flux are in (cm3 cm-2 yr-1)
@@ -621,8 +622,8 @@ CONTAINS
         ! ORGANIC MATTER
         DC1 = Dbio
         DC2 = Dunbio
-        k1=0.001
-        k2=0.00001
+        k1=0.01
+        k2=0.01
         ! After Tromp et al. 1995:
 !        k1 = 2.97*dum_depos_rate**0.62
 !        k2 = 0.057*dum_depos_rate**1.94

@@ -22,7 +22,7 @@ classdef benthic_test
             swi.C02 = swi.C02_nonbio; %0.0;
             %swi.C01=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
             %swi.C02=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-            swi.O20=1E-12; %150.0E-009;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
+            swi.O20=150.0E-009;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
             swi.NO30=40.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
             swi.Nitrogen=true;
             swi.NH40=40.0e-9;                                                %NH4 concentration at SWI (mol/cm^3)
@@ -391,7 +391,120 @@ classdef benthic_test
 % 
 % 
 %          end
+                
+        function res = OMEN_with_GENIE_input(bc, Nitrogen)
+            
+            swi.Nitrogen = Nitrogen;
+            
+            % Conversions after GENIE
+            conv_POC_mol_cm3=12.0;
+            conv_cal_mol_cm3=100.0/2.7;
+            conv_det_mol_cm3=60.0/3;
+            conv_cm3_kg = 1000;
+            
+            % set wdepth
+          	bsd.wdepth = -bc(end);
 
+            res.bsd = benthic_main(1, bsd.wdepth);
+            res.bsd.usescalarcode = true;
+            
+            if(Nitrogen)
+                
+            else
+                
+                % calculate sediment accumulation rate using POC, CaCO3 and
+                % detrital rain flux (convert from mol to cm3)            
+                bsd.w = (conv_POC_mol_cm3*bc(1)+conv_cal_mol_cm3*bc(8) + conv_det_mol_cm3*bc(9));   % + bc(10))
+
+                %bottom water concentrations
+                swi.T = bc(11); %20.0;                         %temperature (degree C)
+                swi.Fnonbio1 = 0.5*bc(1);    % [mol/(cm2 yr)] according non-bioturbated flux
+                swi.Fnonbio2 = 0.5*bc(1);
+                swi.C01 = 0.0;  % resulting bioturbated SWI-concentration, to be calculated in benthic_zTOC.m
+                swi.C02 = 0.0;
+                
+                % bottom water concentrations: GENIE mol/kg -> SEDIMENT MODEL needs mol/cm^3
+                swi.O20= 1/conv_cm3_kg*bc(2);                   %O2  concentration at SWI (mol/cm^3)
+                swi.SO40=1/conv_cm3_kg*bc(3);               	%SO4 concentration at SWI (mol/cm^3)
+                swi.H2S0=1/conv_cm3_kg*bc(4);                 	%H2S concentration at SWI (mol/cm^3)
+                swi.PO40=1/conv_cm3_kg*bc(5);                   %PO4 concentration at SWI (mol/cm^3)
+                swi.Mflux0=365*0.2e-10;                         %flux of M to the sediment (mol/(cm2*yr))
+                swi.DIC0=1/conv_cm3_kg*bc(6);               	%DIC concentration at SWI (mol/cm^3)
+                swi.ALK0=1/conv_cm3_kg*bc(7);               	%ALK concentration at SWI (mol/cm^3)
+
+                swi.plot_PO4_DIC_ALK=true;
+
+            end
+                       
+            res.swi = swi;
+            
+            % Set default values 
+            res.zTOC = benthic_zTOC(res.bsd);
+            % Dom: set here k1, k2 if related to w or POC-flux
+            
+            res.zO2 = benthic_zO2(res.bsd, res.swi);           
+            res.zNO3 = benthic_zNO3(res.bsd, res.swi);
+            res.zSO4 = benthic_zSO4(res.bsd, res.swi);
+            res.zNH4 = benthic_zNH4(res.bsd, res.swi);
+            res.zH2S = benthic_zH2S(res.bsd, res.swi);
+            res.zH2S = benthic_zH2S(res.bsd, res.swi);
+            res.zPO4_M = benthic_zPO4_M(res.bsd, res.swi);
+            res.zDIC = benthic_zDIC(res.bsd, res.swi);
+            res.zALK = benthic_zALK(res.bsd, res.swi);
+                       
+            
+            % Calculate OMEN profiles and fluxes
+            res = res.zTOC.calc(res.bsd,res.swi, res);
+            res = res.zO2.calc(res.bsd, res.swi, res);
+            if(Nitrogen)
+                res = res.zNO3.calc(res.bsd, res.swi, res);
+            else
+                res.zno3=res.zox;
+            end
+            
+            res = res.zSO4.calc(res.bsd, res.swi, res);
+            
+            if(Nitrogen)
+                res = res.zNH4.calc(res.bsd, res.swi, res);
+            end
+            res = res.zH2S.calc(res.bsd, res.swi, res);
+            res = res.zPO4_M.calc(res.bsd, res.swi, res);
+            res = res.zDIC.calc(res.bsd, res.swi, res);
+            res = res.zALK.calc(res.bsd, res.swi, res);
+            
+            %%%%% WRITE OUTPUT:
+            answ = res;
+            [Cinf, C1inf, C2inf] = res.zTOC.calcC( 100, res.bsd, res.swi, res);
+            [Cswi, C1swi, C2swi] = res.zTOC.calcC( 0, res.bsd, res.swi, res);
+%             fprintf('frac1 concentration at zinf %g \n',  C1inf);
+%             fprintf('frac2 concentration at zinf %g \n',  C2inf);
+%             fprintf('both concentration at zinf %g \n',  Cinf);
+%             fprintf('frac1 concentration at swi %g \n',  C1swi);
+%             fprintf('frac2 concentration at swi %g \n',  C2swi);
+%             fprintf('both concentration at swi %g \n',  Cswi);
+%            
+%             fprintf('sed preservation of POC %g \n',  Cinf/Cswi);
+
+            
+            % calculate depth integrated OM degradation rates
+            Cox_rate.Cox_total = res.zTOC.calcReac(0.0, res.bsd.zinf, 1, 1, res.bsd, res.swi, res);
+            Cox_rate.Cox_aerobic = res.zTOC.calcReac(0.0, res.zox, 1, 1, res.bsd, res.swi, res);
+            if(swi.Nitrogen)
+                Cox_rate.Cox_denitr = res.zTOC.calcReac(res.zox, res.zno3, 1, 1, res.bsd, res.swi, res);
+            end
+            Cox_rate.Cox_sulfred = res.zTOC.calcReac(res.zno3, res.bsd.zinf, 1, 1, res.bsd, res.swi, res);
+            Cox_frac.Cox_aerobic= Cox_rate.Cox_aerobic/Cox_rate.Cox_total;
+            Cox_frac.Cox_sulfred= Cox_rate.Cox_sulfred/Cox_rate.Cox_total;
+            
+            res.Cox_rate = Cox_rate;
+            res.Cox_frac = Cox_frac;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%  TEST PROFILES
+
+%            benthic_test.plot_column(res, false, swi, '0107')
+            
+            
+        end
         
         function swi = sensitivity_swi(swi, Params, str_date)
 
