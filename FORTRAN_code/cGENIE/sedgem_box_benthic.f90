@@ -264,8 +264,8 @@ CONTAINS
         
         ! k dependent on OM flux, after Boudreau 1997:
         loc_total_POC_flux = conv_POC_cm3_mol*loc_fPOC*10**6
-!        k1 = 2.2*1e-5*loc_total_POC_flux**2.1
-!        k2 = k1/100
+        k1 = 2.2*1e-5*loc_total_POC_flux**2.1
+        k2 = k1/100
 !        if(dum_D<1000)then
 !            print*, 'dum_D, loc_total_POC_flux, k1, k2 ', dum_D, loc_total_POC_flux, k1, k2
 !            print*, ' '
@@ -622,12 +622,12 @@ CONTAINS
         ! ORGANIC MATTER
         DC1 = Dbio
         DC2 = Dunbio
-        k1=0.01
-        k2=0.01
-        ! After Tromp et al. 1995:
+        k1=1.0
+        k2=1.0
+!        ! After Tromp et al. 1995:
 !        k1 = 2.97*dum_depos_rate**0.62
 !        k2 = 0.057*dum_depos_rate**1.94
-!        ! After Boudreau 1997:
+        ! After Boudreau 1997:
 !        k1 = 0.38*dum_depos_rate**0.59
 !        k2 = 0.04*dum_depos_rate**2
 !        k2 = k1/100
@@ -704,14 +704,14 @@ CONTAINS
         ! Phosphate (PO4)
         DPO41=((qdispPO4+adispPO4*loc_TempC)*dispFactor+Dbio)               ! PO4 diffusion coefficient in bioturbated layer (cm2/yr)
         DPO42=((qdispPO4+adispPO4*loc_TempC)*dispFactor);                   ! PO4 diffusion coefficient in non-bioturbated layer (cm2/yr)
-        KPO4_ox = 200.0                    ! Adsorption coefficient in oxic layer (-)
-        KPO4_anox = 1.3                   ! Adsorption coefficient in anoxic layer (-)
-        ksPO4 = 1.0                   ! Rate constant for kinetic P sorption (1/yr)
-        kmPO4 = 2.2e-6*24*365                   ! Rate constant for Fe-bound P release upon Fe oxide reduction
-        kaPO4 = 10.0                   ! Rate constant for authigenic P formation (1/yr)
-        PO4s = 1.0e-9                    ! Equilibrium concentration for P sorption (mol/cm3)
-        PO4a = 0.5e-8                    ! Equilibrium concentration for authigenic P formation (mol/cm3)
-        Minf = 1.0e-10                    ! asymptotic concentration for Fe-bound P (mol/cm3)
+        KPO4_ox = 0.0 !200.0                    ! Adsorption coefficient in oxic layer (-)
+        KPO4_anox = 0.0 !1.3                   ! Adsorption coefficient in anoxic layer (-)
+        ksPO4 = 0.0 !1.0                   ! Rate constant for kinetic P sorption (1/yr)
+        kmPO4 = 0.0 !2.2e-6*24*365                   ! Rate constant for Fe-bound P release upon Fe oxide reduction
+        kaPO4 = 0.0 !10.0                   ! Rate constant for authigenic P formation (1/yr)
+        PO4s = 0.0 !1.0e-9                    ! Equilibrium concentration for P sorption (mol/cm3)
+        PO4a = 0.0 !0.5e-8                    ! Equilibrium concentration for authigenic P formation (mol/cm3)
+        Minf = 0.0 !1.0e-10                    ! asymptotic concentration for Fe-bound P (mol/cm3)
 
         ! DIC
         DDIC1=(qdispDIC+adispDIC*loc_TempC)*dispFactor+Dbio                 ! DIC diffusion coefficient in bioturbated layer (cm2/yr)
