@@ -1,4 +1,4 @@
-function [STATM] = run_and_plot_OMEN_with_GENIE_data(PEXP1,PEXP2,PVAR1,PVAR2,PT1,PT2,PIK,PMASK,PCSCALE,PCMIN,PCMAX,PCN,PDATA,POPT,PNAME)
+function [STATM] = run_and_plot_OMEN_with_GENIE_data(PEXP1,PEXP2,PVAR1,PVAR2,PT1,PT2,PIK,PMASK,PCSCALE,PCMIN,PCMAX,PCN,PDATA,POPT,PNAME, POUTVAR)
 %
 %   *******************************************************************   %
 %   *** sedgem 2-D (LON-LAT) DATA PLOTTING ****************************   %
@@ -12,9 +12,9 @@ function [STATM] = run_and_plot_OMEN_with_GENIE_data(PEXP1,PEXP2,PVAR1,PVAR2,PT1
 %   PEXP2 [STRING] [OPTIONAL] (e.g. 'enhanced_export')
 %   --> the experiment name of 2nd, optional, netCDF file
 %   --> leave EXP2 blank, i.e., '', for no second netCDF file
-%   PVAR1 [STRING] (e.g. 'sed_CaCO3')
-%   --> id the name of 1st variable to be plotted
-%   --> all valid valiable names will be listed if an invalid name is given
+%   PVAR1 [STRING] (e.g. 'zox')
+%   -->  the name of the variable to be plotted
+%   --> also part of the title and file-name
 %   PVAR2 [STRING] [OPTIONAL] (e.g. 'sed_opal')
 %   --> id the name of 2nd, optional, variable
 %   PT1 [REAL] [OPTIONAL] (e.g. 0.0)
@@ -57,6 +57,25 @@ function [STATM] = run_and_plot_OMEN_with_GENIE_data(PEXP1,PEXP2,PVAR1,PVAR2,PT1
 %   --> the string for an alternative filename
 %   --> if an empty (i.e., '') value is passed to this parameter
 %       then a filename is automatically generated
+%
+%   POUTVAR [INTEGER] (e.g. 1, 2, ...)
+%   --> number of the output to be calculated:
+%   -->  1: zox
+%   -->  2: zSO4
+%   -->  3: depth integrated total OM oxidation rate (Cox total)
+%   -->  4: depth integrated aerobic OM oxidation rate (Cox aerobic)
+%   -->  5: depth integrated anaerobic (SO4 reduction at the moment) OM oxidation rate (Cox SO4)
+%   -->  6: fraction of O2/total depth integrated OM oxidation
+%   -->  7: fraction of SO4/total depth integrated OM oxidation
+%   -->  8: total TOC wt% preserved at zinf (100cm)
+%   -->  9: labile TOC1 wt% preserved at zinf (100cm)
+%   --> 10: refractory TOC2 wt% preserved at zinf (100cm)
+%   --> 11: SWI-flux O2
+%   --> 12: SWI-flux SO4
+%   --> 13: SWI-flux H2S
+%   --> 14: SWI-flux PO4
+%   --> 15: SWI-flux DIC
+%   --> 16: SWI-flux ALK       
 %
 %   Example
 %           plot_fields_sedgem_2d('experiment_1','','sed_CaCO3','',0.0,0.0,0,'',1.0,0.0,100.0,20,'','','')
@@ -110,11 +129,12 @@ con_max = PCMAX;
 con_n = PCN;
 overlaydataid = PDATA;
 altfilename = PNAME;
+plotvar= POUTVAR;
 
 % DOM: data needed from GENIE:
 Nitrogen=false;
 data_fsed_POC='fsed_POC  ';
-dataid_1=strtrim(data_fsed_POC);
+%dataid_1=strtrim(data_fsed_POC);
 data_ocn_O2='ocn_O2    ';
 data_ocnNO3='ocn_NO3   ';
 data_ocn_NH4='ocn_NH4   ';
@@ -426,7 +446,7 @@ ym = latm;
 data = data_1 - data_2;
 data = data - data_offset;
 zm = data;
-OMEN_results = zeros(jmax,imax,k);
+%OMEN_results = zeros(jmax,imax,k);
 % filter gridded data: Dom calculate values in zm to be plotted further
 % down - this should be the results from OMEN (so call OMEN before)
 n = 0;
@@ -434,12 +454,12 @@ for i = 1:imax,
     for j = 1:jmax,
         if grid_topo(j,i) >= 0
             zm(j,i,:) = NaN;
-            OMEN_results(j,i,:) = NaN;
+%            OMEN_results(j,i,:) = NaN;
             topo(j,i) = +1.0;
             layb(j,i) = -1.0;
         elseif (zm(j,i) < -1.0E6) || (zm(j,i) > 0.9E30) || isnan(zm(j,i))
             zm(j,i,:) = NaN;
-            OMEN_results(j,i,:) = NaN;
+%            OMEN_results(j,i,:) = NaN;
             topo(j,i) = +1.0;
             layb(j,i) = -1.0;
             % if mask selected and cell is masked out => mark to plot in white
@@ -453,7 +473,7 @@ for i = 1:imax,
             if ~isempty(maskid)
                 if mask(j,i) == 0
                     zm(j,i,:) = NaN;
-                    OMEN_results(j,i,:) = NaN;
+%                    OMEN_results(j,i,:) = NaN;
                 end
             end
             if data_log10 == 'y'
@@ -461,14 +481,69 @@ for i = 1:imax,
                     zm(j,i,:) = log10(zm(j,i)/data_scale);
                 else
                     zm(j,i,:) = NaN;
-                    OMEN_results(j,i,:) = NaN;
+%                    OMEN_results(j,i,:) = NaN;
                end
             else    % Dom: here scaling is done - also call here OMEN, as these are the ocean grid cells!
                 bc=zm(j,i,:);
+                i
+                j
                 test=benthic_test.OMEN_with_GENIE_input(bc, Nitrogen);
-                OMEN_zox= test.zox;
+%   -->  1: zox
+%   -->  2: zSO4
+%   -->  3: depth integrated total OM oxidation rate (Cox total)
+%   -->  4: depth integrated aerobic OM oxidation rate (Cox aerobic)
+%   -->  5: depth integrated anaerobic (SO4 reduction at the moment) OM oxidation rate (Cox SO4)
+%   -->  6: fraction of O2/total depth integrated OM oxidation
+%   -->  7: fraction of SO4/total depth integrated OM oxidation
+%   -->  8: total TOC wt% preserved at zinf (100cm)
+%   -->  9: labile TOC1 wt% preserved at zinf (100cm)
+%   --> 10: refractory TOC2 wt% preserved at zinf (100cm)
+%   --> 11: SWI-flux O2
+%   --> 12: SWI-flux SO4
+%   --> 13: SWI-flux H2S
+%   --> 14: SWI-flux PO4
+%   --> 15: SWI-flux DIC
+%   --> 16: SWI-flux ALK
+
+                switch plotvar
+                case 1
+                    OMEN_result = test.zox;
+                case 2
+                    OMEN_result = test.zso4;
+                case 3
+                    OMEN_result = test.Cox_rate_total;
+                case 4
+                    OMEN_result = test.Cox_rate_aerobic;
+                case 5
+                    OMEN_result = test.Cox_rate_sulfred;
+                case 6
+                    OMEN_result = test.Cox_perc_aerobic;
+                case 7
+                    OMEN_result = test.Cox_perc_sulfred;
+                case 8
+                    OMEN_result = test.C_zinf_wtpc;
+                case 9
+                    OMEN_result = test.C1_zinf_wtpc;
+                case 10
+                    OMEN_result = test.C2_zinf_wtpc;
+                case 11
+                    OMEN_result = test.flxswiO2;
+                case 12
+                    OMEN_result = test.flxswiSO4;
+                case 13
+                    OMEN_result = test.flxswiH2S;
+                case 14
+                    OMEN_result = test.flxswi_P;
+                case 15
+                    OMEN_result = test.flxswiDIC;
+                case 16
+                    OMEN_result = test.flxswiALK;
+                otherwise
+%                    export_fig([filename '.' str_date '.eps'], '-eps', '-nocrop');
+                end
+                
 %                OMEN_results(j,i,1) = OMEN_zox;
-                zm(j,i,1) = OMEN_zox/data_scale;
+                zm(j,i) = OMEN_result/data_scale;
 %                zm(j,i,:) = zm(j,i)/data_scale;
             end
             if ~isnan(zm(j,i)), n = n + 1; end
@@ -747,7 +822,7 @@ end
 cmap = make_cmap(colorbar_name,con_n+2);
 if (colorbar_inv == 'y'), cmap = flipdim(cmap,1); end,
 colormap(cmap);
-% date-stamp plot
+% date-stamp plot Dom: could give units here:
 set(gcf,'CurrentAxes',fh(1));
 if (plot_format_old == 'y')
     text(0.95,0.50,[str_function, ' / ', 'on: ', str_date],'FontName','Arial','FontSize',8,'Rotation',90.0,'HorizontalAlignment','center','VerticalAlignment','top');
@@ -809,7 +884,7 @@ else
 end
 set(gca,'TickDir','out');
 if isempty(plot_title)
-    plot_title = ['Data ID: ',strrep(dataid_1,'_',' ')];
+    plot_title = [' ',strrep(dataid_1,'_',' ')];
     plot_title(find(plot_title(:)=='_')) = '-';
 end
 title(plot_title,'FontSize',12);

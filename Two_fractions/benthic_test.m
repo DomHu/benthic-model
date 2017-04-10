@@ -443,9 +443,12 @@ classdef benthic_test
             % Dom: set here k1, k2 if related to w or POC-flux
             
             res.zO2 = benthic_zO2(res.bsd, res.swi);           
-            res.zNO3 = benthic_zNO3(res.bsd, res.swi);
+            res.zxf = 0.0;                              % roll off oxidation at low zox
+            if(Nitrogen)
+                res.zNO3 = benthic_zNO3(res.bsd, res.swi);
+                res.zNH4 = benthic_zNH4(res.bsd, res.swi);
+            end
             res.zSO4 = benthic_zSO4(res.bsd, res.swi);
-            res.zNH4 = benthic_zNH4(res.bsd, res.swi);
             res.zH2S = benthic_zH2S(res.bsd, res.swi);
             res.zH2S = benthic_zH2S(res.bsd, res.swi);
             res.zPO4_M = benthic_zPO4_M(res.bsd, res.swi);
@@ -455,7 +458,13 @@ classdef benthic_test
             
             % Calculate OMEN profiles and fluxes
             res = res.zTOC.calc(res.bsd,res.swi, res);
-            res = res.zO2.calc(res.bsd, res.swi, res);
+            if(swi.O20<= 1.0e-18)
+                res.zox = 0.0;
+                res.zno3=res.zox;
+                res.flxswiO2=0.0;                
+            else
+                res = res.zO2.calc(res.bsd, res.swi, res);
+            end
             if(Nitrogen)
                 res = res.zNO3.calc(res.bsd, res.swi, res);
             else
@@ -474,8 +483,15 @@ classdef benthic_test
             
             %%%%% WRITE OUTPUT:
             answ = res;
-            [Cinf, C1inf, C2inf] = res.zTOC.calcC( 100, res.bsd, res.swi, res);
+            [Cinf, C1inf, C2inf] = res.zTOC.calcC( 10, res.bsd, res.swi, res);
             [Cswi, C1swi, C2swi] = res.zTOC.calcC( 0, res.bsd, res.swi, res);
+            
+            %%%% TOC wt %%%%
+            res.C1_zinf_wtpc=100*C1inf*12/res.bsd.rho_sed;
+            res.C2_zinf_wtpc=100*C2inf*12/res.bsd.rho_sed;
+            res.C_zinf_wtpc=100*Cinf*12/res.bsd.rho_sed;
+
+           
 %             fprintf('frac1 concentration at zinf %g \n',  C1inf);
 %             fprintf('frac2 concentration at zinf %g \n',  C2inf);
 %             fprintf('both concentration at zinf %g \n',  Cinf);
@@ -486,20 +502,23 @@ classdef benthic_test
 %             fprintf('sed preservation of POC %g \n',  Cinf/Cswi);
 
             
-            % calculate depth integrated OM degradation rates
-            Cox_rate.Cox_total = res.zTOC.calcReac(0.0, res.bsd.zinf, 1, 1, res.bsd, res.swi, res);
-            Cox_rate.Cox_aerobic = res.zTOC.calcReac(0.0, res.zox, 1, 1, res.bsd, res.swi, res);
+            % calculate depth integrated OM degradation rates [nanomol cm-2 yr-1]
+            res.Cox_rate_total = res.zTOC.calcReac(0.0, res.bsd.zinf, 1, 1, res.bsd, res.swi, res);
+            res.Cox_rate_aerobic = res.zTOC.calcReac(0.0, res.zox, 1, 1, res.bsd, res.swi, res);
             if(swi.Nitrogen)
-                Cox_rate.Cox_denitr = res.zTOC.calcReac(res.zox, res.zno3, 1, 1, res.bsd, res.swi, res);
+                res.Cox_rate_denitr = res.zTOC.calcReac(res.zox, res.zno3, 1, 1, res.bsd, res.swi, res);
             end
-            Cox_rate.Cox_sulfred = res.zTOC.calcReac(res.zno3, res.bsd.zinf, 1, 1, res.bsd, res.swi, res);
-            Cox_frac.Cox_aerobic= Cox_rate.Cox_aerobic/Cox_rate.Cox_total;
-            Cox_frac.Cox_sulfred= Cox_rate.Cox_sulfred/Cox_rate.Cox_total;
+            res.Cox_rate_sulfred = res.zTOC.calcReac(res.zno3, res.bsd.zinf, 1, 1, res.bsd, res.swi, res);
             
-            res.Cox_rate = Cox_rate;
-            res.Cox_frac = Cox_frac;
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%  TEST PROFILES
+            res.Cox_perc_aerobic= res.Cox_rate_aerobic/res.Cox_rate_total*100;
+            res.Cox_perc_sulfred= res.Cox_rate_sulfred/res.Cox_rate_total*100;
+            
+%             res.Cox_rate = Cox_rate;
+%             res.Cox_frac = Cox_frac;
+
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%  TEST PROFILES  %%%%%%%%%%%%%%%%
 
 %            benthic_test.plot_column(res, false, swi, '0107')
             
