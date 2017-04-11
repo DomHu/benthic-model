@@ -59,6 +59,8 @@ res.zSO4 = benthic_zSO4(res.bsd, res.swi);
 res.zNH4 = benthic_zNH4(res.bsd, res.swi);
 res.zH2S = benthic_zH2S(res.bsd, res.swi);
 res.zPO4_M = benthic_zPO4_M(res.bsd, res.swi);
+res.zDIC = benthic_zDIC(res.bsd, res.swi);
+res.zALK = benthic_zALK(res.bsd, res.swi);
 
 
 % Define uncertain inputs (parameters):
@@ -83,20 +85,20 @@ distrpar=cell(M,1); for i=1:M; distrpar{i}=[xmin(i) xmax(i)]; end
 
 % Define model output:
 fun_test = 'OMEN_SED_vbsa';
-Titles = {'O_2', 'NO_3', 'SO_4', 'NH_4', 'H_2S', 'PO_4'};
+Titles = {'O_2', 'NO_3', 'SO_4', 'NH_4', 'H_2S', 'PO_4', 'DIC', 'ALK'};
 
 %% Step 3: Apply PAWN
 
 NU = 200 ; % number of samples to estimate unconditional CDF
 NC = 100 ; % number of samples to estimate conditional CDFs
 n  = 10 ; % number of conditioning points
-out = 6; % number of output from OMEN (e.g. SWI-flux O2, NO3, ...)
+out = length(Titles); % number of output from OMEN (e.g. SWI-flux O2, NO3, ...)
 
 % Create input/output samples to estimate the unconditional output CDF:
 Xu = AAT_sampling('lhs',M,'unif',distrpar,NU); % matrix (NU,M)
 Yu = model_evaluation(fun_test,Xu,res)  ; % matrix (NU,out) % was vector (1,M)
-save('RESULTS_PAWN_ALL_OUTPUT/Xu_400m.mat','Xu')
-save('RESULTS_PAWN_ALL_OUTPUT/Yu_400m.mat','Yu')
+save('RESULTS_PAWN_ALL_OUTPUT_1104/Xu_400m.mat','Xu')
+save('RESULTS_PAWN_ALL_OUTPUT_1104/Yu_400m.mat','Yu')
 % Yu lines: input param sets
 % Yu columns: outputs
 %      y(:,1) = O2 SWI flux
@@ -104,15 +106,18 @@ save('RESULTS_PAWN_ALL_OUTPUT/Yu_400m.mat','Yu')
 %      y(:,3) = SO4 SWI flux
 %      y(:,4) = NH4 SWI flux
 %      y(:,5) = H2S SWI flux
-%      y(:,6)   = P SWI flux
+%      y(:,6) = P SWI flux
+%      y(:,7) = DIC SWI flux
+%      y(:,8) = ALK SWI flux
 
 % Create input/output samples to estimate the conditional output CDFs:
 [ XX, xc ] = pawn_sampling('lhs',M,'unif',distrpar,n,NC);
-save('RESULTS_PAWN_ALL_OUTPUT/XX_400m.mat','XX')
-save('RESULTS_PAWN_ALL_OUTPUT/xc_400m.mat','xc')
+save('RESULTS_PAWN_ALL_OUTPUT_1104/XX_400m.mat','XX')
+save('RESULTS_PAWN_ALL_OUTPUT_1104/xc_400m.mat','xc')
 
 YY = pawn_model_evaluation(fun_test,XX,res) ;
-save('RESULTS_PAWN_ALL_OUTPUT/YY_400m.mat','YY')
+save('RESULTS_PAWN_ALL_OUTPUT_1104/YY_400m.mat','YY')
+
 
 for j=1:out
 % Estimate unconditional and conditional CDFs:
@@ -144,7 +149,7 @@ for i=1:M
    pawn_plot_kstest(KS(:,i),NC,NU,0.05,xc{i},labelparams{i})
 end
 title(Titles(j))
-print('-depsc2', ['RESULTS_PAWN_ALL_OUTPUT/2_KS_400m_' char(Titles(j)) '.eps']);
+print('-depsc2', ['RESULTS_PAWN_ALL_OUTPUT_1104/2_KS_400m_' char(Titles(j)) '.eps']);
 
 % %  HERE without confidence intervals
 % % % Compute PAWN index by taking a statistic of KSs (e.g. max):
@@ -163,7 +168,7 @@ SIndex(j,:) = T_m;
 % Plot:
 figure; boxplot1(T_m,labelparams,[],T_lb,T_ub)
 title(Titles(j))
-print('-depsc2', ['RESULTS_PAWN_ALL_OUTPUT/1_SIndex_400m_' char(Titles(j)) '.eps']);
+print('-depsc2', ['RESULTS_PAWN_ALL_OUTPUT_1104/1_SIndex_400m_' char(Titles(j)) '.eps']);
 
 % Convergence analysis:
 stat = 'max' ; % statistic to be applied to KSs
@@ -174,7 +179,7 @@ NUb = [ NU/10 NU/2 NU ] ;
 NN = NUb+n*NCb ;
 figure; plot_convergence(T_m_n,NN,T_lb_n,T_ub_n,[],'no of evals',[],labelparams)
 title(Titles(j))
-print('-depsc2', ['RESULTS_PAWN_ALL_OUTPUT/3_Conv_400m_' char(Titles(j)) '.eps']);
+print('-depsc2', ['RESULTS_PAWN_ALL_OUTPUT_1104/3_Conv_400m_' char(Titles(j)) '.eps']);
 
 % % 
 % % %% Step 4: Apply PAWN to sub-region of the output range
@@ -193,7 +198,7 @@ if(false)
     figure
     scatter_plots_col(Xu,Yu(:,j),1,2,16,labelparams)
     title(Titles(j))
-    print('-depsc2', ['RESULTS_PAWN_ALL_OUTPUT/4000m/k1_vs_f1_SWIflux_' char(Titles(j)) '.eps']);
+    print('-depsc2', ['RESULTS_PAWN_ALL_OUTPUT_1104/400m/k1_vs_f1_SWIflux_' char(Titles(j)) '.eps']);
 
     %scatter_plots_col(XD,YC,1,2,16,X_Labels)
 
@@ -201,9 +206,9 @@ if(false)
     figure
     scatter_plots(Xu(:,1),Yu(:,j),1,'SWI fluxes',{'k1'})
     title(Titles(j))
-    print('-depsc2', ['RESULTS_PAWN_ALL_OUTPUT/4000m/k1_SWIflux_' char(Titles(j)) '.eps']);
+    print('-depsc2', ['RESULTS_PAWN_ALL_OUTPUT_1104/400m/k1_SWIflux_' char(Titles(j)) '.eps']);
 end
 
 end
 SIndex400m = SIndex;
-save('RESULTS_PAWN_ALL_OUTPUT/SIndex_400m.mat','SIndex400m')
+save('RESULTS_PAWN_ALL_OUTPUT_1104/SIndex_400m.mat','SIndex400m')

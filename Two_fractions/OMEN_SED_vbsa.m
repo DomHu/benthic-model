@@ -16,7 +16,9 @@ function [y] = OMEN_SED_vbsa(x,res)
 %      y(3) = SO4 SWI flux                     - scalar
 %      y(4) = NH4 SWI flux                     - scalar
 %      y(5) = H2S SWI flux                     - scalar
-%      y(6)   = P SWI flux                     - scalar
+%      y(:,6) = P SWI flux
+%      y(:,7) = DIC SWI flux
+%      y(:,8) = ALK SWI flux
 %
 
 % how much Corg wtpc at top of sedments:
@@ -47,7 +49,15 @@ res.zPO4_M.kaPO4 = x(11);
 
 
 res = res.zTOC.calc(res.bsd,res.swi, res);
-res = res.zO2.calc(res.bsd, res.swi, res);
+if(res.swi.O20<=0.0)
+    res.zox=0.0;
+    res.flxzox = 0.0;
+    res.conczox = 0.0;
+    res.flxswiO2=0.0;
+    res.zxf=0.0;
+else
+    res = res.zO2.calc(res.bsd, res.swi, res);
+end
 %            if(swi.Nitrogen)
 res = res.zNO3.calc(res.bsd, res.swi, res);
 %            else
@@ -59,8 +69,8 @@ res = res.zNH4.calc(res.bsd, res.swi, res);
 %            end
 res = res.zH2S.calc(res.bsd, res.swi, res);
 res = res.zPO4_M.calc(res.bsd, res.swi, res);
-% % res = res.zDIC.calc(res.bsd, res.swi, res);
-% % res = res.zALK.calc(res.bsd, res.swi, res);
+res = res.zDIC.calc(res.bsd, res.swi, res);
+res = res.zALK.calc(res.bsd, res.swi, res);
 
 % % y = res.flxswiO2;
 y(1) = res.flxswiO2;
@@ -69,5 +79,13 @@ y(3) = res.flxswiSO4;
 y(4) = res.flxswiNH4; 
 y(5) = res.flxswiH2S; 
 y(6) = res.flxswi_P;
+y(7) = res.flxswiDIC; 
+y(8) = res.flxswiALK;
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%  TEST PROFILES  %%%%%%%%%%%%%%%%
+
+% benthic_test.plot_column(res, false, res.swi, 'FROM_OMEN_SED_vbsa')
+
 
 end

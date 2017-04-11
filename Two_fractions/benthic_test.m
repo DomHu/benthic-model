@@ -14,24 +14,24 @@ classdef benthic_test
             %bottom water concentrations
             swi.T = 8.0; %20.0;                         %temperature (degree C)
             % see caption for Fig 1.2 - two equal TOC fractions 0.02 0.2 2
-            swi.C01_nonbio= 1.0*1e-2/12*bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*bsd.rho_sed;         %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-            swi.C02_nonbio= 1.0*1e-2/12*bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;          %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+            swi.C01_nonbio= 2.0*1e-2/12*bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*bsd.rho_sed;         %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+            swi.C02_nonbio= 2.0*1e-2/12*bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;          %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
             swi.Fnonbio1 = 1.45311238046968E-007; %swi.C01_nonbio*(1-bsd.por)*bsd.w;    % [mol/(cm2 yr)] according non-bioturbated flux
             swi.Fnonbio2 = 8.57125492162531E-007; %swi.C02_nonbio*(1-bsd.por)*bsd.w;
             swi.C01 = swi.C01_nonbio; %0.0;  % resulting bioturbated SWI-concentration, to be calculated in benthic_zTOC.m
             swi.C02 = swi.C02_nonbio; %0.0;
             %swi.C01=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
             %swi.C02=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-            swi.O20=150.0E-009;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
+            swi.O20=5.0E-009; %150.0E-009;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
             swi.NO30=40.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
             swi.Nitrogen=true;
-            swi.NH40=40.0e-9;                                                %NH4 concentration at SWI (mol/cm^3)
+            swi.NH40=0.0e-9;                                                %NH4 concentration at SWI (mol/cm^3)
             swi.SO40=2.8E-005;                                            %SO4 concentration at SWI (mol/cm^3)
             swi.H2S0=0.0; %2.0E-012;         %was 0.0e-9                            %H2S concentration at SWI (mol/cm^3)
             swi.PO40=40.0e-9; %0.06e-8; % Dom was 1e-9;    % Sandra played with 3e-9                                              %PO4 concentration at SWI (mol/cm^3)
             swi.Mflux0=365*0.2e-10; % Sandra played with 10e-9; ;   % = 7.3e-9    %flux of M to the sediment (mol/(cm2*yr))   TODO/CHECK: good value+right conversion? is from Slomp et al. 1996        
-            swi.DIC0=2.06211079621586E-006;                                             %DIC concentration at SWI (mol/cm^3)
-            swi.ALK0=2.13405741261806E-006;                                             %ALK concentration at SWI (mol/cm^3)
+            swi.DIC0=2.4E-006;                                             %DIC concentration at SWI (mol/cm^3)
+            swi.ALK0=2.4E-006;                                             %ALK concentration at SWI (mol/cm^3)
             swi.S0=35;                                                      %Salinity at SWI
             swi.plot_PO4_DIC_ALK=true;
         end
@@ -1259,8 +1259,12 @@ classdef benthic_test
     %            title('Total TOC (wt%)')
 
                 % O2
-                for i=1:length(zgrid)
-                    [O2(i), flxO2(i), flxO2D(i), flxO2adv(i)] = res.zO2.calcO2(zgrid(i), bsd, res.swi, res);
+                if(res.zox>0.0)
+                    for i=1:length(zgrid)
+                        [O2(i), flxO2(i), flxO2D(i), flxO2adv(i)] = res.zO2.calcO2(zgrid(i), bsd, res.swi, res);
+                    end
+                else
+                    O2(i) = 0.0;
                 end
                 subplot(3,2,3)
                 plot(O2, -zgrid, 'b')
