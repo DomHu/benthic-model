@@ -4,7 +4,7 @@ function [STATM] = run_and_plot_OMEN_with_GENIE_data(PEXP1,PEXP2,PVAR1,PVAR2,PT1
 %   *** sedgem 2-D (LON-LAT) DATA PLOTTING ****************************   %
 %   *******************************************************************   %
 %
-%   plot_fields_sedgem_2d(PEXP1,PEXP2,PVAR1,PVAR2,PT1,PT2,PIK,PMASK,PCSCALE,PCMIN,PCMAX,PCN,PDATA,POPT,PNAME)
+%   run_and_plot_OMEN_with_GENIE_data(PEXP1,PEXP2,PVAR1,PVAR2,PT1,PT2,PIK,PMASK,PCSCALE,PCMIN,PCMAX,PCN,PDATA,POPT,PNAME, POUTVAR)
 %   plots the SEDGEM 2-D netCDF data file 'fields_sdegem_2d.nc' and takes 15 arguments:
 %
 %   PEXP1 [STRING] (e.g. 'preindustrial_spinup')
@@ -62,14 +62,14 @@ function [STATM] = run_and_plot_OMEN_with_GENIE_data(PEXP1,PEXP2,PVAR1,PVAR2,PT1
 %   --> number of the output to be calculated:
 %   -->  1: zox
 %   -->  2: zSO4
-%   -->  3: depth integrated total OM oxidation rate (Cox total)
-%   -->  4: depth integrated aerobic OM oxidation rate (Cox aerobic)
-%   -->  5: depth integrated anaerobic (SO4 reduction at the moment) OM oxidation rate (Cox SO4)
+%   -->  3: depth integrated total OM oxidation rate (Cox total) [mol cm-2 yr-1]
+%   -->  4: depth integrated aerobic OM oxidation rate (Cox aerobic) [mol cm-2 yr-1]
+%   -->  5: depth integrated anaerobic (SO4 reduction at the moment) OM oxidation rate (Cox SO4) [mol cm-2 yr-1]
 %   -->  6: fraction of O2/total depth integrated OM oxidation
 %   -->  7: fraction of SO4/total depth integrated OM oxidation
-%   -->  8: total TOC wt% preserved at zinf (100cm)
-%   -->  9: labile TOC1 wt% preserved at zinf (100cm)
-%   --> 10: refractory TOC2 wt% preserved at zinf (100cm)
+%   -->  8: total TOC wt% preserved at a specific depth (e.g. zinf = 100cm - to be specified in benthic_test.OMEN_with_GENIE_input)
+%   -->  9: labile TOC1 wt% preserved at a specific depth (e.g. zinf = 100cm)
+%   --> 10: refractory TOC2 wt% preserved at a specific depth (e.g. zinf = 100cm)
 %   --> 11: SWI-flux O2
 %   --> 12: SWI-flux SO4
 %   --> 13: SWI-flux H2S
@@ -78,9 +78,9 @@ function [STATM] = run_and_plot_OMEN_with_GENIE_data(PEXP1,PEXP2,PVAR1,PVAR2,PT1
 %   --> 16: SWI-flux ALK       
 %
 %   Example
-%           plot_fields_sedgem_2d('experiment_1','','sed_CaCO3','',0.0,0.0,0,'',1.0,0.0,100.0,20,'','','')
-%           will plot the carbonate content of surface sediments,
-%           between 0 and 100 wt% in 20 contour intervals
+%           run_and_plot_OMEN_with_GENIE_data('0804_13_worjh2_closed_No_PO4_Full_OMEN_k_Tromp','','oxygen penetration depth','',0.0,0.0,0,'',1.0,0.0,10.0,20,'','','',1)
+%           will plot the oxygen penetration depth (zox),
+%           between 0 and 10 cm in 20 contour intervals
 %
 %   *******************************************************************   %
 
@@ -507,43 +507,43 @@ for i = 1:imax,
 
                 switch plotvar
                 case 1
-                    OMEN_result = test.zox;
+                    OMEN_result(j,i) = test.zox;
                 case 2
-                    OMEN_result = test.zso4;
+                    OMEN_result(j,i) = test.zso4;
                 case 3
-                    OMEN_result = test.Cox_rate_total;
+                    OMEN_result(j,i) = test.Cox_rate_total;
                 case 4
-                    OMEN_result = test.Cox_rate_aerobic;
+                    OMEN_result(j,i) = test.Cox_rate_aerobic;
                 case 5
-                    OMEN_result = test.Cox_rate_sulfred;
+                    OMEN_result(j,i) = test.Cox_rate_sulfred;
                 case 6
-                    OMEN_result = test.Cox_perc_aerobic;
+                    OMEN_result(j,i) = test.Cox_perc_aerobic;
                 case 7
-                    OMEN_result = test.Cox_perc_sulfred;
+                    OMEN_result(j,i) = test.Cox_perc_sulfred;
                 case 8
-                    OMEN_result = test.C_zinf_wtpc;
+                    OMEN_result(j,i) = test.C_zinf_wtpc;
                 case 9
-                    OMEN_result = test.C1_zinf_wtpc;
+                    OMEN_result(j,i) = test.C1_zinf_wtpc;
                 case 10
-                    OMEN_result = test.C2_zinf_wtpc;
+                    OMEN_result(j,i) = test.C2_zinf_wtpc;
                 case 11
-                    OMEN_result = test.flxswiO2;
+                    OMEN_result(j,i) = test.flxswiO2;
                 case 12
-                    OMEN_result = test.flxswiSO4;
+                    OMEN_result(j,i) = test.flxswiSO4;
                 case 13
-                    OMEN_result = test.flxswiH2S;
+                    OMEN_result(j,i) = test.flxswiH2S;
                 case 14
-                    OMEN_result = test.flxswi_P;
+                    OMEN_result(j,i) = test.flxswi_P;
                 case 15
-                    OMEN_result = test.flxswiDIC;
+                    OMEN_result(j,i) = test.flxswiDIC;
                 case 16
-                    OMEN_result = test.flxswiALK;
+                    OMEN_result(j,i) = test.flxswiALK;
                 otherwise
 %                    export_fig([filename '.' str_date '.eps'], '-eps', '-nocrop');
                 end
                 
 %                OMEN_results(j,i,1) = OMEN_zox;
-                zm(j,i) = OMEN_result/data_scale;
+                zm(j,i) = OMEN_result(j,i)/data_scale;
 %                zm(j,i,:) = zm(j,i)/data_scale;
             end
             if ~isnan(zm(j,i)), n = n + 1; end
@@ -553,6 +553,16 @@ for i = 1:imax,
     end
 end
 nmax = n;
+
+%%%%% plot zox vs depth
+
+if (plotvar==1)
+    zox = OMEN_result(:)';
+    wdepth=zm(:,:,end)';
+    wdepth=wdepth(:)';
+   scatter(zox, wdepth) 
+end
+
 %
 % *********************************************************************** %
 

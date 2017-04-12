@@ -14,17 +14,17 @@ classdef benthic_test
             %bottom water concentrations
             swi.T = 8.0; %20.0;                         %temperature (degree C)
             % see caption for Fig 1.2 - two equal TOC fractions 0.02 0.2 2
-            swi.C01_nonbio= 2.0*1e-2/12*bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*bsd.rho_sed;         %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-            swi.C02_nonbio= 2.0*1e-2/12*bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;          %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+            swi.C01_nonbio= 1.0*1e-2/12*bsd.rho_sed; % adjusted Test 2+4:          %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+            swi.C02_nonbio= 1.0*1e-2/12*bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;          %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
             swi.Fnonbio1 = 1.45311238046968E-007; %swi.C01_nonbio*(1-bsd.por)*bsd.w;    % [mol/(cm2 yr)] according non-bioturbated flux
             swi.Fnonbio2 = 8.57125492162531E-007; %swi.C02_nonbio*(1-bsd.por)*bsd.w;
             swi.C01 = swi.C01_nonbio; %0.0;  % resulting bioturbated SWI-concentration, to be calculated in benthic_zTOC.m
             swi.C02 = swi.C02_nonbio; %0.0;
             %swi.C01=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
             %swi.C02=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-            swi.O20=5.0E-009; %150.0E-009;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
+            swi.O20=0.0E-009; %150.0E-009;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
             swi.NO30=40.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
-            swi.Nitrogen=true;
+            swi.Nitrogen=false;
             swi.NH40=0.0e-9;                                                %NH4 concentration at SWI (mol/cm^3)
             swi.SO40=2.8E-005;                                            %SO4 concentration at SWI (mol/cm^3)
             swi.H2S0=0.0; %2.0E-012;         %was 0.0e-9                            %H2S concentration at SWI (mol/cm^3)
@@ -441,7 +441,10 @@ classdef benthic_test
             % Set default values 
             res.zTOC = benthic_zTOC(res.bsd);
             % Dom: set here k1, k2 if related to w or POC-flux
-            
+%       After Tromp et al. 1995:
+            res.zTOC.k1 = 2.97*bsd.w^0.62;
+            res.zTOC.k2 = 0.057*bsd.w^1.94;
+
             res.zO2 = benthic_zO2(res.bsd, res.swi);           
             res.zxf = 0.0;                              % roll off oxidation at low zox
             if(Nitrogen)
@@ -482,8 +485,9 @@ classdef benthic_test
             res = res.zALK.calc(res.bsd, res.swi, res);
             
             %%%%% WRITE OUTPUT:
+            sed_depth=10.0;
             answ = res;
-            [Cinf, C1inf, C2inf] = res.zTOC.calcC( 10, res.bsd, res.swi, res);
+            [Cinf, C1inf, C2inf] = res.zTOC.calcC( sed_depth, res.bsd, res.swi, res);
             [Cswi, C1swi, C2swi] = res.zTOC.calcC( 0, res.bsd, res.swi, res);
             
             %%%% TOC wt %%%%
@@ -502,7 +506,7 @@ classdef benthic_test
 %             fprintf('sed preservation of POC %g \n',  Cinf/Cswi);
 
             
-            % calculate depth integrated OM degradation rates [nanomol cm-2 yr-1]
+            % calculate depth integrated OM degradation rates [mol cm-2 yr-1]
             res.Cox_rate_total = res.zTOC.calcReac(0.0, res.bsd.zinf, 1, 1, res.bsd, res.swi, res);
             res.Cox_rate_aerobic = res.zTOC.calcReac(0.0, res.zox, 1, 1, res.bsd, res.swi, res);
             if(swi.Nitrogen)
@@ -518,10 +522,12 @@ classdef benthic_test
 
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %%%%%%%%%%%%%%%%  TEST PROFILES  %%%%%%%%%%%%%%%%
-
-%            benthic_test.plot_column(res, false, swi, '0107')
-            
+    %%%%%%%%%%%%%%%%  TEST PROFILES  %%%%%%%%%%%%%%%%%%%%
+    
+    
+% if(res.zox == 0.0  || res.zox == 100)
+%             benthic_test.plot_column(res, false, res.swi, '0107')
+% end            
             
         end
         

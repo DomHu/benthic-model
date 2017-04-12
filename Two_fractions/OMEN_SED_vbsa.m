@@ -72,15 +72,24 @@ res = res.zPO4_M.calc(res.bsd, res.swi, res);
 res = res.zDIC.calc(res.bsd, res.swi, res);
 res = res.zALK.calc(res.bsd, res.swi, res);
 
-% % y = res.flxswiO2;
-y(1) = res.flxswiO2;
-y(2) = res.flxswiNO3; 
-y(3) = res.flxswiSO4; 
-y(4) = res.flxswiNH4; 
-y(5) = res.flxswiH2S; 
-y(6) = res.flxswi_P;
-y(7) = res.flxswiDIC; 
-y(8) = res.flxswiALK;
+% For oxic setup:
+% y(1) = res.flxswiO2;
+% y(2) = res.flxswiNO3; 
+% y(3) = res.flxswiSO4; 
+% y(4) = res.flxswiNH4; 
+% y(5) = res.flxswiH2S; 
+% y(6) = res.flxswi_P;
+% y(7) = res.flxswiDIC; 
+% y(8) = res.flxswiALK;
+
+% For anoxic setup:
+y(1) = res.flxswiNO3; 
+y(2) = res.flxswiSO4; 
+y(3) = res.flxswiNH4; 
+y(4) = res.flxswiH2S; 
+y(5) = res.flxswi_P;
+y(6) = res.flxswiDIC; 
+y(7) = res.flxswiALK;
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%  TEST PROFILES  %%%%%%%%%%%%%%%%
