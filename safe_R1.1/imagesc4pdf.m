@@ -1,6 +1,15 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%     Plots the pattern plot fir the sensitivity indices      %%%%%%
+
+% to first line of zeros for O2 SWI flux Index:
+%SIndex400m_zeros = [zeros(1, size(SIndex400m,2),1); SIndex400m; zeros(1, size(SIndex400m,2),1)];
+% combine 400m and 400m and use as input for this function
+%SIndex_400_4000m = [SIndex400m_zeros; SIndex4000m];
+
 function h = imagesc4pdf(C)
 labelparams = { 'k1','k2ord','f1','KNH4','gamma NH4','gamma H2S','K I','K II','ks' 'km' 'ka' } ; % input names
-Titles = {'O_2', 'NO_3', 'SO_4', 'NH_4', 'H_2S', 'PO_4'};
+Titles = {'O_2', 'NO_3', 'SO_4', 'NH_4', 'H_2S', 'PO_4', 'DIC', 'ALK', 'zeros'};
+
 
 [ny nx] = size(C);
 
@@ -24,4 +33,4 @@ set(gca, 'xticklabel',labelparams);
 colormap autumn
 colormap(flipud(colormap))
 colorbar
-print('-depsc2', ['0_KSIndex_ALL_OUTPUT.eps']);
+print('-depsc2', ['0_KSIndex_ALL_OUTPUT_13042017.eps']);
