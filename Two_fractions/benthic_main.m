@@ -12,7 +12,7 @@ classdef benthic_main < handle
         
         %sediment characteristics
         rho_sed=2.6; %was 2.5                           % sediment density (g/cm3)
-        wdepth=400.0; %3575.5999999999999;     % Dom was 600.0                       % water depth (m)
+        wdepth=4000.0; %3575.5999999999999;     % Dom was 600.0                       % water depth (m)
         w;                                      % burial velocity  (cm/yr)
         z0  = 0;                                % surface
         zbio=10.0; %10.0;                              % bioturbation depth (cm)       
@@ -94,8 +94,8 @@ classdef benthic_main < handle
             obj.Y_N=16;                                                     % Nitrogen Redfield stoichiometry
             obj.Z_P=1;                                                      % Phosphorous Redfield stoichiometry
             obj.OC=(138/106)*obj.SD; % 1.0*obj.SD; %                      	%O2/C (mol/mol)
-            obj.NC1=0.0; %16.0/106.0*obj.SD;    % 0.0; % 0.1509                                     %N/C first TOC fraction: 16/106 (mol/mol)
-            obj.NC2= 0.0; %16.0/106.0*obj.SD; %0.0;%0.1509*obj.SD; %0.13333*obj.SD;                                         %N/C second TOC fraction (mol/mol)            
+            obj.NC1=16.0/106.0*obj.SD;    % 0.0; % 0.1509                                     %N/C first TOC fraction: 16/106 (mol/mol)
+            obj.NC2= 16.0/106.0*obj.SD; %0.0;%0.1509*obj.SD; %0.13333*obj.SD;                                         %N/C second TOC fraction (mol/mol)            
             obj.PC1=1/106*obj.SD;  % was 0.0094 Sandra played with 1e-20;             %P/C first TOC fraction  1/106 (mol/mol)
             obj.PC2=1/106*obj.SD;  % was 0.0094 Sandra played with  1e-20;            %P/C second TOC fraction 1/106 (mol/mol)
             obj.SO4C=(138.0/212.0)*obj.SD; % 0.5*obj.SD;                                                %SO4/C (mol/mol)
@@ -106,15 +106,15 @@ classdef benthic_main < handle
             obj.NO3CR=(94.4/106)*obj.SD;                                        % NO3 consumed by Denitrification
             
 %           For implicit Nitrogen (e.g. coupled to GENIE):  
-            obj.ALKROX=-(obj.Y_N)/obj.X_C*obj.SD;                        % -(obj.Y_N+2*obj.Z_P)/obj.X_C*obj.SD was +15      % Aerobic degradation                     
+%            obj.ALKROX=-(obj.Y_N)/obj.X_C*obj.SD;                        % -(obj.Y_N+2*obj.Z_P)/obj.X_C*obj.SD was +15      % Aerobic degradation                     
 %       For explicit Nitrogen:
-%            obj.ALKROX=(obj.Y_N-2*obj.Z_P)/obj.X_C*obj.SD;              % Aerobic degradation
+            obj.ALKROX=(obj.Y_N-2*obj.Z_P)/obj.X_C*obj.SD;              % Aerobic degradation
             obj.ALKRNIT=-2.0;  % no ALK                                             % Nitrification    
             obj.ALKRDEN=(4*obj.X_C+3*obj.Y_N-10*obj.Z_P)/(5*obj.X_C)*obj.SD;       %  462/530 was 93.4;    % Denitrification
 %           For implicit Nitrogen (e.g. coupled to GENIE):
-            obj.ALKRSUL=(obj.X_C+obj.Y_N)/obj.X_C*obj.SD;                % 122/106  was 15      	% Sulfato reduction
+%            obj.ALKRSUL=(obj.X_C+obj.Y_N)/obj.X_C*obj.SD;                % 122/106  was 15      	% Sulfato reduction
 %           For explicit Nitrogen:     
-%            obj.ALKRSUL=(obj.X_C+obj.Y_N-2*obj.Z_P)/obj.X_C*obj.SD; %(obj.X_C+obj.Y_N)/obj.X_C*obj.SD;                % 120/106  was 15      	% Sulfato reduction
+            obj.ALKRSUL=(obj.X_C+obj.Y_N-2*obj.Z_P)/obj.X_C*obj.SD; %(obj.X_C+obj.Y_N)/obj.X_C*obj.SD;                % 120/106  was 15      	% Sulfato reduction
             obj.ALKRH2S=-2.0;      % no ALK                                         % H2S oxydation (CHECK THIS VALUE!!!)
             obj.ALKRMET= (obj.Y_N-2*obj.Z_P)/obj.X_C;      % no ALK                	% 14/106 was 14       	% Methanogenesis
             obj.ALKRAOM= 2.0;        % no ALK                                       	% AOM

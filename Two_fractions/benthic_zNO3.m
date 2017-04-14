@@ -57,9 +57,9 @@ classdef benthic_zNO3
             [flxzno3, conczno3, flxswiNO3, r] = obj.calcbc(r.zno3, bsd, swi, r, bctype); 
             
           	flxswiNO3 = flxswiNO3 - bsd.por.*bsd.w.*(swi.NO30-conczinf);
-            if(abs(flxswiNO3) <= bsd.tol_const)
-                flxswiNO3 = 0.0
-            end
+%             if(abs(flxswiNO3) <= bsd.tol_const)
+%                 flxswiNO3 = 0.0
+%             end
 
             r.flxzno3 = flxzno3;  % should be zero - not if zno3 = zinf
             r.conczno3 = conczno3; % may be non-zero if eg fully oxic sediment

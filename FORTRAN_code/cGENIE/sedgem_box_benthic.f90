@@ -178,8 +178,7 @@ CONTAINS
         real,DIMENSION(n_ocn),intent(inout)::dum_new_swifluxes              ! SWI return fluxes of solutes, calculated with sediment-model [pos values: flux from sediments to water-column]
 
         ! local variables        
-!        real::loc_wtpct, loc_wtpct_Middel
-!        real::loc_POC1_wtpct_swi, loc_POC2_wtpct_swi                ! POC concentration at SWI [wt%]
+        real::loc_BW_O2_anoxia                                      ! BW [O2} threshold for zbio switch to 0.01cm 
         real::loc_total_POC_flux                                    ! total POC flux at SWI (POC1 + POC2) [mol/(cm^2 yr)]
         real::loc_POC1_flux_swi, loc_POC2_flux_swi                  ! POC flux at SWI [mol/(cm^2 yr)]
         real::loc_O2_swiflux                                        ! SWI return fluxes of O2 [mol/(cm^2 yr)]
@@ -207,6 +206,8 @@ CONTAINS
         loc_DIC_swiflux = 0.0
         loc_ALK_swiflux = 0.0
         loc_M_swiflux = 0.0
+        
+        loc_BW_O2_anoxia = 5.0e-9                              ! set to 5.0 nanomol/cm^3
 
 !                print*,'---------- IN OMEN MAIN ----------- '
 
@@ -249,7 +250,12 @@ CONTAINS
 
         ! DH TODO: some of initialize should be called just once, not for every grid point
         call sub_huelseetal2016_initialize(dum_D, dum_sfcsumocn(io_T), loc_new_sed_vol/dum_dtyr)
-
+        
+        ! check for anoxia -> set zbio
+        if(dum_swiconc_O2 .LE. loc_BW_O2_anoxia)then
+            zbio = 0.01
+        end if
+        
         ! below test with specific temperature to compare with matlab
         !!!!        call sub_huelseetal2016_initialize(600.0, 293.15)
 
@@ -345,10 +351,10 @@ CONTAINS
 !                print*,'Normal sed_pres ', dum_sed_pres_fracC, dum_D, dum_i, dum_j
 !                print*,' '
                 
-                if(dum_sed_pres_fracC .NE. 0.0)then
-                    print*,'Something is preserved', dum_sed_pres_fracC, dum_i, dum_j
-           !                STOP
-                end if
+!                if(dum_sed_pres_fracC .NE. 0.0)then
+!                    print*,'Something is preserved', dum_sed_pres_fracC, dum_i, dum_j
+!           !                STOP
+!                end if
                 
 
                 if(dum_swiconc_O2 .LE. const_real_nullsmall) then   ! 10.0E-9
@@ -622,14 +628,18 @@ CONTAINS
         ! ORGANIC MATTER
         DC1 = Dbio
         DC2 = Dunbio
-        k1=0.05
-        k2=0.05
-!        ! After Tromp et al. 1995:
+        ! spatially uniform k value
+        k1=1.0
+        k2=1.0
+        ! k dependent on sediment accumulation rate (w)
+        ! After Tromp et al. 1995:
 !        k1 = 2.97*dum_depos_rate**0.62
 !        k2 = 0.057*dum_depos_rate**1.94
         ! After Boudreau 1997:
 !        k1 = 0.38*dum_depos_rate**0.59
 !        k2 = 0.04*dum_depos_rate**2
+        ! After Stolpovsky et al. 2016:
+!        k1 = 1.02*dum_depos_rate**0.5
 !        k2 = k1/100
                
 !        if(dum_D<1000)then
@@ -704,14 +714,14 @@ CONTAINS
         ! Phosphate (PO4)
         DPO41=((qdispPO4+adispPO4*loc_TempC)*dispFactor+Dbio)               ! PO4 diffusion coefficient in bioturbated layer (cm2/yr)
         DPO42=((qdispPO4+adispPO4*loc_TempC)*dispFactor);                   ! PO4 diffusion coefficient in non-bioturbated layer (cm2/yr)
-        KPO4_ox = 0.0 !200.0                    ! Adsorption coefficient in oxic layer (-)
-        KPO4_anox = 0.0 !1.3                   ! Adsorption coefficient in anoxic layer (-)
-        ksPO4 = 0.0 !1.0                   ! Rate constant for kinetic P sorption (1/yr)
-        kmPO4 = 0.0 !2.2e-6*24*365                   ! Rate constant for Fe-bound P release upon Fe oxide reduction
-        kaPO4 = 0.0 !10.0                   ! Rate constant for authigenic P formation (1/yr)
-        PO4s = 0.0 !1.0e-9                    ! Equilibrium concentration for P sorption (mol/cm3)
-        PO4a = 0.0 !0.5e-8                    ! Equilibrium concentration for authigenic P formation (mol/cm3)
-        Minf = 0.0 !1.0e-10                    ! asymptotic concentration for Fe-bound P (mol/cm3)
+        KPO4_ox = 200.0   ! 0.0                 ! Adsorption coefficient in oxic layer (-)
+        KPO4_anox = 1.3   ! 0.0                ! Adsorption coefficient in anoxic layer (-)
+        ksPO4 = 1.0       ! 0.0            ! Rate constant for kinetic P sorption (1/yr)
+        kmPO4 = 2.2e-6*24*365  ! 0.0                 ! Rate constant for Fe-bound P release upon Fe oxide reduction
+        kaPO4 = 10.0      ! 0.0             ! Rate constant for authigenic P formation (1/yr)
+        PO4s = 1.0e-9     ! 0.0               ! Equilibrium concentration for P sorption (mol/cm3)
+        PO4a = 0.5e-8     ! 0.0              ! Equilibrium concentration for authigenic P formation (mol/cm3)
+        Minf = 1.0e-10    ! 0.0                ! asymptotic concentration for Fe-bound P (mol/cm3)
 
         ! DIC
         DDIC1=(qdispDIC+adispDIC*loc_TempC)*dispFactor+Dbio                 ! DIC diffusion coefficient in bioturbated layer (cm2/yr)
@@ -1460,10 +1470,10 @@ CONTAINS
         call sub_huelseetal2016_zNO3_calcbc(zno3, bctype, flxzno3, conczno3, loc_new_swiflux_NO3)
         loc_new_swiflux_NO3 = loc_new_swiflux_NO3 - por*w*(dum_swiconc_NO3-conczinf)
 
-        IF(ABS(loc_new_swiflux_NO3) .LE. const_real_nullsmall)then
-            !            print*,'small loc_new_swiflux_NO3', loc_new_swiflux_NO3
-            loc_new_swiflux_NO3 = 0.0
-        END IF
+!        IF(ABS(loc_new_swiflux_NO3) .LE. const_real_nullsmall)then
+!            !            print*,'small loc_new_swiflux_NO3', loc_new_swiflux_NO3
+!            loc_new_swiflux_NO3 = 0.0
+!        END IF
 
 
     !    print*,' ---- FINAL RESULTS zNO3: ----'

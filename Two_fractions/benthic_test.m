@@ -12,7 +12,7 @@ classdef benthic_test
             
             bsd = benthic_main();
             %bottom water concentrations
-            swi.T = 8.0; %20.0;                         %temperature (degree C)
+            swi.T = 1.5; %20.0;                         %temperature (degree C)
             % see caption for Fig 1.2 - two equal TOC fractions 0.02 0.2 2
             swi.C01_nonbio= 1.0*1e-2/12*bsd.rho_sed; % adjusted Test 2+4:          %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
             swi.C02_nonbio= 1.0*1e-2/12*bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;          %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
@@ -22,9 +22,9 @@ classdef benthic_test
             swi.C02 = swi.C02_nonbio; %0.0;
             %swi.C01=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
             %swi.C02=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-            swi.O20=0.0E-009; %150.0E-009;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
-            swi.NO30=40.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
-            swi.Nitrogen=false;
+            swi.O20=300.0E-009; %150.0E-009;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
+            swi.NO30=20.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
+            swi.Nitrogen=true;
             swi.NH40=0.0e-9;                                                %NH4 concentration at SWI (mol/cm^3)
             swi.SO40=2.8E-005;                                            %SO4 concentration at SWI (mol/cm^3)
             swi.H2S0=0.0; %2.0E-012;         %was 0.0e-9                            %H2S concentration at SWI (mol/cm^3)
@@ -565,14 +565,14 @@ classdef benthic_test
                 res.swi.C02=(1-Params.f1(i))*Params.wtpc(i)*1e-2/12*res.bsd.rho_sed;
                 res.zTOC.k1 = Params.k1(i);
                 res.zTOC.k2 = Params.k1(i)*0.01;                
-                res.zNO3.KNH4 = Params.KNH4(i);
-                res.zPO4_M.KPO4_ox = Params.KPO4ox(i);
-                res.zPO4_M.KPO4_anox = Params.KPO4anox(i);
-                res.zPO4_M.ksPO4 = Params.ksPO4(i);
-                res.zPO4_M.kmPO4 = Params.kmPO4(i);
-                res.zPO4_M.kaPO4 = Params.kaPO4(i);
-                res.bsd.gamma = Params.gammaNH4(i);
-                res.bsd.gammaH2S = Params.gammaH2S(i);
+%                 res.zNO3.KNH4 = Params.KNH4(i);
+%                 res.zPO4_M.KPO4_ox = Params.KPO4ox(i);
+%                 res.zPO4_M.KPO4_anox = Params.KPO4anox(i);
+%                 res.zPO4_M.ksPO4 = Params.ksPO4(i);
+%                 res.zPO4_M.kmPO4 = Params.kmPO4(i);
+%                 res.zPO4_M.kaPO4 = Params.kaPO4(i);
+%                 res.bsd.gamma = Params.gammaNH4(i);
+%                 res.bsd.gammaH2S = Params.gammaH2S(i);
             
    
             res = res.zTOC.calc(res.bsd,res.swi, res);

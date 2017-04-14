@@ -30,10 +30,10 @@ classdef benthic_zTOC < handle
             rTOC.a21=(-obj.k1./bsd.w);
             % calculate bioturbated SWI
             % comment C01 calculation for sensitivity analysis
-            swi.C01 = (swi.Fnonbio1*(-rTOC.a11*exp(rTOC.a11*bsd.zbio)+rTOC.b11*exp(rTOC.b11*bsd.zbio)))/(-obj.DC1*rTOC.b11*rTOC.a11*exp(rTOC.b11*bsd.zbio) + obj.DC1*rTOC.b11*rTOC.a11*exp(rTOC.a11*bsd.zbio) + ...
-                        obj.DC1*rTOC.b11*rTOC.a11*bsd.por*exp(rTOC.b11*bsd.zbio) - obj.DC1*rTOC.b11*rTOC.a11*bsd.por*exp(rTOC.a11*bsd.zbio) - bsd.w*rTOC.a11*exp(rTOC.a11*bsd.zbio) + bsd.w*rTOC.b11*exp(rTOC.b11*bsd.zbio) + ...
-                        bsd.w*bsd.por*rTOC.a11*exp(rTOC.a11*bsd.zbio) - bsd.w*bsd.por*rTOC.b11*exp(rTOC.b11*bsd.zbio));
-            res.swi.C01 = swi.C01;
+%             swi.C01 = (swi.Fnonbio1*(-rTOC.a11*exp(rTOC.a11*bsd.zbio)+rTOC.b11*exp(rTOC.b11*bsd.zbio)))/(-obj.DC1*rTOC.b11*rTOC.a11*exp(rTOC.b11*bsd.zbio) + obj.DC1*rTOC.b11*rTOC.a11*exp(rTOC.a11*bsd.zbio) + ...
+%                         obj.DC1*rTOC.b11*rTOC.a11*bsd.por*exp(rTOC.b11*bsd.zbio) - obj.DC1*rTOC.b11*rTOC.a11*bsd.por*exp(rTOC.a11*bsd.zbio) - bsd.w*rTOC.a11*exp(rTOC.a11*bsd.zbio) + bsd.w*rTOC.b11*exp(rTOC.b11*bsd.zbio) + ...
+%                         bsd.w*bsd.por*rTOC.a11*exp(rTOC.a11*bsd.zbio) - bsd.w*bsd.por*rTOC.b11*exp(rTOC.b11*bsd.zbio));
+%             res.swi.C01 = swi.C01;
             
             rTOC.A11=-(swi.C01.*rTOC.b11.*exp(rTOC.b11.*bsd.zbio))./(rTOC.a11.*exp(rTOC.a11.*bsd.zbio)-rTOC.b11.*exp(rTOC.b11.*bsd.zbio)+bsd.tol_const);
             rTOC.A21=(rTOC.A11.*(exp(rTOC.a11.*bsd.zbio)-exp(rTOC.b11.*bsd.zbio))+swi.C01.*exp(rTOC.b11.*bsd.zbio))./(exp(rTOC.a21.*bsd.zbio)+bsd.tol_const);
@@ -43,10 +43,10 @@ classdef benthic_zTOC < handle
             rTOC.a22=(-obj.k2./bsd.w);
             % calculate bioturbated SWI
             % comment C01 calculation for sensitivity analysis
-            swi.C02 = (swi.Fnonbio2*(-rTOC.a12*exp(rTOC.a12*bsd.zbio)+rTOC.b12*exp(rTOC.b12*bsd.zbio)))/(-obj.DC1*rTOC.b12*rTOC.a12*exp(rTOC.b12*bsd.zbio) + obj.DC1*rTOC.b12*rTOC.a12*exp(rTOC.a12*bsd.zbio) + ...
-                        obj.DC1*rTOC.b12*rTOC.a12*bsd.por*exp(rTOC.b12*bsd.zbio) - obj.DC1*rTOC.b12*rTOC.a12*bsd.por*exp(rTOC.a12*bsd.zbio) - bsd.w*rTOC.a12*exp(rTOC.a12*bsd.zbio) + bsd.w*rTOC.b12*exp(rTOC.b12*bsd.zbio) + ...
-                        bsd.w*bsd.por*rTOC.a12*exp(rTOC.a12*bsd.zbio) - bsd.w*bsd.por*rTOC.b12*exp(rTOC.b12*bsd.zbio));
-            res.swi.C02 = swi.C02;
+%             swi.C02 = (swi.Fnonbio2*(-rTOC.a12*exp(rTOC.a12*bsd.zbio)+rTOC.b12*exp(rTOC.b12*bsd.zbio)))/(-obj.DC1*rTOC.b12*rTOC.a12*exp(rTOC.b12*bsd.zbio) + obj.DC1*rTOC.b12*rTOC.a12*exp(rTOC.a12*bsd.zbio) + ...
+%                         obj.DC1*rTOC.b12*rTOC.a12*bsd.por*exp(rTOC.b12*bsd.zbio) - obj.DC1*rTOC.b12*rTOC.a12*bsd.por*exp(rTOC.a12*bsd.zbio) - bsd.w*rTOC.a12*exp(rTOC.a12*bsd.zbio) + bsd.w*rTOC.b12*exp(rTOC.b12*bsd.zbio) + ...
+%                         bsd.w*bsd.por*rTOC.a12*exp(rTOC.a12*bsd.zbio) - bsd.w*bsd.por*rTOC.b12*exp(rTOC.b12*bsd.zbio));
+%             res.swi.C02 = swi.C02;
             
             rTOC.A12=-(swi.C02.*rTOC.b12.*exp(rTOC.b12.*bsd.zbio))./(rTOC.a12.*exp(rTOC.a12.*bsd.zbio)-rTOC.b12.*exp(rTOC.b12.*bsd.zbio)+bsd.tol_const);
             rTOC.A22=(rTOC.A12.*(exp(rTOC.a12.*bsd.zbio)-exp(rTOC.b12.*bsd.zbio))+swi.C02.*exp(rTOC.b12.*bsd.zbio))./(exp(rTOC.a22.*bsd.zbio)+bsd.tol_const);

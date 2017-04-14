@@ -15,38 +15,45 @@ clear
 % k2 = 1.0e-4 (as this is smallest for k1 in Sandras review study)	OM degradation frac 2 (refractory)
 % KIPO4	P adsorption coeff. oxic
 % KIIPO4	P adsorption coeff. anoxic
-par = 3;    % parameters
+par = 2;    % parameters
 n = 200;     % n values are randomly distributed with one from each interval (0,1/n), (1/n,2/n), ..., (1-1/n,1)
 % calculate Latin Hypercube: each row is one representations of the variables for an Experiment
 
-Latin_Cube_k_TOC_f = lhsdesign(n,par);
-save Latin_Cube_k_TOC_f.mat Latin_Cube_k_TOC_f
-load('Latin_Cube.mat')
+Latin_Cube_k_TOC_f_1404 = lhsdesign(n,par);
+save Latin_Cube_k_TOC_f_1404.mat Latin_Cube_k_TOC_f_1404
+%load('Latin_Cube.mat')
 
 % Set the parameter Params.ranges
-Params.range_k1 = [log10(1e-4), log10(20)];  % [-4, 1.3010] OM degradation frac 1 (labile) 
-Params.range_f1 = [0.05, 0.95];              % fraction of labile OM
-Params.range_wtpc = [log10(0.001), log10(1)];              % POC wtpc adsorption
+%Params.range_k1 = [log10(1e-4), log10(5)];  % [-4, 1.3010] OM degradation frac 1 (labile) 
+Params.range_k1 = [1e-4, 5];  % [-4, 1.3010] OM degradation frac 1 (labile) 
+Params.range_f1 = [0.02, 0.98];              % fraction of labile OM
+%Params.range_wtpc = [log10(0.001), log10(1)];              % POC wtpc adsorption
 
-Para1 = [Params.range_k1(1), Params.range_f1(1),Params.range_wtpc(1)];
+Para1 = [Params.range_k1(1), Params.range_f1(1)]; %,Params.range_wtpc(1)];
 
 % Calculate length of Intervals
-Int = [diff(Params.range_k1), diff(Params.range_f1), diff(Params.range_wtpc)]; 
+Int = [diff(Params.range_k1), diff(Params.range_f1)]; %, diff(Params.range_wtpc)]; 
 % Use Latin hypercube and Int to calculate which values to chose; multiple element by element
-WhichV = bsxfun(@times, Latin_Cube_k_TOC_f, Int);
+WhichV = bsxfun(@times, Latin_Cube_k_TOC_f_1404, Int);
 
 % Now get actual values, add element by element
 V = bsxfun(@plus, WhichV, Para1);
 % unlog k1 and kaPO4
-Params.k1 = 10.^V(:,1);
+% Params.k1 = 10.^V(:,1);
+% Params.f1 = V(:,2);
+% Params.wtpc = 10.^V(:,3);
+
+Params.k1 = V(:,1);
 Params.f1 = V(:,2);
-Params.wtpc = 10.^V(:,3);
+Params.wtpc = ones(1,n);     % Overall POC wt\% reaching the SWI  Params.wtpc = V(:,3);
 
 % initialize SWI concentrationsn and other parameters
 swi=benthic_test.default_swi();
 % 
+% % set date-time
+str_date = '1404_Deep'; %datestr(now,'ddmmyy_HH_MM_SS');
 
-swi=benthic_test.sensitivity_swi(swi, Params);
+swi=benthic_test.sensitivity_swi(swi, Params, str_date);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -55,7 +62,7 @@ swi=benthic_test.sensitivity_swi(swi, Params);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-plot_results_singlePar = true;
+plot_results_singlePar = false;
 if(plot_results_singlePar)
 %    Results_NaN = load('Results_NaN.txt','ascii');  % TODO: check how to create this file automaticly
 % with created results    Plot_sensitivity_singleParameter(swi.Results, log10(Params.k1), Params.range_k1, 'k1', 'log(k1) [yr^{-1}]')

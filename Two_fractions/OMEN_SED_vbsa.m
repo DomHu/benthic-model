@@ -22,7 +22,7 @@ function [y] = OMEN_SED_vbsa(x,res)
 %
 
 % how much Corg wtpc at top of sedments:
-wtpc = 2.0;
+wtpc = 1.0;
 
 M = 11 ; % number of model parameters
 x = x(:);
