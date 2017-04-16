@@ -80,14 +80,14 @@ res.zALK = benthic_zALK(res.bsd, res.swi);
 
 
 % Define input distribution and ranges:
-M  = 6 ; % number of uncertain parameters [ k1 f1 KNH4 gammaNH4 gammaH2S ]
-DistrFun  = {'unif', 'unif', 'unif', 'unif', 'unif', 'unif'}; %'unif'  ; % Parameter distribution
-DistrPar  = { [ 1e-4 1]; [1e-4 1e-1];[ 0.02 0.5 ]; [ 0.8 1.7 ]; [ 0.5 1] ; [ 0.5 1 ] } ; % Parameter ranges
+% M  = 6 ; % number of uncertain parameters [ k1 f1 KNH4 gammaNH4 gammaH2S ]
+% DistrFun  = {'unif', 'unif', 'unif', 'unif', 'unif', 'unif'}; %'unif'  ; % Parameter distribution
+% DistrPar  = { [ 1e-4 1]; [1e-4 1e-1];[ 0.02 0.5 ]; [ 0.8 1.7 ]; [ 0.5 1] ; [ 0.5 1 ] } ; % Parameter ranges
 
 % % Define input distribution and ranges:
-% M  = 2 ; % number of uncertain parameters [ k1 f1]
-% DistrFun  = {'unif', 'unif'}; %'unif'  ; % Parameter distribution
-% DistrPar  = { [ 1e-4 5 ]; [ 0.02 0.98 ]} ; % Parameter ranges
+M  = 3 ; % number of uncertain parameters [ k1 f1]
+DistrFun  = {'unif', 'unif', 'unif'}; %'unif'  ; % Parameter distribution
+DistrPar  = { [ 1e-4 5]; [1e-4 1e-1]; [ 0.02 0.98 ]} ; % Parameter ranges
 
 
 %% Step 3: Compute first-order and total-order variance-based indices
@@ -108,10 +108,10 @@ X = AAT_sampling(SampStrategy,M,DistrFun,DistrPar,2*N);
 %X(:,1)=10.^X(:,1); % other Parameter range
 
 [ XA, XB, XC ] = vbsa_resampling(X) ;
-save('RESULTS_1404/X_4000.mat','X')
-save('RESULTS_1404/XA_4000.mat','XA')
-save('RESULTS_1404/XB_4000.mat','XB')
-save('RESULTS_1404/XC_4000.mat','XC')
+save('RESULTS_1604/X_400.mat','X')
+save('RESULTS_1604/XA_400.mat','XA')
+save('RESULTS_1604/XB_400.mat','XB')
+save('RESULTS_1604/XC_400.mat','XC')
 
 
 % Run the model and compute selected model output at sampled parameter
@@ -121,11 +121,11 @@ save('RESULTS_1404/XC_4000.mat','XC')
 if(false)   % not needed for colored scatter plots
 YA_all = model_evaluation(myfun,XA,res) ; % size (N,1)
 YB_all = model_evaluation(myfun,XB,res) ; % size (N,1)
-save('RESULTS_1404/YA_all_4000.mat','YA_all')
-save('RESULTS_1404/YB_all_4000.mat','YB_all')
+save('RESULTS_1604/YA_all_400.mat','YA_all')
+save('RESULTS_1604/YB_all_400.mat','YB_all')
 end
 YC_all = model_evaluation(myfun,XC,res) ; % size (N*M,1)
-save('RESULTS_1404/YC_all_4000.mat','YC_all')
+save('RESULTS_1604/YC_all_400.mat','YC_all')
 
 % select the j-th model output:
 %      y(:,1) = O2 SWI flux
@@ -136,10 +136,29 @@ save('RESULTS_1404/YC_all_4000.mat','YC_all')
 %      y(:,6)   = P SWI flux
 %      y(:,7) = DIC SWI flux
 %      y(:,8) = ALK SWI flux
-X_Labels = {'k1', 'k2*', 'f1','KNH4','gamma NH4','gamma H2S'} ;
+X_Labels = {'k1', 'k2*', 'f1'}; %,'KNH4','gamma NH4','gamma H2S'} ;
 Titles = {'O_2', 'NO_3', 'SO_4', 'NH_4', 'H_2S', 'PO_4', 'DIC', 'ALK'};
 
 for j=1:8; 
+    
+ %% Step 4: create coloured scatter plot
+
+% % XD=XC;
+% % XD(:,1)=log10(XC(:,1));
+% k1 vs f1 -> flux 
+figure
+scatter_plots_col(XC,YC_all(:,j),1,3,16,X_Labels)
+title(Titles(j))
+print('-depsc2', ['RESULTS_1604/uniform_k1_400m/k1_vs_f1_SWIflux_' char(Titles(j)) '.eps']);
+
+%scatter_plots_col(XD,YC,1,2,16,X_Labels)
+
+% k1 vs SWI flux 
+figure
+scatter_plots(XC(:,1),YC_all(:,j),1,'SWI fluxes',{'k1'})
+title(Titles(j))
+print('-depsc2', ['RESULTS_1604/uniform_k1_400m/k1_SWIflux_' char(Titles(j)) '.eps']);
+   
     
     if(false)
 YA = YA_all(:,j);
@@ -152,7 +171,7 @@ YC = YC_all(:,j);
 Si(j,:)=Si_tmp;
 STi(j,:)=STi_tmp;
 % Plot results:
-X_Labels = {'k1','f1'}; %,'KNH4','gamma NH4','gamma H2S'} ;
+X_Labels = {'k1','f1','KNH4','gamma NH4','gamma H2S'} ;
 Titles = {'O_2', 'NO_3', 'SO_4', 'NH_4', 'H_2S', 'PO_4'};
 % % figure % plot main and total separately
 % % subplot(121); boxplot1(Si,X_Labels,'main effects')
@@ -175,7 +194,7 @@ end
     Y = [ YA; YC ] ;
     figure; plot_pdf(Y,'NSE') ;
     title(Titles(j));
-    print('-depsc2', ['RESULTS_1404/uniform_k1_5_4000m/PDF_' char(Titles(j)) '.eps']);
+    print('-depsc2', ['RESULTS_1604/uniform_k1_5_400m/PDF_' char(Titles(j)) '.eps']);
 
 % Compute confidence bounds:
 Nboot = 500 ;
@@ -196,7 +215,7 @@ figure % plot both in one plot:
 boxplot2([Si_tmp; STi_tmp],X_Labels,[ Si_lb_tmp; STi_lb_tmp ],[ Si_ub_tmp; STi_ub_tmp ])
 legend('main effects','total effects')
 title(Titles(j))
-print('-depsc2', ['RESULTS_1404/uniform_k1_5_4000m/SIndex_' char(Titles(j)) '.eps']);
+print('-depsc2', ['RESULTS_1604/uniform_k1_5_400m/SIndex_' char(Titles(j)) '.eps']);
     end
     
 if(false)
@@ -214,27 +233,10 @@ if(false)
     title(X_Labels(j))
 end
 
-%% Step 4: create coloured scatter plot
-
-% % XD=XC;
-% % XD(:,1)=log10(XC(:,1));
-% k1 vs f1 -> flux 
-figure
-scatter_plots_col(XC,YC_all(:,j),1,3,16,X_Labels)
-title(Titles(j))
-print('-depsc2', ['RESULTS_1404/uniform_k1_4000m/k1_vs_f1_SWIflux_' char(Titles(j)) '.eps']);
-
-%scatter_plots_col(XD,YC,1,2,16,X_Labels)
-
-% k1 vs SWI flux 
-figure
-scatter_plots(XC(:,1),YC_all(:,j),1,'SWI fluxes',{'k1'})
-title(Titles(j))
-print('-depsc2', ['RESULTS_1404/uniform_k1_4000m/k1_SWIflux_' char(Titles(j)) '.eps']);
 
 end
 
-% save('RESULTS_1404/STi_all_4000.mat','STi')
+% save('RESULTS_1604/STi_all_400.mat','STi')
 
 if(false)
 %% Step 5: Adding up new samples

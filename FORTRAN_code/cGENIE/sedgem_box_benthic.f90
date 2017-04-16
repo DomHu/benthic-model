@@ -720,8 +720,8 @@ CONTAINS
         kmPO4 = 2.2e-6*24*365  ! 0.0                 ! Rate constant for Fe-bound P release upon Fe oxide reduction
         kaPO4 = 10.0      ! 0.0             ! Rate constant for authigenic P formation (1/yr)
         PO4s = 1.0e-9     ! 0.0               ! Equilibrium concentration for P sorption (mol/cm3)
-        PO4a = 0.5e-8     ! 0.0              ! Equilibrium concentration for authigenic P formation (mol/cm3)
-        Minf = 1.0e-10    ! 0.0                ! asymptotic concentration for Fe-bound P (mol/cm3)
+        PO4a = 3.7e-9     ! 0.0              ! Equilibrium concentration for authigenic P formation (mol/cm3)
+        Minf = 1.99e-10    ! 0.0                ! asymptotic concentration for Fe-bound P (mol/cm3)
 
         ! DIC
         DDIC1=(qdispDIC+adispDIC*loc_TempC)*dispFactor+Dbio                 ! DIC diffusion coefficient in bioturbated layer (cm2/yr)

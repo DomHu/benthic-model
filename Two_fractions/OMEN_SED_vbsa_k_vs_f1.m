@@ -24,29 +24,36 @@ function [y] = OMEN_SED_vbsa_k_vs_f1(x,res)
 %
 
 % how much Corg wtpc at top of sedments:
-wtpc = 1.0;
+wtpc = 2.0;
 
 % M = 11 ; % number of model parameters
-M = 6 ; % number of model parameters
+M = 3 ; % number of model parameters
 x = x(:);
 if ~isnumeric(x); error('input argument ''param'' must be numeric'); end
 if length(x)~=M; error('input argument ''param'' must have %d components',M); end
 
-
+% Version: just k1 and f1
 % res.swi.C01=x(2)*wtpc*1e-2/12*res.bsd.rho_sed;       %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
 % res.swi.C02=(1-x(2))*wtpc*1e-2/12*res.bsd.rho_sed;
 % res.zTOC.k1 = x(1);
-% res.zTOC.k2 = x(1)/100;    
+% res.zTOC.k2 = x(1)/100;   
 
+% Version: just k1, k2* and f1
 res.swi.C01=x(3)*wtpc*1e-2/12*res.bsd.rho_sed;       %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
 res.swi.C02=(1-x(3))*wtpc*1e-2/12*res.bsd.rho_sed;
 res.zTOC.k1 = x(1);
-res.zTOC.k2 = x(1)*x(2);                
-% O2, NO3, SO4, NH4, H2S
-res.zNO3.KNH4 = x(4);
-res.zNH4.KNH4 = x(4);
-res.bsd.gamma = x(5);
-res.bsd.gammaH2S = x(6);
+res.zTOC.k2 = x(1)*x(2);   
+
+% Version: vary all paramerers apart from PO4:
+% res.swi.C01=x(3)*wtpc*1e-2/12*res.bsd.rho_sed;       %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+% res.swi.C02=(1-x(3))*wtpc*1e-2/12*res.bsd.rho_sed;
+% res.zTOC.k1 = x(1);
+% res.zTOC.k2 = x(1)*x(2);                
+% % O2, NO3, SO4, NH4, H2S
+% res.zNO3.KNH4 = x(4);
+% res.zNH4.KNH4 = x(4);
+% res.bsd.gamma = x(5);
+% res.bsd.gammaH2S = x(6);
 % 
 % % PO4 use just anoxic 400m setup
 % res.zPO4_M.KPO4_ox = x(7);
