@@ -154,7 +154,7 @@ CONTAINS
     !------------------------------------------------------------------------------------
 
     SUBROUTINE sub_huelseetal2016_main &
-    (dum_i, dum_j, dum_dtyr, dum_D, loc_new_sed, dum_sfcsumocn, dum_sed_pres_fracC, dum_sed_pres_fracP, dum_new_swifluxes)
+    (dum_i, dum_j, dum_dtyr, dum_D, loc_new_sed, dum_is_POC_frac2, dum_sfcsumocn, dum_sed_pres_fracC, dum_sed_pres_fracP, dum_new_swifluxes)
         !    SUBROUTINE sub_huelseetal2016_main(dum_dtyr, dum_D, loc_new_sed, dum_sfcsumocn, dum_sed_pres_fracC, dum_new_swifluxes)
         !   __________________________________________________________
         !
@@ -169,7 +169,8 @@ CONTAINS
         ! dummy arguments
         REAL,INTENT(in)::dum_dtyr                               ! time-step
         integer,intent(in) :: dum_i, dum_j                      ! grid point (i,j)
-        REAL,INTENT(in)::dum_D                                     ! depth        
+        REAL,INTENT(in)::dum_D                                  ! depth
+        REAL,INTENT(in)::dum_is_POC_frac2                       ! fraction of refractory POC
         REAL,DIMENSION(n_sed),intent(in)::loc_new_sed                         ! new (sedimenting) top layer material
         real,DIMENSION(n_ocn),intent(in)::dum_sfcsumocn                     ! ocean composition interface array
         !        real,INTENT(in)::dum_POC1_wtpct_swi, dum_POC2_wtpct_swi             ! POC concentrations at SWI [wt%]
@@ -265,13 +266,13 @@ CONTAINS
         !        loc_POC2_wtpct_swi = loc_new_sed(is_POC_frac2)*loc_wtpct
 
         !  NEW version: using TOC-flux, convert units from cm3 to mol
-        loc_POC1_flux_swi = conv_POC_cm3_mol*(1-loc_new_sed(is_POC_frac2))*loc_fPOC
-        loc_POC2_flux_swi = conv_POC_cm3_mol*loc_new_sed(is_POC_frac2)*loc_fPOC
+        loc_POC1_flux_swi = conv_POC_cm3_mol*(1-dum_is_POC_frac2)*loc_fPOC
+        loc_POC2_flux_swi = conv_POC_cm3_mol*dum_is_POC_frac2*loc_fPOC
         
         ! k dependent on OM flux, after Boudreau 1997:
         loc_total_POC_flux = conv_POC_cm3_mol*loc_fPOC*10**6
-!        k1 = 2.2*1e-5*loc_total_POC_flux**2.1
-!        k2 = k1/100
+        k1 = 2.2*1e-5*loc_total_POC_flux**2.1
+        k2 = k1/100
 !        if(dum_D<1000)then
 !            print*, 'dum_D, loc_total_POC_flux, k1, k2 ', dum_D, loc_total_POC_flux, k1, k2
 !            print*, ' '
@@ -629,8 +630,8 @@ CONTAINS
         DC1 = Dbio
         DC2 = Dunbio
         ! spatially uniform k value
-        k1=1.0
-        k2=1.0
+        k1=0.0
+        k2=0.0
         ! k dependent on sediment accumulation rate (w)
         ! After Tromp et al. 1995:
 !        k1 = 2.97*dum_depos_rate**0.62
