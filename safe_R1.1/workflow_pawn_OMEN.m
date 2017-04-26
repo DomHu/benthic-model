@@ -100,8 +100,8 @@ out = length(Titles); % number of output from OMEN (e.g. SWI-flux O2, NO3, ...)
 % Create input/output samples to estimate the unconditional output CDF:
 Xu = AAT_sampling('lhs',M,'unif',distrpar,NU); % matrix (NU,M)
 Yu = model_evaluation(fun_test,Xu,res)  ; % matrix (NU,out) % was vector (1,M)
-save('RESULTS_PAWN_ALL_OUTPUT_1204/Xu_400m.mat','Xu')
-save('RESULTS_PAWN_ALL_OUTPUT_1204/Yu_400m.mat','Yu')
+save('RESULTS_PAWN/Xu_400m.mat','Xu')
+save('RESULTS_PAWN/Yu_400m.mat','Yu')
 % Yu lines: input param sets
 % Yu columns: outputs
 %      y(:,1) = O2 SWI flux
@@ -115,11 +115,11 @@ save('RESULTS_PAWN_ALL_OUTPUT_1204/Yu_400m.mat','Yu')
 
 % Create input/output samples to estimate the conditional output CDFs:
 [ XX, xc ] = pawn_sampling('lhs',M,'unif',distrpar,n,NC);
-save('RESULTS_PAWN_ALL_OUTPUT_1204/XX_400m.mat','XX')
-save('RESULTS_PAWN_ALL_OUTPUT_1204/xc_400m.mat','xc')
+save('RESULTS_PAWN/XX_400m.mat','XX')
+save('RESULTS_PAWN/xc_400m.mat','xc')
 
 YY = pawn_model_evaluation(fun_test,XX,res) ;
-save('RESULTS_PAWN_ALL_OUTPUT_1204/YY_400m.mat','YY')
+save('RESULTS_PAWN/YY_400m.mat','YY')
 
 
 for j=1:out
@@ -152,7 +152,7 @@ for i=1:M
    pawn_plot_kstest(KS(:,i),NC,NU,0.05,xc{i},labelparams{i})
 end
 title(Titles(j))
-print('-depsc2', ['RESULTS_PAWN_ALL_OUTPUT_1204/2_KS_400m_' char(Titles(j)) '.eps']);
+print('-depsc2', ['RESULTS_PAWN/2_KS_400m_' char(Titles(j)) '.eps']);
 
 % %  HERE without confidence intervals
 % % % Compute PAWN index by taking a statistic of KSs (e.g. max):
@@ -171,7 +171,7 @@ SIndex(j,:) = T_m;
 % Plot:
 figure; boxplot1(T_m,labelparams,[],T_lb,T_ub)
 title(Titles(j))
-print('-depsc2', ['RESULTS_PAWN_ALL_OUTPUT_1204/1_SIndex_400m_' char(Titles(j)) '.eps']);
+print('-depsc2', ['RESULTS_PAWN/1_SIndex_400m_' char(Titles(j)) '.eps']);
 
 % Convergence analysis:
 stat = 'max' ; % statistic to be applied to KSs
@@ -182,7 +182,7 @@ NUb = [ NU/10 NU/2 NU ] ;
 NN = NUb+n*NCb ;
 figure; plot_convergence(T_m_n,NN,T_lb_n,T_ub_n,[],'no of evals',[],labelparams)
 title(Titles(j))
-print('-depsc2', ['RESULTS_PAWN_ALL_OUTPUT_1204/3_Conv_400m_' char(Titles(j)) '.eps']);
+print('-depsc2', ['RESULTS_PAWN/3_Conv_400m_' char(Titles(j)) '.eps']);
 
 % % 
 % % %% Step 4: Apply PAWN to sub-region of the output range
@@ -201,7 +201,7 @@ if(false)
     figure
     scatter_plots_col(Xu,Yu(:,j),1,2,16,labelparams)
     title(Titles(j))
-    print('-depsc2', ['RESULTS_PAWN_ALL_OUTPUT_1204/400m/k1_vs_f1_SWIflux_' char(Titles(j)) '.eps']);
+    print('-depsc2', ['RESULTS_PAWN/400m/k1_vs_f1_SWIflux_' char(Titles(j)) '.eps']);
 
     %scatter_plots_col(XD,YC,1,2,16,X_Labels)
 
@@ -209,9 +209,9 @@ if(false)
     figure
     scatter_plots(Xu(:,1),Yu(:,j),1,'SWI fluxes',{'k1'})
     title(Titles(j))
-    print('-depsc2', ['RESULTS_PAWN_ALL_OUTPUT_1204/400m/k1_SWIflux_' char(Titles(j)) '.eps']);
+    print('-depsc2', ['RESULTS_PAWN/400m/k1_SWIflux_' char(Titles(j)) '.eps']);
 end
 
 end
 SIndex400m = SIndex;
-save('RESULTS_PAWN_ALL_OUTPUT_1204/SIndex_400m.mat','SIndex400m')
+save('RESULTS_PAWN/SIndex_400m.mat','SIndex400m')

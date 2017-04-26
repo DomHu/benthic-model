@@ -323,11 +323,11 @@ As a consequence, the reaction network must account for the most important prima
 mineral precipitation/dissolution and adsorption/desorption, resulting in a complex set of coupled reaction-transport equations. The following 
 subsections provide a short discussion of the reaction processes included in the model and give an overview of the 
 vertically resolved conservation equations and boundary conditions for solid and dissolved species in each layer. 
-Table \ref{table:reactions_processes} provides a summary of the reactions and variables considered in the reaction network. Table \ref{table:Reaction_Network} summarises their reaction stoichiometry 
+Table \ref{table:reactions_processes} provides a summary of the reactions and biogeochemical tracers considered in the reaction network. Table \ref{table:Reaction_Network} summarises their reaction stoichiometry 
 and Table \ref{table:ReactionOverview} provides an overview of their description in the model.
 
 \begin{table}[tbp]
-\caption{Reactions and variables implemented in the Reaction Network of OMEN-SED. The primary and secondary redox reactions are listed in the sequence they occur with increasing sediment depth.}
+\caption{Reactions and biogeochemical tracers implemented in the Reaction Network of OMEN-SED. The primary and secondary redox reactions are listed in the sequence they occur with increasing sediment depth.}
 % title of Table
 \centering
 % used for centering table
@@ -343,7 +343,7 @@ Secondary redox reactions &  Oxidation of ammonium and sulfide by oxygen, anaero
 & of methane by sulfate\\
 Adsorption/Desorption & Ad-/Desorption of P on/from \chem{Fe(OH)_3}, \chem{NH_4} adsorption, \chem{PO_4} adsorption\\ %\textcolor{red}{Formation of Fe-bound P, reduction of Fe oxides (?correct here)},\\
 Mineral precipitation & Formation of authigenic P \\
-Variables & Organic matter, oxygen, nitrate, ammonium, sulfate, sulfide (hydrogen sulfide),\\
+Biogeochemical tracers & Organic matter, oxygen, nitrate, ammonium, sulfate, sulfide (hydrogen sulfide),\\
 &  phosphate, Fe-bound P, DIC, ALK\\
 \hline\hline
 % inserts double horizontal lines
@@ -818,15 +818,15 @@ F & - &  $\frac{1}{\phi^m}$ & Tortuosity, here m=3\\
 f$_{ir}$ & - & 1 & Irrigation factor\\
 %dispF & - & $irrF \cdot \phi^{F-1.0}$ & Dispersion factor\\
 \multicolumn{4}{l}{\textbf{Adsorption coefficients}} \\
-$K_{\chem{NH_4}}$ & - & 1.4 & \chem{NH_4} adsorption coefficient \citep{wang_multicomponent_1996}\\
-$K_\chem{PO_4}^I$ & - & \textcolor{red}{200.0} & \chem{PO_4} adsorption coefficient (oxic) \citep{slomp1998role}\\
-$K_\chem{PO_4}^{II}$ & - & \textcolor{red}{1.3} & \chem{PO_4} adsorption coefficient (anoxic) \citep{slomp1998role}\\
+$K_{\chem{NH_4}}$ & - & 1.3 & \chem{NH_4} adsorption coefficient, \citep[see][]{wang_multicomponent_1996}\\
+$K_\chem{PO_4}^{ox}$ & - & \textcolor{red}{200.0} & \chem{PO_4} adsorption coefficient (oxic), \citep[see][]{slomp1998role}\\
+$K_\chem{PO_4}^{anox}$ & - & \textcolor{red}{1.3} & \chem{PO_4} adsorption coefficient (anoxic), \citep[see][]{slomp1998role}\\
 \multicolumn{4}{l}{\textbf{Diffusion coefficients} \citep{Li_diffusion_1974, gypens_simple_2008}}\\
 $D_{\chem{O_2}}^0$ & cm$^2$\,yr$^{-1}$ & 348.62172 &Molecular diffusion coefficient of oxygen at 0$^\circ$C\\
 $D_{\chem{O_2}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 14.08608 &Diffusion coefficient for linear temp. dependence of oxygen\\ % value was 0.0386 (changed by Nicolas 2207)
 $D_{\chem{NO_3}}^0$ & cm$^2$\,yr$^{-1}$ & 308.42208 &Molecular diffusion coefficient of nitrate at 0$^\circ$C\\
 $D_{\chem{NO_3}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 12.2640 &Diffusion coefficient for linear temp. dependence of nitrate\\ % value was 0.0386 (changed by Nicolas 2207)
-$D_{\chem{NH_4}}^0$ & cm$^2$\,yr$^{-1}$ & 308.42208 &Molecular diffusion coefficient of ammonium at 0$^\circ$C\\
+$D_{\chem{NH_4}}^0$ & cm$^2$\,yr$^{-1}$ & 309.0528 &Molecular diffusion coefficient of ammonium at 0$^\circ$C\\
 $D_{\chem{NH_4}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 12.2640 &Diffusion coefficient for linear temp. dependence of ammonium\\ % value was 0.0386 (changed by Nicolas 2207)
 $D_{\chem{SO_4}}^0$ & cm$^2$\,yr$^{-1}$ & 157.68 &Molecular diffusion coefficient of sulfate at 0$^\circ$C\\
 $D_{\chem{SO_4}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 7.884 &Diffusion coefficient for linear temp. dependence of sulfate\\ % value was 0.0386 (changed by Nicolas 2207)
@@ -1040,38 +1040,37 @@ solution type to use.
 \end{figure}
 
 Here the coupling of OMEN-SED to the carbon-centric version of the ``GENIE'' Earth system model \citep[cGENIE][]{ridgwell_marine_2007} is described  (Fig. \ref{fig:OMEN-GENIE-coupling}). 
-Results from pre-industrial experiments are presented in section \ref{subsec:GENIE-pre-ind}. 
+Results from pre-industrial experiments are presented in Section \ref{subsec:GENIE-pre-ind}. 
 %cGENIE Earth System model is described, in particular its incorporation into the sediment geochemistry model \citep[SEDGEM,][]{ridgwell_regulation_2007}. 
 cGENIE is a model of Intermediate Complexity based on the efficient climate model ``C-GOLDSTEIN''  of \citet{edwards_uncertainties_2005}, featuring a frictional-geostrophic 3D-ocean circulation model coupled to a fast 
 Energy-Moisture Balance 2D-atmosphere together with a dynamic-thermodynamic sea-ice component. 
 The version of cGENIE used here includes the marine geochemical cycling of carbon, oxygen, phosphorus and sulfur \citep{ridgwell_marine_2007}, 
 preservation of carbonates in deep-sea sediments \citep{ridgwell_regulation_2007} and terrestrial weathering \citep{colbourn_rock_2013}. 
-The ocean model is implemented on a 36$\times$36 equal-area horizontal grid with 16 vertical levels as in \citet{archer_atmospheric_2009}. 
+The ocean model is implemented on a 36$\times$36 equal-area horizontal grid with 16 vertical levels using the pre-industrial continental configuration and bathymetry as in \citet{archer_atmospheric_2009}. 
 In contrast to \citet{archer_atmospheric_2009} the same grid resolution (36$\times$36) is used for the sediment geochemistry model SEDGEM. 
 Instead of completely remineralising POC at the seafloor, OMEN-SED is called by SEDGEM for each grid point. 
 Depending on the overlying biogeochemical ocean model processes can be included or excluded in OMEN-SED and stoichiometric factors need to be adjusted to ensure preservation of mass. 
-As nitrogen is not modelled explicitly in cGENIE the related stoichiometries in OMEN-SED are set to zero (i.e. \chem{NC_i}, $\chem{ALK}^\mathrm{NIT}$ and $\chem{ALK}^\mathrm{DEN}$). 
-cGENIE, however, implicitly includes the effects of \chem{NH_4} release and its nitrification on Alkalinity but neglects the impact of P release; therefore, related 
+As nitrogen is not modelled explicitly in the employed cGENIE configuration the related stoichiometries in OMEN-SED are set to zero (i.e. \chem{NC_i}, $\chem{ALK}^\mathrm{NIT}$ and $\chem{ALK}^\mathrm{DEN}$). 
+cGENIE, however, implicitly includes the effects of \chem{NH_4} release and its nitrification on Alkalinity and neglects the impact of P release; therefore, related 
 stoichiometries are changed to $\chem{ALK}^\mathrm{OX} = -16/106$ and $\chem{ALK}^\mathrm{SUL} = 122/106$.
 
 Several biogeochemical tracers and parameters are transferred from SEDGEM to OMEN-SED and have to be converted into the required units. 
-Bottom water concentrations of solutes are converted from $\frac{mol}{kg}$ to $\frac{mol}{cm^3}$ and the depositional flux of POC (\chem{POC_{flux}}) is converted from $\frac{cm^3}{cm^2\,yr}$ 
-to $\frac{mol}{cm^2\,yr}$ assuming an average density of POC of 1.0 cm$^{3}$ g$^{-1}$. 
+Bottom water concentrations of solutes are converted from mol\,kg$^{-1}$ to mol\,cm$^{-3}$ and the depositional flux of POC (\chem{POC_{flux}}) is converted from cm$^{3}$\,cm$^{-2}$\,yr$^{-1}$ 
+to mol\,cm$^{-2}$\,yr$^{-1}$ assuming an average density of POC of 1.0\,cm$^{3}$\,g$^{-1}$.
 Other parameters used from cGENIE are seafloor depth, local temperature and the partitioning of bulk POC into the slower and faster degrading pool 
 (as cGENIE represents a labile and a refractory POC fraction, see \citet{ridgwell_marine_2007}). 
 %For bottom water oxygen concentrations below 5 $\mu$mol kg$^{-1}$ the bioturbation depth is changed from 10 to 0.01 cm to account for the reduced presence of organisms under anoxia.  
-The advection/sediment accumulation rate is generally taken from cGENIE, whereas a minimum values of $w=0.5\frac{cm}{kyrs}$ is imposed as OMEN-SED tends to be unstable for lower values. 
-If the POC depositional flux is zero, OMEN-SED is not called and all SWI-fluxes of solutes and the fraction of POC preserved in the sediments (\chem{POC_{pres}}) are set to zero.
-Otherwise, the bulk \chem{POC_{flux}} is seperated into the labile and refractory component and the routine to calculate the sedimentary POC profiles is called. 
-Here, the two POC depositional fluxes are first converted into SWI concentrations (in $\frac{mol}{cm^3}$) by solving Eq. (\ref{Eq_flux_divergence}) for z=0.
-
-OMEN-SED computes the resulting SWI-fluxes of solutes (in $\frac{mol}{cm^2\,yr^1}$) and the fraction of POC preserved in the sediment at a depth of 100 cm and returns the results to cGENIE. 
+The advection/sediment accumulation rate is generally taken from cGENIE, however, a minimum values of $w=0.5$\,cm\,kyrs$^{-1}$ is imposed as OMEN-SED tends to be unstable for lower values. 
+The bulk \chem{POC_{flux}} is seperated into the labile and refractory component and the routine to calculate the sedimentary POC profiles is called. 
+Here, the two POC depositional fluxes are first converted into SWI concentrations (in mol\,cm$^{-3}$) by solving Eq. (\ref{Eq_flux_divergence}) for z=0. 
+OMEN-SED computes the resulting SWI-fluxes of solutes (in mol\,cm$^{-2}$\,yr$^{-1}$) and the fraction of POC preserved in the sediment at a depth of 100 cm (\chem{POC_{pres}}) and returns the 
+results to cGENIE. In case no POC is deposited on the seafloor (i.e. $\chem{POC_{flux}}=0$), OMEN-SED is not called and the SWI-fluxes of solutes and \chem{POC_{pres}} are set to zero.
 In order to reduce memory requirements the sediment profiles (e.g. as shown in Fig. \ref{fig:Sediment_profiles}) are not calculated in the FORTRAN version of OMEN-SED, 
 however, the boundary conditions are saved at the end of the experiment and sediment profiles for specific grid-cells, ocean basins and/or ocean transects can be plotted 
 using the stand-alone matlab version of OMEN-SED. 
 
 
-% For the solutes this is trivial; the OM flux is converted into a concentration (\chem{POC_{con}}, in $\frac{mol}{cm^3}$) using the sediment accumulation rate from cGENIE ($w$, in $\frac{cm}{yr}$) as:
+% For the solutes this is trivial; the OM flux is converted into a concentration (\chem{POC_{con}}, in mol\,cm$^{-3}$) using the sediment accumulation rate from cGENIE ($w$, in $\frac{cm}{yr}$) as:
 % \begin{equation}
 %  \chem{POC_{con}} = \frac{1}{12}\cdot(1-\phi)\cdot \frac{\chem{POC_{flux}}}{w}
 % \end{equation}
@@ -1079,31 +1078,33 @@ using the stand-alone matlab version of OMEN-SED.
 
 
 \section {Test Cases}
+\textcolor{red}{TODO: Check Intro sentences}
+To validate our approach, model results were compared with observed pore water profiles (Section \ref{subsec:SedProfiles}), an extensive sensitivity analysis for the most important model 
+parameters was performed and resulting sediment-water interface fluxes were compared with a global database (Section \ref{subsec:SA}). Furthermore, OMEN-SED was coupled to the cGENIE Earth System model 
+and different published parameterisations for the OM degradation rate constants are tested on a global scale (Section \ref{subsec:GENIE-pre-ind}).
 
 \subsection{Sediment profiles}\label{subsec:SedProfiles}
-\textcolor{red}{TODO: Check e.g. Stolpovsky}
-% We selected sites where pore water data were available from key ocean settings including the continental
-% shelf (41 and 114 m), slope (241 and 1025 m), and deep sea (3073 m) (Figure 4). Two of these sites,
-% stations WE206 and 241 on the Washington and Mauritanian margin (respectively), are located in
-% high-nitrate-low-oxygen (HNLO) areas where oxygen-deficient waters impinge on the seafloor. 
-
-Figure \ref{fig:Sediment_profiles} compares profiles calculated with OMEN-SED to observations from different ocean depths taken at the Santa Barbara basin \citep[585 m, ][]{reimers_porewater_1996}, 
-the Iberian margin (108 and 2213 m) and Naza\'e Canyon \citep[4298 m, ][]{epping_oxidation_2002}. 
-Sediment-water interface characteristics and concentrations of total organic matter and all dissolved species in OMEN-SED were set to the observed values where available (Table \ref{table:Profiles_BC}). 
-The OM and pore water profiles were fitted by optimizing the OM partitioning into the fast and slow degrading pool and their respective first order degradation rate constants (priority given to reproduce the OM and \chem{O_2} profiles). 
+Modelled profiles were compared with measured pore water data from different ocean depths (Figure \ref{fig:Sediment_profiles}) including the continental shelf (108\,m), upper slope (585\,m), lower slope (2213\,m) 
+and the deep sea (4298\,m). The site at 585\,m depth located in the Santa Barbara Basin is characterised by anoxic bottom waters and high POC concentrations 
+\citep[POC $\sim$5.5\,wt\%,][]{reimers_porewater_1996}, whereas the other sites at the Iberian margin (108 and 2213 m) and the Nazar\'e Canyon \citep[4298 m, ][]{epping_oxidation_2002} 
+are oxic. 
+Sediment-water interface characteristics and concentrations of POC and dissolved species in OMEN-SED were set to the observed values where available (Table \ref{table:Profiles_BC}). 
+The POC and pore water profiles were fitted by optimizing the POC partitioning into the fast and slow degrading pool and their respective first order degradation rate constants (priority given to reproduce the POC and \chem{O_2} profiles). 
 For phosphorus the equilibrium concentration for authigenic P formation (\chem{PO_4^a}) was adjusted to fit the \chem{PO_4} concentration at $z_\infty$. 
 For the two open Iberian margin stations (108 and 2213 m) OMEN-SED fits all observations well. OMEN-SED does especially well at depth 2213m by reproducing the deep \chem{O_2} penetration and the subsurface maximum in \chem{NO_3} 
 concentration due to the nitrification of \chem{NH_4}. 
 For the Santa Barbara basin (585 m) a misfit is observed for \chem{H_2S} and \chem{PO_4} in the upper 20 cm of the sediment. This can be explained by the presence of \chem{Mn^{2+}}, \chem{Fe^{2+}} and dissolved \chem{Fe} at this site which 
-are either reduced to degrade OM and/or react with \chem{H_2S} to form iron sulfides, therefore inhibiting the rise in concentration of \chem{H_2S} \citep{reimers_porewater_1996}. 
-Phosphorus is adsorbed to \chem{Fe} oxides and incorporated into carbonate fluorapatite (\chem{CFA}) which is not modelled explicitly in OMEN-SED.  \textcolor{red}{above correct/okay....?}
-For the Naza\'e Canyon station (4298 m) satisfactory fits could be realised apart from \chem{NH_4}. However, also the original study \citep{epping_oxidation_2002} had the same problem using a more 
-complex diagenetic model and suggested non-local solute exchange being responsible for the higher observed \chem{NH_4} concentrations.
+are either reduced to degrade POC and/or react with \chem{H_2S} to form iron sulfides, therefore inhibiting the rise in concentration of \chem{H_2S} \citep{reimers_porewater_1996}. 
+Phosphorus is adsorbed to \chem{Fe} oxides and incorporated into carbonate fluorapatite (\chem{CFA}) which is highly parameterised in OMEN-SED and not modelled explicitly.  
+%>>>
+\marginnote{\textcolor{red}{\textbf{DH}: P explanation correct/okay?\\ Also, say something about [ALK] at 585m? }}%<<<
+For the Naza\'e Canyon station (4298\,m) satisfactory fits could be realised apart from \chem{NH_4}. However, also the original study \citep{epping_oxidation_2002} had the same problem using a more 
+complex diagenetic model and suggested non-local solute exchange being responsible for the higher \chem{NH_4} concentrations at this site.
 
 \begin{sidewaysfigure}[tbp]
 	\includegraphics[width=1.0\textwidth]{figures/Profiles/0_ALL_PROFILES_COMBINED_1503.pdf}
 	\caption{Modelled (curves) and measured (filled dots) dissolved and solid phase pore water profiles for four different sediment cores. Note that different 
-	scales are used for different stations. The blue TOC curve represents the sum of the refractory (green) and labile (red) TOC fraction.}
+	scales are used for different stations. The blue POC curve represents the sum of the refractory (green) and labile (red) POC fraction.}
 	\label{fig:Sediment_profiles}
 \end{sidewaysfigure}
 
@@ -1117,7 +1118,7 @@ complex diagenetic model and suggested non-local solute exchange being responsib
 % centered columns (15 columns)
 \hline\hline
 \multicolumn{8}{l}{\textbf{Sediment characteristics:}}\\
-Depth & Temp. & $z_{\mathrm{bio}}$ & $D_{\mathrm{bio}}$  & \chem{TOC_1} & \chem{TOC_2} & \chem{k_1} & \chem{k_2}\\
+Depth & Temp. & $z_{\mathrm{bio}}$ & $D_{\mathrm{bio}}$  & \chem{POC_1} & \chem{POC_2} & \chem{k_1} & \chem{k_2}\\
  (m) & ($^{\circ}C$) & (cm) & (cm$^2$yr$^{-1}$) &(wt\%) & (wt\%) & (yr$^{-1}$) & (yr$^{-1}$)\\
 \hline
 108 & 12.5 & 1.0 & 0.02 & 2.64 & 1.8 & 0.65 & $1.0e^{-5}$ \\
@@ -1139,12 +1140,12 @@ Depth & \chem{O_2} & \chem{NO_3} & \chem{SO_4} & \chem{NH_4} & \chem{H_2S} & \ch
 \end{table}
 
 
-\subsection{Sensitivity Analysis}
+\subsection{Sensitivity Analysis}\label{subsec:SA}
 Model parameters implicitly account for processes not explicitly described, they are notoriously difficult to constrain and a source of uncertainty for numerical and analytical models. 
-Sensitivity Analysis (SA) is a term used for mathematical 
+One strategy to explore and quantify this model uncertainty that can always be applied is sensitivity analysis (SA). SA is a term used for mathematical 
 techniques to investigate how the variations in the outputs ($y_1,\ ...,\ y_N$) of a model can be attributed to variations in the different input parameters ($x_1,\ ...,\ x_M$) \citep{pianosi_sensitivity_2016}. 
 Different types of sensitivity indices, which quantify this relative influence with a scalar $S_i$, can be calculated, ranging from simple one-at-a-time methods to statistical evaluations of the 
-output distribution \citep[e.g. variance-based or density-based approaches][]{pianosi_sensitivity_2016}. Especially the latter indices are easy to interpret and to compare across different parameters and/or different model outputs as 
+output distribution \citep[e.g. variance-based or density-based approaches][]{pianosi_sensitivity_2016}. Especially the latter indices are easy to interpret and can be compared across different parameters and/or different model outputs as 
 they generally take values between zero and one ($S_i \in [0, 1]$). An index of zero indicates a non-influential parameter and a higher value a more influential parameter. 
 Here, we use SA mainly to identify which parameters have the largest impact on the different model outputs and therefore require careful calibration. 
 % and if there is any factor whose variability has a negligible effects on specific outputs?
@@ -1156,11 +1157,13 @@ The sensitivity index of parameter $i$ is calculated as the difference between t
 \begin{equation}
  S_i = \max_{x_i} \max_{y} | F_y(y) - F_{y|x_i}(y) |
 \end{equation}
-where $F_y(y)$ is the unconditional CDF of the output $y$ and $F_{y|x_i}(y)$ is the conditional CDF when the $i$-th parameter is fixed to $x_i$. For a more detailed description of the method we refer the interested reader to \citet{pianosi_simple_2015}. 
+where $F_y(y)$ is the unconditional CDF of the output $y$ and $F_{y|x_i}(y)$ represents the conditional CDF when the $i$-th parameter is fixed to $x_i$. For a more detailed description of the method we refer the interested reader to \citet{pianosi_simple_2015}. 
+
+\textcolor{red}{TODO: from here!}
 Due to the model complexity it is impossible to compute the sensitivity indices analytically therefore they are approximated from a Latin-Hypercube sampling of parameter inputs and calculated outputs.
-We use PAWN as implemented within the Sensitivity Analysis for Everyone (SAFE) matlab toolbox \citep{pianosi_matlab_2015} to investigate 11 model parameters for ranges specified in Table \ref{table:SA_parameter_ranges}. 
-We calculate sensitivity indices for all resulting SWI-fluxes from OMEN-SED for two idealised sediment conditions (see Table \ref{table:SA_2Cases}). 
-\textcolor{red}{TODO: Update description!}
+The PAWN method as implemented within the Sensitivity Analysis for Everyone (SAFE) matlab toolbox \citep{pianosi_matlab_2015} is used to investigate 11 model parameters for ranges as specified in Table \ref{table:SA_parameter_ranges}. 
+Sensitivity indices for all resulting SWI-fluxes for two idealised sediment conditions (i.e. 1) anoxic at 400\,m and 2) oxic at 4000\,m, see Table \ref{table:SA_2Cases}) are calculated. 
+We use 200 samples to estimate the unconditional CDF, 100 samples to estimate the conditional CDFs and 10 conditioning points, thus 11,200 evaluations are performed for each sediment condition. 
 The resulting indices (compare Fig. \ref{fig:SA_O2+NO3} in Appendix for the 4000m oxic sediment condition) 
 are then translated into a color code and summarised in a pattern plot to simplify comparison (Fig. \ref{fig:Sensitivity_Analysis}). 
 The most significant parameters for all model outputs are the degradation rate for the labile OM part ($\chem{k_1}$) and its share in the total OM pool ($\chem{f_1}$).
@@ -1185,8 +1188,8 @@ $\chem{f_1}$ & fraction of labile OM & - & 0.02 & 0.98  & - \\
 $K_{\chem{NH_4}}$ & Adsorption coefficient & - & 0.8 & 1.7  & (2) \\
 $\gamma_\chem{NH_4}$ & $NH_4$ fraction oxidised &  & 0.5 & 1.0 & - \\
 $\gamma_\chem{H_2S}$ &  $H_2S$ fraction oxidised  &  & 0.5 & 1.0 & - \\
-$K_\chem{PO_4}^I$ & Adsorption coeff. oxic & - & 100.0 & 400.0  & (3) \\
-$K_\chem{PO_4}^{II}$ & Adsorption coeff. anoxic & - & 1.3 & 2.0 & (3) \\
+$K_\chem{PO_4}^{ox}$ & Adsorption coeff. oxic & - & 100.0 & 400.0  & (3) \\
+$K_\chem{PO_4}^{anox}$ & Adsorption coeff. anoxic & - & 1.3 & 2.0 & (3) \\
 $k_{s}$ & kinetic P sorption & yr$^{-1}$  & 0.1 & 100.0 & (4, 5)\\
 $k_{m}$ & Fe-bound P release & yr$^{-1}$  & 0.015 & 0.02 & (4, 5)\\
 $k_{a}$ & authigenic P formation & yr$^{-1}$  & 0.001 & 10.0 & (4, 6)\\
@@ -1347,7 +1350,7 @@ AOM & $\chem{CH_4 + CO_2 + SO_4^{2-}} \rightarrow \chem{2HCO_3^- + H_2S}$\\
 \begin{center}
 	\includegraphics[width=1.0\textwidth]{figures/SA/0_SIndex_4000m_ALL_combined.pdf}
 	\caption{\textcolor{red}{Move to Appendix} Box plot of parameter sensitivities for the calculated SWI-fluxes for the 4000m oxic condition. 
-	Average sensitivities (black lines) and 90\% condidence intervals using $N=11200$ model evaluations and $Nboot = 100$ bootstrap resamples.}
+	Average sensitivities (black lines) and 90\% confidence intervals using $N=11200$ model evaluations and $Nboot = 100$ bootstrap resamples.}
 	\label{fig:SA_O2+NO3}
 	\end{center}
 \end{figure}
