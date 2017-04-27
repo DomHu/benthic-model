@@ -1157,18 +1157,22 @@ The sensitivity index of parameter $i$ is calculated as the difference between t
 \begin{equation}
  S_i = \max_{x_i} \max_{y} | F_y(y) - F_{y|x_i}(y) |
 \end{equation}
-where $F_y(y)$ is the unconditional CDF of the output $y$ and $F_{y|x_i}(y)$ represents the conditional CDF when the $i$-th parameter is fixed to $x_i$. For a more detailed description of the method we refer the interested reader to \citet{pianosi_simple_2015}. 
+where $F_y(y)$ is the unconditional CDF of the output $y$ and $F_{y|x_i}(y)$ represents the conditional CDF when the $i$-th parameter is fixed to $x_i$. 
+For a more detailed description of the method we refer the interested reader to \citet{pianosi_simple_2015}. 
 
-\textcolor{red}{TODO: from here!}
 Due to the model complexity it is impossible to compute the sensitivity indices analytically therefore they are approximated from a Latin-Hypercube sampling of parameter inputs and calculated outputs.
-The PAWN method as implemented within the Sensitivity Analysis for Everyone (SAFE) matlab toolbox \citep{pianosi_matlab_2015} is used to investigate 11 model parameters for ranges as specified in Table \ref{table:SA_parameter_ranges}. 
-Sensitivity indices for all resulting SWI-fluxes for two idealised sediment conditions (i.e. 1) anoxic at 400\,m and 2) oxic at 4000\,m, see Table \ref{table:SA_2Cases}) are calculated. 
+The PAWN method, as implemented within the Sensitivity Analysis for Everyone (SAFE) matlab toolbox \citep{pianosi_matlab_2015}, is used to investigate 11 model parameters for ranges as specified in Table \ref{table:SA_parameter_ranges}. 
+Sensitivity indices for all resulting SWI-fluxes for two idealised sediment conditions (i.e. anoxic at 400\,m and oxic at 4000\,m, see Table \ref{table:SA_2Cases}) are calculated. 
 We use 200 samples to estimate the unconditional CDF, 100 samples to estimate the conditional CDFs and 10 conditioning points, thus 11,200 evaluations are performed for each sediment condition. 
-The resulting indices (compare Fig. \ref{fig:SA_O2+NO3} in Appendix for the 4000m oxic sediment condition) 
+The resulting indices (compare Fig. \ref{fig:SA_O2+NO3} in the Appendix) 
 are then translated into a color code and summarised in a pattern plot to simplify comparison (Fig. \ref{fig:Sensitivity_Analysis}). 
 The most significant parameters for all model outputs are the degradation rate for the labile OM part ($\chem{k_1}$) and its share in the total OM pool ($\chem{f_1}$).
-For the anoxic setup, where no oxidation occurs, the secondary redox parameters (i.e. $\gamma_\chem{NH_4},\ \gamma_\chem{H_2S}$) are essentially non-influential, however, they are getting more important for the oxic scenario. 
-The $\chem{PO_4}$ SWI-flux appears to be insensitive under oxic conditions as the majority is absorbed to $\chem{Fe}$-oxides \textcolor{red}{correct....?}.
+For the anoxic setup, where no oxidation occurs, the secondary redox parameters (i.e. $\gamma_\chem{NH_4},\ \gamma_\chem{H_2S}$) are essentially non-influential. 
+Whereas in the oxic scenario, SWI-fluxes of \chem{NH_4}, \chem{SO_4} and \chem{H_2S} are very sensitive to changes in the secondary redox parameters. % with sensitivities of ....., respectively.
+The $\chem{PO_4}$ SWI-flux appears to be insensitive especially under for the oxic condition as the majority is absorbed to $\chem{Fe}$-oxides. The sensitivities change 
+if other $\chem{PO_4}$ related equilibrium concentrations $\chem{PO_4}^s$, $\chem{PO_4}^a$ and $\chem{M}^\infty$ are used (not shown).
+%>>>
+\marginnote{\textcolor{red}{\textbf{DH}: explanation for small P sensitivity correct?}}[-1cm]%<<<\
 
 
 \begin{table}[btp]
@@ -1201,8 +1205,7 @@ Sources: &\multicolumn{5}{l}{(1) \citet{arndt_quantifying_2013}; (2): \citet{cap
 \end{table}
 
 \begin{table}[btp]
-\caption{\textcolor{red}{Maybe in Suppl.} Model boundary conditions for the two idealised sediment conditions used for the sensitivity analysis 
-(Fig. \ref{fig:Sensitivity_Analysis} and \ref{fig:SA_Color_ScatterPlots}). 
+\caption{Model boundary conditions for the two idealised sediment conditions used for the sensitivity analysis (Fig. \ref{fig:Sensitivity_Analysis} and \ref{fig:SA_Color_ScatterPlots}). 
 All solute concentrations are in nanomole cm$^{-3}$.} 
 % Note: Constant concentrations at all sites for \chem{SO_4} ($28000 \mu$mol cm$^{-3}$) and \chem{H_2S} (0.0 $\mu$mol cm$^{-3}$).}
 \centering
@@ -1224,16 +1227,22 @@ Depth (m) & Temp. ({}$^\circ$C)& OC (wt\%) & \chem{O_2} & \chem{NO_3} & \chem{SO
 \begin{center}
 	\includegraphics[width=1.0\textwidth]{figures/SA/0_KSIndex_ALL_OUTPUT_13042017.pdf}
 	\caption{Pattern plot, showing the output sensitivity for each SWI flux (i.e. the chemical compounds on the horizontal axis) and each input factor (i.e. the model parameters 
-	on the vertical axis) for two idealised sediment cores. }
+	on the vertical axis) for two idealised sediment cores. White patterns are assigned where the SWI flux is independent of the specific parameter. 
+	}
 	\label{fig:Sensitivity_Analysis}
 	\end{center}
 %>>>
 \marginnote{\textbf{DH}: Rather low PO4 sensitivity - bc of Equil. concentr.?}[-1cm]%<<<
 \end{figure}
 
-To test if OMEN-SED is able to reproduce observed SWI-fluxes, the Latin-Hypercube sampling outputs are compared with a global database of benthic fluxes of $\chem{O_2}$ and $\chem{NO_3}$ \citep{bohlen_simple_2012}. 
-The coloured scatter plots (Figure \ref{fig:SA_Color_ScatterPlots}) show that the observed fluxes fall well in the range of SWI-fluxes calculated with OMEN-SED. Also highlighted by the emergence of colour patterns 
-in Figure \ref{fig:SA_Color_ScatterPlots} A+B are the strong interactions between the amount of labile OM  $\chem{f_1}$ and its degradation rate $\chem{k_1}$ for the resulting SWI-flux of the most powerful TEA available. 
+To test if OMEN-SED is able to reproduce the magnitude of observed SWI-fluxes, another set of Latin-Hypercube samplings is produced for the two idealised sediment conditions (sample sizes $N=3500$) . 
+Here the two most sensitive parameters $\chem{k_1}$ and $\chem{f_1}$ and also $\widetilde{\chem{k_2}}$ are varied, the other parameters are set to their default values (Tables \ref{table:sed-charac_transport-parameters} and \ref{table:reaction_parameters}). 
+For the deep sea condition we account for the presence of more refractory OM by sampling $\chem{f_1} \in [0.02, 0.3]$. Minimum and Maximum values for the other parameters are as in Table \ref{table:SA_parameter_ranges}.
+The results are compared with a global database of benthic fluxes of $\chem{O_2}$ and $\chem{NO_3}$ \citep{bohlen_simple_2012}. 
+The coloured scatter plots in Figure \ref{fig:SA_Color_ScatterPlots} show that the observed fluxes fall well in the range of SWI-fluxes calculated with OMEN-SED. 
+Also highlighted by the emergence of colour patterns in Figure \ref{fig:SA_Color_ScatterPlots} A+B are the strong interactions between the amount of labile OM  $\chem{f_1}$ and 
+its degradation rate $\chem{k_1}$ for the resulting SWI-fluxes of the most powerful TEA available. In general, a higher degradation rate in combination with more labile OM available 
+leads to a higher SWI-flux. 
 
 % Conclude OM degradation rate highly important, reflects results from the literature ... important to calibrate... or run ensembles with different degradation rates which is easily possible with OMEN-SED. 
 % Reality check, does OMEN-SED calculate realistic sediment-water interface fluxes!? Describe database of Stolpovsky and what we did. Add N to figures (i.e. data points from Stolpovsky).
@@ -1242,12 +1251,11 @@ in Figure \ref{fig:SA_Color_ScatterPlots} A+B are the strong interactions betwee
 \begin{center}
 	\includegraphics[width=1.0\textwidth]{figures/SA/k1_vs_f1_SWIflux_COMBINED_1604.pdf}
 	\caption{Coloured scatter plots ($\chem{k_1}$ vs $\chem{f_1}$) of resulting OMEN-SED SWI-fluxes for the 400m anoxic (A: $\chem{NO_3}$) and 4000m oxic (B: $\chem{O_2}$, C: $\chem{NO_3}$) scenario. 
-	Negative values representing flux from the water column into the sediments.
+	Negative values representing a flux from the water column into the sediments.
 	Indicated area in red at the respective colour scale represents the range of benthic fluxes in the global database of \citet{bohlen_simple_2012}. 
-	\textcolor{red}{TODO:add text: Low influx, High influx...}}
-	\label{fig:SA_Color_ScatterPlots}
+}\label{fig:SA_Color_ScatterPlots}
 	%>>>
-\marginnote{\textbf{DH}: Why mainly negative NO3-flux 4000m?}[-1cm]%<<<
+\marginnote{\textbf{DH}: Why mainly negative NO3-flux 4000m in contrast to database!?}[-6cm]%<<<
 \end{center}
 \end{figure}
 

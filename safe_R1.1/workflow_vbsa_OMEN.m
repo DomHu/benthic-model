@@ -85,7 +85,7 @@ res.zALK = benthic_zALK(res.bsd, res.swi);
 % DistrPar  = { [ 1e-4 1]; [1e-4 1e-1];[ 0.02 0.5 ]; [ 0.8 1.7 ]; [ 0.5 1] ; [ 0.5 1 ] } ; % Parameter ranges
 
 % % Define input distribution and ranges:
-M  = 3 ; % number of uncertain parameters [ k1 f1]
+M  = 3 ; % number of uncertain parameters [ k1 k2 f1]
 DistrFun  = {'unif', 'unif', 'unif'}; %'unif'  ; % Parameter distribution
 DistrPar  = { [ 1e-4 5]; [1e-4 1e-1]; [ 0.02 0.98 ]} ; % Parameter ranges
 
