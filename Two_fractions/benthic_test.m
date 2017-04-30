@@ -16,15 +16,15 @@ classdef benthic_test
             % see caption for Fig 1.2 - two equal TOC fractions 0.02 0.2 2
             swi.C01_nonbio= 0.0*1e-2/12*bsd.rho_sed; % adjusted Test 2+4:          %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
             swi.C02_nonbio= 0.0*1e-2/12*bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;          %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-            swi.Fnonbio1 = 0.0E-007; %swi.C01_nonbio*(1-bsd.por)*bsd.w;    % [mol/(cm2 yr)] according non-bioturbated flux
-            swi.Fnonbio2 = 0.0E-007; %swi.C02_nonbio*(1-bsd.por)*bsd.w;
+            swi.Fnonbio1 = 3.5E-006; %swi.C01_nonbio*(1-bsd.por)*bsd.w;    % [mol/(cm2 yr)] according non-bioturbated flux
+            swi.Fnonbio2 = 18.5E-006; %swi.C02_nonbio*(1-bsd.por)*bsd.w;
             swi.C01 = swi.C01_nonbio; %0.0;  % resulting bioturbated SWI-concentration, to be calculated in benthic_zTOC.m
             swi.C02 = swi.C02_nonbio; %0.0;
             %swi.C01=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
             %swi.C02=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-            swi.O20=0.0E-009; %150.0E-009;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
+            swi.O20=100.0E-009; %150.0E-009;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
             swi.NO30=40.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
-            swi.Nitrogen=true;
+            swi.Nitrogen=false;
             swi.NH40=0.0e-9;                                                %NH4 concentration at SWI (mol/cm^3)
             swi.SO40=2.8E-005;                                            %SO4 concentration at SWI (mol/cm^3)
             swi.H2S0=0.0; %2.0E-012;         %was 0.0e-9                            %H2S concentration at SWI (mol/cm^3)
@@ -404,6 +404,9 @@ classdef benthic_test
             
             % set wdepth
           	bsd.wdepth = -bc(end-1);
+            if(bsd.wdepth <1000)
+                w = (conv_POC_mol_cm3*bc(1)+conv_cal_mol_cm3*bc(8) + conv_det_mol_cm3*bc(9));   % + bc(10))
+            end
 
             res.bsd = benthic_main(1, bsd.wdepth);
             res.bsd.usescalarcode = true;
@@ -415,10 +418,10 @@ classdef benthic_test
                 % calculate sediment accumulation rate using POC, CaCO3 and
                 % detrital rain flux (convert from mol to cm3)            
                 res.bsd.w = (conv_POC_mol_cm3*bc(1)+conv_cal_mol_cm3*bc(8) + conv_det_mol_cm3*bc(9));   % + bc(10))
-
                 if(res.bsd.w<5.0e-4)                    
                     res.bsd.w=5.0e-4;
                 end
+
                 %bottom water concentrations
                 swi.T = bc(11); %20.0;                         %temperature (degree C)
                 
@@ -444,32 +447,37 @@ classdef benthic_test
                 swi.plot_PO4_DIC_ALK=true;
 
             end
-            
-            % if anoxic, change zbio to 0.01 cm
-            if(swi.O20 < 5.0e-9 )
-                res.bsd.zbio=0.01;
-            end
-            
-                       
-            res.swi = swi;
-            
             % Set default values 
             res.zTOC = benthic_zTOC(res.bsd);
             
-            % Dom: set here k1, k2 if related to w or POC-flux
+	% Dom: set here k1, k2 if related to w or POC-flux
 %       After Tromp et al. 1995:
 %             res.zTOC.k1 = 2.97*res.bsd.w^0.62;
 %             res.zTOC.k2 = 0.057*res.bsd.w^1.94;
         % After Boudreau 1997:
-%         res.zTOC.k1 = 0.38*res.bsd.w^0.59;
+         res.zTOC.k1 = 0.38*res.bsd.w^0.59;
 %         res.zTOC.k2 = 0.04*res.bsd.w^2;
         % After Stolpovsky et al. 2016:
-        res.zTOC.k1 = 1.02*res.bsd.w^0.5;
+%        res.zTOC.k1 = 1.02*res.bsd.w^0.5;
 
 %       after Boudreau 1997 - k dependent on OM flux (in micromol/(cm^2yr):
 %        res.zTOC.k1 = 2.2*1e-5*(bc(1)*10^6)^2.1;
-
-        res.zTOC.k2 = res.zTOC.k1/100;
+            
+            % if anoxic, change zbio to 0.01 cm
+            if(swi.O20 < 5.0e-9 )
+                res.bsd.zbio=0.01;
+                 % After Boudreau 1997:
+                res.zTOC.k1 = 0.04*res.bsd.w^2;
+                % fter Tromp et al. 1995:
+%             res.zTOC.k1 = 0.057*res.bsd.w^1.94;
+              if(bsd.wdepth < 500)
+                bsd.wdepth
+              end  
+            end
+            
+            res.zTOC.k2 = res.zTOC.k1/100;            
+                       
+            res.swi = swi;                     
             
             res.zO2 = benthic_zO2(res.bsd, res.swi);           
             res.zxf = 0.0;                              % roll off oxidation at low zox
@@ -511,7 +519,7 @@ classdef benthic_test
             res = res.zALK.calc(res.bsd, res.swi, res);
             
             %%%%% WRITE OUTPUT:
-            sed_depth=50.0;
+            sed_depth=100.0;
             answ = res;
             [Cinf, C1inf, C2inf] = res.zTOC.calcC( sed_depth, res.bsd, res.swi, res);
             [Cswi, C1swi, C2swi] = res.zTOC.calcC( 0, res.bsd, res.swi, res);
@@ -551,9 +559,9 @@ classdef benthic_test
     %%%%%%%%%%%%%%%%  TEST PROFILES  %%%%%%%%%%%%%%%%%%%%
     
     
-%  if(res.zox == 100)
-%              benthic_test.plot_column(res, false, res.swi, '0107')
-%  end            
+  if(bsd.wdepth < 500)
+              benthic_test.plot_column(res, false, res.swi, '_shallow_2804_GENIEw')
+  end            
             
         end
         

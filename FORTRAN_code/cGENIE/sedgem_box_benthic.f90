@@ -239,7 +239,11 @@ CONTAINS
         ! NOTE: the units of the Corg flux are in (cm3 cm-2 yr-1)
         loc_fPOC = loc_new_sed(is_POC)/dum_dtyr
         ! calculate sediment accumulation in (cm3 cm-2)
+        ! w from GENIE
         loc_new_sed_vol = fun_calc_sed_vol(loc_new_sed(:))
+        ! w after Middelburg
+!        loc_new_sed_vol=10.0**(-0.87478367-0.00043512*dum_D)*3.3              ! sedimentation rate, cm/yr / burial velocity / advection (Middelburg et al., Deep Sea Res. 1, 1997)
+
 
         ! Model crashed for low sediment accumulation rates, therefore:
         if(loc_new_sed_vol .LE. 5.0e-4)then
@@ -252,31 +256,44 @@ CONTAINS
         ! DH TODO: some of initialize should be called just once, not for every grid point
         call sub_huelseetal2016_initialize(dum_D, dum_sfcsumocn(io_T), loc_new_sed_vol/dum_dtyr)
         
-        ! check for anoxia -> set zbio
-        if(dum_swiconc_O2 .LE. loc_BW_O2_anoxia)then
-            zbio = 0.01
-        end if
-        
-        ! below test with specific temperature to compare with matlab
-        !!!!        call sub_huelseetal2016_initialize(600.0, 293.15)
-
-        !!!!!!  OLD version: using TOC concentration instead of flux:
-        !        loc_wtpct = fun_sed_calcCorgwt(loc_fPOC, loc_new_sed_vol, por, rho_sed)
-        !        loc_POC1_wtpct_swi = (1-loc_new_sed(is_POC_frac2))*loc_wtpct
-        !        loc_POC2_wtpct_swi = loc_new_sed(is_POC_frac2)*loc_wtpct
-
-        !  NEW version: using TOC-flux, convert units from cm3 to mol
+         !  NEW version: using TOC-flux, convert units from cm3 to mol
         loc_POC1_flux_swi = conv_POC_cm3_mol*(1-dum_is_POC_frac2)*loc_fPOC
         loc_POC2_flux_swi = conv_POC_cm3_mol*dum_is_POC_frac2*loc_fPOC
         
+
+        ! spatially uniform k value
+        k1=1.0e-4
+        k2=1.0e-6
+
+        ! k dependent on sediment accumulation rate (w)
+        ! After Tromp et al. 1995:
+!        k1 = 2.97*w**0.62
+!        k2 = 0.057*dum_depos_rate**1.94
+        ! After Boudreau 1997:
+!        k1 = 0.38*w**0.59
+!        k2 = 0.04*dum_depos_rate**2
+        ! After Stolpovsky et al. 2016:
+!        k1 = 1.02*w**0.5
+
         ! k dependent on OM flux, after Boudreau 1997:
         loc_total_POC_flux = conv_POC_cm3_mol*loc_fPOC*10**6
-        k1 = 2.2*1e-5*loc_total_POC_flux**2.1
-        k2 = k1/100
-!        if(dum_D<1000)then
-!            print*, 'dum_D, loc_total_POC_flux, k1, k2 ', dum_D, loc_total_POC_flux, k1, k2
-!            print*, ' '
-!        end if
+!        k1 = 2.2*1e-5*loc_total_POC_flux**2.1
+!        k2 = k1/100
+
+        ! check for anoxia -> set zbio
+        if(dum_swiconc_O2 .LE. loc_BW_O2_anoxia)then
+            zbio = 0.01
+            ! use anoxic degradation rate
+            k1=6.0e-7;
+            k2=1.25e-8;
+        ! After Tromp et al. 1995:
+!           k1 = 0.057*w**1.94
+        ! After Boudreau 1997:
+!           k1 = 0.04*w**2
+        end if
+
+!        k2 = k1/100
+
         if(loc_print_results) then
 !            if(dum_D < 500.0)then
                 print*,' '
@@ -629,19 +646,6 @@ CONTAINS
         ! ORGANIC MATTER
         DC1 = Dbio
         DC2 = Dunbio
-        ! spatially uniform k value
-        k1=0.0
-        k2=0.0
-        ! k dependent on sediment accumulation rate (w)
-        ! After Tromp et al. 1995:
-!        k1 = 2.97*dum_depos_rate**0.62
-!        k2 = 0.057*dum_depos_rate**1.94
-        ! After Boudreau 1997:
-!        k1 = 0.38*dum_depos_rate**0.59
-!        k2 = 0.04*dum_depos_rate**2
-        ! After Stolpovsky et al. 2016:
-!        k1 = 1.02*dum_depos_rate**0.5
-!        k2 = k1/100
                
 !        if(dum_D<1000)then
 !            print*, 'dum_D, dum_depos_rate, k1, k2 ', dum_D, dum_depos_rate, k1, k2
@@ -659,10 +663,10 @@ CONTAINS
         adispNH4=12.2640
                 
         ! Sulfate (SO4) - Hydrogen sulfide (H2S)
-        qdispSO4=309.0528                                   ! SO4 diffusion coefficient in water at 0 degree C  (cm2/yr)
-        adispSO4=12.2640                                    ! SO4 linear coefficient for temperature dependence (cm2/yr/oC)
-        qdispH2S=309.0528
-        adispH2S=12.2640
+        qdispSO4=157.68     !309.0528                                   ! SO4 diffusion coefficient in water at 0 degree C  (cm2/yr)
+        adispSO4=7.884      !12.2640                                    ! SO4 linear coefficient for temperature dependence (cm2/yr/oC)
+        qdispH2S=307.476    !309.0528
+        adispH2S=9.636      !12.2640
 
         ! Phosphate (PO4)
         qdispPO4=112.90764
@@ -673,8 +677,8 @@ CONTAINS
         adispDIC=12.2640
 
         ! Alkalinity
-        qdispALK=309.0528;                                          ! ALK diffusion coefficient in water (cm2/yr)
-        adispALK=12.2640;                                           ! ALK linear coefficient for temperature dependence (cm2/yr/oC)
+        qdispALK=308.2644   !309.0528                                          ! ALK diffusion coefficient in water (cm2/yr)
+        adispALK=10.95      !12.2640                                           ! ALK linear coefficient for temperature dependence (cm2/yr/oC)
 
 
         ! *********************************************************************************
@@ -684,7 +688,6 @@ CONTAINS
         ! *********************************************************************************
 
         loc_TempC = dum_TempK - 273.15
-        !        print*, 'loc_TempC ', loc_TempC
 
         w = dum_depos_rate                          ! sedimentation rate, cm/yr / burial velocity / advection
         !        w=10.0**(-0.87478367-0.00043512*dum_D)*3.3              ! sedimentation rate, cm/yr / burial velocity / advection (Middelburg et al., Deep Sea Res. 1, 1997)

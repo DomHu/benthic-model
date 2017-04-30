@@ -2,8 +2,8 @@ classdef benthic_zH2S
     % Solve H2S
     
     properties                      
-        qdispH2S=309.0528;                                          %H2S diffusion coefficient in water (cm2/yr)
-        adispH2S=12.2640;                                           %H2S linear coefficient for temperature dependence (cm2/yr/oC)
+        qdispH2S=307.476;   %309.0528;                                          %H2S diffusion coefficient in water (cm2/yr)
+        adispH2S=9.636;     %12.2640;                                           %H2S linear coefficient for temperature dependence (cm2/yr/oC)
         DH2S1;                      %H2S diffusion coefficient in bioturbated layer (cm2/yr)
         DH2S2;                      %H2S diffusion coefficient in non-bioturbated layer (cm2/yr)
         

@@ -2,8 +2,8 @@ classdef benthic_zSO4
     % Solve SO4
     
     properties                      
-        qdispSO4=309.0528;          %SO4 diffusion coefficient in water (cm2/yr)
-        adispSO4=12.2640;           %SO4 linear coefficient for temperature dependence (cm2/yr/oC)
+        qdispSO4=157.68;% 309.0528;          %SO4 diffusion coefficient in water (cm2/yr)
+        adispSO4=7.884; %12.2640;           %SO4 linear coefficient for temperature dependence (cm2/yr/oC)
         DSO41;                      %SO4 diffusion coefficient in bioturbated layer (cm2/yr)
         DSO42;                      %SO4 diffusion coefficient in non-bioturbated layer (cm2/yr)
         
