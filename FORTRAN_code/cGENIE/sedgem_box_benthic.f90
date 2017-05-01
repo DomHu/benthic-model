@@ -262,6 +262,7 @@ CONTAINS
         
 
         ! spatially uniform k value
+        ! MIN oxic from Arndt et al. 2013
         k1=1.0e-4
         k2=1.0e-6
 
@@ -284,6 +285,7 @@ CONTAINS
         if(dum_swiconc_O2 .LE. loc_BW_O2_anoxia)then
             zbio = 0.01
             ! use anoxic degradation rate
+            ! MIN anoxic from Arndt et al. 2013
             k1=6.0e-7;
             k2=1.25e-8;
         ! After Tromp et al. 1995:

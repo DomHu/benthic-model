@@ -404,9 +404,6 @@ classdef benthic_test
             
             % set wdepth
           	bsd.wdepth = -bc(end-1);
-            if(bsd.wdepth <1000)
-                w = (conv_POC_mol_cm3*bc(1)+conv_cal_mol_cm3*bc(8) + conv_det_mol_cm3*bc(9));   % + bc(10))
-            end
 
             res.bsd = benthic_main(1, bsd.wdepth);
             res.bsd.usescalarcode = true;
@@ -449,30 +446,30 @@ classdef benthic_test
             end
             % Set default values 
             res.zTOC = benthic_zTOC(res.bsd);
-            
+            % MIN oxic from Arndt et al. 2013
+%              res.zTOC.k1=1.0e-4;
+%              res.zTOC.k2=1.0e-6;
+
 	% Dom: set here k1, k2 if related to w or POC-flux
 %       After Tromp et al. 1995:
 %             res.zTOC.k1 = 2.97*res.bsd.w^0.62;
-%             res.zTOC.k2 = 0.057*res.bsd.w^1.94;
         % After Boudreau 1997:
-         res.zTOC.k1 = 0.38*res.bsd.w^0.59;
-%         res.zTOC.k2 = 0.04*res.bsd.w^2;
+%         res.zTOC.k1 = 0.38*res.bsd.w^0.59;
         % After Stolpovsky et al. 2016:
 %        res.zTOC.k1 = 1.02*res.bsd.w^0.5;
-
 %       after Boudreau 1997 - k dependent on OM flux (in micromol/(cm^2yr):
-%        res.zTOC.k1 = 2.2*1e-5*(bc(1)*10^6)^2.1;
+        res.zTOC.k1 = 2.2*1e-5*(bc(1)*10^6)^2.1;
             
             % if anoxic, change zbio to 0.01 cm
             if(swi.O20 < 5.0e-9 )
                 res.bsd.zbio=0.01;
+                % MIN anoxic from Arndt et al. 2013
+%                   res.zTOC.k1=6.0e-7;
+%                   res.zTOC.k2=1.25e-8;
                  % After Boudreau 1997:
                 res.zTOC.k1 = 0.04*res.bsd.w^2;
-                % fter Tromp et al. 1995:
+                % after Tromp et al. 1995:
 %             res.zTOC.k1 = 0.057*res.bsd.w^1.94;
-              if(bsd.wdepth < 500)
-                bsd.wdepth
-              end  
             end
             
             res.zTOC.k2 = res.zTOC.k1/100;            
@@ -559,10 +556,10 @@ classdef benthic_test
     %%%%%%%%%%%%%%%%  TEST PROFILES  %%%%%%%%%%%%%%%%%%%%
     
     
-  if(bsd.wdepth < 500)
-              benthic_test.plot_column(res, false, res.swi, '_shallow_2804_GENIEw')
-  end            
-            
+%   if(bsd.wdepth < 500)
+%               benthic_test.plot_column(res, false, res.swi, '_shallow_2804_GENIEw')
+%   end            
+             
         end
         
         function swi = sensitivity_swi(swi, Params, str_date)

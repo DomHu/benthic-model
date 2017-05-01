@@ -796,7 +796,7 @@ Tortuosity can be expresssed in terms of porosity as $F = \frac{1}{\phi^m}$ \cit
 Values for $D^T_i$ and $D^0_i$ are summarized in Table \ref{table:sed-charac_transport-parameters} and are adapted from \citet{Li_diffusion_1974} and \citet{gypens_simple_2008}.
 
 \begin{table}[hbtp]
-\caption{Sediment characteristics and transport parameters. \textcolor{red}{TODO: Update table!}}
+\caption{Sediment characteristics and transport parameters. \textcolor{red}{TODO: PO4 adsorption coefficients okay?}}
 % title of Table
 \centering
 % used for centering table
@@ -821,25 +821,25 @@ f$_{ir}$ & - & 1 & Irrigation factor\\
 $K_{\chem{NH_4}}$ & - & 1.3 & \chem{NH_4} adsorption coefficient, \citep[see][]{wang_multicomponent_1996}\\
 $K_\chem{PO_4}^{ox}$ & - & \textcolor{red}{200.0} & \chem{PO_4} adsorption coefficient (oxic), \citep[see][]{slomp1998role}\\
 $K_\chem{PO_4}^{anox}$ & - & \textcolor{red}{1.3} & \chem{PO_4} adsorption coefficient (anoxic), \citep[see][]{slomp1998role}\\
-\multicolumn{4}{l}{\textbf{Diffusion coefficients} \citep{Li_diffusion_1974, gypens_simple_2008}}\\
-$D_{\chem{O_2}}^0$ & cm$^2$\,yr$^{-1}$ & 348.62172 &Molecular diffusion coefficient of oxygen at 0$^\circ$C\\
-$D_{\chem{O_2}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 14.08608 &Diffusion coefficient for linear temp. dependence of oxygen\\ % value was 0.0386 (changed by Nicolas 2207)
-$D_{\chem{NO_3}}^0$ & cm$^2$\,yr$^{-1}$ & 308.42208 &Molecular diffusion coefficient of nitrate at 0$^\circ$C\\
-$D_{\chem{NO_3}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 12.2640 &Diffusion coefficient for linear temp. dependence of nitrate\\ % value was 0.0386 (changed by Nicolas 2207)
-$D_{\chem{NH_4}}^0$ & cm$^2$\,yr$^{-1}$ & 309.0528 &Molecular diffusion coefficient of ammonium at 0$^\circ$C\\
-$D_{\chem{NH_4}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 12.2640 &Diffusion coefficient for linear temp. dependence of ammonium\\ % value was 0.0386 (changed by Nicolas 2207)
+\multicolumn{4}{l}{\textbf{Diffusion coefficients} \citep{Li_diffusion_1974, schulz_quantification_2006, gypens_simple_2008}}\\
+$D_{\chem{O_2}}^0$ & cm$^2$\,yr$^{-1}$ & 348.62 &Molecular diffusion coefficient of oxygen at 0$^\circ$C\\
+$D_{\chem{O_2}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 14.09 &Diffusion coefficient for linear temp. dependence of oxygen\\ % value was 0.0386 (changed by Nicolas 2207)
+$D_{\chem{NO_3}}^0$ & cm$^2$\,yr$^{-1}$ & 308.42 &Molecular diffusion coefficient of nitrate at 0$^\circ$C\\
+$D_{\chem{NO_3}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 12.26 &Diffusion coefficient for linear temp. dependence of nitrate\\ % value was 0.0386 (changed by Nicolas 2207)
+$D_{\chem{NH_4}}^0$ & cm$^2$\,yr$^{-1}$ & 309.05 &Molecular diffusion coefficient of ammonium at 0$^\circ$C\\
+$D_{\chem{NH_4}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 12.26 &Diffusion coefficient for linear temp. dependence of ammonium\\ % value was 0.0386 (changed by Nicolas 2207)
 $D_{\chem{SO_4}}^0$ & cm$^2$\,yr$^{-1}$ & 157.68 &Molecular diffusion coefficient of sulfate at 0$^\circ$C\\
-$D_{\chem{SO_4}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 7.884 &Diffusion coefficient for linear temp. dependence of sulfate\\ % value was 0.0386 (changed by Nicolas 2207)
-$D_{\chem{H_2S}}^0$ & cm$^2$\,yr$^{-1}$ & 307.476 & Molecular diffusion coefficient of sulfide at 0$^\circ$C\\
-$D_{\chem{H_2S}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 9.636 & Diffusion coefficient for linear temp. dependence of sulfide\\ % value was 0.0386 (changed by Nicolas 2207)
-$D_{\chem{PO_4}}^0$ & cm$^2$\,yr$^{-1}$ & 112.90764 &Molecular diffusion coefficient of phosphate at 0$^\circ$C\\
-$D_{\chem{PO_4}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 5.586252 &Diffusion coefficient for linear temp. dependence of phosphate\\ % value was 0.0386 (changed by Nicolas 2207)
-$D_{\chem{DIC}}^0$ & cm$^2$\,yr$^{-1}$ & 65.52  &Molecular diffusion coefficient of DIC at 0$^\circ$C\\
-$D_{\chem{DIC}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 5.59  &Diffusion coefficient for linear temp. dependence of DIC\\ 
-$D_{\chem{ALK}}^0$ & cm$^2$\,yr$^{-1}$ & 308.2644  &Molecular diffusion coefficient of ALK at 0$^\circ$C\\
-$D_{\chem{ALK}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 10.95 &Diffusion coefficient for linear temp. dependence of ALK\\ 
-\multicolumn{4}{l}{Note: DIC coefficients were calculated from 25$^\circ$ data for $\chem{HCO_3}$, assuming the same linear temp. dependence as for \chem{NO_3}}\\
-\multicolumn{4}{l}{\citep[as in][]{martin_dissolved_1993}. Alkalinity coefficients are the mean values of \chem{NH_4} and \chem{H_2S}.}\\
+$D_{\chem{SO_4}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 7.88 &Diffusion coefficient for linear temp. dependence of sulfate\\ % value was 0.0386 (changed by Nicolas 2207)
+$D_{\chem{H_2S}}^0$ & cm$^2$\,yr$^{-1}$ & 307.48 & Molecular diffusion coefficient of sulfide at 0$^\circ$C\\
+$D_{\chem{H_2S}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 9.64 & Diffusion coefficient for linear temp. dependence of sulfide\\ % value was 0.0386 (changed by Nicolas 2207)
+$D_{\chem{PO_4}}^0$ & cm$^2$\,yr$^{-1}$ & 112.91 &Molecular diffusion coefficient of phosphate at 0$^\circ$C\\
+$D_{\chem{PO_4}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 5.59 &Diffusion coefficient for linear temp. dependence of phosphate\\ % value was 0.0386 (changed by Nicolas 2207)
+$D_{\chem{DIC}}^0$ & cm$^2$\,yr$^{-1}$ & 181.96  &Molecular diffusion coefficient of DIC at 0$^\circ$C\\
+$D_{\chem{DIC}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 8.66  &Diffusion coefficient for linear temp. dependence of DIC\\ 
+$D_{\chem{ALK}}^0$ & cm$^2$\,yr$^{-1}$ & 181.96  &Molecular diffusion coefficient of ALK at 0$^\circ$C\\
+$D_{\chem{ALK}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 8.66 &Diffusion coefficient for linear temp. dependence of ALK\\ 
+\multicolumn{4}{l}{Note: DIC and ALK coefficients are the mean values of $\chem{HCO_3^{-}}$,  $\chem{CO_3^{2-}}$ and \chem{CO_2} from \citet{schulz_quantification_2006}.}\\
+%\multicolumn{4}{l}{\citep[as in][]{martin_dissolved_1993}. Alkalinity coefficients are the mean values of \chem{NH_4} and \chem{H_2S}.}\\
 \hline\hline
 \end{tabular}
 \label{table:sed-charac_transport-parameters}
@@ -871,7 +871,7 @@ See Table \ref{table:reaction_parameters} for a complete summary of the paramete
 %are consumed during nitrification of \chem{NH_4} produced in the anoxic zone. As nitrification may be incomplete in the oxic layer, we similarly allow for part of the ammonium flux to escape re-oxidation. 
 \begin{table}[btp]
 \caption{Values for biogeochemical parameters used in OMEN-SED. The variables $x$, $y$ and $z$ denote the atomic ratio of carbon, nitrogen and phosphorous of the degrading 
-organic matter (here set to $C:N:P = 106:16:1$).
+organic matter (here set to $C:N:P = 106:16:1$). \textcolor{red}{P related coefficients okay?}
 %\textcolor{red}{Stoichiometric factor for oxygen and sulfate relates to mol of terminal electron acceptor consumed for 1 mol of organic matter mineralized. 
 %NC and MC related to mol of reduced species produces per mol organic matter mineralized. correct???}
 }
