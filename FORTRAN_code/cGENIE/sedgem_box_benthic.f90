@@ -242,7 +242,7 @@ CONTAINS
         ! w from GENIE
         loc_new_sed_vol = fun_calc_sed_vol(loc_new_sed(:))
         ! w after Middelburg
-!        loc_new_sed_vol=10.0**(-0.87478367-0.00043512*dum_D)*3.3              ! sedimentation rate, cm/yr / burial velocity / advection (Middelburg et al., Deep Sea Res. 1, 1997)
+        loc_new_sed_vol=10.0**(-0.87478367-0.00043512*dum_D)*3.3              ! sedimentation rate, cm/yr / burial velocity / advection (Middelburg et al., Deep Sea Res. 1, 1997)
 
 
         ! Model crashed for low sediment accumulation rates, therefore:
@@ -263,8 +263,14 @@ CONTAINS
 
         ! spatially uniform k value
         ! MIN oxic from Arndt et al. 2013
-        k1=1.0e-4
-        k2=1.0e-6
+!        k1=1.0e-4
+!        k2=1.0e-6
+        ! oxic from PALASTANGA ET AL. 2011
+        if(dum_D .LE. 2000)then
+            k1=0.01
+        else
+            k1=0.005
+        end if
 
         ! k dependent on sediment accumulation rate (w)
         ! After Tromp et al. 1995:
@@ -285,16 +291,22 @@ CONTAINS
         if(dum_swiconc_O2 .LE. loc_BW_O2_anoxia)then
             zbio = 0.01
             ! use anoxic degradation rate
+        ! oxic from PALASTANGA ET AL. 2011
+            if(dum_D .LE. 2000)then
+                k1=0.008
+            else
+                k1=0.002
+            end if
             ! MIN anoxic from Arndt et al. 2013
-            k1=6.0e-7;
-            k2=1.25e-8;
+!            k1=6.0e-7;
+!            k2=1.25e-8;
         ! After Tromp et al. 1995:
 !           k1 = 0.057*w**1.94
-        ! After Boudreau 1997:
+        ! After Boudreau 1997 - which is actually Toth and Lerman (1977):
 !           k1 = 0.04*w**2
         end if
 
-!        k2 = k1/100
+        k2 = k1/100
 
         if(loc_print_results) then
 !            if(dum_D < 500.0)then
@@ -722,12 +734,26 @@ CONTAINS
         DPO42=((qdispPO4+adispPO4*loc_TempC)*dispFactor);                   ! PO4 diffusion coefficient in non-bioturbated layer (cm2/yr)
         KPO4_ox = 200.0   ! 0.0                 ! Adsorption coefficient in oxic layer (-)
         KPO4_anox = 1.3   ! 0.0                ! Adsorption coefficient in anoxic layer (-)
+!       WAS BEFORE:
         ksPO4 = 1.0       ! 0.0            ! Rate constant for kinetic P sorption (1/yr)
         kmPO4 = 2.2e-6*24*365  ! 0.0                 ! Rate constant for Fe-bound P release upon Fe oxide reduction
         kaPO4 = 10.0      ! 0.0             ! Rate constant for authigenic P formation (1/yr)
         PO4s = 1.0e-9     ! 0.0               ! Equilibrium concentration for P sorption (mol/cm3)
         PO4a = 3.7e-9     ! 0.0              ! Equilibrium concentration for authigenic P formation (mol/cm3)
         Minf = 1.99e-10    ! 0.0                ! asymptotic concentration for Fe-bound P (mol/cm3)
+
+!        kmPO4 = 0.05  ! 0.0                 ! Rate constant for Fe-bound P release upon Fe oxide reduction
+!        kaPO4 = 0.37      ! 0.0             ! Rate constant for authigenic P formation (1/yr)
+!        PO4a = 3.7e-9     ! 0.0              ! Equilibrium concentration for authigenic P formation (mol/cm3)
+!        if(dum_D .LE. 2000)then     ! sediment margins
+!        ksPO4 = 36.5       ! 0.0            ! Rate constant for kinetic P sorption (1/yr)
+!        PO4s = 2.0e-9     ! 0.0               ! Equilibrium concentration for P sorption (mol/cm3)
+!        Minf = 2.0e-12    ! 0.0                ! asymptotic concentration for Fe-bound P (mol/cm3)
+!        else        ! deep sea sediments
+!        ksPO4 = 3.65       ! 0.0            ! Rate constant for kinetic P sorption (1/yr)
+!        PO4s = 12.0e-9     ! 0.0               ! Equilibrium concentration for P sorption (mol/cm3)
+!        Minf = 2.0e-9    ! 0.0                ! asymptotic concentration for Fe-bound P (mol/cm3)
+!        end if
 
         ! DIC
         DDIC1=(qdispDIC+adispDIC*loc_TempC)*dispFactor+Dbio                 ! DIC diffusion coefficient in bioturbated layer (cm2/yr)

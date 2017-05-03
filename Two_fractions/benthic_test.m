@@ -29,7 +29,7 @@ classdef benthic_test
             swi.SO40=2.8E-005;                                            %SO4 concentration at SWI (mol/cm^3)
             swi.H2S0=0.0; %2.0E-012;         %was 0.0e-9                            %H2S concentration at SWI (mol/cm^3)
             swi.PO40=40.0e-9; %0.06e-8; % Dom was 1e-9;    % Sandra played with 3e-9                                              %PO4 concentration at SWI (mol/cm^3)
-            swi.Mflux0=365*0.2e-10; % Sandra played with 10e-9; ;   % = 7.3e-9    %flux of M to the sediment (mol/(cm2*yr))   TODO/CHECK: good value+right conversion? is from Slomp et al. 1996        
+            swi.Mflux0=0.0; %365*0.2e-10; % Sandra played with 10e-9; ;   % = 7.3e-9    %flux of M to the sediment (mol/(cm2*yr))   TODO/CHECK: good value+right conversion? is from Slomp et al. 1996        
             swi.DIC0=2.4E-006;                                             %DIC concentration at SWI (mol/cm^3)
             swi.ALK0=2.4E-006;                                             %ALK concentration at SWI (mol/cm^3)
             swi.S0=35;                                                      %Salinity at SWI
@@ -414,7 +414,7 @@ classdef benthic_test
                 
                 % calculate sediment accumulation rate using POC, CaCO3 and
                 % detrital rain flux (convert from mol to cm3)            
-                res.bsd.w = (conv_POC_mol_cm3*bc(1)+conv_cal_mol_cm3*bc(8) + conv_det_mol_cm3*bc(9));   % + bc(10))
+%                res.bsd.w = (conv_POC_mol_cm3*bc(1)+conv_cal_mol_cm3*bc(8) + conv_det_mol_cm3*bc(9));   % + bc(10))
                 if(res.bsd.w<5.0e-4)                    
                     res.bsd.w=5.0e-4;
                 end
@@ -516,7 +516,7 @@ classdef benthic_test
             res = res.zALK.calc(res.bsd, res.swi, res);
             
             %%%%% WRITE OUTPUT:
-            sed_depth=100.0;
+            sed_depth=10.0;
             answ = res;
             [Cinf, C1inf, C2inf] = res.zTOC.calcC( sed_depth, res.bsd, res.swi, res);
             [Cswi, C1swi, C2swi] = res.zTOC.calcC( 0, res.bsd, res.swi, res);
