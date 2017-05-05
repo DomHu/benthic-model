@@ -133,11 +133,11 @@ Here we describe the first version of the Organic Matter ENabled SEDiment model 
 \marginnote{\textbf{DH}: How to include comments.}[-1cm]%<<<
 \textbf{Role of marine sediments for climate and global biogeochemical cycles:}\\
 Marine surface sediments are key components in the Earth system. They host the largest carbon reservoir within the surficial Earth system, provide the only long term sink for atmospheric \chem{CO_2}, 
-recycle nutrients and represent the most important geochemical archive used for deciphering past changes in biogeochemical cycles and climate. 
+recycle nutrients and represent the most important geochemical archive used for deciphering past changes in biogeochemical cycles and climate  \citep[e.g.][]{berner:91, archer_effect_1994, ridgwell_role_2005, arndt_quantifying_2013}. 
 Physical and chemical processes in sediments (i.e. diagenetic processes) depend on the water column and vice versa: Diagenesis is mainly donor controlled, as it is fuelled by the external supply of solid material 
 (e.g. organic matter, calcium carbonate, opal) from the water column and is affected by overlying bottom water concentrations of solutes. 
 At the same time, diagenesis in the sediments transforms the deposited material and returns some of the resulting products (e.g. nutrients, DIC) to the water column. 
-This so-called benthic-pelagic coupling is essential for understanding global biogeochemical cycles and climate \citep[e.g.][]{archer_effect_1994, soetaert_coupling_2000, archer_what_2000, mackenzie_sediments_2005}. 
+This so-called benthic-pelagic coupling is essential for understanding global biogeochemical cycles and climate \citep[e.g.][]{archer_effect_1994, archer_what_2000, soetaert_coupling_2000, mackenzie_sediments_2005}. 
 
 Biological primary production of organic matter (OM, \chem{CH_2O} in equation \ref{eq:photosynthesis}) and the reverse process of degradation can be written in a greatly simplified reaction as:
 \begin{reaction}
@@ -165,10 +165,11 @@ enhanced (Ruttenberg,1993). As a consequence, the inventory of P in the open oce
 drawdown may have increased, whereas ocean oxygen may have declined. This potential impact on productivity and CO2 
 was first brought forward by Broecker (1982) in the so-called shelf-nutrient hypothesis.
 %Something on: Role of marine sediments for another time period , e.g. glacial/interglacial atmospheric p\chem{CO_2} cycles
+
 Nutrient recycling from the sediments has been invoked by modelling and data studies to explain the occurance of extreme events in Earth history, for instance Oceanic Anoxic Events (OAEs) 
 \citep[e.g.][]{mort_phosphorus_2007, tsandev_modeling_2009}. OAEs represent severe disturbances of the global carbon, oxygen and nutrient cycles of the ocean and are usually characterized 
 by widespread bottom water anoxia and photic zone euxinia \citep{jenkyns_geochemistry_2010}. 
-One way to explain the genesis and persistence of OAEs is increased oxygen demand due to enhanced primary productivity (PP). Increased nutrient inputs to fuel PP may have come from marine sediments as the 
+One way to explain the genesis and persistence of OAEs is increased oxygen demand due to enhanced primary productivity. Increased nutrient inputs to fuel primary productivity may have come from marine sediments as the 
 burial efficiency of phosphorus declines when bottom waters become anoxic \citep{ingall_evidence_1994, van_cappellen_benthic_1994}. 
 The recovery from OAE like conditions is thought to involve the permanent removal of excess \chem{CO_2} from the atmosphere and ocean by burying carbon in the form of organic matter in marine sediments 
 \citep[e.g.][]{arthur_geochemical_1988, jarvis_black_2011}, which is consistent with the geological record of widespread black shale formation \citep{stein_accumulation_1986}. 
@@ -196,9 +197,10 @@ First, state-of-the art vertically resolved diagenetic models simulating the ent
 marine sediments that control carbon burial and benthic recycling fluxes (e.g. BRNS, \citeauthor{aguilera_knowledge-based_2005}, \citeyear{aguilera_knowledge-based_2005}; 
 CANDI, \citeauthor{boudreau_method--lines_1996}, \citeyear{boudreau_method--lines_1996}; MEDIA, \citeauthor{meysman_reactive_2003}, \citeyear{meysman_reactive_2003}; 
 STEADYSED, \citeauthor{cappellen_cycling_1996}, \citeyear{cappellen_cycling_1996}). 
-These ``complete'', non-steady-state models, thus explicitly include oxic OM mineralisation, denitrification, oxidation by manganese and iron (hydr)oxides, sulphate reduction 
-and methanogenesis as well as the reoxidation of reduced byproducts formed in the mineralization of OM (i.e. \chem{NH_4}, \chem{Mn^{2+}}, \chem{Fe^{2+}}, \chem{H_2S}, 
-\chem{CH_4}). Furthermore, they incorporate various mineral dissolution and precipitation reactions, as well as fast equilibrium sorption processes for example of 
+These ``complete'', non-steady-state models, thus resolve the resulting characteristic redox-zonation of marine sediments through explicitly including oxic OM degradation, 
+denitrification, oxidation by manganese and iron (hydr)oxides, sulphate reduction and methanogenesis as well as the reoxidation of reduced byproducts formed in the mineralization 
+of OM (i.e. \chem{NH_4}, \chem{Mn^{2+}}, \chem{Fe^{2+}}, \chem{H_2S}, \chem{CH_4}). 
+Furthermore, they incorporate various mineral dissolution and precipitation reactions, as well as fast equilibrium sorption processes for example of 
 \chem{NH_4}, \chem{PO_4} and metal ions \citep[i.e. \chem{Mn^{2+}}, \chem{Fe^{2+}} and \chem{Mg^{2+}}, compare][]{cappellen_cycling_1996, meysman_reactive_2003}. 
 Modelled, depth-dependent, transport processes usually comprise advection, diffusion, bioturbation and bio-irrigation.   
 This group of diagenetic models generally uses a so-called multi-G approach \citep{joergensen_comparison_1978_2, berner_early_1980}, thus dividing the bulk organic 
@@ -212,25 +214,26 @@ However, their suitability for coupling to an Earth system model (ESM) and their
 of these model parameters from one site to the global scale \citep{arndt_quantifying_2013}. 
 
 The second group of diagenetic models is less sophisticated and comprehensive than the ``complete'' diagenetic models and is used for the coupling 
-to global ESMs (e.g. HAMOCC uses the model of \citet{heinze_global_1999}) or box models (e.g. DCESS, \citeauthor{shaffer_presentation_2008}, \citeyear{shaffer_presentation_2008}; 
-MEDUSA, \citeauthor{munhoven_glacialinterglacial_2007}, \citeyear{munhoven_glacialinterglacial_2007}). 
-These analytic or semi-analytical models include fewer biogeochemical reactions which are generally restricted to the upper, bioturbated 10\, cm of the sediments. 
-The models assume that the sedimentary organic matter pool is composed 
-of just a single compound class which is either degraded with a globally invariant degradation rate constant \citep[][]{munhoven_glacialinterglacial_2007} 
-or a fixed rate constant depending on local oxygen concentrations \citep{shaffer_presentation_2008, palastanga_long-term_2011}. 
-Pore water tracers explicitly represented in DCESS \citep{shaffer_presentation_2008} and the HAMOCC model of \citet{heinze_global_1999} and \citet{palastanga_long-term_2011} 
-are only DIC, TA, \chem{PO_4} and \chem{O_2}. The MEDUSA model \citep{munhoven_glacialinterglacial_2007} considers \chem{CO_2}, \chem{HCO_3^-}, \chem{CO_3^{2-}} and \chem{O_2}. 
-Thus, oxygen being the only TEA explicitly modelled and other species produced or consumed during respiration are neglected or the influence of reduced species is 
-implicitly included in the boundary conditions for \chem{O_2}. 
-A newer version of the HAMOCC model \citep{ilyina_global_2013} being a notable exception, as it includes \chem{NO_3} and denitrification explicitly. 
-Secondary redox reactions involving reduced substances or sorption processes  are not included in any of the discussed models. 
+to global ESMs (e.g. HAMOCC and NorESM use the model of \citet{heinze_global_1999}) or box models (e.g. DCESS, \citeauthor{shaffer_presentation_2008}, \citeyear{shaffer_presentation_2008}; 
+MBM using MEDUSA, \citeauthor{munhoven_glacialinterglacial_2007}, \citeyear{munhoven_glacialinterglacial_2007}). 
+These analytic or semi-analytical models  account for the most important transport processes (i.e advection, bioturbation and molecular diffusion) through basic parametrizations and 
+include fewer biogeochemical reactions which are generally restricted to the upper, bioturbated 10\,cm of the sediments. 
+They assume that the sedimentary organic matter pool is composed of just a single compound class which is either degraded with a globally invariant degradation rate constant 
+\citep[][]{munhoven_glacialinterglacial_2007} or a fixed rate constant depending on local oxygen concentrations \citep{shaffer_presentation_2008, palastanga_long_term_2011}. 
+Pore water tracers explicitly represented in DCESS \citep{shaffer_presentation_2008} and the HAMOCC model of \citet{heinze_global_1999} and \citet{palastanga_long_term_2011} 
+are restricted to DIC, TA, \chem{PO_4} and \chem{O_2}. The MEDUSA model \citep{munhoven_glacialinterglacial_2007} considers \chem{CO_2}, \chem{HCO_3^-}, \chem{CO_3^{2-}} and \chem{O_2}. 
+Other species produced or consumed during OM degradation are neglected. 
+Thus, with oxygen being the only TEA explicitly modelled the influence of reduced species is only implicitly included in the boundary conditions for \chem{O_2}. 
+Newer versions of the HAMOCC model, being notable exceptions, as \citet{ilyina_global_2013} include \chem{NO_3} and denitrification explicitly and the version of 
+\citet{palastanga_long_term_2011} represents an explicit sedimentary phosphorus cycle. Secondary redox reactions involving reduced substances or sorption processes are not 
+included in any of the discussed models. 
 
 % From Soetart-review:  this evidence of mutual interaction between the water column and the sediment
 % beneath, most biogeochemical models for water column processes either neglect the sediments or apply
 % a rather crude approximation for the benthic response.
 
 \textbf{How are sediments resolved in Earth System models:}\\
-Even though there is potential to use more appropriate global sediment representations, in most current ESMs sediment-water exchange of OM and chemical elements is either neglected or treated in a very 
+Even though there are more appropriate sediment representations, in most current ESMs sediment-water exchange of OM and chemical elements is either neglected or treated in a very 
 simplistic way \citep{soetaert_coupling_2000, huelse_biopump_models_2017}. 
 Most Earth system Models of Intermediate Complexity (EMICs) and also some of the higher resolution global carbon cycle models represent the sediment-water interface either as a reflective or a conservative/semi-reflective boundary 
 \citep{huelse_biopump_models_2017}. 
@@ -242,30 +245,35 @@ to the sediment box where it gets degraded and dissolved species diffuse through
 This approach thus ignores the vertical extent of the sediments and the temporary storage of dissolved species \citep{soetaert_coupling_2000}. Yet, it is computationally efficient and 
 also allows differentiating between various fractions of organic matter. Most EMICs incorporate a vertically integrated dynamic model for particulate inorganic carbon only (i.e. mainly \chem{CaCO_3}) and just a few  
 consider oxic-only sediment degradation of organic matter \citep{huelse_biopump_models_2017}. 
-The most complex description of marine sediments in Earth System models are vertically resolved diagenetic models, solving the one-dimensional, fully coupled reaction-transport equation for multiple solid and dissolved species 
-\citep[e.g.][]{berner_early_1980, boudreau1997diagenetic}. These models account for important transport processes (e.g. bioturbation, molecular diffusion and bioirrigation), resolve the coupled biogeochemical dynamics of dissolved species
-and usually at least a part of the resulting characteristic redox-zonation of marine sediments \citep{soetaert_coupling_2000}. 
-Examples of global carbon cycle models employing a vertically resolved diagenetic model are PISCES \citep{gehlen_reconciling_2006} (just offline coupling better 
-discuss \citep{palastanga_long-term_2011} as example) and 
-CLIMBER 3$\alpha$ \citep{ilyina_global_2013}, both using a version of \citet{heinze_global_1999}, however, just utilizing a 1G approach with a constant degradation rate constant. % and NORESM \citep{tjiputra_evaluation_2013} does not say anything if they just use the original oxic-only
-None of the EMICs reviewed by \citet{huelse_biopump_models_2017} use such a sediment representation. 
-\textcolor{red}{elaborate on the existing vertically resolved models and clearly highlight what are the key novel features of omensed}
+
+The most complex description of diagenetic OM degradation in Earth system models is the second group of vertically resolved diagenetic models as discussed above 
+\citep[e.g.][]{heinze_global_1999, munhoven_glacialinterglacial_2007, shaffer_presentation_2008}. 
+These models solve the one-dimensional reaction-transport equation for a number of solid and dissolved species for the upper, bioturbated 10\,cm of the sediments. 
+% and account for the most important transport processes (e.g. bioturbation, molecular diffusion and bioirrigation), resolve the coupled biogeochemical dynamics of dissolved species
+% and usually at least a part of the resulting characteristic redox-zonation of marine sediments \citep{soetaert_coupling_2000}. 
+Examples of global ESMs employing a vertically resolved diagenetic model are NorESM \citep{tjiputra_evaluation_2013} and HAMOCC \citep{palastanga_long_term_2011, ilyina_global_2013}, 
+both using a version of \citet{heinze_global_1999}. None of the EMICs reviewed by \citet{huelse_biopump_models_2017} use such a sediment representation. 
+DCESS \citep{shaffer_presentation_2008} and MBM \citep{munhoven_glacialinterglacial_2007} are box models employing a vertically resolved diagenetic model. 
+However, in general oxygen is the only TEA explicitly modelled and secondary redox reactions and reduced species are completely neglected in these approaches. 
+Furthermore, all models represent the bulk OM pool as a single fraction with a fixed degradation rate constant. 
 
 % Sandra review: large scale of published model parameters illustrates the complex nature of organic matter dynamics! Very difficult to find global relationships to relate model parameters 
 % to available environmental characteristics, such as water depth, deposition rate. 
 
 \textbf{Problem with that:} \\
+\textcolor{red}{also talk about that other TEA, reduced species and secondary redox reactions is neglected}
 Obviously, such simplifications can neither account for the observed vast structural complexity in natural organic matter and its resulting different degradation rates nor for the rapid decrease in 
 OM degradability in the uppermost centimeters of the sediments \citep{arndt_quantifying_2013}. At least a 3G approach is necessary to accurately represent organic matter dynamics in this part of the sediments where most OM is 
 degraded \citep[e.g.][]{soetaert_model_1996}. 
-Furthermore, the spatial variability in benthic OM degradation kinetics is unknown at the global scale and reported rate constants can vary by almost 10 orders of magnitude \citep{arndt_quantifying_2013}.
+
+\textit{Furthermore, the spatial variability in benthic OM degradation kinetics is unknown at the global scale and reported rate constants can vary by almost 10 orders of magnitude \citep{arndt_quantifying_2013}.
 Thus, a major challenge for diagenetic models is defining appropriate OM degradation rate constants which is either achieved 
 through profile fitting for a specific site or, for global applications, the rate constants follow empirical relations with a related, readily available sediment characteristic such as water depth 
 \citep{middelburg_empirical_1997}, sedimentation rate \citep{toth_organic_1977, tromp_global_1995} or OM flux \citep{boudreau1997diagenetic}. 
 However, these relationships are mostly based on simple fitting exercises to limited data sets and show at the most a very weak trend and no statistically significant relationship \citep{arndt_quantifying_2013}. 
 This creates considerable uncertainties when diagenetic models are coupled to global biogeochemical ocean models especially when applying the model for different geological timescales. % see: https://goldschmidtabstracts.info/2013/2270.pdf
 Other model parameters implicitly accounting for processes not explicitly described are sedimentation and bioturbation rate and are generally related to water depth following \citet{middelburg_empirical_1997}.
-
+}
 % These parameters, in particular the OM degradation rate constants, are either derived through profile fitting for a specific site or, for global applications, follow empirical relations with a related, readily available sediment 
 % characteristic such as water depth \citep{middelburg_empirical_1997}, sedimentation rate \citep{toth_organic_1977, tromp_global_1995} or OM flux \citep{boudreau1997diagenetic}. 
 % Start with OM is composed of loads of different compound classes. 1G approach can't account for that. Need at least 3 different fractions. Then problem of defining degradation rate constants especially on a global scale. 
@@ -1096,7 +1104,7 @@ The version of cGENIE used here includes the marine geochemical cycling of carbo
 preservation of carbonates in deep-sea sediments \citep{ridgwell_regulation_2007} and terrestrial weathering \citep{colbourn_rock_2013}. 
 The ocean model is implemented on a 36$\times$36 equal-area horizontal grid with 16 vertical levels using the pre-industrial continental configuration and bathymetry as in \citet{archer_atmospheric_2009}. 
 In contrast to \citet{archer_atmospheric_2009} the same grid resolution (36$\times$36) is used for the sediment geochemistry model SEDGEM. 
-Instead of completely remineralising POC at the seafloor, OMEN-SED is called by SEDGEM for each grid point. 
+Instead of completely degrading POC at the seafloor, OMEN-SED is called by SEDGEM for each grid point. 
 Depending on the overlying biogeochemical ocean model processes can be included or excluded in OMEN-SED and stoichiometric factors need to be adjusted to ensure preservation of mass. 
 As nitrogen is not modelled explicitly in the employed cGENIE configuration the related stoichiometries in OMEN-SED are set to zero (i.e. \chem{NC_i}, $\chem{ALK}^\mathrm{NIT}$ and $\chem{ALK}^\mathrm{DEN}$). 
 cGENIE, however, implicitly includes the effects of \chem{NH_4} release and its nitrification on Alkalinity and neglects the impact of P release; therefore, related 
@@ -1343,14 +1351,14 @@ calculated as $k_2 = k_1/100$, apart from the Control experiment where $k_2 = 1.
 %inserts double horizontal lines
 Experiment & oxic rate constant  &  anoxic rate constant  & Reference/Description\\
 \hline
-Control & $1.0$ & $1.0$ & All OM is remineralised.\\
+Control & $1.0$ & $1.0$ & All OM is degraded\\
 Tromp & $2.97\cdot w^{0.62}$ & $0.057\cdot w^{1.94}$ & \citet{tromp_global_1995} \\
 Boudreau\_Toth & $0.38\cdot w^{0.59}$ & $0.04\cdot w^{2}$ & \citet{boudreau1997diagenetic} oxic\\
 & & & \citet{toth_organic_1977} anoxic\\
 Stolpovsky\_Toth & $1.02\cdot w^{0.5}$ & $0.04\cdot w^{2}$ & \citet{stolpovsky_toward_2015} oxic\\
 & & & \citet{toth_organic_1977} anoxic\\
 Palastanga & 0.01 & 0.008 & $D\leq 2000$\\
- & 0.005 & 0.002 & $D > 2000$ \citet{palastanga_long-term_2011} \\
+ & 0.005 & 0.002 & $D > 2000$ \citet{palastanga_long_term_2011} \\
 \hline\hline
 % inserts double horizontal lines
 \end{tabular}
