@@ -208,7 +208,7 @@ carbon pool into a number of compound classes that are characterised by differen
 of the specific terminal electron acceptor (TEA). Due to the large number of interrelated processes and depth-dependent parameters this group of diagenetic models need to be 
 solved numerically, thus resulting in a very high computational demand. 
 These complex models have a great potential for quantifying OM degradation dynamics for sites where enough observations are available to constrain its model 
-parameters \citep[see e.g.][for applications]{boudreau_comparative_1998, wang_multicomponent_1996, thullner_global-scale_2009}. 
+parameters \citep[see e.g.][for applications]{boudreau_comparative_1998, wang_multicomponent_1996, thullner_global_scale_2009}. 
 %Combining such a complex diagenetic model with an ocean biogeochemical model results in the most realistic benthic-pelagic coupling. 
 However, their suitability for coupling to an Earth system model (ESM) and their global applicability is limited by the high computation cost and the limited transferability 
 of these model parameters from one site to the global scale \citep{arndt_quantifying_2013}. 
@@ -235,22 +235,20 @@ included in any of the discussed models.
 \textbf{How are sediments resolved in Earth System models:}\\
 Even though there are more appropriate sediment representations, in most current ESMs sediment-water exchange of OM and chemical elements is either neglected or treated in a very 
 simplistic way \citep{soetaert_coupling_2000, huelse_biopump_models_2017}. 
-Most Earth system Models of Intermediate Complexity (EMICs) and also some of the higher resolution global carbon cycle models represent the sediment-water interface either as a reflective or a conservative/semi-reflective boundary 
-\citep{huelse_biopump_models_2017}. 
+Most Earth system Models of Intermediate Complexity (EMICs) and also some of the higher resolution global carbon cycle models represent the sediment-water interface either as a 
+reflective or a conservative/semi-reflective boundary \citep{huelse_biopump_models_2017}. 
 Thus, all particulate material deposited on the seafloor is either instantaneously consumed (reflective boundary), or a fixed fraction is buried in the sediments (conservative/semi-reflective boundary). 
 Both highly simplified approaches furthermore completely neglect the exchange of solute species through the sediment-water interface and, therefore, cannot resolve the complex benthic-pelagic coupling. 
 However, due to their computational efficiency, both representations are often used in global biogeochemical models \citep[e.g.][]{najjar_impact_2007, ridgwell_marine_2007, goosse_description_2010}. 
-A superior approach is the vertically integrated dynamic model, which represents the whole sediment column as a single box \citep{huelse_biopump_models_2017}. Here, OM deposited on the seafloor is added 
-to the sediment box where it gets degraded and dissolved species diffuse through the sediment-water interface in accordance with these transformations. 
+A superior approach is the vertically integrated dynamic model, which represents the whole sediment column as a single box \citep{huelse_biopump_models_2017}. Here, OM deposited on 
+the seafloor is added to the sediment box where it gets degraded and dissolved species diffuse through the sediment-water interface in accordance with these transformations. 
 This approach thus ignores the vertical extent of the sediments and the temporary storage of dissolved species \citep{soetaert_coupling_2000}. Yet, it is computationally efficient and 
-also allows differentiating between various fractions of organic matter. Most EMICs incorporate a vertically integrated dynamic model for particulate inorganic carbon only (i.e. mainly \chem{CaCO_3}) and just a few  
-consider oxic-only sediment degradation of organic matter \citep{huelse_biopump_models_2017}. 
+also allows differentiating between various fractions of organic matter. Most EMICs incorporate a vertically integrated dynamic model for particulate inorganic carbon only 
+(i.e. mainly \chem{CaCO_3}) and just a few  consider oxic-only sediment degradation of organic matter \citep{huelse_biopump_models_2017}. 
 
 The most complex description of diagenetic OM degradation in Earth system models is the second group of vertically resolved diagenetic models as discussed above 
 \citep[e.g.][]{heinze_global_1999, munhoven_glacialinterglacial_2007, shaffer_presentation_2008}. 
 These models solve the one-dimensional reaction-transport equation for a number of solid and dissolved species for the upper, bioturbated 10\,cm of the sediments. 
-% and account for the most important transport processes (e.g. bioturbation, molecular diffusion and bioirrigation), resolve the coupled biogeochemical dynamics of dissolved species
-% and usually at least a part of the resulting characteristic redox-zonation of marine sediments \citep{soetaert_coupling_2000}. 
 Examples of global ESMs employing a vertically resolved diagenetic model are NorESM \citep{tjiputra_evaluation_2013} and HAMOCC \citep{palastanga_long_term_2011, ilyina_global_2013}, 
 both using a version of \citet{heinze_global_1999}. None of the EMICs reviewed by \citet{huelse_biopump_models_2017} use such a sediment representation. 
 DCESS \citep{shaffer_presentation_2008} and MBM \citep{munhoven_glacialinterglacial_2007} are box models employing a vertically resolved diagenetic model. 
@@ -261,19 +259,42 @@ Furthermore, all models represent the bulk OM pool as a single fraction with a f
 % to available environmental characteristics, such as water depth, deposition rate. 
 
 \textbf{Problem with that:} \\
-\textcolor{red}{also talk about that other TEA, reduced species and secondary redox reactions is neglected}
-Obviously, such simplifications can neither account for the observed vast structural complexity in natural organic matter and its resulting different degradation rates nor for the rapid decrease in 
-OM degradability in the uppermost centimeters of the sediments \citep{arndt_quantifying_2013}. At least a 3G approach is necessary to accurately represent organic matter dynamics in this part of the sediments where most OM is 
-degraded \citep[e.g.][]{soetaert_model_1996}. 
+Obviously, such a simplification of the OM pool can neither account for the observed vast structural complexity in natural organic matter and its resulting different degradation 
+rates nor for the rapid decrease in OM degradability in the uppermost centimeters of the sediments \citep{arndt_quantifying_2013}. It has been suggested that at least a 3G approach 
+is necessary to accurately represent organic matter dynamics in this part of the sediments where most OM is degraded \citep[e.g.][]{soetaert_model_1996}. 
+Even more restrictive is the use of \chem{O_2} as the only TEA and the complete absence of reduced substances and related secondary redox reactions. 
+Although \citet{archer_model_2002} suggested that aerobic degradation accounts for 66\% of total organic matter respiration 
+more recent model and data studies have reported that sulfate reduction is the dominat respiration pathway on a global average 
+\citep[with contributions of 55-76\%][]{canfield_aquatic_2005, jorgensen_sulfur_2006, thullner_global_scale_2009}. \citet{thullner_global_scale_2009} found that \chem{O_2} becomes 
+progressively less important as TEA with decreasing seafloor depth and in shallow waters most of it is used to reoxidise reduced substances produced during anerobic respiration. 
+Thus, the in situ production of \chem{NO_3} and \chem{SO_4} through oxidation of \chem{NH_4} and \chem{H_2S} is an important sink for \chem{O_2} 
 
-\textit{Furthermore, the spatial variability in benthic OM degradation kinetics is unknown at the global scale and reported rate constants can vary by almost 10 orders of magnitude \citep{arndt_quantifying_2013}.
-Thus, a major challenge for diagenetic models is defining appropriate OM degradation rate constants which is either achieved 
-through profile fitting for a specific site or, for global applications, the rate constants follow empirical relations with a related, readily available sediment characteristic such as water depth 
-\citep{middelburg_empirical_1997}, sedimentation rate \citep{toth_organic_1977, tromp_global_1995} or OM flux \citep{boudreau1997diagenetic}. 
-However, these relationships are mostly based on simple fitting exercises to limited data sets and show at the most a very weak trend and no statistically significant relationship \citep{arndt_quantifying_2013}. 
-This creates considerable uncertainties when diagenetic models are coupled to global biogeochemical ocean models especially when applying the model for different geological timescales. % see: https://goldschmidtabstracts.info/2013/2270.pdf
-Other model parameters implicitly accounting for processes not explicitly described are sedimentation and bioturbation rate and are generally related to water depth following \citet{middelburg_empirical_1997}.
-}
+Important process of ``In situ production of NO 3 , Fe(OH)3 and SO4 through oxidation of NH4 , Fe2+ , FeS and H2S by O2'' completely neglected which can represent an important loss 
+of O2
+
+also direct release of H2S from sediments to the ocean is important for the development of OMZ and euxinia
+
+
+It is important to resolve these discrepancies because they imply a major revision of the role of O2 versus SO4 in global carbon cycling in the seafloor. 
+
+
+% \textbf{problem when O2 only TEA for global studies:} \\
+% Thullner: SO4 most important TEA ``suggest that sulfate-based carbon mineralization plays a more important role in global benthic carbon oxidation than previously
+% reported.''; O2 becomes progessively less important with decreasing SFD: Sulfate reduction accounts for 76\% of the global
+% carbon mineralization rate (16 Tmol yr À1 ) and aerobic respiration only for 15\% (3.1 Tmol yr ... ). 
+% Maybe give other data on SO4 importance: data compiled by Canfield [1993] and Canfield et al. [2005] gives a sulfate-based contribution of 55–65\%
+% Archer et al. [2002] suggested that aerobic respiration is the dominant respiration pathway at all SFDs, accounting for 66\% of total carbon mineralization.
+% It is important to resolve these discrepancies because they imply a major revision of the role of O2 versus SO4 in global carbon cycling in the seafloor. 
+% OMENSED could help to resolve these discrepancies!!!
+
+
+
+
+Questions that can be asked with OMEN: Schulz\& Zabel book: How big is the contribution of
+each pathway compared to the total mineraliza-
+tion? (2) To which amount and by which proces-
+ses are these pathways interrelated?
+
 % These parameters, in particular the OM degradation rate constants, are either derived through profile fitting for a specific site or, for global applications, follow empirical relations with a related, readily available sediment 
 % characteristic such as water depth \citep{middelburg_empirical_1997}, sedimentation rate \citep{toth_organic_1977, tromp_global_1995} or OM flux \citep{boudreau1997diagenetic}. 
 % Start with OM is composed of loads of different compound classes. 1G approach can't account for that. Need at least 3 different fractions. Then problem of defining degradation rate constants especially on a global scale. 
@@ -288,6 +309,11 @@ Other model parameters implicitly accounting for processes not explicitly descri
 \textbf{Solution presented here:}\\
 \textcolor{red}{Say OMEN-SED is a compromise between numerical diagentic models and existing vertically resolved models currently used for the coupling to ESMs. 
  highlight the key novel features of omensed and that it captures most of the features of numerical diagenetic models, however, mostly in an depth-independent way}
+ 
+Muds is the first of this class of models to resolve the suboxic manganese, iron, and sulfur redox systems. Pore water constituents include O 2 , NO3,
+Mn 2+ , Fe 2+ , NH 4= , CO 3= , and H 4 SIO 4 , and the solid phase includes two phases of organic carbon, MnO 2 , FeOOH, CaCO 3 , and SiO 2 . 
+
+In order to approach a more realistic description of C and nutrient cycles .....
 
 Here, we present the OrganicMatter ENabled SEDiment model (OMEN-SED 1.0), a new, one-dimensional, numerically efficient reactive transport model (RTM) 
 that describes OM cycling as well as the associated dynamics of the most important TEAs (i.e. \chem{O_2}, \chem{NO_3}, \chem{SO_4}, \chem{CH_4}), 
@@ -1133,7 +1159,7 @@ using the stand-alone matlab version of OMEN-SED.
 % where $\phi$ is the sediment porosity (-) and $\frac{1}{12}$ is the conversion of POC from $cm^3$ to $mol$ assuming the average density of POC as $1.0 \frac{cm^3}{g}$ .
 
 
-\section {Test Cases}
+\section {Model Applications}
 \textcolor{red}{TODO: Check Intro sentences}
 To validate our approach, model results were compared with observed pore water profiles (Section \ref{subsec:SedProfiles}), an extensive sensitivity analysis for the most important model 
 parameters was performed and resulting sediment-water interface fluxes were compared with a global database (Section \ref{subsec:SA}). Furthermore, OMEN-SED was coupled to the cGENIE Earth System model 
@@ -1327,6 +1353,16 @@ Our objective is not to perform and discuss a detailed calibration of the two  m
 We rather want to showcase, that a coupling is possible and results in general show  main sediment features one would expect to see on a global scale. 
 All simulations are run for 20,000 years to steady-state. OMEN-SED is called for each grid-cell in every time step, feeding back the resulting SWI-fluxes and the 
 fraction of POC preserved in the sediments to cGENIE. 
+
+
+\textit{Furthermore, the spatial variability in benthic OM degradation kinetics is unknown at the global scale and reported rate constants can vary by almost 10 orders of magnitude \citep{arndt_quantifying_2013}.
+Thus, a major challenge for diagenetic models is defining appropriate OM degradation rate constants which is either achieved 
+through profile fitting for a specific site or, for global applications, the rate constants follow empirical relations with a related, readily available sediment characteristic such as water depth 
+\citep{middelburg_empirical_1997}, sedimentation rate \citep{toth_organic_1977, tromp_global_1995} or OM flux \citep{boudreau1997diagenetic}. 
+However, these relationships are mostly based on simple fitting exercises to limited data sets and show at the most a very weak trend and no statistically significant relationship \citep{arndt_quantifying_2013}. 
+This creates considerable uncertainties when diagenetic models are coupled to global biogeochemical ocean models especially when applying the model for different geological timescales. % see: https://goldschmidtabstracts.info/2013/2270.pdf
+Other model parameters implicitly accounting for processes not explicitly described are sedimentation and bioturbation rate and are generally related to water depth following \citet{middelburg_empirical_1997}.
+}
 
 As discussed elsewhere \citep[e.g.][and references therein]{arndt_quantifying_2013} and also shown in our sensitivity analysis \ref{subsec:SA} of all the rate constants the 
 degradation rates of OM ($k_i$) are the most influential parameters and strongly determine the SWI-flux of redox-sensitive elements. 
