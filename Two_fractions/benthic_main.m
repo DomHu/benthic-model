@@ -94,8 +94,8 @@ classdef benthic_main < handle
             obj.Y_N=16;                                                     % Nitrogen Redfield stoichiometry
             obj.Z_P=1;                                                      % Phosphorous Redfield stoichiometry
             obj.OC=(138/106)*obj.SD; % 1.0*obj.SD; %                      	%O2/C (mol/mol)
-            obj.NC1= 0.0; %16.0/106.0*obj.SD;    % 0.0; % 0.1509                                     %N/C first TOC fraction: 16/106 (mol/mol)
-            obj.NC2=  0.0; %16.0/106.0*obj.SD; %0.0;%0.1509*obj.SD; %0.13333*obj.SD;                                         %N/C second TOC fraction (mol/mol)            
+            obj.NC1= 16.0/106.0*obj.SD;    % 0.0; % 0.1509                                     %N/C first TOC fraction: 16/106 (mol/mol)
+            obj.NC2= 16.0/106.0*obj.SD; %0.0;%0.1509*obj.SD; %0.13333*obj.SD;                                         %N/C second TOC fraction (mol/mol)            
             obj.PC1=1/106*obj.SD;  % was 0.0094 Sandra played with 1e-20;             %P/C first TOC fraction  1/106 (mol/mol)
             obj.PC2=1/106*obj.SD;  % was 0.0094 Sandra played with  1e-20;            %P/C second TOC fraction 1/106 (mol/mol)
             obj.SO4C=(138.0/212.0)*obj.SD; % 0.5*obj.SD;                                                %SO4/C (mol/mol)

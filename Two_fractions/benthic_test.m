@@ -24,7 +24,7 @@ classdef benthic_test
             %swi.C02=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
             swi.O20=100.0E-009; %150.0E-009;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
             swi.NO30=40.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
-            swi.Nitrogen=false;
+            swi.Nitrogen=true;
             swi.NH40=0.0e-9;                                                %NH4 concentration at SWI (mol/cm^3)
             swi.SO40=2.8E-005;                                            %SO4 concentration at SWI (mol/cm^3)
             swi.H2S0=0.0; %2.0E-012;         %was 0.0e-9                            %H2S concentration at SWI (mol/cm^3)
