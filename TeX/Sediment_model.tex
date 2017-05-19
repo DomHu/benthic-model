@@ -118,10 +118,22 @@
 
 
 \begin{abstract}
-Here we describe the first version of the Organic Matter ENabled SEDiment model (OMEN-SED 1.0).
+Here we describe the first version of a new, analytical early diagenetic model resolving organic matter cycling and associated biogeochemical dynamics in marine sediments called OMEN-SED (Organic Matter ENabled SEDiment model). 
+Most biogeochemical cycles and reactions in the surface sediments can be related either directly or indirectly to the degradation of organic matter. 
+Despite its fundamental importance, an appropriate Earth System model of the coupled atmosphere-ocean-sediment system which is able to model all 
+relevant processes and feedbacks over geological time-scales currently does not exist. The major problem is the high computational cost of simulating 
+the essential redox reactions in marine sediments which are important to calculate burial of organic matter and benthic recycling fluxes of chemical compounds. 
+In most Earth System models sediment-water dynamics are  either neglected or treated in a very simplistic way. To provide a more realistic description of organic matter 
+degradation and nutrient cycles in marine sediments we have developed OMEN-SED, a new, one-dimensional, numerically efficient reactive transport model. 
+OMEN-SED is the first analytical model to explicitly describe OM cycling as well as associated dynamics of the most important TEAs (i.e. O2 , NO3, SO4), 
+related reduced substances (NH4, H2S), the full suite of secondary-redox reactions, macronutrients (PO4) and associated pore water quantities (ALK, DIC). 
+To represent a redox-dependent sedimentary P cycle we consider the formation and burial of Fe-bound P and authigenic Ca-P minerals. 
+Thus, OMEN-SED captures most of the features of a complex, numerical diagenetic model, however, its computational efficiency allows the coupling to global Earth System models 
+and therefore the investigation of coupled global biogeochemical dynamics over different timescales. This paper provides a detailed description of the new sediment 
+model, \textcolor{red}{tested with obersvations, SA and global observations} and describes it's coupling to the Earth System model cGENIE.
 \end{abstract}
 
-\newpage
+%\newpage
 
 \tableofcontents
 
@@ -1433,88 +1445,59 @@ TODO: plot wt\% just until 3\%.}}
 
 
 \section{Scope of applicability and model limitations}
-The model presented here, even more complete than previous analytical models is still an idealised one. In order to solve the model analytically important simplifying assumptions have been made, which limit 
+State-of-the art numerical models representing the full complexity of the diagenetic processes typically perform adequately at reproducing site-specific biogeochemical dynamics, however, tuning model parameters is laborious, 
+the computational demand is high and, thus, their transferability to the global scale is limited. On the other hand, analytical models are very efficient, but existing approaches coupled to global models generally use highly 
+simplified reaction networks, often restricted to oxic degradation with a limited number of explicit pore water tracers. However, our ability to assess the role of organic matter dynamics for global biogeochemical cycles and climate 
+requires tools that resolve the most important biogeochemical processes and tracers explicitly, while at the same time are computationally efficient and have a degree of predictive capability to extrapolate knowledge to data poor areas. 
+The new model OMEN-SED presented here is a legitimate compromise between complexity of biogeochemical processes and computational efficiency. 
+Its scope of applicability covers the entire range from regional to global scales. 
+OMEN-SED's computational efficiency facilitates its use in two very different ways. Firstly, it can be coupled to global Earth system models and therefore allows the investigation of coupled global biogeochemical dynamics over different timescales. 
+Secondly, it can be used to calculate quantitative sensitivity indices requiring large sample sizes such as variance- or density-based approaches. Therefore, OMEN-SED can help to quantitatively investigate how systematic variations in model parameters 
+impact the model output, for instance when the model has been tuned to a site-specific problem. 
+Due to the represented anaerobic processes and secondary-redox reactions, OMEN-SED is also useful to investigate the role of benthic-pelagic coupling on the development of ocean anoxia and euxinia for instance during extreme climate 
+events such as OAEs. On more regional scales it can be applied to systems like continental margins or estuaries which are characterised by complex interactions between different pathways of organic matter degradation and redox reactions. 
+Here, the model can help to disentangle the complex process interplay that drives the biogeochemical dynamics and give quantifications for upper and lower constraints of carbon and nutrient budgets for these dynamic systems. 
+In addition, OMEN-SED can be used to model eutrophication processes in shallow coastal waters as sediment-water oxygen and nutrient exchange fluxes are explicitly modelled and depend on re-oxidation of reduced substances which causes a substantial 
+part of oxygen consumption in these environments. %diagenetic OM degradation, bottom water concentrations, temperature.  
+
+However, the model presented here, even more complete than previous analytical models, is still associated with a certain degree of simplifications. In order to solve the diagenetic equation analytically important assumptions have been made, which limit 
 the general applicability of the model. One of the most important simplifications is assuming steady-state. 
 When coupled to an Earth system model this assumption is only valid if the relevant variability in boundary conditions and fluxes is generally longer than the characteristic timescales of the reaction-transport processes. 
-If that's the case the sediment column can be described by a series of pseudo steady-states. 
-For instance the model cannot be used to predict the response to short-term or seasonal variations of boundary conditions. But it can be useful for investigating the long term effects 
-of changes in boundary conditions such as the the input of OM or bottom water oxidation state on OM degradation and burial dynamics, as occurs for instance during OAEs. 
-
-\textbf{Applicability to which environments:}\\
-Global scale models, but also regional studies  and in a limited fashion for high productivity areas as strong assumption about steady-state. check e.g. Gypens, Volta and other model development papers...
-
-Soetaert 2000: ``Generalisation of
-our evaluation to deep-sea environments and to con-
-tinental shelf and estuarine areas should be done
-with care. While the seasonal dynamics of nutrient
-regeneration in deep-sea sediments can likely be
-neglected Ž hence, levels 2, 3 and 4 may converge . ,
-higher levels of coupling Ž 3–4 . are necessary to
-accurately reproduce carbonate and silica cycling at
-a time scale of about 5 kyear Ž Archer and Meier-Re-
-imer, 1994; Archer et al., 1998; Sigman et al., 1998;
-Heinze et al., 1999 . . In coastal environments, benthic
-primary production, groundwater input, extensive re-
-suspension–deposition cycles and advective flows
-may strongly affect sediment–water exchange and
-should therefore be included in coupled benthic–
-pelagic models.'' 
-
-\textbf{reoxidation of a fixed fraction of NH4 and H2S:}\\
-instead of using a kinetic approach 
-
-\textbf{no overlap in respirations processes:}\\
-The lack of overlap in respiration pathways may cause distorted organic matter respiration rates for the different TEAs. For instance, in OMEN-SED denitrification does not occur in the oxic layer, while in reality, 
-although inhibited by the presence of oxygen, denitrification can still occur in the oxic zone, even at shallow sediments depths with high OM contents. 
-
-\textbf{degradation rate constant:}\\
-Furthermore, the spatial variability in benthic OM degradation kinetics is unknown at the global scale and reported rate constants can vary by almost 10 orders of magnitude \citep{arndt_quantifying_2013}.
-Thus, a major challenge for diagenetic models is defining appropriate OM degradation rate constants which is either achieved 
-through profile fitting for a specific site or, for global applications, the rate constants follow empirical relations with a related, readily available sediment characteristic such as water depth 
-\citep{middelburg_empirical_1997}, sedimentation rate \citep{toth_organic_1977, tromp_global_1995} or OM flux \citep{boudreau1997diagenetic}. 
-However, these relationships are mostly based on simple fitting exercises to limited data sets and show at the most a very weak trend and no statistically significant relationship \citep{arndt_quantifying_2013}. 
-This creates considerable uncertainties when diagenetic models are coupled to global biogeochemical ocean models especially when applying the model for different geological timescales. % see: https://goldschmidtabstracts.info/2013/2270.pdf
-Other model parameters implicitly accounting for processes not explicitly described are sedimentation and bioturbation rate and are generally related to water depth following \citet{middelburg_empirical_1997}.
-
-Thus, even though it is a major simplification, when coupling a diagenetic model to an ESM it is desirable to relate the OM degradation rates to a single, readily available 
-characteristic (or master variable) of the local environmental conditions. 
+In that case the sediment column can be described by a series of pseudo steady-states as it is done in OMEN-SED. Consequently, the model can be used for investigating the long term effects of changes in boundary conditions such as the the input of OM 
+or bottom water oxidation state on degradation and burial dynamics, as for instance during OAEs. Yet, it is not able to predict the system response to short-term or seasonal variations of boundary conditions. 
+The separation of the sediment column into distinct biogeochemical zones and the resulting lack of overlap in respiration pathways may cause distorted organic matter respiration rates for the different TEAs. 
+For instance, in OMEN-SED denitrification does not occur in the oxic layer, while in reality, although inhibited by the presence of oxygen, denitrification can still occur in the oxic zone, even at shallow sediments depths with high OM contents. 
+Manganese and iron are not represented and as such OMEN-SED is not able to model all processes important in coastal marine environments and highly accumulating upwelling regions. This can cause problems when modelling \chem{H_2S} and \chem{PO_4} 
+profiles in anoxic environments as their concentrations are affected by these metal ions (compare Section \ref{subsec:SedProfiles}). 
+In addition the depth invariant porosity limits the correct calculation of the sediment-water interface flux of dissolved species as in reality porosity decreases with sediment depth. 
 
 
+% \textbf{reoxidation of a fixed fraction of NH4 and H2S and just a first order rate constant for OM degradation:}\\
+% instead of using a kinetic approach 
 
-Stolpovsky:\\
-- global parameterizations of biologically mediated transport and kinetic processes e.g. bioirrigation and nitrification rates. 
-But no single set of biogeochemical and transport parameters is able to simulate all the shelf sites simultaneously\\
-- globally invariant porosity, in reality permeability of sand is greater than fine-grained mud, such that boundary layer current and
-topography interactions will enhance the exchange of pore water with seawater by pressure-driven
-advective processes [Huettel et al., 1996]. N cycling in sands can thus exhibit large differences
-compared to fine-grained muds [e.g., Cook et al., 2006; Rao et al., 2007].\\ 
-- Not able to simulate site specific seasonal variability in e.g. shallow sediments \\
-- no globally realistic parameterisation for k 
 
-Schulz and Zabel:
-also applicable for continantal margins or estuaries:
-Such complex interactions between different pathways
-of organic matter decomposition and redox reac-
-tions are restricted to coastal marine environments
-and highly accumulating upwelling regions. In
-oligotrophic regions of the deep sea, 100 to 1,000-
-times more organic carbon is oxidized by oxygen
-than by sulfate reduction and other pathways
-(Canfield 1989).
-
-\textbf{steady-state assumption:}\\
-This assumption is only valid if the Earth system model relevant variability in boundary conditions and fluxes is generally longer than the characteristic timescales of the reaction-transport processes. 
-If that's the case the sediment column can be described by a series of pseudo steady-states. 
-For instance the model cannot be used to predict the response to short-term or seasonal variations of boundary conditions. But it can be useful for investigating the long term effects 
-of changes in boundary conditions such as the the input of OM or bottom water oxidation state on OM degradation and burial dynamics, as occurs for instance during OAEs. 
+% \textbf{degradation rate constant:}\\
+% Furthermore, the spatial variability in benthic OM degradation kinetics is unknown at the global scale and reported rate constants can vary by almost 10 orders of magnitude \citep{arndt_quantifying_2013}.
+% Thus, a major challenge for diagenetic models is defining appropriate OM degradation rate constants which is either achieved 
+% through profile fitting for a specific site or, for global applications, the rate constants follow empirical relations with a related, readily available sediment characteristic such as water depth 
+% \citep{middelburg_empirical_1997}, sedimentation rate \citep{toth_organic_1977, tromp_global_1995} or OM flux \citep{boudreau1997diagenetic}. 
+% However, these relationships are mostly based on simple fitting exercises to limited data sets and show at the most a very weak trend and no statistically significant relationship \citep{arndt_quantifying_2013}. 
+% This creates considerable uncertainties when diagenetic models are coupled to global biogeochemical ocean models especially when applying the model for different geological timescales. % see: https://goldschmidtabstracts.info/2013/2270.pdf
+% Other model parameters implicitly accounting for processes not explicitly described are sedimentation and bioturbation rate and are generally related to water depth following \citet{middelburg_empirical_1997}.
 
 
 
 \conclusions  %% \conclusions[modified heading if necessary]
-Not too bad this model...
+In this paper we have described and tested a new, analytical early diagenetic model resolving organic matter cycling and associated biogeochemical dynamics called OMEN-SED. 
+Our new model is the first of this class of analytical approaches to explicitly represent oxic degradation, denitrification, sulfate reduction and implicitly methanogenesis, 
+as well as the re-oxidation of reduced substances produced during organic matter degradation. Pore water tracers include \chem{O_2}, \chem{NO_3}, \chem{NH_4}, \chem{SO_4}, \chem{H_2S}, \chem{DIC} and \chem{ALK} and the solid phase includes 
+two fractions of organic matter, Fe-bound P and authigenic Ca-P minerals. 
 
 \section {Code Availability}
-
+The OMEN-SED source code (Fortran and Matlab) related to this article is provided
+as a supplementary package together with a ReadMe file,
+where hardware and software requirements, source code files
+and model output file management are fully described.
 
 \appendix
 \section{Reaction Network}    %% Appendix A
