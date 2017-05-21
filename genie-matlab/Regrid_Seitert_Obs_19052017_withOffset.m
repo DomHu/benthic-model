@@ -24,15 +24,16 @@ TOC_NEW(:,1)=Nmean;
 TOC_NEW = TOC_NEW(:,1:end-1);
 TOC_NEW_tr = TOC_NEW.';
 
-[dum_lon, dum_lat] = get_grid_genie_lonlatedges(36,36,0);
+[dum_lon, dum_lat] = get_grid_genie_lonlatedges(36,36,-180);
 
 %[dum_lon_orig, dum_lat_orig] = get_grid_genie_lonlatedges(361,181,0);
 % create edges of observations manually:
-long_obs=(-0.5:1:359.5);
+long_obs=(-180.5:1:179.5);
 lat_obs=(-90.5:1:90.5);
 lat_obs(1)=-90;
 lat_obs(end)=90;
 
 [zo fao] = make_regrid_2d(long_obs,lat_obs,TOC_NEW_tr,dum_lon,dum_lat,true);
 
+dlmwrite('zo_Seiter_offset1905.txt',zo.')
 % zo or go_z is what I need!

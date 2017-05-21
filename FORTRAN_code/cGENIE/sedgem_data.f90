@@ -98,6 +98,12 @@ CONTAINS
        print*,'Fraction of P relative to C buried -- oxic          : ',par_sed_diagen_fracC2Ppres_ox
        print*,'Fraction of P relative to C buried -- anoxic        : ',par_sed_diagen_fracC2Ppres_anox
        print*,'Fraction of P relative to C buried -- euxinic       : ',par_sed_diagen_fracC2Ppres_eux
+       ! --- DIAGENESIS SCHEME: HUELSE 2017 -------------------------------------------------------------------------------------- !
+       print*,'--- DIAGENESIS SCHEME: HUELSE 2017 -----------------'
+       print*,'Corg rate constant parameterization scheme          : ',par_sed_huelse2017_kscheme
+       print*,'Corg degradation rates redox dependent?             : ',par_sed_huelse2017_redox
+       print*,'labile Corg degradation rate constant (1/yr)        : ',par_sed_huelse2017_k1
+       print*,'refractory Corg degradation rate constant (1/yr)    : ',par_sed_huelse2017_k2
        ! --- DIAGENESIS SCHEME: ARCHER 1991 -------------------------------------------------------------------------------------- !
        print*,'--- DIAGENESIS SCHEME: ARCHER 1991 -----------------'
        print*,'dissolution rate constant, units of 1/s             : ',par_sed_archer1991_dissc

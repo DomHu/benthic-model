@@ -414,7 +414,7 @@ classdef benthic_test
                 
                 % calculate sediment accumulation rate using POC, CaCO3 and
                 % detrital rain flux (convert from mol to cm3)            
-%                res.bsd.w = (conv_POC_mol_cm3*bc(1)+conv_cal_mol_cm3*bc(8) + conv_det_mol_cm3*bc(9));   % + bc(10))
+                res.bsd.w = (conv_POC_mol_cm3*bc(1)+conv_cal_mol_cm3*bc(8) + conv_det_mol_cm3*bc(9));   % + bc(10))
                 if(res.bsd.w<5.0e-4)                    
                     res.bsd.w=5.0e-4;
                 end

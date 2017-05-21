@@ -1214,7 +1214,7 @@ Here, we use SA mainly to identify which parameters have the largest impact on t
 % and if there is any factor whose variability has a negligible effects on specific outputs?
 %Due to OMEN-SED's computational efficiency we are able to apply one of the approaches requiring higher numbers of model evaluations to compute the sensitivity index.  
 As the probability density functions of our model outputs (i.e. the resulting SWI-fluxes) are generally highly-skewed towards extreme organic matter degradation rates (not shown) variance-based sensitivity indices are not very 
-reliable uncertainty indicators \citep{pianosi_sensitivity_2016}. Rather than just considering the variance we employ the novel density-based PAWN method by \citep{pianosi_simple_2015} which considers the entire conditional and unconditional 
+reliable uncertainty indicators \citep{pianosi_sensitivity_2016}. Rather than just considering the variance we employ the novel density-based PAWN method by \citet{pianosi_simple_2015} which considers the entire conditional and unconditional 
 Cumulative Destribution Function (CDF) of the model output. % Probability Density Function (PDF) 
 The sensitivity index of parameter $i$ is calculated as the difference between the two CDFs, i.e.
 \begin{equation}
@@ -1492,6 +1492,14 @@ In this paper we have described and tested a new, analytical early diagenetic mo
 Our new model is the first of this class of analytical approaches to explicitly represent oxic degradation, denitrification, sulfate reduction and implicitly methanogenesis, 
 as well as the re-oxidation of reduced substances produced during organic matter degradation. Pore water tracers include \chem{O_2}, \chem{NO_3}, \chem{NH_4}, \chem{SO_4}, \chem{H_2S}, \chem{DIC} and \chem{ALK} and the solid phase includes 
 two fractions of organic matter, Fe-bound P and authigenic Ca-P minerals. 
+We have shown that the new analytical model is able to reproduce observed pore water profiles from different ocean depths when organic matter partitioning and degradation rate constants are tuned to site specific conditions. An extensive sensitive analysis, 
+based on the novel density-based PAWN method \citep{pianosi_simple_2015}, has been performed to asses the importance of 11 internal model parameters for all resulting SWI-fluxes. The results reveal that the degradation rate constant for labile organic 
+matter is the most influential parameter for all model outputs. Under anoxic conditions secondary redox parameters exert an important control on related SWI-fluxes of \chem{SO_4}, \chem{H_2S}, \chem{NH_4} and alkalinity. 
+In addition, the sensitivity analysis showed that globally observed benthic \chem{O_2} and \chem{NO_3} fluxes fall well into the range of produced model results. 
+
+Furthermore, the coupling of OMEN-SED to the Earth system model cGENIE is described and various published parameterisations for the apparent first order degradation rate constant are tested to fit the model to observed global organic matter concentrations. 
+\textcolor{red}{TODO: write about results.}
+...in order to investigate the role of sediments for global biogeochemical cycles and cimate.
 
 \section {Code Availability}
 The OMEN-SED source code (Fortran and Matlab) related to this article is provided

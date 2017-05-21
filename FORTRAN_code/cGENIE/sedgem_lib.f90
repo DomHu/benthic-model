@@ -84,6 +84,14 @@ MODULE sedgem_lib
   REAL::par_sed_diagen_fracC2Ppres_anox                          ! Fraction of P relative to C buried -- anoxic
   REAL::par_sed_diagen_fracC2Ppres_eux                           ! Fraction of P relative to C buried -- euxinic
   NAMELIST /ini_sedgem_nml/par_sed_diagen_fracC2Ppres_ox,par_sed_diagen_fracC2Ppres_anox,par_sed_diagen_fracC2Ppres_eux
+  ! ------------------- DIAGENESIS SCHEME: ORGANIC MATTER HUELSE 2017 ------------------------------------------------------------------------ !
+  character(len=63)::par_sed_huelse2017_kscheme                  ! Corg k parametrisation scheme ID string
+  NAMELIST /ini_sedgem_nml/par_sed_huelse2017_kscheme
+  logical::par_sed_huelse2017_redox                              ! Corg degradation rates redox dependent?
+  NAMELIST /ini_sedgem_nml/par_sed_huelse2017_redox
+  REAL::par_sed_huelse2017_k1                                    ! labile degradation rate constant, units of 1/yr
+  REAL::par_sed_huelse2017_k2                                    ! refractory degradation rate constant, units of 1/yr
+  NAMELIST /ini_sedgem_nml/par_sed_huelse2017_k1,par_sed_huelse2017_k2
   ! ------------------- DIAGENESIS SCHEME: ARCHER 1991 --------------------------------------------------------------------------- !
   REAL::par_sed_archer1991_dissc                                 ! dissolution rate constant, units of 1/s
   REAL::par_sed_archer1991_disscpct                              ! dissolution rate scaling (%)

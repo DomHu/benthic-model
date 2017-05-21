@@ -244,7 +244,6 @@ CONTAINS
         ! w after Middelburg
         loc_new_sed_vol=10.0**(-0.87478367-0.00043512*dum_D)*3.3              ! sedimentation rate, cm/yr / burial velocity / advection (Middelburg et al., Deep Sea Res. 1, 1997)
 
-
         ! Model crashed for low sediment accumulation rates, therefore:
         if(loc_new_sed_vol .LE. 5.0e-4)then
 !            print*,' loc_new_sed_vol, grid point (i,j)', loc_new_sed_vol, dum_i, dum_j, dum_D
@@ -259,6 +258,32 @@ CONTAINS
          !  NEW version: using TOC-flux, convert units from cm3 to mol
         loc_POC1_flux_swi = conv_POC_cm3_mol*(1-dum_is_POC_frac2)*loc_fPOC
         loc_POC2_flux_swi = conv_POC_cm3_mol*dum_is_POC_frac2*loc_fPOC
+
+    select case (par_sed_diagen_Corgopt)
+    case ('boudreau1997')
+       ! MUDS
+       ! ### <INSERT CODE> ####################################################################################################### !
+       !
+       ! ######################################################################################################################### !
+    case ('tromp1995')
+       ! MUDS
+       ! ### <INSERT CODE> ####################################################################################################### !
+       !
+       ! ######################################################################################################################### !
+    case ('stolpovsky2016')
+       ! MUDS
+       ! ### <INSERT CODE> ####################################################################################################### !
+       !
+       ! ######################################################################################################################### !
+    case ('boudreau1997fPOC')
+       ! MUDS
+       ! ### <INSERT CODE> ####################################################################################################### !
+       !
+       ! ######################################################################################################################### !
+    case default
+       ! globally invariant k1 and k2 as set in par_sed_huelse2017_k1, par_sed_huelse2017_k2
+
+    end select
         
 
         ! spatially uniform k value
@@ -291,7 +316,7 @@ CONTAINS
         if(dum_swiconc_O2 .LE. loc_BW_O2_anoxia)then
             zbio = 0.01
             ! use anoxic degradation rate
-        ! oxic from PALASTANGA ET AL. 2011
+        ! anoxic from PALASTANGA ET AL. 2011
             if(dum_D .LE. 2000)then
                 k1=0.008
             else
