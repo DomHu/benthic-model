@@ -2,8 +2,8 @@ classdef benthic_zDIC
     % Solve DIC
     
     properties                      
-        qdispDIC=309.0528;                                          %DIC diffusion coefficient in water (cm2/yr)
-        adispDIC=12.2640;                                           %DIC linear coefficient for temperature dependence (cm2/yr/oC)
+        qdispDIC=151.69;                                          %DIC diffusion coefficient in water (cm2/yr)
+        adispDIC=7.93;                                           %DIC linear coefficient for temperature dependence (cm2/yr/oC)
         DDIC1;                      %DIC diffusion coefficient in bioturbated layer (cm2/yr)
         DDIC2;                      %DIC diffusion coefficient in non-bioturbated layer (cm2/yr)
         

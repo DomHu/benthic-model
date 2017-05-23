@@ -9,8 +9,8 @@ classdef benthic_zTOC < handle
     properties
         DC1;                                                   %TOC diffusion coefficient (cm2/yr)
        
-        k1= 0.00001*0.0718; %0.035; % 0.01 0.006;                                                  %TOC degradation rate constnat (1/yr)
-        k2= 0.0718;   %0.0006;                                                %TOC degradation rate constant (1/yr)  
+        k1= 0.1; %0.035; % 0.01 0.006;                                                  %TOC degradation rate constnat (1/yr)
+        k2= 0.00001;   %0.0006;                                                %TOC degradation rate constant (1/yr)  
        
     end
     
@@ -30,10 +30,10 @@ classdef benthic_zTOC < handle
             rTOC.a21=(-obj.k1./bsd.w);
             % calculate bioturbated SWI
             % comment C01 calculation for sensitivity analysis
-            swi.C01 = (swi.Fnonbio1*(-rTOC.a11*exp(rTOC.a11*bsd.zbio)+rTOC.b11*exp(rTOC.b11*bsd.zbio)))/(-obj.DC1*rTOC.b11*rTOC.a11*exp(rTOC.b11*bsd.zbio) + obj.DC1*rTOC.b11*rTOC.a11*exp(rTOC.a11*bsd.zbio) + ...
-                        obj.DC1*rTOC.b11*rTOC.a11*bsd.por*exp(rTOC.b11*bsd.zbio) - obj.DC1*rTOC.b11*rTOC.a11*bsd.por*exp(rTOC.a11*bsd.zbio) - bsd.w*rTOC.a11*exp(rTOC.a11*bsd.zbio) + bsd.w*rTOC.b11*exp(rTOC.b11*bsd.zbio) + ...
-                        bsd.w*bsd.por*rTOC.a11*exp(rTOC.a11*bsd.zbio) - bsd.w*bsd.por*rTOC.b11*exp(rTOC.b11*bsd.zbio));
-            res.swi.C01 = swi.C01;
+%             swi.C01 = (swi.Fnonbio1*(-rTOC.a11*exp(rTOC.a11*bsd.zbio)+rTOC.b11*exp(rTOC.b11*bsd.zbio)))/(-obj.DC1*rTOC.b11*rTOC.a11*exp(rTOC.b11*bsd.zbio) + obj.DC1*rTOC.b11*rTOC.a11*exp(rTOC.a11*bsd.zbio) + ...
+%                         obj.DC1*rTOC.b11*rTOC.a11*bsd.por*exp(rTOC.b11*bsd.zbio) - obj.DC1*rTOC.b11*rTOC.a11*bsd.por*exp(rTOC.a11*bsd.zbio) - bsd.w*rTOC.a11*exp(rTOC.a11*bsd.zbio) + bsd.w*rTOC.b11*exp(rTOC.b11*bsd.zbio) + ...
+%                         bsd.w*bsd.por*rTOC.a11*exp(rTOC.a11*bsd.zbio) - bsd.w*bsd.por*rTOC.b11*exp(rTOC.b11*bsd.zbio));
+%             res.swi.C01 = swi.C01;
             
             rTOC.A11=-(swi.C01.*rTOC.b11.*exp(rTOC.b11.*bsd.zbio))./(rTOC.a11.*exp(rTOC.a11.*bsd.zbio)-rTOC.b11.*exp(rTOC.b11.*bsd.zbio)+bsd.tol_const);
             rTOC.A21=(rTOC.A11.*(exp(rTOC.a11.*bsd.zbio)-exp(rTOC.b11.*bsd.zbio))+swi.C01.*exp(rTOC.b11.*bsd.zbio))./(exp(rTOC.a21.*bsd.zbio)+bsd.tol_const);
@@ -43,10 +43,10 @@ classdef benthic_zTOC < handle
             rTOC.a22=(-obj.k2./bsd.w);
             % calculate bioturbated SWI
             % comment C01 calculation for sensitivity analysis
-            swi.C02 = (swi.Fnonbio2*(-rTOC.a12*exp(rTOC.a12*bsd.zbio)+rTOC.b12*exp(rTOC.b12*bsd.zbio)))/(-obj.DC1*rTOC.b12*rTOC.a12*exp(rTOC.b12*bsd.zbio) + obj.DC1*rTOC.b12*rTOC.a12*exp(rTOC.a12*bsd.zbio) + ...
-                        obj.DC1*rTOC.b12*rTOC.a12*bsd.por*exp(rTOC.b12*bsd.zbio) - obj.DC1*rTOC.b12*rTOC.a12*bsd.por*exp(rTOC.a12*bsd.zbio) - bsd.w*rTOC.a12*exp(rTOC.a12*bsd.zbio) + bsd.w*rTOC.b12*exp(rTOC.b12*bsd.zbio) + ...
-                        bsd.w*bsd.por*rTOC.a12*exp(rTOC.a12*bsd.zbio) - bsd.w*bsd.por*rTOC.b12*exp(rTOC.b12*bsd.zbio));
-            res.swi.C02 = swi.C02;
+%             swi.C02 = (swi.Fnonbio2*(-rTOC.a12*exp(rTOC.a12*bsd.zbio)+rTOC.b12*exp(rTOC.b12*bsd.zbio)))/(-obj.DC1*rTOC.b12*rTOC.a12*exp(rTOC.b12*bsd.zbio) + obj.DC1*rTOC.b12*rTOC.a12*exp(rTOC.a12*bsd.zbio) + ...
+%                         obj.DC1*rTOC.b12*rTOC.a12*bsd.por*exp(rTOC.b12*bsd.zbio) - obj.DC1*rTOC.b12*rTOC.a12*bsd.por*exp(rTOC.a12*bsd.zbio) - bsd.w*rTOC.a12*exp(rTOC.a12*bsd.zbio) + bsd.w*rTOC.b12*exp(rTOC.b12*bsd.zbio) + ...
+%                         bsd.w*bsd.por*rTOC.a12*exp(rTOC.a12*bsd.zbio) - bsd.w*bsd.por*rTOC.b12*exp(rTOC.b12*bsd.zbio));
+%             res.swi.C02 = swi.C02;
             
             rTOC.A12=-(swi.C02.*rTOC.b12.*exp(rTOC.b12.*bsd.zbio))./(rTOC.a12.*exp(rTOC.a12.*bsd.zbio)-rTOC.b12.*exp(rTOC.b12.*bsd.zbio)+bsd.tol_const);
             rTOC.A22=(rTOC.A12.*(exp(rTOC.a12.*bsd.zbio)-exp(rTOC.b12.*bsd.zbio))+swi.C02.*exp(rTOC.b12.*bsd.zbio))./(exp(rTOC.a22.*bsd.zbio)+bsd.tol_const);
@@ -314,7 +314,7 @@ classdef benthic_zTOC < handle
             
         end
 
-        
+               
         function FReac = calcReac(obj, zU, zL, reac1, reac2, bsd, swi, res)
             % Integral of reacted organic matter from zU to zL,
             % multiplied by stoichiometric factors reac1, reac2 (for the two OC phases)
@@ -354,6 +354,49 @@ classdef benthic_zTOC < handle
             reacf2=res.zTOC.k2.*reac2;
 
             FReac2= -reacf1.*r.A21.*(exp(r.a21.*zU) - exp(r.a21.*zL))./r.a21...
+                    -reacf2.*r.A22.*(exp(r.a22.*zU) - exp(r.a22.*zL))./r.a22;
+        end
+        
+
+        function FOM = calcOM(obj, zU, zL, reac1, reac2, bsd, swi, res)
+            % Integral of organic matter from zU to zL,
+            % multiplied by stoichiometric factors reac1, reac2 (for the two OC phases)
+            
+            % Vector-friendly way of handling 3 cases:
+            % 1) wholly within bioturbated layer:    calcReac_l1(zU,zL)     + (0 =) calcReac_l2(bsd.zbio, bsd.zbio) 
+            % 2) wholly within non-bio     layer:  (0=) calcReac_l1(zbio, zbio) +   calcReac_l2(zU, zL)
+            % 3) crossing zbio                       calcRead_l1(zU,zbio)   +       calcReac_l2(zbio, zL)
+            
+            FOM=obj.calcOM_l1(min(zU,bsd.zbio), min(zL,bsd.zbio), reac1, reac2, bsd, swi, res) ...
+                + obj.calcOM_l2(max(zU,bsd.zbio), max(zL, bsd.zbio), reac1, reac2, bsd, swi, res);
+                       
+                                          
+            % TODO confirm (1-bsd.por).*  has been added (to k1 & k2 ?)
+        end
+        
+        function FOM1 = calcOM_l1(obj, zU, zL, reac1, reac2, bsd, swi, res)
+            % Integral of reacted organic matter, zU and zL within layer 1 (bioturbated)
+            
+            r = res.rTOC;
+            
+            reacf1=reac1;
+            reacf2=reac2;
+          
+            FOM1 =-reacf1.*(r.A11.*(exp(r.a11.*zU).*r.b11 - exp(r.b11.*zU).*r.a11 - exp(r.a11.*zL).*r.b11 + exp(r.b11.*zL).*r.a11)...
+                +swi.C01.*exp(r.b11.*zU).*r.a11 -swi.C01.*exp(r.b11.*zL).*r.a11)./(r.a11.*r.b11) ...
+                    -reacf2.*(r.A12.*(exp(r.a12.*zU).*r.b12 - exp(r.b12.*zU).*r.a12 - exp(r.a12.*zL).*r.b12 + exp(r.b12.*zL).*r.a12) ... 
+                +swi.C02.*exp(r.b12.*zU).*r.a12 -swi.C02.*exp(r.b12.*zL).*r.a12)./(r.a12.*r.b12);
+        end
+        
+        function FOM2 = calcOM_l2(obj, zU, zL, reac1, reac2, bsd, swi, res)
+            % Integral of reacted organic matter, zU and zL within layer 2 (non bioturbated)
+            
+            r = res.rTOC;
+            
+            reacf1=reac1;
+            reacf2=reac2;
+
+            FOM2= -reacf1.*r.A21.*(exp(r.a21.*zU) - exp(r.a21.*zL))./r.a21...
                     -reacf2.*r.A22.*(exp(r.a22.*zU) - exp(r.a22.*zL))./r.a22;
         end
         

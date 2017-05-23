@@ -2,8 +2,8 @@ classdef benthic_zALK
     % Solve ALK
     
     properties                      
-        qdispALK=308.2644;  %309.0528;                                          %ALK diffusion coefficient in water (cm2/yr)
-        adispALK=10.95;     %12.2640;                                           %ALK linear coefficient for temperature dependence (cm2/yr/oC)
+        qdispALK=151.69;                                       %ALK diffusion coefficient in water (cm2/yr)
+        adispALK=7.93;                                         %ALK linear coefficient for temperature dependence (cm2/yr/oC)
         DALK1;                      %ALK diffusion coefficient in bioturbated layer (cm2/yr)
         DALK2;                      %ALK diffusion coefficient in non-bioturbated layer (cm2/yr)
         

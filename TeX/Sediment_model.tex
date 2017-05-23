@@ -426,6 +426,7 @@ The conservation equation for organic matter dynamics is thus given by:
 %  D_{C_i}&=D_{\mathrm{bio}} 	 &\text{if ($z\leq z_{\mathrm{bio}}$)}\\
 %  D_{C_i}&=0            &\text{if ($z > z_{\mathrm{bio}}$)} 
 % \end{align}
+with $D_{C_i}=D_{\mathrm{bio}}$ for $z\leq z_{\mathrm{bio}}$ and $D_{C_i}=0$ for $z > z_{\mathrm{bio}}$. 
 The analytical solution of Eq. \eqref{eq:ODE_OC} requires the definition of a set of boundary conditions (Table \ref{Tab:BC_OM}). 
 The model assumes a known concentration/flux at the sediment-water interface and continuity across the bioturbation boundary as transport is solely advective below $z_{\mathrm{bio}}$. 
 The steady-state solution follows a simple exponential decay (see section \ref{subsec:module_Structure} for details) and drives the oxygen and nutrient dynamics. 
@@ -692,6 +693,7 @@ As for ammonium, the adsorption of P to the sediment matrix is treated as an equ
 %  D_{\chem{PO_4}}&=D_{\chem{PO_4}, 0}+D_{\mathrm{bio}} &\text{ and }\quad D_{M}&= D_{\mathrm{bio}} &\text{if ($z\leq z_{\mathrm{bio}}$)}\\
 %  D_{\chem{PO_4}}&=D_{\chem{PO_4}, 0} &\text{ and }\quad D_{M}&= 0 &\text{if ($z > z_{\mathrm{bio}}$)} 
 % \end{align}
+with $D_{M}=D_{\mathrm{bio}}$ for $z\leq z_{\mathrm{bio}}$ and $D_{M}=0$ for $z > z_{\mathrm{bio}}$. 
 The boundary conditions to solve Equations \ref{eq:PO4_ODE_L1} - \ref{eq:PO4_ODE_L2} are summarized in Table \ref{Tab:BC_PO4+M}. 
 The model assumes known bottom water concentrations and equal concentrations and diffusive fluxes at $z_{\mathrm{bio}}$ and $z_{\mathrm{ox}}$ for both species. 
 Additionally it considers no change in phosphate flux and an assymptotic Fe-bound P concentration at $z_\infty$. \\
@@ -893,11 +895,11 @@ $D_{\chem{H_2S}}^0$ & cm$^2$\,yr$^{-1}$ & 307.48 & Molecular diffusion coefficie
 $D_{\chem{H_2S}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 9.64 & Diffusion coefficient for linear temp. dependence of sulfide\\ % value was 0.0386 (changed by Nicolas 2207)
 $D_{\chem{PO_4}}^0$ & cm$^2$\,yr$^{-1}$ & 112.91 &Molecular diffusion coefficient of phosphate at 0$^\circ$C\\
 $D_{\chem{PO_4}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 5.59 &Diffusion coefficient for linear temp. dependence of phosphate\\ % value was 0.0386 (changed by Nicolas 2207)
-$D_{\chem{DIC}}^0$ & cm$^2$\,yr$^{-1}$ & 181.96  &Molecular diffusion coefficient of DIC at 0$^\circ$C\\
-$D_{\chem{DIC}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 8.66  &Diffusion coefficient for linear temp. dependence of DIC\\ 
-$D_{\chem{ALK}}^0$ & cm$^2$\,yr$^{-1}$ & 181.96  &Molecular diffusion coefficient of ALK at 0$^\circ$C\\
-$D_{\chem{ALK}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 8.66 &Diffusion coefficient for linear temp. dependence of ALK\\ 
-\multicolumn{4}{l}{Note: DIC and ALK coefficients are the mean values of $\chem{HCO_3^{-}}$,  $\chem{CO_3^{2-}}$ and \chem{CO_2} from \citet{schulz_quantification_2006}.}\\
+$D_{\chem{DIC}}^0$ & cm$^2$\,yr$^{-1}$ & 151.69  &Molecular diffusion coefficient of DIC at 0$^\circ$C\\
+$D_{\chem{DIC}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 7.93  &Diffusion coefficient for linear temp. dependence of DIC\\ 
+$D_{\chem{ALK}}^0$ & cm$^2$\,yr$^{-1}$ & 151.69  &Molecular diffusion coefficient of ALK at 0$^\circ$C\\
+$D_{\chem{ALK}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 7.93 &Diffusion coefficient for linear temp. dependence of ALK\\ 
+\multicolumn{4}{l}{Note: DIC and ALK coefficients are the values of $\chem{HCO_3^{-}}$ from \citet{schulz_quantification_2006}.}\\
 %\multicolumn{4}{l}{\citep[as in][]{martin_dissolved_1993}. Alkalinity coefficients are the mean values of \chem{NH_4} and \chem{H_2S}.}\\
 \hline\hline
 \end{tabular}
