@@ -268,10 +268,49 @@ CONTAINS
         loc_POC1_flux_swi = conv_POC_cm3_mol*(1-dum_is_POC_frac2)*loc_fPOC
         loc_POC2_flux_swi = conv_POC_cm3_mol*dum_is_POC_frac2*loc_fPOC
 
+        ! use oxic degradation rates
+        select case (par_sed_huelse2017_kscheme)
+            case ('boudreau1997')
+                ! use parameterisation of Boudreau 1997 dependent on sediment accumulation rate (w)
+                loc_k_apparent = 0.38*w**0.59
+                k1=loc_k_apparent/((1-dum_is_POC_frac2)+dum_is_POC_frac2/100)
+                k2=k1/100
+            !                print*,'boudreau1997 oxic k1, k2 =', k1, k2
+            case ('tromp1995')
+                ! use parameterisation of Tromp et al. 1995:
+                loc_k_apparent = 2.97*w**0.62
+                k1=loc_k_apparent/((1-dum_is_POC_frac2)+dum_is_POC_frac2/100)
+                k2=k1/100
+            case ('stolpovsky2016')
+                ! use parameterisation of Stolpovsky et al. 2015 dependent on sediment accumulation rate (w)
+                loc_k_apparent = 1.02*w**0.5
+                k1=loc_k_apparent/((1-dum_is_POC_frac2)+dum_is_POC_frac2/100)
+                k2=k1/100
+            case ('boudreau1997fPOC')
+                ! k dependent on OM flux, after Boudreau 1997:
+                loc_total_POC_flux = conv_POC_cm3_mol*loc_fPOC*10**6
+                k1 = 2.2*1e-5*loc_total_POC_flux**2.1
+
+            case default
+                ! globally invariant k1 and k2 as set in par_sed_huelse2017_k1, par_sed_huelse2017_k2
+                k1=par_sed_huelse2017_k1
+                k2=par_sed_huelse2017_k2
+!            ! MIN oxic from Arndt et al. 2013
+!                        k1=1.0e-4
+!                        k2=1.0e-6
+!
+!                        ! oxic from PALASTANGA ET AL. 2011
+!                        if(dum_D .LE. 2000)then
+!                            k1=0.01
+!                        else
+!                            k1=0.005
+!                        end if
+        end select
+
+        ! if anoxic, decrease zbio and use anoxic degradation rate
         if(dum_swiconc_O2 .LE. loc_BW_O2_anoxia)then
             ! decrease bioturbation depth
             zbio = 0.01
-            ! use anoxic degradation rate
             select case (par_sed_huelse2017_kscheme)
             case ('boudreau1997')
                 ! use parameterisation of Boudreau 1997 dependent on sediment accumulation rate (w)
@@ -309,47 +348,6 @@ CONTAINS
 !                k1=0.002
 !            end if
             end select
-
-        else
-        ! use oxic degradation rates
-            select case (par_sed_huelse2017_kscheme)
-            case ('boudreau1997')
-                ! use parameterisation of Boudreau 1997 dependent on sediment accumulation rate (w)
-                loc_k_apparent = 0.38*w**0.59
-                k1=loc_k_apparent/((1-dum_is_POC_frac2)+dum_is_POC_frac2/100)
-                k2=k1/100
-!                print*,'boudreau1997 oxic k1, k2 =', k1, k2
-            case ('tromp1995')
-            ! use parameterisation of Tromp et al. 1995:
-                loc_k_apparent = 2.97*w**0.62
-                k1=loc_k_apparent/((1-dum_is_POC_frac2)+dum_is_POC_frac2/100)
-                k2=k1/100
-            case ('stolpovsky2016')
-                ! use parameterisation of Stolpovsky et al. 2015 dependent on sediment accumulation rate (w)
-                loc_k_apparent = 1.02*w**0.5
-                k1=loc_k_apparent/((1-dum_is_POC_frac2)+dum_is_POC_frac2/100)
-                k2=k1/100
-            case ('boudreau1997fPOC')
-            ! k dependent on OM flux, after Boudreau 1997:
-                loc_total_POC_flux = conv_POC_cm3_mol*loc_fPOC*10**6
-                k1 = 2.2*1e-5*loc_total_POC_flux**2.1
-
-            case default
-               ! globally invariant k1 and k2 as set in par_sed_huelse2017_k1, par_sed_huelse2017_k2
-                k1=par_sed_huelse2017_k1
-                k2=par_sed_huelse2017_k2
-                ! MIN oxic from Arndt et al. 2013
-!                k1=1.0e-4
-!                k2=1.0e-6
-
-!                ! oxic from PALASTANGA ET AL. 2011
-!                if(dum_D .LE. 2000)then
-!                    k1=0.01
-!                else
-!                    k1=0.005
-!                end if
-            end select
-
         end if  ! (dum_swiconc_O2 .LE. loc_BW_O2_anoxia)
 
 

@@ -396,7 +396,7 @@ classdef benthic_test
 % 
 %          end
                 
-        function res = OMEN_with_GENIE_input(bc, Nitrogen)
+        function res = OMEN_with_GENIE_input(bc, Nitrogen, k_parametr)
             
             swi.Nitrogen = Nitrogen;
             
@@ -407,9 +407,9 @@ classdef benthic_test
             conv_cm3_kg = 1000;
             
             % set wdepth
-          	bsd.wdepth = -bc(end-1);
+          	res.bsd.wdepth = -bc(end-1);
 
-            res.bsd = benthic_main(1, bsd.wdepth);
+            res.bsd = benthic_main(1, res.bsd.wdepth);
             res.bsd.usescalarcode = true;
             
             if(Nitrogen)
@@ -418,7 +418,7 @@ classdef benthic_test
                 
                 % calculate sediment accumulation rate using POC, CaCO3 and
                 % detrital rain flux (convert from mol to cm3)            
-                res.bsd.w = (conv_POC_mol_cm3*bc(1)+conv_cal_mol_cm3*bc(8) + conv_det_mol_cm3*bc(9));   % + bc(10))
+                res.bsd.w = 1/(1-res.bsd.por)*(conv_POC_mol_cm3*bc(1)+conv_cal_mol_cm3*bc(8) + conv_det_mol_cm3*bc(9));   % + bc(10))
                 if(res.bsd.w<5.0e-4)                    
                     res.bsd.w=5.0e-4;
                 end
@@ -449,35 +449,68 @@ classdef benthic_test
 
             end
             % Set default values 
-            res.zTOC = benthic_zTOC(res.bsd);
+            res.zTOC = benthic_zTOC(res.bsd);            
+            
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            %%%%%%%%%%     Choose k parameterisation    %%%%%%%%%%
+            
+            % use oxic degradation rates
+                switch k_parametr
+                case 'boudreau1997'
+                	% use parameterisation of Boudreau 1997 dependent on sediment accumulation rate (w)
+                    loc_k_apparent = 0.38*res.bsd.w^0.59;
+                    res.zTOC.k1=loc_k_apparent/(f1+f2/100);
+                    res.zTOC.k2=res.zTOC.k1/100;
+
+                case 'tromp1995'
+                    OMEN_result(j,i) = test.zso4;
+                case 'stolpovsky2016'
+                    OMEN_result(j,i) = test.Cox_rate_total;
+                case 'boudreau1997fPOC'
+                    OMEN_result(j,i) = test.Cox_rate_total;
+               	case 'invariant'
+                    OMEN_result(j,i) = test.Cox_rate_total;
+               otherwise
+                    error('Error. Unknown k parameterization.')
+                end
+            
             % MIN oxic from Arndt et al. 2013
 %              res.zTOC.k1=1.0e-4;
 %              res.zTOC.k2=1.0e-6;
 
-	% Dom: set here k1, k2 if related to w or POC-flux
-%       After Tromp et al. 1995:
-%             res.zTOC.k1 = 2.97*res.bsd.w^0.62;
-        % After Boudreau 1997:
-%         res.zTOC.k1 = 0.38*res.bsd.w^0.59;
-        % After Stolpovsky et al. 2016:
-%        res.zTOC.k1 = 1.02*res.bsd.w^0.5;
 %       after Boudreau 1997 - k dependent on OM flux (in micromol/(cm^2yr):
-        res.zTOC.k1 = 2.2*1e-5*(bc(1)*10^6)^2.1;
+%        res.zTOC.k1 = 2.2*1e-5*(bc(1)*10^6)^2.1;
             
-            % if anoxic, change zbio to 0.01 cm
+            % if anoxic, decrease zbio and use anoxic degradation rate
             if(swi.O20 < 5.0e-9 )
                 res.bsd.zbio=0.01;
-                % MIN anoxic from Arndt et al. 2013
-%                   res.zTOC.k1=6.0e-7;
-%                   res.zTOC.k2=1.25e-8;
-                 % After Boudreau 1997:
-                res.zTOC.k1 = 0.04*res.bsd.w^2;
-                % after Tromp et al. 1995:
-%             res.zTOC.k1 = 0.057*res.bsd.w^1.94;
+                switch k_parametr
+                    case 'boudreau1997'
+                        % use parameterisation of Boudreau 1997 dependent on sediment accumulation rate (w)
+                        % which is actually Toth and Lerman (1977) - as no anoxic rate in Boudreau 1997:
+                        loc_k_apparent = 0.04*res.bsd.w^2;
+                        res.zTOC.k1=loc_k_apparent/(f1+f2/100);
+                        res.zTOC.k2=res.zTOC.k1/100;
+                    case 'tromp1995'
+                        OMEN_result(j,i) = test.zso4;
+                    case 'stolpovsky2016'
+                        OMEN_result(j,i) = test.Cox_rate_total;
+                    case 'boudreau1997fPOC'
+                        OMEN_result(j,i) = test.Cox_rate_total;
+                    case 'invariant'
+                        OMEN_result(j,i) = test.Cox_rate_total;
+                   otherwise
+                    error('Error. Unknown k parameterization.')
+                end
+
             end
             
-            res.zTOC.k2 = res.zTOC.k1/100;            
+%            res.zTOC.k2 = res.zTOC.k1/100;            
                        
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            %%%%%%%%%%%%%%        RUN OMEN       %%%%%%%%%%%%%%%%%
+            
+            
             res.swi = swi;                     
             
             res.zO2 = benthic_zO2(res.bsd, res.swi);           
@@ -552,9 +585,9 @@ classdef benthic_test
             res.Cox_perc_aerobic= res.Cox_rate_aerobic/res.Cox_rate_total*100;
             res.Cox_perc_sulfred= res.Cox_rate_sulfred/res.Cox_rate_total*100;
             
-%             res.Cox_rate = Cox_rate;
-%             res.Cox_frac = Cox_frac;
-
+            % calculate mean OM concentration in upper x cm
+            x = 10;
+            res.Mean_OM = 1/x * 100*12/res.bsd.rho_sed*res.zTOC.calcOM(0.0, x, 1, 1, res.bsd, res.swi, res);
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%  TEST PROFILES  %%%%%%%%%%%%%%%%%%%%
