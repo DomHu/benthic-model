@@ -1320,7 +1320,7 @@ leads to a higher SWI-flux.
 	Indicated area in red at the respective colour scale represents the range of benthic fluxes in the global database of \citet{bohlen_simple_2012}. 
 }\label{fig:SA_Color_ScatterPlots}
 	%>>>
-\marginnote{\textbf{DH}: Why mainly negative NO3-flux 4000m in contrast to database!?}[-6cm]%<<<
+\marginnote{\textbf{DH}: Why mainly negative NO3-flux 4000m in contrast to database!?... might change when using diff. gamma}[-6cm]%<<<
 \end{center}
 \end{figure}
 
@@ -1331,9 +1331,32 @@ leads to a higher SWI-flux.
 % Application to Seitert, 2004 OM, burwiczk see rate data and evaluation based on global data (Archer)
 
 \subsection{Global Hypsometric Analysis of TEA Fluxes}\label{subsec:globalhypsometry}
-In this section we explore to which degree OMEN-SED is capable of capturing most of the dynamics simulated with a complete, numerical diagenetic model. Therefore, we reproduce the simulations of typical conditions along 
-a global ocean hypsometry of \citet{thullner_global_scale_2009}. 
+In this section we test to which degree OMEN-SED is capable of capturing the dynamics of OM degradation pathways and related TEA-fluxes as simulated with a complete, numerical diagenetic model. 
+Therefore, we reproduce the simulations of typical conditions along a global ocean hypsometry of \citet{thullner_global_scale_2009}. To explore the global remineralisation of OM in the seafloor 
+\citet{thullner_global_scale_2009} quantified various diagenetic processes using the Biogeochemical Reaction Network Simulator \citep[BRNS,][]{aguilera_knowledge-based_2005}. 
+In their study many model parameters (e.g. $w$, $D_{bio}$ or $\phi$) are related to the master variable seafloor depth (SFD) using existing empirical relationships. 
+Organic matter degradation is described with a 1-G approach and the first order rate constant follows the empirical relationship of \citet{boudreau1997diagenetic}: $k=0.38\cdot w^{0.59}$. 
+BRNS simulations were performed using boundary conditions and parameters for representative SFD of 100m, 200m, 500m, 1000m, 2000m, 3500m and 5000m. 
+In order to reproduce these results, OMEN-SED is configured as a 1-G model and boundary conditions and model parameters are defined as given in Table 3 of \citep[][]{thullner_global_scale_2009}. 
+As OMEN-SED assumes a fixed fraction of reduced substances to be re-oxidised which exerts a large impact on the resulting SWI-fluxes (compare Section \ref{subsec:SA}) 
+we perform two sets of simulations in order to show the range of possible model outputs. In the first setup 95\% of the reduced substances are re-oxidised (i.e. $\gamma_{NH_4}=\gamma_{H_2S}=0.95$) and in the 
+second only 5\% (all other model parameters and boundary conditions are equal).
 
+Figure \ref{fig:hypsometry} (A-C) compares simulated depth-integrated organic matter mineralisation rates ($\mu$mol C cm$^{-2}$\,yr$^{-1}$) by three degradation pathways along the global hypsometry. 
+The corresponding fluxes of TEA into the sediments are shown in Figure \ref{fig:hypsometry} (D-F). Observations for nitrate fluxes, aerobic degradation, denitrification and sulfate reduction rates are taken 
+from \citet{middelburg_denitrification_1996, middelburg_empirical_1997}. 
+
+
+\begin{figure}[htbp]
+\begin{center}
+	\includegraphics[width=0.6\textwidth]{figures/0_OMEN_Thullner_hypsometry_combined.pdf}
+	\caption{(A-C) Carbon degradation rates along the global hypsometry and (D-F) fluxes of \chem{O_2}, \chem{NO_3} and \chem{SO_4} to the sediment. 
+	Red lines are model results from \citet{thullner_global_scale_2009} using BRNS; black lines are results from OMEN-SED (solid: $\gamma_{NH_4}=\gamma_{H_2S}=0.95$; dashed: $\gamma_{NH_4}=\gamma_{H_2S}=0.05$). 
+	Observations of carbon degradation rates (diamonds) are taken from \citet{middelburg_empirical_1997}, total oxygen uptake (TOU) estimates in Figure (F) use either the relationship 
+	of \citet{andersson_respiration_2004} (TOU - observed) or are taken from \citet{thullner_global_scale_2009} (TOU - Thullner). 
+	}\label{fig:hypsometry}
+\end{center}
+\end{figure}
 
 \subsection{Pre-industrial cGENIE coupling and the OM degradation rate}\label{subsec:GENIE-pre-ind}
 OMEN-SED has been coupled to the global Earth system model cGENIE as described in Section \ref{subsubsec:ESM_coupling}. 
@@ -1472,7 +1495,7 @@ the general applicability of the model. One of the most important simplification
 When coupled to an Earth system model this assumption is only valid if the relevant variability in boundary conditions and fluxes is generally longer than the characteristic timescales of the reaction-transport processes. 
 In that case the sediment column can be described by a series of pseudo steady-states as it is done in OMEN-SED. Consequently, the model can be used for investigating the long term effects of changes in boundary conditions such as the the input of OM 
 or bottom water oxidation state on degradation and burial dynamics, as for instance during OAEs. Yet, it is not able to predict the system response to short-term or seasonal variations of boundary conditions. 
-The separation of the sediment column into distinct biogeochemical zones and the resulting lack of overlap in respiration pathways may cause distorted organic matter respiration rates for the different TEAs. 
+The separation of the sediment column into distinct biogeochemical zones and the resulting lack of overlap in degradation pathways may cause distorted organic matter degradation rates for the different TEAs. 
 For instance, in OMEN-SED denitrification does not occur in the oxic layer, while in reality, although inhibited by the presence of oxygen, denitrification can still occur in the oxic zone, even at shallow sediments depths with high OM contents. 
 Manganese and iron are not represented and as such OMEN-SED is not able to model all processes important in coastal marine environments and highly accumulating upwelling regions. This can cause problems when modelling \chem{H_2S} and \chem{PO_4} 
 profiles in anoxic environments as their concentrations are affected by these metal ions (compare Section \ref{subsec:SedProfiles}). 

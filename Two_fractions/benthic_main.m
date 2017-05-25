@@ -42,8 +42,8 @@ classdef benthic_main < handle
         DICC1;                                  %DIC/C until zSO4 (mol/mol)
         DICC2;                                  %DIC/C below zSO4 (mol/mol)
         MC;                                     %CH4/C (mol/mol)
-        gamma=0.05;                                %fraction of NH4 that is oxidised in oxic layer
-        gammaH2S=0.05;                           %fraction of H2S that is oxidised in oxic layer
+        gamma=0.9;                                %fraction of NH4 that is oxidised in oxic layer
+        gammaH2S=0.95;                           %fraction of H2S that is oxidised in oxic layer
         gammaCH4=0.99;                           %fraction of CH4 that is oxidised at SO4
         satSO4=0.0;                               % SO4 saturation
         NO3CR;                                  % NO3 consumed by Denitrification

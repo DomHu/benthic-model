@@ -239,7 +239,7 @@ CONTAINS
        ! Huelse et al. [2016]
        ! NOTE: 'new sed' is not adjusted within sub_huelseetal2016_main and eneds modifying externally
        CALL sub_huelseetal2016_main( &
-            & dum_i,dum_j,dum_dtyr,dum_D,loc_new_sed(:),sed_fsed(is_POC_frac2,dum_i,dum_j), dum_sfcsumocn(:),loc_sed_pres_fracC,loc_sed_pres_fracP,loc_exe_ocn(:), loc_sed_mean_OM &
+            & dum_dtyr,dum_D,loc_new_sed(:),sed_fsed(is_POC_frac2,dum_i,dum_j), dum_sfcsumocn(:),loc_sed_pres_fracC,loc_sed_pres_fracP,loc_exe_ocn(:), loc_sed_mean_OM &
             & )
        ! calculate the return rain flux back to ocean
        ! NOTE: diagenetic function calculates all (dissolved) exchange fluxes
@@ -1390,7 +1390,7 @@ CONTAINS
        ! Huelse et al. [2016]
        ! NOTE: 'new sed' is not adjusted within sub_huelseetal2016_main and eneds modifying externally
        CALL sub_huelseetal2016_main( &
-            & dum_i,dum_j,dum_dtyr,dum_D,loc_new_sed(:),sed_fsed(is_POC_frac2,dum_i,dum_j), dum_sfcsumocn(:),loc_sed_pres_fracC,loc_sed_pres_fracP,loc_exe_ocn(:), loc_sed_mean_OM &
+            & dum_dtyr,dum_D,loc_new_sed(:),sed_fsed(is_POC_frac2,dum_i,dum_j), dum_sfcsumocn(:),loc_sed_pres_fracC,loc_sed_pres_fracP,loc_exe_ocn(:), loc_sed_mean_OM &
             & )
        ! calculate the return rain flux back to ocean
        ! NOTE: diagenetic function calculates all (dissolved) exchange fluxes

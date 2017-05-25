@@ -153,9 +153,10 @@ CONTAINS
     !   *****************************************************************
     !------------------------------------------------------------------------------------
 
+!    SUBROUTINE sub_huelseetal2016_main &
+!    (dum_i, dum_j, dum_dtyr, dum_D, loc_new_sed, dum_is_POC_frac2, dum_sfcsumocn, dum_sed_pres_fracC, dum_sed_pres_fracP, dum_new_swifluxes, dum_sed_mean_OM)
     SUBROUTINE sub_huelseetal2016_main &
-    (dum_i, dum_j, dum_dtyr, dum_D, loc_new_sed, dum_is_POC_frac2, dum_sfcsumocn, dum_sed_pres_fracC, dum_sed_pres_fracP, dum_new_swifluxes, dum_sed_mean_OM)
-        !    SUBROUTINE sub_huelseetal2016_main(dum_dtyr, dum_D, loc_new_sed, dum_sfcsumocn, dum_sed_pres_fracC, dum_new_swifluxes)
+    (dum_dtyr, dum_D, loc_new_sed, dum_is_POC_frac2, dum_sfcsumocn, dum_sed_pres_fracC, dum_sed_pres_fracP, dum_new_swifluxes, dum_sed_mean_OM)
         !   __________________________________________________________
         !
         !   Main subroutine: 
@@ -168,7 +169,7 @@ CONTAINS
         IMPLICIT NONE
         ! dummy arguments
         REAL,INTENT(in)::dum_dtyr                               ! time-step
-        integer,intent(in) :: dum_i, dum_j                      ! grid point (i,j)
+!        integer,intent(in) :: dum_i, dum_j                      ! grid point (i,j)
         REAL,INTENT(in)::dum_D                                  ! depth
         REAL,INTENT(in)::dum_is_POC_frac2                       ! fraction of refractory POC
         REAL,DIMENSION(n_sed),intent(in)::loc_new_sed                         ! new (sedimenting) top layer material
@@ -417,7 +418,7 @@ CONTAINS
                 !                    print*,'OMEN loc_O2_swiflux = ', loc_O2_swiflux
                                 if(loc_O2_swiflux .GE. 0.0)then
                                     print*,'loc_O2_swiflux positiv ', loc_O2_swiflux
-                                    print*,'dum_D, dum_i, dum_j', dum_D, dum_i, dum_j
+!                                    print*,'dum_D, dum_i, dum_j', dum_D, dum_i, dum_j
                                     print*,' '
 !                    !                STOP
                                 end if
@@ -525,7 +526,7 @@ CONTAINS
 !            if(dum_D < 1000.0)then
 !            if(loc_O2_swiflux > 0.0)then
                 print*,'dum_D = ', dum_D
-                print*,' grid point (i,j) = ', dum_i, dum_j
+!                print*,' grid point (i,j) = ', dum_i, dum_j
                 print*,'Temp C =', dum_sfcsumocn(io_T) - 273.15
                 print*,'loc_POC1_flux_swi = ', loc_POC1_flux_swi
                 print*,'loc_POC2_flux_swi = ', loc_POC2_flux_swi
