@@ -11,8 +11,8 @@ classdef benthic_main < handle
         tol_const = 1e-18;                      % non-zero constant to avoid numerical errors (e.g. division by zero)
         
         %sediment characteristics
-        rho_sed=2.6; %was 2.5                           % sediment density (g/cm3)
-        wdepth=400.0; %3575.5999999999999;     % Dom was 600.0                       % water depth (m)
+        rho_sed=2.5; %was 2.5                           % sediment density (g/cm3)
+        wdepth=100.0; %3575.5999999999999;     % Dom was 600.0                       % water depth (m)
         w;                                      % burial velocity  (cm/yr)
         z0  = 0;                                % surface
         zbio=10.0; %10.0;                              % bioturbation depth (cm)       
@@ -42,8 +42,8 @@ classdef benthic_main < handle
         DICC1;                                  %DIC/C until zSO4 (mol/mol)
         DICC2;                                  %DIC/C below zSO4 (mol/mol)
         MC;                                     %CH4/C (mol/mol)
-        gamma=0.9;                                %fraction of NH4 that is oxidised in oxic layer
-        gammaH2S=0.95;                           %fraction of H2S that is oxidised in oxic layer
+        gamma=0.05;                                %fraction of NH4 that is oxidised in oxic layer
+        gammaH2S=0.05;                           %fraction of H2S that is oxidised in oxic layer
         gammaCH4=0.99;                           %fraction of CH4 that is oxidised at SO4
         satSO4=0.0;                               % SO4 saturation
         NO3CR;                                  % NO3 consumed by Denitrification

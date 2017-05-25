@@ -1,30 +1,27 @@
-         function run_and_plot_Thullner_Observations()
+         function run_and_plot_Thullner_Observations(pObs, pplot)
             % run OMEN + plot global hypsometry
-            % change Obs number in line 19 to what you want to plot
-            % change parameters as indicated for different cases in the 
-            % respective files (e.g. k1, k2 in benthic_zTOC.m)
             
-            % TODO: 
-            % 1) give observations as argument -> change boundary
-            % conditions and load appropriate observations!
+ % --> pObs in [1, 7]
+ % --> pplot true, false
              
-             
-            clear
+%            clear
 %         gamma=0.95   except 4298m: 0.9                             %fraction of NH4 that is oxidised in oxic layer
 %         gammaH2S=0.95;                           %fraction of H2S that is oxidised in oxic layer
 %         gammaCH4=0.99;                           %fraction of CH4 that is oxidised at SO4
            
             swi=benthic_test.default_swi();            
 
-            Obs = 5;       
+%            Obs = 1;       
             %sediment characteristics
-            switch Obs
-                    case 1  % 100m
-                        % %         k1= 0.00001*0.221;                                                %TOC degradation rate constnat (1/yr)
-                        % %         k2=0.221;  
 
+            switch pObs
+                    case 1  % 100m
                         res.bsd.wdepth=100.0;     % Dom was 600.0                       % water depth (m)
                         res.bsd = benthic_main(1, res.bsd.wdepth);
+
+                        res.zTOC = benthic_zTOC(res.bsd);
+                        res.zTOC.k1= 0.00001*0.221;                                                %TOC degradation rate constnat (1/yr)
+                        res.zTOC.k2=0.221;  
 
                         res.bsd.rho_sed=2.5; %was 2.5                           % sediment density (g/cm3)
                         res.bsd.zbio=10.0;                              % bioturbation depth (cm)
@@ -38,7 +35,7 @@
                         %swi.C01_nonbio= 2.64*1e-2/12*bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*bsd.rho_sed; %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
                         %swi.C02_nonbio= 1.8*1e-2/12*bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
                      	swi.FPOM = 510e-6;      % Total flux after Thullner et al. 2009 [mol/(cm2 yr)]
-                        swi.Fnonbio1 = 0.00001*swi.FPOM;    % [mol/(cm2 yr)] according non-bioturbated flux
+                        swi.Fnonbio1 = 0.0000001*swi.FPOM;    % [mol/(cm2 yr)] according non-bioturbated flux
                         swi.Fnonbio2 = swi.FPOM;
                         swi.C01 = 0.0;  % resulting bioturbated SWI-concentration, to be calculated in benthic_zTOC.m
                         swi.C02 = 0.0;
@@ -56,11 +53,12 @@
                         swi.S0=35;                                                      %Salinity at SWI
                         
                     case 2 %  200m
-                        % %         k1= 0.00001*0.2085;                                                %TOC degradation rate constnat (1/yr)
-                        % %         k2=0.2085;  
 
                         res.bsd.wdepth=200.0;     % Dom was 600.0                       % water depth (m)
                         res.bsd = benthic_main(1, res.bsd.wdepth);
+                        res.zTOC = benthic_zTOC(res.bsd);
+                       	res.zTOC.k1= 0.00001*0.2085;                                                %TOC degradation rate constnat (1/yr)
+                       	res.zTOC.k2=0.2085;  
 
                         res.bsd.rho_sed=2.5; %was 2.5                           % sediment density (g/cm3)
                         res.bsd.zbio=10.0;                              % bioturbation depth (cm)
@@ -97,6 +95,9 @@
 
                         res.bsd.wdepth=500.0;     % Dom was 600.0                       % water depth (m)
                         res.bsd = benthic_main(1, res.bsd.wdepth);
+                        res.zTOC = benthic_zTOC(res.bsd);
+                       	res.zTOC.k1= 0.00001*0.174;                                                %TOC degradation rate constnat (1/yr)
+                       	res.zTOC.k2=0.174;  
 
                         res.bsd.rho_sed=2.5; %was 2.5                           % sediment density (g/cm3)
                         res.bsd.zbio=10.0;                              % bioturbation depth (cm)
@@ -133,6 +134,9 @@
 
                         res.bsd.wdepth=1000.0;     % Dom was 600.0                       % water depth (m)
                         res.bsd = benthic_main(1, res.bsd.wdepth);
+                        res.zTOC = benthic_zTOC(res.bsd);
+                       	res.zTOC.k1= 0.00001*0.130;                                                %TOC degradation rate constnat (1/yr)
+                       	res.zTOC.k2=0.130;  
 
                         res.bsd.rho_sed=2.5; %was 2.5                           % sediment density (g/cm3)
                         res.bsd.zbio=10.0;                              % bioturbation depth (cm)
@@ -169,6 +173,9 @@
 
                         res.bsd.wdepth=2000.0;     % Dom was 600.0                       % water depth (m)
                         res.bsd = benthic_main(1, res.bsd.wdepth);
+                        res.zTOC = benthic_zTOC(res.bsd);
+                       	res.zTOC.k1= 0.00001*0.0718;                                                %TOC degradation rate constnat (1/yr)
+                       	res.zTOC.k2=0.0718;  
 
                         res.bsd.rho_sed=2.5; %was 2.5                           % sediment density (g/cm3)
                         res.bsd.zbio=10.0;                              % bioturbation depth (cm)
@@ -206,6 +213,9 @@
 
                         res.bsd.wdepth=3500.0;     % Dom was 600.0                       % water depth (m)
                         res.bsd = benthic_main(1, res.bsd.wdepth);
+                        res.zTOC = benthic_zTOC(res.bsd);
+                       	res.zTOC.k1= 0.00001*0.0296;                                                %TOC degradation rate constnat (1/yr)
+                       	res.zTOC.k2=0.0296;  
 
                         res.bsd.rho_sed=2.5; %was 2.5                           % sediment density (g/cm3)
                         res.bsd.zbio=10.0;                              % bioturbation depth (cm)
@@ -242,6 +252,9 @@
 
                         res.bsd.wdepth=5000.0;     % Dom was 600.0                       % water depth (m)
                         res.bsd = benthic_main(1, res.bsd.wdepth);
+                        res.zTOC = benthic_zTOC(res.bsd);
+                       	res.zTOC.k1= 0.00001*0.0122;                                                %TOC degradation rate constnat (1/yr)
+                       	res.zTOC.k2=0.0122;  
 
                         res.bsd.rho_sed=2.5; %was 2.5                           % sediment density (g/cm3)
                         res.bsd.zbio=10.0;                              % bioturbation depth (cm)
@@ -273,13 +286,12 @@
                         swi.S0=35;                                                      %Salinity at SWI
                         
                     otherwise
-                        error('unrecognized Obs  %g\n',Obs);
+                        error('unrecognized Obs  %g\n',pObs);
                 end
 
             res.swi = swi;
             
             % calculate 
-            res.zTOC = benthic_zTOC(res.bsd);
             res.zO2 = benthic_zO2(res.bsd, res.swi);           
             res.zNO3 = benthic_zNO3(res.bsd, res.swi);
             res.zSO4 = benthic_zSO4(res.bsd, res.swi);
@@ -333,6 +345,14 @@
             fprintf('both concentration at swi %g \n',  Cswi);
            
             fprintf('sed preservation of POC %g \n',  Cinf/Cswi);
+            
+            % calculate depth integrated OM degradation rates
+            Cox_rate.Cox_total = res.zTOC.calcReac(0.0, res.bsd.zinf, 1, 1, res.bsd, swi, res);
+            Cox_rate.Cox_aerobic = res.zTOC.calcReac(0.0, res.zox, 1, 1, res.bsd, swi, res);
+            if(swi.Nitrogen)
+                Cox_rate.Cox_denitr = res.zTOC.calcReac(res.zox, res.zno3, 1, 1, res.bsd, swi, res);
+            end
+                Cox_rate.Cox_sulfred = res.zTOC.calcReac(res.zno3, res.bsd.zinf, 1, 1, res.bsd, swi, res)
 
  %% Step 2: LOAD Observations   
 
@@ -373,9 +393,9 @@
 % 
 
 %% Step 3: PLOT MODEL + Observations           
-
-            benthic_test.plot_column(res, false, swi, 'Thullner_100m')
-
+            if(pplot)
+                benthic_test.plot_column(res, false, swi, 'Thullner_100m')
+            end
             
 
        
