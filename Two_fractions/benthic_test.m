@@ -396,7 +396,7 @@ classdef benthic_test
 % 
 %          end
                 
-        function res = OMEN_with_GENIE_input(bc, Nitrogen, k_parametr)
+        function res = OMEN_with_GENIE_input(bc, Nitrogen, k_parametr, k2scaling)
             
             swi.Nitrogen = Nitrogen;
             
@@ -459,8 +459,8 @@ classdef benthic_test
                 case 'boudreau1997'
                 	% use parameterisation of Boudreau 1997 dependent on sediment accumulation rate (w)
                     loc_k_apparent = 0.38*res.bsd.w^0.59;
-                    res.zTOC.k1=loc_k_apparent/(f1+f2/100);
-                    res.zTOC.k2=res.zTOC.k1/100;
+                    res.zTOC.k1=loc_k_apparent/(f1+f2*k2scaling);
+                    res.zTOC.k2=res.zTOC.k1*k2scaling;
 
                 case 'tromp1995'
                     OMEN_result(j,i) = test.zso4;

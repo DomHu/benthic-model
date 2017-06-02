@@ -268,7 +268,7 @@
                         %swi.C01_nonbio= 2.64*1e-2/12*bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*bsd.rho_sed; %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
                         %swi.C02_nonbio= 1.8*1e-2/12*bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
                      	swi.FPOM = 6.33e-6;      % Total flux after Thullner et al. 2009 [mol/(cm2 yr)]
-                        swi.Fnonbio1 = 0.0001*swi.FPOM;    % [mol/(cm2 yr)] according non-bioturbated flux
+                        swi.Fnonbio1 = 0.000001*swi.FPOM;    % [mol/(cm2 yr)] according non-bioturbated flux
                         swi.Fnonbio2 = 1.0*swi.FPOM;
                         swi.C01 = 0.0;  % resulting bioturbated SWI-concentration, to be calculated in benthic_zTOC.m
                         swi.C02 = 0.0;

@@ -66,6 +66,7 @@
 \usepackage{amsmath}
 \usepackage{lineno}	% Dominik linenumbers
 \usepackage{rotating}	% Dominik rotate table
+\usepackage{amssymb}
 
 \usepackage{marginnote} %Dominik for commments during drafting
 \setlength{\marginparwidth}{35mm}
@@ -130,7 +131,7 @@ related reduced substances (NH4, H2S), the full suite of secondary-redox reactio
 To represent a redox-dependent sedimentary P cycle we consider the formation and burial of Fe-bound P and authigenic Ca-P minerals. 
 Thus, OMEN-SED captures most of the features of a complex, numerical diagenetic model, however, its computational efficiency allows the coupling to global Earth System models 
 and therefore the investigation of coupled global biogeochemical dynamics over different timescales. This paper provides a detailed description of the new sediment 
-model, \textcolor{red}{tested with obersvations, SA and global observations} and describes it's coupling to the Earth System model cGENIE.
+model, \textcolor{red}{tested with observations, SA and global observations} and describes it's coupling to the Earth System model cGENIE.
 \end{abstract}
 
 %\newpage
@@ -226,7 +227,7 @@ However, due to the high degree of coupled processes and depth-varying parameter
 solved numerically, thus resulting in a very high computational demand and consequently rendering their application in an Earth system model framework prohibitive. 
 Additionally, their global applicability is limited by the restricted transferability of model parameters from one site to the global scale \citep{arndt_quantifying_2013}. 
 
-The second group of models solves the diagenetic equation analytically or semi-analytically , thus providing an alternative and computational more efficient approach. 
+The second group of models solves the diagenetic equation analytically or semi-analytically, thus providing an alternative and computational more efficient approach. 
 However, finding an analytical solution, especially when complex reaction networks are to be considered, is not straightforward and generally requires the assumption of steady state. 
 The complexity of the reaction network can be reduced by dividing the sediment column into distinct zones and accounting for the most pertinent biogeochemical processes 
 within each zone, thus increasing the likelihood of finding an analytical solution. % to Eq. (\ref{eq:Eq_generaldiagenetic}) (see Eq. (\ref{eq:ODE_general_solution}) in section \ref{subsec:GBCM} for the general steady-state solution). 
@@ -399,7 +400,7 @@ Secondary redox reactions &  Oxidation of ammonium and sulfide by oxygen, anaero
 & of methane by sulfate\\
 Adsorption/Desorption & Ad-/Desorption of P on/from \chem{Fe(OH)_3}, \chem{NH_4} adsorption, \chem{PO_4} adsorption\\ %\textcolor{red}{Formation of Fe-bound P, reduction of Fe oxides (?correct here)},\\
 Mineral precipitation & Formation of authigenic P \\
-Biogeochemical tracers & Organic matter, oxygen, nitrate, ammonium, sulfate, sulfide (hydrogen sulfide),\\
+Biogeochemical tracers & Organic matter (2-G), oxygen, nitrate, ammonium, sulfate, sulfide (hydrogen sulfide),\\
 &  phosphate, Fe-bound P, DIC, ALK\\
 \hline\hline
 % inserts double horizontal lines
@@ -696,7 +697,7 @@ As for ammonium, the adsorption of P to the sediment matrix is treated as an equ
 with $D_{M}=D_{\mathrm{bio}}$ for $z\leq z_{\mathrm{bio}}$ and $D_{M}=0$ for $z > z_{\mathrm{bio}}$. 
 The boundary conditions to solve Equations \ref{eq:PO4_ODE_L1} - \ref{eq:PO4_ODE_L2} are summarized in Table \ref{Tab:BC_PO4+M}. 
 The model assumes known bottom water concentrations and equal concentrations and diffusive fluxes at $z_{\mathrm{bio}}$ and $z_{\mathrm{ox}}$ for both species. 
-Additionally it considers no change in phosphate flux and an assymptotic Fe-bound P concentration at $z_\infty$. \\
+Additionally it considers no change in phosphate flux and an asymptotic Fe-bound P concentration at $z_\infty$. \\
 
 % TODO: \textcolor{red}{@ Sandra: SWI Flux for M does not exist, right???}
 
@@ -723,16 +724,13 @@ $z=z_{\mathrm{bio}}$&continuity& 2) $M(z_{\mathrm{bio}}^-)$=$M(z_{\mathrm{bio}}^
 $z=z_{\mathrm{ox}}$& continuity& 4) $M(z_{\mathrm{ox}}^-)$=$M(z_{\mathrm{ox}}^+)$\\
   & flux & 5) $\frac{\partial M}{\partial z}|_{z_{\mathrm{ox}}^-} =\frac{\partial M}{\partial z}|_{z_{\mathrm{ox}}^+}$\\
 %&where:\textcolor{red}{$\int_{z_{\chem{SO_4}}}^{\infty}$ here?} & $\quad F_{\chem{H_2S}}(z_{\mathrm{ox}})=\frac{1-\phi}{\phi} \cdot \textcolor{red}{\gamma_{\chem{H_2S}}\cdot} \left( \int_{z_{\chem{NO_3}}}^{SO_4}  \sum_i SO_4C \cdot k_i \cdot C_i\ dz + \gamma_{CH_4}\cdot \int_{z_{\chem{SO_4}}}^{\infty}  \sum_i SO_4C \cdot k_i \cdot C_i\ dz \right)$\\          
-$z=z_{\infty}$& assymptotic concentration & 10) $M(z_\infty)=M_\infty$\\
+$z=z_{\infty}$& asymptotic concentration & 10) $M(z_\infty)=M_\infty$\\
 \hline    
 \end{tabular}
 \label{Tab:BC_PO4+M}
 % is used to refer this table in the text
 \end{table}
-% \subsubsection{Sulfide}
-% Processes considered\\
-% general equation\\
-% solution\\
+
 
 \subsubsection{Dissolved Inorganic Carbon (DIC)}
 Organic matter degradation produces dissolved inorganic carbon (DIC) with a stoichiometric DIC:C ratio of 1:2 in the methanic zone and 1:1 in the rest of the sediment column. 
@@ -1331,7 +1329,7 @@ leads to a higher SWI-flux.
 % Application to Seitert, 2004 OM, burwiczk see rate data and evaluation based on global data (Archer)
 
 \subsection{Global Hypsometric Analysis of TEA Fluxes}\label{subsec:globalhypsometry}
-In this section we test to which degree OMEN-SED is capable of capturing the dynamics of OM degradation pathways and related TEA-fluxes as simulated with a complete, numerical diagenetic model. 
+In this section we test to which degree OMEN-SED is capable of capturing the dynamics of organic matter degradation pathways and related TEA-fluxes as simulated with a complete, numerical diagenetic model. 
 Therefore, we reproduce the simulations of typical conditions along a global ocean hypsometry of \citet{thullner_global_scale_2009}. To explore the global remineralisation of OM in the seafloor 
 \citet{thullner_global_scale_2009} quantified various diagenetic processes using the Biogeochemical Reaction Network Simulator \citep[BRNS,][]{aguilera_knowledge-based_2005}. 
 In their study many model parameters (e.g. $w$, $D_{bio}$ or $\phi$) are related to the master variable seafloor depth (SFD) using existing empirical relationships. 
@@ -1340,20 +1338,28 @@ BRNS simulations were performed using boundary conditions and parameters for rep
 In order to reproduce these results, OMEN-SED is configured as a 1-G model and boundary conditions and model parameters are defined as given in Table 3 of \citep[][]{thullner_global_scale_2009}. 
 As OMEN-SED assumes a fixed fraction of reduced substances to be re-oxidised which exerts a large impact on the resulting SWI-fluxes (compare Section \ref{subsec:SA}) 
 we perform two sets of simulations in order to show the range of possible model outputs. In the first setup 95\% of the reduced substances are re-oxidised (i.e. $\gamma_{NH_4}=\gamma_{H_2S}=0.95$) and in the 
-second only 5\% (all other model parameters and boundary conditions are equal).
+second only 5\% are re-oxidised (all other model parameters and boundary conditions are equal). 
 
-Figure \ref{fig:hypsometry} (A-C) compares simulated depth-integrated organic matter mineralisation rates ($\mu$mol C cm$^{-2}$\,yr$^{-1}$) by three degradation pathways along the global hypsometry. 
-The corresponding fluxes of TEA into the sediments are shown in Figure \ref{fig:hypsometry} (D-F). Observations for nitrate fluxes, aerobic degradation, denitrification and sulfate reduction rates are taken 
-from \citet{middelburg_denitrification_1996, middelburg_empirical_1997}. 
+%Figure \ref{fig:hypsometry} (A-C) compares simulated depth-integrated organic matter mineralisation rates ($\mu$mol C cm$^{-2}$\,yr$^{-1}$) by three degradation pathways along the global hypsometry. 
+Figure \ref{fig:hypsometry} compares simulated SWI-fluxes of TEAs (i.e. \chem{O_2}, \chem{NO_3} and \chem{SO_4}) along the global hypsometry using OMEN-SED (black lines) with the results of \citet{thullner_global_scale_2009} (red lines). 
+Observations for \chem{O_2} and \chem{NO_3} fluxes are taken from \citet{middelburg_denitrification_1996}. Also plotted in Fig. \ref{fig:hypsometry}A are the total oxygen uptake (TOU) estimates 
+of \citet{thullner_global_scale_2009} (filled red symbols), who assumed the organic matter flux to be equivalent to TOU. Considering the spatial variability in available data, Figure \ref{fig:hypsometry} shows that OMEN-SED is capable 
+of reproducing the major observed trends in depth distributions of TEA fluxes. In general, fluxes calculated with BRNS fall within the range of possible OMEN-SED results (with the exception of \chem{NO_3} in the shallow ocean). 
+In particular, the observed \chem{O_2} fluxes in the upper 2000m are well predicted by the two OMEN-SED simulations (Fig. \ref{fig:hypsometry}A). Oxygen fluxes for the deep-sea sediments, however, are slightly underestimated. 
+These deviations can presumably be related to the assumed 1-G description of the organic matter degradation model, which neglects the more labile OM pool. This highly reactive pool is degraded close to the sediment surface, 
+thus promoting higher aerobic degradation rates and higher \chem{O_2} fluxes.  
+Nitrate fluxes in the upper 500m of the Atlantic Ocean are well predicted. However, as in \citet{middelburg_denitrification_1996} the direction of calculated nitrate fluxes in the upper 1000m of the Pacific Ocean differ from the observations. 
+\citet{middelburg_denitrification_1996} related these discrepancies to the globally averaged model parameters and applied boundary conditions. They could reduce the disagreements significantly by using more appropriate 
+bottom water concentrations for the eastern Pacific and a higher flux of labile organic matter for their 2-G model. 
 
 
 \begin{figure}[htbp]
 \begin{center}
-	\includegraphics[width=0.6\textwidth]{figures/0_OMEN_Thullner_hypsometry_combined.pdf}
-	\caption{(A-C) Carbon degradation rates along the global hypsometry and (D-F) fluxes of \chem{O_2}, \chem{NO_3} and \chem{SO_4} to the sediment. 
-	Red lines are model results from \citet{thullner_global_scale_2009} using BRNS; black lines are results from OMEN-SED (solid: $\gamma_{NH_4}=\gamma_{H_2S}=0.95$; dashed: $\gamma_{NH_4}=\gamma_{H_2S}=0.05$). 
-	Observations of carbon degradation rates (diamonds) are taken from \citet{middelburg_empirical_1997}, total oxygen uptake (TOU) estimates in Figure (F) use either the relationship 
-	of \citet{andersson_respiration_2004} (TOU - observed) or are taken from \citet{thullner_global_scale_2009} (TOU - Thullner). 
+	\includegraphics[width=0.8\textwidth]{figures/0_OMEN_Thullner_hypsometry_fluxes.pdf}
+	\caption{Fluxes of \chem{O_2}, \chem{NO_3} and \chem{SO_4} to the sediment along the global hypsometry. 
+	Red lines (with open symbols) are modelled fluxes from \citet{thullner_global_scale_2009} using BRNS; black lines are results from OMEN-SED ($\bullet$ : $\gamma_{NH_4}=\gamma_{H_2S}=0.95$; $\blacktriangledown$: $\gamma_{NH_4}=\gamma_{H_2S}=0.05$). 
+	Observations of TEA fluxes are taken from \citet{middelburg_denitrification_1996} ($\Diamond$: Atlantic, $\square$: Pacific, $\times$: Arctic/Indian Ocean). 
+	Also plotted in Figure (A) are the total oxygen uptake (TOU) estimates of \citet{thullner_global_scale_2009} (filled red symbols). Negative values are directed out of the sediments.
 	}\label{fig:hypsometry}
 \end{center}
 \end{figure}

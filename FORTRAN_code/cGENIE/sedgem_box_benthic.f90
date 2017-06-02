@@ -216,8 +216,8 @@ CONTAINS
         loc_BW_O2_anoxia = 5.0e-9                                   ! set to 5.0 nanomol/cm^3
         loc_mixed_layer = 10.0                                      ! mixed layer depth, to compare wt% with observations
 
+!           print*,' '
 !                print*,'---------- IN OMEN MAIN ----------- '
-!        print*,' '
 !        print*,'dum_D = ', dum_D
         ! initialize BW concentrations 
         !   THE FOLLOWING VALUES WILL BE PASSED DOWN FROM GENIE
@@ -276,7 +276,7 @@ CONTAINS
                 loc_k_apparent = 0.38*w**0.59
                 k1=loc_k_apparent/((1-dum_is_POC_frac2)+dum_is_POC_frac2/100)
                 k2=k1/100
-            !                print*,'boudreau1997 oxic k1, k2 =', k1, k2
+!                print*,'boudreau1997 oxic k1, k2 =', k1, k2
             case ('tromp1995')
                 ! use parameterisation of Tromp et al. 1995:
                 loc_k_apparent = 2.97*w**0.62
@@ -578,8 +578,9 @@ CONTAINS
 
         ! calculate mean OM concentration [wt%] in upper x cm
         dum_sed_mean_OM = 1.0/loc_mixed_layer * 100.0*12.0/rho_sed*FUN_calcOM(0.0, loc_mixed_layer, 1.0, 1.0)
-!        print*,'dum_sed_mean_OM = ', dum_sed_mean_OM
-
+        if(isnan(dum_sed_mean_OM))then
+            print*,'NNNNNNNNNNNNAAAAAAAAAAAAAAAANNNNNNNNNNN dum_sed_mean_OM = ', dum_sed_mean_OM
+        end if
 
     end SUBROUTINE sub_huelseetal2016_main
     
@@ -847,12 +848,6 @@ CONTAINS
 
         !        print*, 'const_real_nullsmall', const_real_nullsmall
 !        print*,' '
-        if(abs(A21) .GE. 1/const_real_nullsmall .OR. abs(A22) .GE. 1/const_real_nullsmall)then
-!            print*, 'dum_D ', dum_D
-!            print*, 'A2i .gE. ', 1/const_real_nullsmall
-!            print*, 'A21, A22 ', A21, A22
-            dum_sed_pres_insane = .TRUE.
-        end if
 
         !!! no need for this as this is SWI concentration for z0 = 0!
         !!!    ! % Calculate concentration at z0
@@ -908,8 +903,11 @@ CONTAINS
 
         dum_sed_pres_fracC = (loc_POC1_conc_zinf+loc_POC2_conc_zinf)/(dum_POC1_conc_swi+dum_POC2_conc_swi) !+const_real_nullsmall)
 
+!        if(abs(A21) .GE. 1/const_real_nullsmall .OR. abs(A22) .GE. 1/const_real_nullsmall)then
+!            dum_sed_pres_insane = .TRUE.
+!        end if
+
     !    print*, ' '
-    !    print*, 'F_TOC1', char(9), F_TOC1
     !    print*, 'F_TOC2', char(9), F_TOC2
     !    print*, 'F_TOC', char(9), F_TOC
 
@@ -3017,6 +3015,10 @@ CONTAINS
         real,intent(in):: zU, zL, reac1, reac2
         real FUN_calcOM
 
+        ! local variables
+        real loc_FUN_calcOM_l1, loc_FUN_calcOM_l2
+
+
         ! Integral of organic matter from zU to zL,
         ! multiplied by stoichiometric factors reac1, reac2 (for the two OC phases)
 
@@ -3025,8 +3027,23 @@ CONTAINS
         ! 2) wholly within non-bio     layer:  (0=) FUN_calcReac_l1(zbio, zbio) +   FUN_calcReac_l2(zU, zL)
         ! 3) crossing zbio                       calcRead_l1(zU,zbio)   +       FUN_calcReac_l2(zbio, zL)
 
-        FUN_calcOM = FUN_calcOM_l1(min(zU,zbio), min(zL,zbio), reac1, reac2) &
-        + FUN_calcOM_l2(max(zU,zbio), max(zL, zbio), reac1, reac2)
+        loc_FUN_calcOM_l1 = FUN_calcOM_l1(min(zU,zbio), min(zL,zbio), reac1, reac2)
+        loc_FUN_calcOM_l2 = FUN_calcOM_l2(max(zU,zbio), max(zL, zbio), reac1, reac2)
+
+        if(isnan(loc_FUN_calcOM_l1) .AND. isnan(loc_FUN_calcOM_l2))then
+            FUN_calcOM = 0.0
+        elseif(isnan(loc_FUN_calcOM_l2)) then
+            FUN_calcOM = loc_FUN_calcOM_l1
+        else
+            FUN_calcOM = loc_FUN_calcOM_l1 + loc_FUN_calcOM_l2
+        end if
+
+!            print*,' '
+!            print*,'FUN_calcOM_l1 ', loc_FUN_calcOM_l1
+!            print*,'FUN_calcOM_l2 ', loc_FUN_calcOM_l2
+!            print*,'FUN_calcOM ', FUN_calcOM
+
+
 
     ! TODO confirm (1-por)*  has been added (to k1 & k2 ?)
 
@@ -3048,7 +3065,7 @@ CONTAINS
         + dum_POC1_conc_swi*exp(bb11*zU)*aa11 - dum_POC1_conc_swi*exp(bb11*zL)*aa11)/(aa11*bb11 + const_real_nullsmall) &
         -reacf2*(A12*(exp(aa12*zU)*bb12 - exp(bb12*zU)*aa12 - exp(aa12*zL)*bb12 + exp(bb12*zL)*aa12) &
         + dum_POC2_conc_swi*exp(bb12*zU)*aa12 - dum_POC2_conc_swi*exp(bb12*zL)*aa12)/(aa12*bb12 + const_real_nullsmall)
-    !    print*,'in FUN_calcReac_l1 dum_POC1_conc_swi = ', dum_POC1_conc_swi
+
     !    print*,'in FUN_calcReac_l1 dum_POC2_conc_swi = ', dum_POC2_conc_swi
 
 
@@ -3069,6 +3086,7 @@ CONTAINS
 
         FUN_calcOM_l2 = -reacf1*A21*(exp(aa21*zU) - exp(aa21*zL))/(aa21 + const_real_nullsmall) &
         -reacf2*A22*(exp(aa22*zU) - exp(aa22*zL))/(aa22 + const_real_nullsmall)
+
 
     !    print*,'FUN_calcReac_l2', FUN_calcReac_l2
 
