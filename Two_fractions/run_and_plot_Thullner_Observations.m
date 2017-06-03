@@ -41,6 +41,9 @@
                         swi.C02 = 0.0;
                         swi.O20=132.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
                         swi.NO30=17.3e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
+                        % for Pacific
+                        swi.O20=0.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
+                        swi.NO30=40.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
                         swi.Nitrogen=true;
                         swi.NH40=0.0e-9;                                                %NH4 concentration at SWI (mol/cm^3)
                         swi.SO40=28000.0e-9;                                            %SO4 concentration at SWI (mol/cm^3)
@@ -78,6 +81,9 @@
                         swi.C02 = 0.0;
                         swi.O20=129.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
                         swi.NO30=18.6e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
+                        % for Pacific
+                        swi.O20=10.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
+                        swi.NO30=80.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
                         swi.Nitrogen=true;
                         swi.NH40=0.0e-9;                                                %NH4 concentration at SWI (mol/cm^3)
                         swi.SO40=28000.0e-9;                                            %SO4 concentration at SWI (mol/cm^3)
@@ -117,6 +123,9 @@
                         swi.C02 = 0.0;
                         swi.O20=121.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
                         swi.NO30=22.1e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
+                        % for Pacific
+                        swi.O20=10.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
+                        swi.NO30=80.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
                         swi.Nitrogen=true;
                         swi.NH40=0.0e-9;                                                %NH4 concentration at SWI (mol/cm^3)
                         swi.SO40=28000.0e-9;                                            %SO4 concentration at SWI (mol/cm^3)
@@ -156,6 +165,9 @@
                         swi.C02 = 0.0;
                         swi.O20=114.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
                         swi.NO30=26.5e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
+                        % for Pacific
+                        swi.O20=10.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
+                        swi.NO30=80.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
                         swi.Nitrogen=true;
                         swi.NH40=0.0e-9;                                                %NH4 concentration at SWI (mol/cm^3)
                         swi.SO40=28000.0e-9;                                            %SO4 concentration at SWI (mol/cm^3)
@@ -195,6 +207,9 @@
                         swi.C02 = 0.0;
                         swi.O20=116.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
                         swi.NO30=31.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
+                        % for Pacific
+                        swi.O20=10.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
+                        swi.NO30=80.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
                         swi.Nitrogen=true;
                         swi.NH40=0.0e-9;                                                %NH4 concentration at SWI (mol/cm^3)
                         swi.SO40=28000.0e-9;                                            %SO4 concentration at SWI (mol/cm^3)
@@ -235,6 +250,9 @@
                         swi.C02 = 0.0;
                         swi.O20=135.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
                         swi.NO30=31.6e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
+                        % for Pacific
+                        swi.O20=10.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
+                        swi.NO30=80.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
                         swi.Nitrogen=true;
                         swi.NH40=0.0e-9;                                                %NH4 concentration at SWI (mol/cm^3)
                         swi.SO40=28000.0e-9;                                            %SO4 concentration at SWI (mol/cm^3)
@@ -274,7 +292,10 @@
                         swi.C02 = 0.0;
                         swi.O20=141.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
                         swi.NO30=31.6e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
-                        swi.Nitrogen=true;
+                         % for Pacific
+                        swi.O20=10.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
+                        swi.NO30=80.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
+                       swi.Nitrogen=true;
                         swi.NH40=0.0e-9;                                                %NH4 concentration at SWI (mol/cm^3)
                         swi.SO40=28000.0e-9;                                            %SO4 concentration at SWI (mol/cm^3)
                         %swi.SO40 = 100e-9;
@@ -394,7 +415,7 @@
 
 %% Step 3: PLOT MODEL + Observations           
             if(pplot)
-                benthic_test.plot_column(res, false, swi, 'Thullner_100m')
+                benthic_test.plot_column(res, false, swi, 'Thullner')
             end
             
 

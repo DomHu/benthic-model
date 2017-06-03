@@ -17,6 +17,9 @@ function plot_OMEN_Thullner_results()
     
     data.OMEN_gamma95=xlsread('ThullnerGcubed2009 Fluxes-rates.xlsx','exponential','A31:H37'); 
     data.OMEN_gamma05=xlsread('ThullnerGcubed2009 Fluxes-rates.xlsx','exponential','J31:Q37'); 
+    
+    data.OMEN_gamma05_pacific=xlsread('ThullnerGcubed2009 Fluxes-rates.xlsx','exponential','J41:M47');  % using Gamma=0.05; gammaH2S=0.05; O2=10, NO3=80 +  + N:C = 0.04  east Pacific (Bohlen et al. 2012)
+    
 
     set(0,'defaultLineLineWidth', 1)
     set(0,'DefaultAxesFontSize',12)
@@ -55,6 +58,7 @@ function plot_OMEN_Thullner_results()
     plot(data.Thullner(:,3), -data.Thullner(:,1)/1000, '-ro', 'MarkerEdgeColor','r')    
     plot(-data.OMEN_gamma95(:,3), -data.OMEN_gamma95(:,1)/1000, '-ko', 'MarkerEdgeColor','k','MarkerFaceColor','k')
     plot(-data.OMEN_gamma05(:,3), -data.OMEN_gamma05(:,1)/1000, '-kv', 'MarkerEdgeColor','k','MarkerFaceColor','k')
+    plot(-data.OMEN_gamma05_pacific(:,3), -data.OMEN_gamma05_pacific(:,1)/1000, '-gv', 'MarkerEdgeColor','k','MarkerFaceColor','g')
     xlim([-20 60.0])
     set(gca,'XTick',[-20:20:60])
     set(gca,'YTick',[-5:0])
