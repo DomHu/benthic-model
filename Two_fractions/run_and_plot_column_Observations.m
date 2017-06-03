@@ -1,4 +1,4 @@
-         function run_and_plot_column_Observations()
+         function run_and_plot_column_Observations(pObs)
             % run OMEN + plot single sediment column vs Observations
             % change Obs number in line 19 to what you want to plot
             % change parameters as indicated for different cases in the 
@@ -7,9 +7,18 @@
             % TODO: 
             % 1) give observations as argument -> change boundary
             % conditions and load appropriate observations!
-             
-             
-            clear
+% --> Observations are as follows:
+% --> 01: OMEXDIA_2809_108m
+% --> 02: OMEXDIA_2809_2213m
+% --> 03: OMEXDIA_2809_3097m
+% --> 04: OMEXDIA_3371m
+% --> 05: OMEXDIA_4941m
+% --> 06: Reimers et al. 1996
+% --> 07: OMEXDIA_4908m   
+% --> 08: OMEXDIA_2809_343m          
+% --> 09: Dale
+% --> 10: OMEXDIA_4298m
+
 %         gamma=0.95   except 4298m: 0.9                             %fraction of NH4 that is oxidised in oxic layer
 %         gammaH2S=0.95;                           %fraction of H2S that is oxidised in oxic layer
 %         gammaCH4=0.99;                           %fraction of CH4 that is oxidised at SO4
@@ -17,8 +26,8 @@
             
             % was here: swi=benthic_test.default_swi()
 %% Step 1:  initialise main model parameters with standard values & run model
-            bsd = benthic_main();
-            Obs = 1;       
+            res.bsd = benthic_main();
+            Obs = pObs;       
             %sediment characteristics
             switch Obs
                     case 1  % OMEXDIA_2809_108m all solutes in Micromoles/litre
@@ -296,17 +305,23 @@
 %         PO4s=1.0e-9;        %Equilibrium concentration for P sorption (mol/cm3)       was 1.5e-9; ; Slomp ea 1996
 %         PO4a= 0.5e-8; %47e-9;  %was 3.7e-9      %Equilibrium concentration for authigenic P formation (mol/cm3) was 0.7e-9
 % gamma=0.9;                                %fraction of NH4 that is oxidised in oxic layer
-                        bsd.rho_sed=2.6; %was 2.5                           % sediment density (g/cm3)
-                        bsd.wdepth=4298.0;     % Dom was 600.0                       % water depth (m)
-                        bsd.zbio=4.2;                              % bioturbation depth (cm)
-                        bsd.zinf=50;                               %Inifinity (cm)
-                        bsd.Dbio=0.18; %5.2*(10.0^(0.7624-0.0003972*bsd.wdepth)); %0.5;
-                        bsd.w = 10.0.^(-0.87478367-0.00043512*bsd.wdepth)*3.3; % or check 0.42 for Reimers et al. 1996 as stated in the paper
+                        res.bsd.wdepth=4298.0;     % Dom was 600.0                       % water depth (m)
+                        res.bsd = benthic_main(1, res.bsd.wdepth);
+
+                        res.bsd.rho_sed=2.6; %was 2.5                           % sediment density (g/cm3)
+                        res.bsd.zbio=4.2;                              % bioturbation depth (cm)
+                        res.bsd.zinf=50;                               %Inifinity (cm)
+                        res.bsd.Dbio=0.18; %5.2*(10.0^(0.7624-0.0003972*bsd.wdepth)); %0.5;
+                        res.bsd.w = 10.0.^(-0.87478367-0.00043512*res.bsd.wdepth)*3.3; % or check 0.42 for Reimers et al. 1996 as stated in the paper
+
+                        res.zTOC = benthic_zTOC(res.bsd);
+                        res.zTOC.k1= 0.055;                                                %TOC degradation rate constnat (1/yr)
+                        res.zTOC.k2=0.00001;  
 
                         %bottom water concentrations
                         swi.T= 2.5; %20.0;                         %temperature (degree C)
-                        swi.C01= 1.0*1e-2/12*bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*bsd.rho_sed; %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-                        swi.C02= 1.2*1e-2/12*bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+                        swi.C01= 0.83*1e-2/12*res.bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*bsd.rho_sed; %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+                        swi.C02= 1.2*1e-2/12*res.bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
                         %swi.C01=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
                         %swi.C02=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
                         swi.O20=243.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
@@ -324,9 +339,70 @@
        
                     otherwise
                         error('unrecognized Obs  %g\n',Obs);
-                end
+            end
+            
+%            res=benthic_test.calc_benthic(1,swi);
+%            res=benthic_test.test_benthic(1,swi);
+            res.swi = swi;
+            
+            % calculate 
+            res.zO2 = benthic_zO2(res.bsd, res.swi);           
+            res.zNO3 = benthic_zNO3(res.bsd, res.swi);
+            res.zSO4 = benthic_zSO4(res.bsd, res.swi);
+            res.zNH4 = benthic_zNH4(res.bsd, res.swi);
+            res.zH2S = benthic_zH2S(res.bsd, res.swi);
+            res.zPO4_M = benthic_zPO4_M(res.bsd, res.swi);
+            res.zDIC = benthic_zDIC(res.bsd, res.swi);
+            res.zALK = benthic_zALK(res.bsd, res.swi);
+   
+            tic;
+            res = res.zTOC.calc(res.bsd,res.swi, res);
+            if(res.swi.O20<=0.0)
+                res.zox=0.0;
+                res.flxzox = 0.0;
+                res.conczox = 0.0;
+                res.flxswiO2=0.0;
+                res.zxf=0.0;
+            else
+                res = res.zO2.calc(res.bsd, res.swi, res);
+            end
+            if(swi.Nitrogen)
+                res = res.zNO3.calc(res.bsd, res.swi, res);
+            else
+                res.zno3=res.zox;
+% %                res.zso4=res.zox;   % for test-case with just TOC & O2
+            end
+             res = res.zSO4.calc(res.bsd, res.swi, res);
+             if(swi.Nitrogen)
+                 res = res.zNH4.calc(res.bsd, res.swi, res);
+             end
+             res = res.zH2S.calc(res.bsd, res.swi, res);
+             res = res.zPO4_M.calc(res.bsd, res.swi, res);
+             res = res.zDIC.calc(res.bsd, res.swi, res);
+             res = res.zALK.calc(res.bsd, res.swi, res);
+            toc;
+            
+            %%%%% WRITE OUTPUT:
+            answ = res
+            [Cinf, C1inf, C2inf] = res.zTOC.calcC( 100, res.bsd, res.swi, res);
+            [Cswi, C1swi, C2swi] = res.zTOC.calcC( 0, res.bsd, res.swi, res);
+            fprintf('frac1 concentration at zinf %g \n',  C1inf);
+            fprintf('frac2 concentration at zinf %g \n',  C2inf);
+            fprintf('both concentration at zinf %g \n',  Cinf);
+            fprintf('frac1 concentration at swi %g \n',  C1swi);
+            fprintf('frac2 concentration at swi %g \n',  C2swi);
+            fprintf('both concentration at swi %g \n',  Cswi);
+           
+            fprintf('sed preservation of POC %g \n',  Cinf/Cswi);
+            
+            % calculate depth integrated OM degradation rates
+            Cox_rate.Cox_total = res.zTOC.calcReac(0.0, res.bsd.zinf, 1, 1, res.bsd, swi, res);
+            Cox_rate.Cox_aerobic = res.zTOC.calcReac(0.0, res.zox, 1, 1, res.bsd, swi, res);
+            if(swi.Nitrogen)
+                Cox_rate.Cox_denitr = res.zTOC.calcReac(res.zox, res.zno3, 1, 1, res.bsd, swi, res);
+            end
+                Cox_rate.Cox_sulfred = res.zTOC.calcReac(res.zno3, res.bsd.zinf, 1, 1, res.bsd, swi, res)
 
-            res=benthic_test.test_benthic(1,swi);
 
  %% Step 2: LOAD Observations   
 
@@ -429,7 +505,7 @@
                        % data.PO4=load('../Observations/AndyDale/M92_PO4_250m_17MUC5_198MUC34.dat','ascii');                   
 
                     case 10  % OMEXDIA_4298m
-                        str_date = '4298m_OMEXDIA_2110_';
+                        str_date = '4298m_OMEXDIA_';
                         data.TOC=xlsread('../Observations/OMEXDIA/4_PE138_99-17_4298m.xlsx','Corg','C2:D38');     % in wt%
                         data.O2=xlsread('../Observations/OMEXDIA/4_PE138_99-17_4298m.xlsx','O2','C2:D815'); % C2:D112
                         data.NO3=xlsread('../Observations/OMEXDIA/4_PE138_99-17_4298m.xlsx','NO3','C2:D20'); 

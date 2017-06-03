@@ -203,6 +203,7 @@ CONTAINS
         REAL::loc_new_sed_vol                                       ! new sediment volume (as SOLID material)
 !        integer:: loc_k = 0
 
+
         loc_sed_pres_insane = .false.
         loc_print_results = .false.
         calc_ALK = .true.
@@ -274,19 +275,19 @@ CONTAINS
             case ('boudreau1997')
                 ! use parameterisation of Boudreau 1997 dependent on sediment accumulation rate (w)
                 loc_k_apparent = 0.38*w**0.59
-                k1=loc_k_apparent/((1-dum_is_POC_frac2)+dum_is_POC_frac2/100)
-                k2=k1/100
+                k1=loc_k_apparent/((1-dum_is_POC_frac2)+dum_is_POC_frac2/par_sed_huelse2017_k2_order)
+                k2=k1/par_sed_huelse2017_k2_order
 !                print*,'boudreau1997 oxic k1, k2 =', k1, k2
             case ('tromp1995')
                 ! use parameterisation of Tromp et al. 1995:
                 loc_k_apparent = 2.97*w**0.62
-                k1=loc_k_apparent/((1-dum_is_POC_frac2)+dum_is_POC_frac2/100)
-                k2=k1/100
+                k1=loc_k_apparent/((1-dum_is_POC_frac2)+dum_is_POC_frac2/par_sed_huelse2017_k2_order)
+                k2=k1/par_sed_huelse2017_k2_order
             case ('stolpovsky2016')
                 ! use parameterisation of Stolpovsky et al. 2015 dependent on sediment accumulation rate (w)
                 loc_k_apparent = 1.02*w**0.5
-                k1=loc_k_apparent/((1-dum_is_POC_frac2)+dum_is_POC_frac2/100)
-                k2=k1/100
+                k1=loc_k_apparent/((1-dum_is_POC_frac2)+dum_is_POC_frac2/par_sed_huelse2017_k2_order)
+                k2=k1/par_sed_huelse2017_k2_order
             case ('boudreau1997fPOC')
                 ! k dependent on OM flux, after Boudreau 1997:
                 loc_total_POC_flux = conv_POC_cm3_mol*loc_fPOC*10**6
@@ -317,20 +318,20 @@ CONTAINS
                 ! use parameterisation of Boudreau 1997 dependent on sediment accumulation rate (w)
                 ! which is actually Toth and Lerman (1977) - as no anoxic rate in Boudreau 1997:
                 loc_k_apparent = 0.04*w**2
-                k1=loc_k_apparent/((1-dum_is_POC_frac2)+dum_is_POC_frac2/100)
-                k2=k1/100
+                k1=loc_k_apparent/((1-dum_is_POC_frac2)+dum_is_POC_frac2/par_sed_huelse2017_k2_order)
+                k2=k1/par_sed_huelse2017_k2_order
 !                print*,'boudreau1997 anoxic k1, k2 =', k1, k2
             case ('tromp1995')
                 ! use parameterisation of Tromp et al. 1995:
                 loc_k_apparent = 0.057*w**1.94
-                k1=loc_k_apparent/((1-dum_is_POC_frac2)+dum_is_POC_frac2/100)
-                k2=k1/100
+                k1=loc_k_apparent/((1-dum_is_POC_frac2)+dum_is_POC_frac2/par_sed_huelse2017_k2_order)
+                k2=k1/par_sed_huelse2017_k2_order
             case ('stolpovsky2016')
                 ! use parameterisation of Stolpovsky et al. 2015 dependent on sediment accumulation rate (w)
                 ! which is actually Toth and Lerman (1977) - as no anoxic rate in Stolpovsky et al. 2015:
                 loc_k_apparent = 0.04*w**2
-                k1=loc_k_apparent/((1-dum_is_POC_frac2)+dum_is_POC_frac2/100)
-                k2=k1/100
+                k1=loc_k_apparent/((1-dum_is_POC_frac2)+dum_is_POC_frac2/par_sed_huelse2017_k2_order)
+                k2=k1/par_sed_huelse2017_k2_order
             case ('boudreau1997fPOC')
                ! ### <INSERT CODE> ####################################################################################################### !
                !
@@ -578,9 +579,9 @@ CONTAINS
 
         ! calculate mean OM concentration [wt%] in upper x cm
         dum_sed_mean_OM = 1.0/loc_mixed_layer * 100.0*12.0/rho_sed*FUN_calcOM(0.0, loc_mixed_layer, 1.0, 1.0)
-        if(isnan(dum_sed_mean_OM))then
-            print*,'NNNNNNNNNNNNAAAAAAAAAAAAAAAANNNNNNNNNNN dum_sed_mean_OM = ', dum_sed_mean_OM
-        end if
+!        if(isnan(dum_sed_mean_OM))then
+!            print*,'NNNNNNNNNNNNAAAAAAAAAAAAAAAANNNNNNNNNNN dum_sed_mean_OM = ', dum_sed_mean_OM
+!        end if
 
     end SUBROUTINE sub_huelseetal2016_main
     
