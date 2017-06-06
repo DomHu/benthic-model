@@ -297,6 +297,7 @@ CONTAINS
                 ! globally invariant k1 and k2 as set in par_sed_huelse2017_k1, par_sed_huelse2017_k2
                 k1=par_sed_huelse2017_k1
                 k2=par_sed_huelse2017_k2
+                print*,'default oxic k1, k2 =', k1, k2
 !            ! MIN oxic from Arndt et al. 2013
 !                        k1=1.0e-4
 !                        k2=1.0e-6
@@ -664,6 +665,7 @@ CONTAINS
         ALKRDEN=0.0 !(4*X_C+3*Y_N-10*Z_P)/(5*X_C)*SD                   ! Denitrification
         ALKRSUL= ((X_C+Y_N)/X_C)*SD ! ((X_C+Y_N-2*Z_P)/X_C)*SD ! 2.0*SO4C!                            ! Sulfato reduction
         ALKRH2S= -2.0 !0.0                                          ! H2S oxydation (CHECK THIS VALUE!!!)
+!        ALKRH2S= 0.0 ! no secondary redox!
         ALKRMET= ((Y_N-2*Z_P)/X_C)*SD   !0.0                              ! Methanogenesis
         ALKRAOM= 2.0     !0.0                                       ! AOM
         
