@@ -1299,8 +1299,9 @@ Depth (m) & Temp. ({}$^\circ$C)& OC (wt\%) & \chem{O_2} & \chem{NO_3} & \chem{SO
 \end{figure}
 
 To test if OMEN-SED is able to reproduce the magnitude of observed SWI-fluxes, another set of Latin-Hypercube samplings is produced for the two idealised sediment conditions (sample sizes $N=3500$) . 
-Here the two most sensitive parameters $\chem{k_1}$ and $\chem{f_1}$ and also $\widetilde{\chem{k_2}}$ are varied, the other parameters are set to their default values (Tables \ref{table:sed-charac_transport-parameters} and \ref{table:reaction_parameters}). 
-For the deep sea condition we account for the presence of more refractory OM by sampling $\chem{f_1} \in [0.02, 0.3]$. Minimum and Maximum values for the other parameters are as in Table \ref{table:SA_parameter_ranges}.
+Here just the two most sensitive parameters $\chem{k_1}$ and $\chem{f_1}$ and also $\widetilde{\chem{k_2}}$ are varied, the other parameters are set to their default values (Tables \ref{table:sed-charac_transport-parameters} and \ref{table:reaction_parameters}). 
+For the deep sea condition we account for the presence of more refractory OM by sampling $\chem{f_1} \in [0.02, 0.3]$. Minimum and maximum values for $\chem{k_1}$, $\widetilde{\chem{k_2}}$ and $\chem{f_1}$ in the shallow ocean 
+are as in Table \ref{table:SA_parameter_ranges}.
 The results are compared with a global database of benthic fluxes of $\chem{O_2}$ and $\chem{NO_3}$ \citep{bohlen_simple_2012}. 
 The coloured scatter plots in Figure \ref{fig:SA_Color_ScatterPlots} show that the observed fluxes fall well in the range of SWI-fluxes calculated with OMEN-SED. 
 Also highlighted by the emergence of colour patterns in Figure \ref{fig:SA_Color_ScatterPlots} A+B are the strong interactions between the amount of labile OM  $\chem{f_1}$ and 
@@ -1346,20 +1347,23 @@ Observations for \chem{O_2} and \chem{NO_3} fluxes are taken from \citet{middelb
 of \citet{thullner_global_scale_2009} (filled red symbols), who assumed the organic matter flux to be equivalent to TOU. Considering the spatial variability in available data, Figure \ref{fig:hypsometry} shows that OMEN-SED is capable 
 of reproducing the major observed trends in depth distributions of TEA fluxes. In general, fluxes calculated with BRNS fall within the range of possible OMEN-SED results (with the exception of \chem{NO_3} in the shallow ocean). 
 In particular, the observed \chem{O_2} fluxes in the upper 2000m are well predicted by the two OMEN-SED simulations (Fig. \ref{fig:hypsometry}A). Oxygen fluxes for the deep-sea sediments, however, are slightly underestimated. 
-These deviations can presumably be related to the assumed 1-G description of the organic matter degradation model, which neglects the more labile OM pool. This highly reactive pool is degraded close to the sediment surface, 
+These deviations can presumably be related to the assumed 1-G description of organic matter degradation, which neglects the more labile OM pool. This highly reactive pool is degraded close to the sediment surface, 
 thus promoting higher aerobic degradation rates and higher \chem{O_2} fluxes.  
 Nitrate fluxes in the upper 500m of the Atlantic Ocean are well predicted. However, as in \citet{middelburg_denitrification_1996} the direction of calculated nitrate fluxes in the upper 1000m of the Pacific Ocean differ from the observations. 
-\citet{middelburg_denitrification_1996} related these discrepancies to the globally averaged model parameters and applied boundary conditions. They could reduce the disagreements significantly by using more representative 
-bottom water concentrations for the eastern Pacific and a higher flux of labile organic matter for their 2-G model. 
-
+\citet{middelburg_denitrification_1996} related these discrepancies to the globally averaged model parameters and the applied boundary conditions. They could reduce the disagreements significantly by using more representative 
+bottom water concentrations for the eastern Pacific and a higher flux of labile organic matter for their 2-G model. By changing the boundary conditions and the NC-atomic ratio of organic matter for the whole hypsometry, it is possible 
+to obtain a better model-data fit with OMEN-SED for the shallow Pacific Ocean (green line in Fig. \ref{fig:hypsometry}B). 
+Following \citet{bohlen_simple_2012}, who could show that the atomic NC-ratio strongly deviates from Redfield stoichiometry (0.151) with specifically lower values for the East Pacific Ocean, we adopt their globally averaged value of 0.067. 
+In addition, bottom water conditions are changed to low oxygen/high nitrate levels more likely to be found in the shallow Pacific Ocean ($\chem{O_2} = 10$ nanomole cm$^{-3}$ and $\chem{NO_3} = 80$ nanomole cm$^{-3}$). 
 
 \begin{figure}[htbp]
 \begin{center}
-	\includegraphics[width=0.8\textwidth]{figures/0_OMEN_Thullner_hypsometry_fluxes.pdf}
+	\includegraphics[width=0.8\textwidth]{figures/0_OMEN_Thullner_hypsometry_fluxes_diff_NCratio.pdf}
 	\caption{Fluxes of \chem{O_2}, \chem{NO_3} and \chem{SO_4} to the sediment along the global hypsometry. 
 	Red lines (with open symbols) are modelled fluxes from \citet{thullner_global_scale_2009} using BRNS; black lines are results from OMEN-SED ($\bullet$ : $\gamma_{NH_4}=\gamma_{H_2S}=0.95$; $\blacktriangledown$: $\gamma_{NH_4}=\gamma_{H_2S}=0.05$). 
 	Observations of TEA fluxes are taken from \citet{middelburg_denitrification_1996} ($\Diamond$: Atlantic, $\square$: Pacific, $\times$: Arctic/Indian Ocean). 
-	Also plotted in Figure (A) are the total oxygen uptake (TOU) estimates of \citet{thullner_global_scale_2009} (filled red symbols). Negative values are directed out of the sediments.
+	Also plotted in Figure (A) are the total oxygen uptake (TOU) estimates of \citet{thullner_global_scale_2009} (filled red symbols). The green line indicates OMEN-SED results for low oxygen/high nitrate levels and the lower 
+	NC-ratio. Negative values are directed out of the sediments.
 	}\label{fig:hypsometry}
 \end{center}
 \end{figure}
