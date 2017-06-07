@@ -288,6 +288,7 @@ CONTAINS
                 loc_k_apparent = 1.02*w**0.5
                 k1=loc_k_apparent/((1-dum_is_POC_frac2)+dum_is_POC_frac2/par_sed_huelse2017_k2_order)
                 k2=k1/par_sed_huelse2017_k2_order
+!                print*,'stolpovsky2016 oxic k1, k2 =', k1, k2
             case ('boudreau1997fPOC')
                 ! k dependent on OM flux, after Boudreau 1997:
                 loc_total_POC_flux = conv_POC_cm3_mol*loc_fPOC*10**6
@@ -297,7 +298,7 @@ CONTAINS
                 ! globally invariant k1 and k2 as set in par_sed_huelse2017_k1, par_sed_huelse2017_k2
                 k1=par_sed_huelse2017_k1
                 k2=par_sed_huelse2017_k2
-                print*,'default oxic k1, k2 =', k1, k2
+!                print*,'default oxic k1, k2 =', k1, k2
 !            ! MIN oxic from Arndt et al. 2013
 !                        k1=1.0e-4
 !                        k2=1.0e-6
@@ -333,6 +334,7 @@ CONTAINS
                 loc_k_apparent = 0.04*w**2
                 k1=loc_k_apparent/((1-dum_is_POC_frac2)+dum_is_POC_frac2/par_sed_huelse2017_k2_order)
                 k2=k1/par_sed_huelse2017_k2_order
+!                print*,'stolpovsky2016 anoxic k1, k2 =', k1, k2
             case ('boudreau1997fPOC')
                ! ### <INSERT CODE> ####################################################################################################### !
                !
@@ -373,12 +375,12 @@ CONTAINS
         else
             !!!! OLD version: TOC concentration:  call sub_huelseetal2016_zTOC(loc_POC1_wtpct_swi, loc_POC2_wtpct_swi, dum_sed_pres_fracC)
 
-            call sub_huelseetal2016_zTOC(loc_POC1_flux_swi, loc_POC2_flux_swi, dum_sed_pres_fracC, loc_sed_pres_insane)
+            call sub_huelseetal2016_zTOC(dum_D, loc_POC1_flux_swi, loc_POC2_flux_swi, dum_sed_pres_fracC, loc_sed_pres_insane)
             
             ! CHECK IF TOC preservation results in insane values, i.e. everything remineralized
             ! Then calculate SWI-fluxes "manually"
             if(dum_sed_pres_fracC .NE. dum_sed_pres_fracC)then
-!                print*,'A21 too large, pres_fracC ', dum_sed_pres_fracC, dum_D
+!                print*,'2. dum_sed_pres_fracC inf (A21 insane) ', dum_sed_pres_fracC, dum_D
 !                print*,'dum_D, dum_i, dum_j', dum_D, dum_i, dum_j
 !                print*,' '
                 
@@ -788,7 +790,7 @@ CONTAINS
     !   *****************************************************************
     !------------------------------------------------------------------------------------
 
-    SUBROUTINE sub_huelseetal2016_zTOC(dum_POC1_flux_swi, dum_POC2_flux_swi, dum_sed_pres_fracC, dum_sed_pres_insane)
+    SUBROUTINE sub_huelseetal2016_zTOC(dum_D, dum_POC1_flux_swi, dum_POC2_flux_swi, dum_sed_pres_fracC, dum_sed_pres_insane)
         !   __________________________________________________________
         !
         !   calculate benthic burial/recycling fluxes (see documentation for details!)
@@ -799,7 +801,7 @@ CONTAINS
         ! dummy arguments
         real,INTENT(in)::dum_POC1_flux_swi, dum_POC2_flux_swi               ! POC flux at SWI   [mol/(cm2 yr)]
         real,INTENT(inout)::dum_sed_pres_fracC                              ! POC concentrations at zinf
-!        REAL,INTENT(in)::dum_D                                     ! depth
+        REAL,INTENT(in)::dum_D                                     ! depth
         logical, INTENT(inout) :: dum_sed_pres_insane                       ! true if integration constants are too high -> calculate SWI-flux manually
         ! local variables
         !        real loc_POC1_conc_swi, dum_POC2_conc_swi                           ! POC concentration at SWI   [mol/cm3]
@@ -906,8 +908,10 @@ CONTAINS
 
         dum_sed_pres_fracC = (loc_POC1_conc_zinf+loc_POC2_conc_zinf)/(dum_POC1_conc_swi+dum_POC2_conc_swi) !+const_real_nullsmall)
 
+!       ! this catches too many cases, sometimes A2i is large but Corg preservation can still be calculated
 !        if(abs(A21) .GE. 1/const_real_nullsmall .OR. abs(A22) .GE. 1/const_real_nullsmall)then
 !            dum_sed_pres_insane = .TRUE.
+!            print*, '1. dum_sed_pres_insane, A21 or A22 HUGE: abs(A21), abs(A22) ', abs(A21), abs(A22), dum_D
 !        end if
 
     !    print*, ' '
