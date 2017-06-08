@@ -427,10 +427,24 @@ The conservation equation for organic matter dynamics is thus given by:
 %  D_{C_i}&=D_{\mathrm{bio}} 	 &\text{if ($z\leq z_{\mathrm{bio}}$)}\\
 %  D_{C_i}&=0            &\text{if ($z > z_{\mathrm{bio}}$)} 
 % \end{align}
-with $D_{C_i}=D_{\mathrm{bio}}$ for $z\leq z_{\mathrm{bio}}$ and $D_{C_i}=0$ for $z > z_{\mathrm{bio}}$. 
-The analytical solution of Eq. \eqref{eq:ODE_OC} requires the definition of a set of boundary conditions (Table \ref{Tab:BC_OM}). 
+with $D_{C_i}=D_{\mathrm{bio}}$ for $z\leq z_{\mathrm{bio}}$ and $D_{C_i}=0$ for $z > z_{\mathrm{bio}}$. \\
+Equation \eqref{eq:ODE_OC} has the following general solutions depending on the bioturbation depth:
+\begin{align}
+\intertext{1. Layer ($z\leq z_{bio}$)}
+ C_{1i}(z) &= A_{1i}\cdot exp(a_{1i} z)+B_{1i}\cdot exp(b_{1i} z) \notag\\% \qquad &\text{1. Layer: ($z\leqq z_{bio}$)} \notag\\
+	&\overset{\mathrm{BC 1)}}{=} A_{1i}\cdot [ exp(a_{1i} z)-exp(b_{1i} z)] +C_{0i}\cdot exp(b_{1i} z) \label{eq:GS_OM1}
+\intertext{2. Layer ($z_{bio} < z < z_{ox}$)}
+ C_{2i}(z) &= A_{2i}\cdot exp(a_{2i} z)	\notag%  &\text{2. Layer: ($z> z_{bio}$)} \label{eq:GS_OM2} 
+\end{align}
+where
+\begin{equation} 
+ a_{1i} = \frac{w - \sqrt{w^2+4D_{C_i}\cdot k_i}}{2D_{C_i}}, \quad b_{1i} = \frac{w + \sqrt{w^2+4D_{C_i}\cdot k_i}}{2D_{C_i}}, \quad a_{2i} = -\frac{k_i}{w}
+\end{equation}
+
+The integration constants ($A_{1,i},\ B_{1,i},\ A_{2,i}$) are derived by assuming a set of boundary conditions (Table \ref{Tab:BC_OM}). 
 The model assumes a known concentration/flux at the sediment-water interface and continuity across the bioturbation boundary as transport is solely advective below $z_{\mathrm{bio}}$. 
-The steady-state solution follows a simple exponential decay (see section \ref{subsec:module_Structure} for details) and drives the oxygen and nutrient dynamics. 
+The steady-state solutions follow a simple exponential decay (see Eq. \ref{eq:GS_OM1} and \ref{eq:GS_OM2}) and drives the oxygen and nutrient dynamics. See Section \ref{subsec:GBCM} for further details 
+on how to find the analytical solution.
 
 \begin{table}[tbp]
 \caption{Boundary conditions for organic matter. For the boundaries we define:  $z_{\mathrm{bio}}^- := \lim_{h\to0} (z_{\mathrm{bio}}-h)$ and $z_{\mathrm{bio}}^+ := \lim_{h\to0} (z_{\mathrm{bio}}+h)$.}
@@ -441,7 +455,7 @@ The steady-state solution follows a simple exponential decay (see section \ref{s
 \hline
 \textbf{Boundary}& \textbf{Condition}& &\\
 \hline
-$z=0$& known concentration& 1)& $C_i(0)=C_{i0}$\\
+$z=0$& known concentration& 1)& $C_i(0)=C_{0i}$\\
 $z=z_{\mathrm{bio}}$&continuity& 2)& $C_i(z_{\mathrm{bio}}^-)$=$C_i(z_{\mathrm{bio}}^+)$\\
                &&3)&$-D_{\mathrm{bio}}\cdot \frac{\partial C_i}{\partial z}|_{z_{\mathrm{bio}}^-}=0$\\
 %Dom was               &&3) $D_{\mathrm{bio}}\cdot \frac{\partial C_i}{\partial z}|_{z_{\mathrm{bio}}^-}-w\cdot C_i(z_{\mathrm{bio}}^-)=-w\cdot C_i(z_{\mathrm{bio}}^+)$\\
@@ -465,16 +479,34 @@ through the flux boundary condition at the dynamic oxygen penetration depth $z_{
 interface \citep{soetaert_model_1996}. The factor $\frac{1-\phi}{\phi}$ accounts for the volume conversion from the solid to the dissolved phase. 
 %Oxygen is described in mol\,cm$^{-3}$ liquid and conversion from the solid phase of mineralized organic matter (expressed in mol\,cm$^{-3}$ bulk sediment) to consumption of dissolved oxygen (or later nutrients) introduce 
 %a factor of $\frac{1-\phi}{\phi}$, where $\phi$ is the sediment porosity. 
-Oxygen dynamics are thus described by:
+Oxygen concentration is driven by the organic matter dynamics and can thus generally be described by:
 \begin{align} 
- \frac{\partial \chem{O_2}}{\partial t} &= 0= D_{\chem{ \chem{O_2}}}\frac{\partial^2  \chem{O_2} }{\partial z^2} - w\frac{\partial  \chem{O_2}}{\partial z} - \frac{1-\phi}{\phi}\sum_i k_i \cdot [ \chem{O_2C} + 2 \gamma_{\chem{NH_4}} \chem{NC_i} ]\cdot C_{i}(z) \label{eq:ODE_O2_1}
+ \frac{\partial \chem{O_2}}{\partial t} = 0 &= D_{\chem{ \chem{O_2}}}\frac{\partial^2  \chem{O_2} }{\partial z^2} - w\frac{\partial  \chem{O_2}}{\partial z} - \frac{1-\phi}{\phi}\sum_i k_i \cdot [ \chem{O_2C} + 2 \gamma_{\chem{NH_4}} \chem{NC_i} ]\cdot C_{i}(z) \label{eq:ODE_O2_1}
 \end{align}
-% where:
-% \begin{align}
-%  D_{ \chem{O_2}}&=D_{ \chem{O_2}, 0}+D_{\mathrm{bio}}  &\text{if ($z\leq z_{\mathrm{bio}}$)}\\
-%  D_{ \chem{O_2}}&=D_{ \chem{O_2}, 0}                &\text{if ($z > z_{\mathrm{bio}}$)} 
-% \end{align}  
-The analytical solution of Eq. \eqref{eq:ODE_O2_1} requires the definition of boundary conditions (Table \ref{Tab:BC_O2}). 
+and therefore results in two representations depending on the bioturbation depth:
+\begin{align} 
+\intertext{1. Layer ($z\leq z_{bio}$)}
+ \frac{\partial \chem{O_2^I}}{\partial t} &\overset{\ref{eq:GS_OM1}}{=} D^1_{\chem{ \chem{O_2}}}\frac{\partial^2  \chem{O_2} }{\partial z^2} - w\frac{\partial  \chem{O_2}}{\partial z} - \frac{1-\phi}{\phi}\sum_i k_i \cdot [ \chem{O_2C} + 2 \gamma_{\chem{NH_4}} \chem{NC_i} ]\cdot  \bigl\lgroup A_{1i}\cdot [ exp(a_{1i} z)-exp(b_{1i} z)] +C_{0i}\cdot exp(b_{1i} z) \bigr\rgroup\notag
+\intertext{2. Layer ($z_{bio} < z < z_{ox}$)}
+\frac{\partial O_2^{II}}{\partial t} &\overset{\ref{eq:GS_OM2}}{=} D^2_{\chem{ \chem{O_2}}}\frac{\partial^2  \chem{O_2} }{\partial z^2} - w\frac{\partial  \chem{O_2}}{\partial z} - \frac{1-\phi}{\phi}\sum_i k_i \cdot [ \chem{O_2C} + 2 \gamma_{\chem{NH_4}} \chem{NC_i} ]\cdot \bigl\lgroup A_{2i}\cdot exp(a_{2i} z)  \bigr\rgroup\notag
+\end{align}
+with $D^1_{\chem{ \chem{O_2}}}$ and $D^2_{\chem{ \chem{O_2}}}$ being the \chem{O_2} diffusion coefficient for the bioturbated and non-bioturbated layer, respectively. 
+The analytical solutions depending on bioturbation depth are given by: 
+\begin{align}
+\intertext{1. Layer ($z\leq z_{bio}$):}
+O_2^I(z) &= A_{O_2}^1 + B_{O_2}^1 \cdot \exp(b_{O_2}^1 z) + \sum_i\Phi_{1,i}^I \cdot \exp(a_{1i}z)+  \sum_i\Phi_{1,i}^{II}\cdot \exp(b_{1i}z) +  \sum_i\Phi_{1,i}^{III} \cdot \exp(b_{1i}z)
+\intertext{2. Layer ($z_{bio} < z < z_{ox}$)}
+O_2^{II}(z) &= A_{O_2}^2 + B_{O_2}^2 \cdot \exp(b_{O_2}^2 z) + \sum_i\Phi_{i,2}^I \cdot \exp(a_{2i}z)
+\end{align}
+with 
+\begin{align}
+%&b_{O_2}^1 = \frac{w + \sqrt{w^2+4D_{O_2}^1\cdot k_{O_2}}}{2D_{O_2}^1} = \frac{w}{D_{O_2}^1}, \quad b_{O_2}^2 = \frac{w}{D_{O_2}^2}\notag\\
+&b_{O_2}^1 = \frac{w}{D_{O_2}^1}, \quad b_{O_2}^2 = \frac{w}{D_{O_2}^2}\notag\\
+&\Phi_{1,i}^I = \frac{1-\phi}{\phi}\cdot\frac{k_i\cdot(\chem{O_2C}+2 \gamma_{\chem{NH_4}} \chem{NC_i})\cdot A_{1i}}{D_{O_2}^1(-a_{1i})^2-w\cdot (-a_{1i})}, &\Phi_{1,i}^{II} = - \frac{1-\phi}{\phi}\cdot\frac{k_i\cdot(\chem{O_2C}+2 \gamma_{\chem{NH_4}} \chem{NC_i})\cdot A_{1i}}{D_{O_2}^1(-b_{1i})^2-w\cdot (-b_{1i})}\notag\\
+&\Phi_{1,i}^{III} = \frac{1-\phi}{\phi}\cdot\frac{k_i\cdot(\chem{O_2C}+2 \gamma_{\chem{NH_4}} \chem{NC_i})\cdot C_{0i}}{D_{O_2}^1(-b_{1i})^2-w\cdot (-b_{1i})} \notag\\
+&\Phi_{i,2}^I := \frac{1-\phi}{\phi}\cdot\frac{k_i\cdot(\chem{O_2C}+2 \gamma_{\chem{NH_4}} \chem{NC_i})\cdot A_{2i}}{D_{O_2}^2(-a_{2i})^2-w\cdot (-a_{2i})} \notag
+\end{align}
+To determine the four integration constants ($A_{O_2}^1,\, B_{O_2}^1,\, A_{O_2}^2,\, B_{O_2}^2$) and to solve the diagenetic equations a set of boundary conditions needs to be defined (see Table \ref{Tab:BC_O2}). 
 OMEN-SED assumes a known bottom water concentration and the complete consumption of oxygen at the oxygen penetration depth (or zero flux if $z_{\mathrm{ox}}=z_\infty$). 
 Equal oxygen concentration and diffusive flux above ($z_{\mathrm{bio}}^-$) and below ($z_{\mathrm{bio}}^+$) the bioturbation boundary is considered. 
 In addition, the model accounts for reduced species produced by anaerobic mineralization diffusing into the oxic layer from below, 
@@ -533,7 +565,9 @@ Therefore the diagenetic equations for nitrate and ammonium are given by:
 %  D_{i}&=D_{i, 0}                &\text{if ($z > z_{\mathrm{bio}}$)} 
 % \end{align} 
 % and $i \in \{$NO$_3$, NH$_4\}$. 
-The boundary conditions to solve Equations \ref{eq:NO3_ODE1_L1} - \ref{eq:NH4_ODE1_L2} are summarized in Table \ref{Tab:BC_NO3+NH4}. The model assumes known bottom water concentrations 
+The boundary conditions to solve Equations \ref{eq:NO3_ODE1_L1} - \ref{eq:NH4_ODE1_L2} are summarized in Table \ref{Tab:BC_NO3+NH4}. The analytical solutions are not further stated here but follow the same logic as for oxygen (for more details 
+on how to find the analytical solution see Section \ref{subsec:GBCM}).
+The model assumes known bottom water concentrations 
 for both species, the complete consumption of nitrate at the nitrate penetration depth (or zero flux if $z_{\chem{NO_3}}=z_\infty$) and no change in ammonium flux at $z_\infty$. It considers equal concentrations and diffusive fluxes 
 at $z_{\mathrm{bio}}$ and $z_{\mathrm{ox}}$.  In addition, the re-oxidation of upward-diffusing reduced ammonium is considered in the oxic-suboxic boundary condition for nitrate and ammonium. 
 
