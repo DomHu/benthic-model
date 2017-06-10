@@ -270,6 +270,21 @@ CONTAINS
         loc_POC1_flux_swi = conv_POC_cm3_mol*(1-dum_is_POC_frac2)*loc_fPOC
         loc_POC2_flux_swi = conv_POC_cm3_mol*dum_is_POC_frac2*loc_fPOC
 
+        ! make the k1 - k2 relation depth dependent:
+!        if(dum_D .LE. 1000.0)then
+!            par_sed_huelse2017_k2_order = 5.0
+!        elseif (dum_D .LE. 2000.0)then
+!            par_sed_huelse2017_k2_order = 10.0
+!        elseif (dum_D .LE. 3000.0)then
+!            par_sed_huelse2017_k2_order = 25.0
+!        elseif (dum_D .LE. 4000.0)then
+!            par_sed_huelse2017_k2_order = 50.0
+!        elseif (dum_D .LE. 5000.0)then
+!            par_sed_huelse2017_k2_order = 100.0
+!        else
+!            par_sed_huelse2017_k2_order = 125.0
+!        end if
+
         ! use oxic degradation rates
         select case (par_sed_huelse2017_kscheme)
             case ('boudreau1997')
@@ -283,6 +298,7 @@ CONTAINS
                 loc_k_apparent = 2.97*w**0.62
                 k1=loc_k_apparent/((1-dum_is_POC_frac2)+dum_is_POC_frac2/par_sed_huelse2017_k2_order)
                 k2=k1/par_sed_huelse2017_k2_order
+!                print*,'tromp1995 oxic k1, k2 =', k1, k2
             case ('stolpovsky2016')
                 ! use parameterisation of Stolpovsky et al. 2015 dependent on sediment accumulation rate (w)
                 loc_k_apparent = 1.02*w**0.5
@@ -296,9 +312,18 @@ CONTAINS
 
             case default
                 ! globally invariant k1 and k2 as set in par_sed_huelse2017_k1, par_sed_huelse2017_k2
-                k1=par_sed_huelse2017_k1
-                k2=par_sed_huelse2017_k2
-!                print*,'default oxic k1, k2 =', k1, k2
+!                k1=par_sed_huelse2017_k1
+!                k2=par_sed_huelse2017_k2
+                ! make the k1 - k2 relation depth dependent:
+                if(dum_D .LE. 2000.0)then
+                    loc_k_apparent = par_sed_huelse2017_k1
+                else
+                    loc_k_apparent = par_sed_huelse2017_k2
+                end if
+
+                k1=loc_k_apparent/((1-dum_is_POC_frac2)+dum_is_POC_frac2/par_sed_huelse2017_k2_order)
+                k2=k1/par_sed_huelse2017_k2_order
+!                print*,'default oxic dum_D, loc_k_apparent, k1, k2 =', dum_D, loc_k_apparent, k1, k2
 !            ! MIN oxic from Arndt et al. 2013
 !                        k1=1.0e-4
 !                        k2=1.0e-6
@@ -310,7 +335,8 @@ CONTAINS
 !                            k1=0.005
 !                        end if
         end select
-
+! DOMINIK don't use anoxic rate, as too much preserved
+if(.false.)then
         ! if anoxic, decrease zbio and use anoxic degradation rate
         if(dum_swiconc_O2 .LE. loc_BW_O2_anoxia)then
             ! decrease bioturbation depth
@@ -354,7 +380,7 @@ CONTAINS
 !            end if
             end select
         end if  ! (dum_swiconc_O2 .LE. loc_BW_O2_anoxia)
-
+end if
 
 !        print*,'k1, k2 =', k1, k2
 
@@ -503,7 +529,12 @@ CONTAINS
         
         end if  ! loc_POC1/2_wtpct_swi .LE. const_real_nullsmall
 
-
+!        ! SO4 drift check:
+!        if(abs(loc_SO4_swiflux) .NE. abs(loc_H2S_swiflux))then
+!            print*,'Fluxes SO4 <> H2S ', loc_SO4_swiflux, loc_H2S_swiflux
+!        else
+!            print*,'.'
+!        end if
         
         ! Now pass back the values to the global field
         dum_new_swifluxes(io_O2) = loc_O2_swiflux                                   ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
