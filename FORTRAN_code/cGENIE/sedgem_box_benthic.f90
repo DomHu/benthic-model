@@ -197,6 +197,11 @@ CONTAINS
         real::loc_k_apparent
         logical::loc_sed_pres_insane                                ! true if integration constants are too high -> calculate SWI-flux manually
         
+        ! parameters for temperature dependent rate constants (as in John et al. 2014)
+        real::loc_T                                                 ! local temperature
+        real::loc_par_bio_remin_POC_K1, loc_par_bio_remin_POC_K2    ! rate constants for temperature dependent degradation
+        real::loc_par_bio_remin_POC_Ea1, loc_par_bio_remin_POC_Ea2  ! activation energies
+
         real::loc_fPOC                                              ! Corg flux to the sediment [cm3 cm-2]
         !        real::dum_POC1_wtpct_swi, dum_POC2_wtpct_swi       ! POC concentrations at SWI [wt%]
         logical :: loc_print_results, calc_ALK
@@ -216,6 +221,13 @@ CONTAINS
         por = 0.85                                                  ! porosity (-) defined as: porewater_vol./(solid_sed_vol.+porewater_vol.)
         loc_BW_O2_anoxia = 5.0e-9                                   ! set to 5.0 nanomol/cm^3
         loc_mixed_layer = 10.0                                      ! mixed layer depth, to compare wt% with observations
+
+        ! set local variables - temperature (K)
+        loc_T = dum_sfcsumocn(io_T)
+        loc_par_bio_remin_POC_K1 = 9.0E11
+        loc_par_bio_remin_POC_K2 = 1.0E14
+        loc_par_bio_remin_POC_Ea1 = 55000.0
+        loc_par_bio_remin_POC_Ea2 = 80000.0
 
 !           print*,' '
 !                print*,'---------- IN OMEN MAIN ----------- '
@@ -264,7 +276,7 @@ CONTAINS
 
 
         ! DH TODO: some of initialize should be called just once, not for every grid point
-        call sub_huelseetal2016_initialize(dum_D, dum_sfcsumocn(io_T), loc_new_sed_vol/dum_dtyr)
+        call sub_huelseetal2016_initialize(dum_D, loc_T, loc_new_sed_vol/dum_dtyr)
         
          !  NEW version: using TOC-flux, convert units from cm3 to mol
         loc_POC1_flux_swi = conv_POC_cm3_mol*(1-dum_is_POC_frac2)*loc_fPOC
@@ -309,20 +321,25 @@ CONTAINS
                 ! k dependent on OM flux, after Boudreau 1997:
                 loc_total_POC_flux = conv_POC_cm3_mol*loc_fPOC*10**6
                 k1 = 2.2*1e-5*loc_total_POC_flux**2.1
-
+            case ('temp_dependent')
+                ! k1 and k2 temperature dependent as in John et al. 2014:
+                k1 = loc_par_bio_remin_POC_K1*exp(-loc_par_bio_remin_POC_Ea1/(const_R_SI*loc_T))
+                k2 = loc_par_bio_remin_POC_K2*exp(-loc_par_bio_remin_POC_Ea2/(const_R_SI*loc_T))
+                print*,'Tmp dep: dum_D, loc_T, k1, k2 =', dum_D, loc_T, k1, k2
             case default
                 ! globally invariant k1 and k2 as set in par_sed_huelse2017_k1, par_sed_huelse2017_k2
-!                k1=par_sed_huelse2017_k1
-!                k2=par_sed_huelse2017_k2
-                ! make the k1 - k2 relation depth dependent:
-                if(dum_D .LE. 2000.0)then
-                    loc_k_apparent = par_sed_huelse2017_k1
-                else
-                    loc_k_apparent = par_sed_huelse2017_k2
-                end if
-
-                k1=loc_k_apparent/((1-dum_is_POC_frac2)+dum_is_POC_frac2/par_sed_huelse2017_k2_order)
+                k1=par_sed_huelse2017_k1
                 k2=k1/par_sed_huelse2017_k2_order
+                print*,'default degradation: k1, k2 =', dum_D, loc_T, k1, k2
+                ! make the k1 - k2 relation depth dependent:
+!                if(dum_D .LE. 2000.0)then
+!                    loc_k_apparent = par_sed_huelse2017_k1
+!                else
+!                    loc_k_apparent = par_sed_huelse2017_k2
+!                end if
+!                k1=loc_k_apparent/((1-dum_is_POC_frac2)+dum_is_POC_frac2/par_sed_huelse2017_k2_order)
+!                k2=k1/par_sed_huelse2017_k2_order
+
 !                print*,'default oxic dum_D, loc_k_apparent, k1, k2 =', dum_D, loc_k_apparent, k1, k2
 !            ! MIN oxic from Arndt et al. 2013
 !                        k1=1.0e-4
