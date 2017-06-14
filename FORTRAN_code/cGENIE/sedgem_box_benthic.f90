@@ -330,7 +330,7 @@ CONTAINS
                 ! globally invariant k1 and k2 as set in par_sed_huelse2017_k1, par_sed_huelse2017_k2
                 k1=par_sed_huelse2017_k1
                 k2=k1/par_sed_huelse2017_k2_order
-                print*,'default degradation: k1, k2 =', dum_D, loc_T, k1, k2
+!                print*,'default degradation: k1, k2 =', k1, k2
                 ! make the k1 - k2 relation depth dependent:
 !                if(dum_D .LE. 2000.0)then
 !                    loc_k_apparent = par_sed_huelse2017_k1

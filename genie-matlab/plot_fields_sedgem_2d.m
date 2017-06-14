@@ -1087,7 +1087,7 @@ if (plot_secondary == 'y'),
 %        plot_crossplotc(loc_y_data, loc_x_data,-loc_grid_topo,loc_y_label,loc_x_label,'',POPT,[filename '.CROSSPLOT'], 'n');
         % no 0 wt% data
         % Dom create my title:
-        my_title = exp_1(26:48);
+        my_title = exp_1(33:end);
         plot_crossplotc(loc_y_data, loc_x_data,-loc_grid_topo,loc_y_label,loc_x_label,'',POPT,[filename '.CROSSPLOT'], 'y', my_title);
         plot_crossplotc(loc_y_data, loc_x_data,-loc_grid_topo,loc_y_label,loc_x_label,'',POPT,[filename '.CROSSPLOT_ALLDATA'], 'n', my_title);
 % old observations on y-axis:

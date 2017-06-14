@@ -43,7 +43,7 @@ dlmwrite('zo_Seiter_offset_72x72_0606.txt',zo)    % better copy from matlab, as 
 % 1) copy zo from matlab to txt file and shify so the grid is correct...
 % compare Seiter_on_GENIE.xlsx in Observations/Seitert2004
 % have to line it up by eye e.g. east end of europe...
-% 2) overlap observations with GENIE grid - where NaN in both use wtpc
+% 2) overlap observations with GENIE grid - where not NaN in both use wtpc
 % otherwhise NaN
 % 3) save this as .csv file and
 % 4) run make_regrid_ASCII2netcdf_GENIE(...)

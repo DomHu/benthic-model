@@ -1410,17 +1410,21 @@ All simulations are run for 20,000 years to steady-state. OMEN-SED is called for
 fraction of POC preserved in the sediments to cGENIE. 
 
 As shown in our sensitivity analysis (Figure \ref{fig:Sensitivity_Analysis}) and discussed by \citet{arndt_quantifying_2013} the 
-degradation rate constants for OM ($k_i$) are the most influential parameters and strongly determine the SWI-flux of redox-sensitive elements. 
+degradation rate constants for OM ($k_i$) are the most influential parameters and strongly determine the SWI-flux of redox-sensitive elements as well as the burial rate of OM. 
 Yet, their spatial variability is unknown at the global scale and reported rate constants can vary by almost 10 orders of magnitude \citep{arndt_quantifying_2013}, 
 thus defining appropriate OM degradation rate constants is a major challenge and source of uncertainty for diagenetic models. The rate constants in models are either determined through profile fitting for a specific site or, 
 for global applications, they are related to a single, readily available characteristic (or master variable) of the local environmental conditions. 
 For instance, considerable effort has been expended to relate the apparent rate constant for oxic and 
 anoxic OM degradation to sedimentation rate ($w$) and various empirical relations have been proposed \citep{toth_organic_1977, tromp_global_1995, boudreau1997diagenetic, stolpovsky_toward_2015}. 
 Nevertheless, these relationships are generally based on limited data sets and their global applicability is questionable \citep{arndt_quantifying_2013}. 
-We test globally invariant values for the OM degradation rate constants as well as different published parameterisations (see Table \ref{table:OM_degrad_para}) to test 
-whether the different approaches are able to recreate main sediment characteristics. %importance of this parameter for our model results. 
-Depending on oxygen concentration in the bottom water, $k_1$ is defined as the oxic or anoxic degradation rate (anoxic for $[\chem{O_2}] < 5$ nanomole cm$^{-3}$ ). 
-The more refractory component is assumed to degrade one hundred times slower \citep[$k_2 = k_1/100$, see e.g.][]{boudreau1997diagenetic}. 
+
+Here, we test globally invariant values for the OM degradation rate constants as well as the empirical relation of \citet{boudreau1997diagenetic}. Modelled 
+mean POC content in the upper 5cm of the sediments are compared to the global POC observations in surface sediments (< 5cm sediment depth) of \citet{seiter_organic_2004}. 
+The original data field is interpolated on a $1^{\circ}\times 1^{\circ}$ grid and has been transformed onto the $72\times 72$ SEDGEM grid (Figure \ref{}).
+
+%published parameterisations (see Table \ref{table:OM_degrad_para}) to test whether the different approaches are able to recreate main sediment characteristics. %importance of this parameter for our model results. 
+% Depending on oxygen concentration in the bottom water, $k_1$ is defined as the oxic or anoxic degradation rate (anoxic for $[\chem{O_2}] < 5$ nanomole cm$^{-3}$ ). 
+% The more refractory component is assumed to degrade one hundred times slower \citep[$k_2 = k_1/100$, see e.g.][]{boudreau1997diagenetic}. 
 
 \begin{table}[btp]
 \caption{List of  coupled OMEN-cGENIE experiments with oxic and anoxic rate constants ($k_1$, yr$^{-1}$). The rate constant $k_2$ for the more refractory component is 
