@@ -220,7 +220,7 @@ CONTAINS
         
         por = 0.85                                                  ! porosity (-) defined as: porewater_vol./(solid_sed_vol.+porewater_vol.)
         loc_BW_O2_anoxia = 5.0e-9                                   ! set to 5.0 nanomol/cm^3
-        loc_mixed_layer = 10.0                                      ! mixed layer depth, to compare wt% with observations
+        loc_mixed_layer = 5.0                                      ! mixed layer depth, to compare wt% with observations
 
         ! set local variables - temperature (K)
         loc_T = dum_sfcsumocn(io_T)
