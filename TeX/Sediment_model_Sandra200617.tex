@@ -381,7 +381,7 @@ Biogeochemical tracers & Organic matter (2-G), oxygen, nitrate, ammonium, sulfat
 \end{table}
  
 %In addition, infaunnal activity ceases ($D_{\mathrm{bio}}=0$) once bottom waters become anoxic ($[\chem{O_2}] < 5$ nanomole cm$^{-3}$ ). 
-Based on eq. (\ref{eq:Eq_generaldiagenetic}), OMEN-SED calculates the fraction, $F_{POC}$, of POC buried in the sediment (in ??), as well as the benthic uptake/return fluxes $F_{C_i}$ of dissolved species $C_i$ (in mol cm$^{-2}$ year$^{-1}$) in response to changing boundary conditions and forcings:
+Based on eq. (\ref{eq:Eq_generaldiagenetic}), OMEN_SED calculates the fraction, $F_{POC}$, of POC buried in the sediment (in ??), as well as the benthic uptake/return fluxes $F_{C_i}$ of dissolved species $C_i$ (in mol cm$^{-2}$ year$^{-1}$) in response to changing boundary conditions and forcings:
 
 \begin{equation}
 F_{POC}=
@@ -583,8 +583,7 @@ The conservation equations for sulfate and sulphide are thus given by:
 where ... \textbf{explain all things and also point out that D dependent on where the redox boundaries are located with respect to zbio}
 Integration of eq. yields the analytical solution and Table \ref{Tab:BC_SO4+H2S} summarises the boundary conditions applied in OME-SED to solve eq. \ref{eq:SO4_ODE1_L1} - \ref{eq:H2S_ODE1_L3} . OMEN-SED assumes known concentrations at the sediment-water interface and continuity 
 across the bioturbation depth and the nitrate penetration depth (see Table \ref{Tab:BC_SO4+H2S}). 
-The re-oxidation of reduced \chem{H_2S} to \chem{SO_4} is accounted for implicitly via the oxic-suboxic boundary condition for both species, while reduction of \chem{SO_4} and the associated production of \chem{H_2S} 
-is accounted through the respective boundary conditions at $z_\chem{SO_4}$. In case $z_{\chem{SO_4}}<z_\infty$, sulfate concentration is set to zero at $z_{\chem{SO_4}}$ and its diffusive flux must equal the amount of methane produced below; or, in case $z_{\chem{SO_4}}=z_\infty$, 
+The re-oxidation of reduced \chem{H_2S} to \chem{SO_4} is accounted for implicitly via the oxic-suboxic boundary condition for both species, while reduction of \chem{SO_4}  and the associated production of \chem{H_2S} is accounted through the respective boundary conditions at z_{$SO_4$}. In case $z_{\chem{SO_4}}<z_\infty$, sulfate concentration is set to zero at $z_{\chem{SO_4}}$ and its diffusive flux must equal the amount of methane produced below; or, in case $z_{\chem{SO_4}}=z_\infty$, 
 a zero flux condition for sulfate is considered. At the lower boundary $z_\infty$ zero flux of \chem{H_2S} is considered. 
 
 
@@ -1074,7 +1073,7 @@ $\chem{M}^\infty$ & mol\,cm$^{-3}$ & \textcolor{red}{$1.99\cdot 10^{-10}$} & asy
 \label{table:reaction_parameters}
 \end{table}
 
-\section{Sensitivity Study \& Case Studies \textbf{working title, need to come up with something!}}
+\section{Sensitivity Study & Case Studies \textbf{working title, need to come up with something!}}
 \subsection{Sensitivity Study}
 
 

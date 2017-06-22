@@ -310,29 +310,30 @@ Here, the model is presented as a 2G-approach, however, a third, non-degradable 
 % (including one ``refractory'' OM pool, whose degradability is not relevant for the timescales considered)
 %See Van Cappellen and Wang (1996): ``Metal cycling in surface sediments: Modeling the interplay or transport and reaction'' for some good basic info! 
 
-\textbf{SA: started here\\
-general notes:\\
--name zones I and II bio and non-bio\\
--name redox zones according to Canfield paper\\
-- be consistent in the paper and always use the same terminology e.g. zone, boundary,... \\
-- don't use I and II for the bioturb, non-bioturb zones and the redox zones. For the redox zones, you actually do not need to use I, II, and III at all, because you name the zone explicitly, so this should be clear}
-
 \section{Model Description}
-OMEN-SED a new, one-dimensional, computationally efficient reaction-transport model designed for the coupling to regional/global biogeochemical and Earth System models. OMEN-SED is implemented as a Fortran routine that can be easily coupled to a pelagic model via... . In addition, OMEN-SED also exists as a stand-alone version that is implemented in ... and can be executed on a .... in .... time. The source code of both the coupling routine, as well as of the standalone version, as well as (maybe include some examples and test figures?) is available as a supplement to this paper.
-The following section provides a detailed description of OMEN-SED. Table \ref{table:reactions_processes} summarizes the biogeochemical reaction network and 
-a glossary of model parameters along with their respective units is provided in Tables \ref{table:sed-charac_transport-parameters} and \ref{table:reaction_parameters}.
+The following section provides a detailed description of the new model. Table \ref{table:reactions_processes} summarizes the biogeochemical reaction network and 
+a glossary of parameters along with their respective units is provided in Tables \ref{table:sed-charac_transport-parameters} and \ref{table:reaction_parameters}.
 
 \subsection {General Model Approach} \label{subsec:GeneralModelApproach}
-The calculation of benthic uptake, recycling and burial fluxes is based on the vertically resolved conservation equation for solid and dissolved species in porous media 
+The calculation of benthic return/uptake and burial fluxes is based on the vertically resolved conservation equation for solid and dissolved species in porous media 
 \citep[e.g.][]{berner_early_1980, boudreau1997diagenetic}:
 
 \begin{equation} 
 \frac{\partial \xi C_i}{\partial t}=-\frac{\partial F}{\partial z}+\xi \sum_j R_i^j \label{eq:Eq_generaldiagenetic}
 \end{equation}
 
-where $C_i$ is the concentration of biogeochemical species $i$, $\xi$ equals the porosity $\phi$ for solute species and $(1-\phi)$ for solid species. The term $z$ is the sediment depth, $t$ denotes the time, $F$ summarises the transport fluxes and $\sum_j R_i^j$ represents the sum of all biogeochemical rates $j$ affecting species $i$. 
-that affect species $i$. 
+where $C_i$ is the concentration of the biogeochemical species $i$, $\xi$ equals the porosity $\phi$ for solute species and $(1-\phi)$ for solid species, hence represents the partitioning of species $i$ 
+into the solute and dissolved phase. The term $z$ is the sediment depth, $t$ denotes the time, $F$ summarises the transport fluxes and $\sum_j R_i^j$ represents the sum of production/consumption rates $j$ 
+that affect species $i$. The reaction network accounts for the most important primary and secondary redox reactions, equilibrium reactions, mineral dissolution and precipitation, as well as adsorption 
+and desorption processes that affect the explicitly resolved chemical species. 
 
+% State-of-the-art reaction-transport models generally solve the ordinary differential equation (ODE, Eq. \ref{eq:Eq_generaldiagenetic}) numerically and thus allow to account for transient dynamics, 
+% depth-varying parameters or a high degree of coupling between different chemical species \citep[e.g.][]{soetaert_model_1996, aguilera_knowledge-based_2005}. 
+% Yet, numerical models are computational expensive, thus rendering their application in an Earth system model framework prohibitive. An analytical solution of equation \eqref{eq:Eq_generaldiagenetic} 
+% provides an alternative and computational more efficient approach which enjoyed great popularity in the early days of diagenetic modelling and computer technology. % due to their low computational demands. 
+% However, early analytical models were often very problem-specific and only considered one or two coupled species \citep[e.g.][]{berner_idealized_1964}. \textcolor{red}{(e.g. Lehrman, Berner) ?? which other pub?}
+% Over the next decades, a number of more complex analytical models describing the coupled dynamics of OM degradation, TEAs and reduced substances in sediments were developed \citep[e.g.][]{billen1982modelling, goloway1982diagenetic, jahnke1982model}, 
+% before the boost in computing power enabled the development of fully-coupled, multi-species, numerical models \citep[e.g.][]{van1995metal, soetaert_model_1996}. 
 
 \begin{figure}[htbp]
 \begin{center}
@@ -342,17 +343,45 @@ that affect species $i$.
 	\end{center}
 \end{figure}
 
-OMEN-SED accounts for both the advective, as well as the diffusive transport of dissolved and solid species. Solid and dissolved species are buried in the sediment according to a constant burial rate $w$, thus neglecting the effect of sediment compaction (i.e. $\frac{\partial \phi}{\partial z}=0$) due to mathematical constraints. 
-The molecular diffusion of dissolved species is described by Fick's law applying a species-specific apparent diffusion coefficient, $D_{\mathrm{mol},i}$.  In addition, the activity of infaunal organisms in the bioturbated zone is simulated using a diffusive term (e.g. Boudreau,1986), with a constant bioturbation coefficient $D_{\mathrm{bio}}$ in the bioturbated zone, while $D_{\mathrm{bio}}$ is set to zero below $z_{bio}$. The pumping activity by burrow-dwelling animals and the resulting ventilation of tubes, the so-called bioirrigation, is encapsulated in a factor, $f_{ir}$ that enhances the molecular diffusion coefficient \citep[ hence, $D_{i,0}=D_{\mathrm{mol},i}\cdot f_{ir}$,][]{soetaert1996dynamic}. 
-The flux divergence is thus given by:
+% Finding an analytical solution to  Eq. (\ref{eq:Eq_generaldiagenetic}), especially when complex reaction networks are to be considered, is not straightforward and generally requires the assumption of steady state. 
+% In addition, the complexity of the reaction network can be reduced by dividing the sediment into distinct zones and accounting for the most pertinent biogeochemical processes 
+% within each zone, thus increasing the likelihood of finding an analytical solution to Eq. (\ref{eq:Eq_generaldiagenetic}) (see Eq. (\ref{eq:ODE_general_solution}) in section \ref{subsec:GBCM} for the general steady-state solution). 
 
+In order to find an analytical solution to Eq. (\ref{eq:Eq_generaldiagenetic}), OMEN-SED assumes that benthic dynamics can be represented by a series of steady-states. 
+% Because the Earth system model relevant variability in boundary conditions and fluxes is generally longer than the characteristic timescales of the reaction-transport processes, the sediment can be described by a series of pseudo steady-states. 
+In addition, it divides the sediment into a bioturbated and a non-bioturbated zone defined by the constant bioturbation depth $z_{\mathrm{bio}}$ (see Fig. \ref{fig:Sediment_layers}). 
+Furthermore, it accounts for the dynamic redox zonation of marine sediments by dividing the sediment into an oxic zone delineated by the oxygen 
+penetration depth $z_{\mathrm{ox}}$, a denitrification zone situated between $z_{\mathrm{ox}}$ and the nitrate penetration depth $z_{\chem{NO_3}}$, 
+a sulfate reduction zone situated between $z_{\chem{NO_3}}$ and the sulfate penetration depth $z_{\chem{SO_4}}$, and a methanogenic zone situated below $z_{\chem{SO_4}}$ (Fig. \ref{fig:Sediment_layers}). 
+All penetration depths are dynamically calculated by the model. 
+Each zone is characterised by a set of diagenetic equations that encapsulate the most pertinent reaction and transport processes in this zone (see section \ref{subsec:Transport} and \ref{subsec:ReactionNetwork} 
+for more details). 
+
+OMEN calculates and feeds back to the Earth system model the fraction of POC preserved in the sediments and the sediment-water interface fluxes of the dissolved species $C_i$ (in mol cm$^{-2}$ year$^{-1}$):
+\begin{equation}
+\mathrm{Flux\_SWI(C_i)} = \phi \left(D_i \frac{\partial C_i(z)}{\partial z}\bigg\rvert_0 - w \left[ C_i(0) - C_i(z_\infty) \right]\right)
+\end{equation}
+where $w$ is the deposition rate, $D_i$ is the diffusion coefficient and $C_i(0),\ C_i(z_\infty)$ the concentration of species $i$ at the SWI and at the lower sediment boundary. 
+
+\subsection{Transport}\label{subsec:Transport}
+The model accounts for both the advective, as well as the diffusive transport of dissolved and solid species, assuming that sediment compaction is negligible (i.e. $\frac{\partial \phi}{\partial z}=0$). 
+The molecular diffusion of dissolved species is described via a species-specific apparent diffusion coefficient, $D_{\mathrm{mol},i}$. 
+In addition, the activity of infaunal organisms in the bioturbated zone of the sediment ($z<z_{\mathrm{bio}}$) that causes random 
+displacements of sediments and porewaters is simulated using a diffusive term (e.g. Boudreau,1986), with a constant bioturbation coefficient $D_{\mathrm{bio}}$ in the bioturbated zone. 
+The pumping activity by burrow-dwelling animals and the resulting ventilation of tubes, the so-called bioirrigation, is encapsulated in a factor, $f_{ir}$ that enhances the molecular diffusion coefficient 
+\citep[ hence, $D_{i,0}=D_{\mathrm{mol},i}\cdot f_{ir}$,][]{soetaert1996dynamic}. The flux divergence can thus be formulated as:
 \begin{equation}
 \frac{\partial F}{\partial z}=-\frac{\partial}{\partial z}\left( -\xi D_i \frac{\partial C_i}{\partial z} +\xi w C_i\right) \label{Eq_flux_divergence}
 \end{equation}
+where $D_i$ is the diffusion coefficient of species $i$ ($D_i=D_{i,0}+D_{\mathrm{bio}}=D_{\mathrm{mol},i}\cdot f_{ir}+D_{\mathrm{bio}}$ for dissolved species and $D_i=D_{\mathrm{bio}}$ for solid species) and $w$ is the 
+deposition rate. The bioturbation coefficient $D_{\mathrm{bio}}$ is set to zero below $z_{\mathrm{bio}}$. 
+%In addition, infaunnal activity ceases ($D_{\mathrm{bio}}=0$) once bottom waters become anoxic ($[\chem{O_2}] < 5$ nanomole cm$^{-3}$ ). 
 
-where $D_i$ is the apparent diffusion coefficient of species $i$ ($D_i=D_{i,0}+D_{\mathrm{bio}}=D_{\mathrm{mol},i}\cdot f_{ir}+D_{\mathrm{bio}}$ for dissolved species and $D_i=D_{\mathrm{bio}}$ for solid species) and $w$ is the 
-burial rate. \\
-The reaction network of OMEN-SED accounts for the most important primary and secondary redox reactions, equilibrium reactions, mineral dissolution and precipitation, as well as adsorption and desorption processes that affect the dissolved and solid species explicitly resolved in OMEN-SED. Table \ref{table:reactions_processes}  \textbf{SA: Tab 1 is maybe a bit redundant?} provides a summary of the reactions and biogeochemical tracers considered in OMEN-SED. Table \ref{table:Reaction_Network} summarises their reaction stoichiometry and Table \ref{table:ReactionOverview} provides an overview of their description in the model.
+\subsection{Reaction Network}\label{subsec:ReactionNetwork}
+The following subsections provide a short discussion of the reaction processes included in the model and give an overview of the 
+vertically resolved conservation equations and boundary conditions for solid and dissolved species in each layer. 
+Table \ref{table:reactions_processes} provides a summary of the reactions and biogeochemical tracers considered in the reaction network. Table \ref{table:Reaction_Network} summarises their reaction stoichiometry 
+and Table \ref{table:ReactionOverview} provides an overview of their description in the model.
 
 \begin{table}[tbp]
 \caption{Reactions and biogeochemical tracers implemented in the Reaction Network of OMEN-SED. The primary and secondary redox reactions are listed in the sequence they occur with increasing sediment depth.}
@@ -379,27 +408,16 @@ Biogeochemical tracers & Organic matter (2-G), oxygen, nitrate, ammonium, sulfat
 \label{table:reactions_processes}
 % is used to refer this table in the text
 \end{table}
- 
-%In addition, infaunnal activity ceases ($D_{\mathrm{bio}}=0$) once bottom waters become anoxic ($[\chem{O_2}] < 5$ nanomole cm$^{-3}$ ). 
-Based on eq. (\ref{eq:Eq_generaldiagenetic}), OMEN-SED calculates the fraction, $F_{POC}$, of POC buried in the sediment (in ??), as well as the benthic uptake/return fluxes $F_{C_i}$ of dissolved species $C_i$ (in mol cm$^{-2}$ year$^{-1}$) in response to changing boundary conditions and forcings:
 
-\begin{equation}
-F_{POC}=
-F_{C_i}  = \phi(0) \left(D_i \frac{\partial C_i(z)}{\partial z}\bigg\rvert_{z=0} - w \left[ C_i(0) - C_i(z_\infty) \right]\right)
-\end{equation}
-
-where $w$ is the deposition rate, $D_i$ is the diffusion coefficient and $C_i(0),\ C_i(z_\infty)$ denotes the concentration of species $i$ at the SWI and at the lower sediment boundary. \\
-Because OMEN-SED is designed for application in Earth System Models it requires a computationally efficient solution of eq. (\ref{eq:Eq_generaldiagenetic}) and, thus, solves eq. (\ref{eq:Eq_generaldiagenetic}) analytically, by assuming steady state conditions (i.e.$ \frac{\partial C_i}{\partial t}=0$) and dividing the sediment column into a number of different zones (Fig. \ref{fig:Sediment_layers}). Each of these zones is characterised by a different set of equations that encapsulate the most pertinent reaction and transport processes within the respective zone (see section \ref{subsec:Transport} and \ref{subsec:ReactionNetwork} for more details),  thus allowing a simplification of the coupled set  of equations. More specifically, OMEN-SED divides the sediment column into I) a bioturbated and II) a non-bioturbated zone defined by an imposed, constant bioturbation depth $z_{\mathrm{bio}}$ (see Fig. \ref{fig:Sediment_layers}). Furthermore, it resolves the dynamic redox stratification of marine sediments by dividing the sediment into 1) an oxic zone delineated by the oxygen penetration depth $z_{\mathrm{ox}}$; 2) a denitrification zone situated between $z_{\mathrm{ox}}$ and the nitrate penetration depth $z_{\chem{NO_3}}$;
-3) a sulfate reduction zone situated between $z_{\chem{NO_3}}$ and the sulfate penetration depth $z_{\chem{SO_4}}$; and 4) a methanogenic zone situated below $z_{\chem{SO_4}}$ (Fig. \ref{fig:Sediment_layers}).  All penetration depths are dynamically calculated by the model and their depth thus varies in response to changing boundary conditions and forcings. 
-
-
-
-\subsection{Conservation Equations and Analytical Solution}\label{subsec:ReactionNetwork}
 
 \subsubsection{Organic matter or Particulate Organic Carbon (POC)}
-In marine sediments, organic matter (OM) is degraded by heterotrophic activity coupled to the sequential utilisation of terminal electron acceptors according to the free energy gain of the half-reaction ($O_2$>...). Here, organic matter degradation is described via a multi G-model approach \citep[][and references therein]{arndt_quantifying_2013}, 
-dividing the bulk OM into a number $i$ of discrete compound classes $C_i$ characterised by class-specific first-order degradation rate constants $k_i$. 
-The conservation equation for organic matter dynamics is thus given by :
+In marine sediments, organic matter (OM) is degraded by heterotrophic activity coupled to the sequential utilisation of terminal electron acceptors. 
+%, typically in the order of \chem{O_2}, \chem{NO_3^-}, \chem{Mn(VI)}, \chem{Fe(III)} and \chem{SO_4^{2-}} followed by methanogenesis and/or fermentation. 
+Here, organic matter degradation is described via a 2G-model approach \citep[][and references therein]{arndt_quantifying_2013}, 
+assuming that the bulk OM consists of two discrete compound classes $C_i$ characterised by specific first-order degradation rate constants $k_i$. The degradation constants are assumed independent of the nature 
+of the TEA, thus invariant along the sediment column. Nevertheless, the 2G-approach allows for selective preservation of compound classes according to their reactivity, $k_i$ and, thus, accounts for the change in organic matter reactivity during burial. 
+%Each compound class is degraded according to first-order kinetics. 
+The conservation equation for organic matter dynamics is thus given by:
 
 \begin{equation}
  \frac{\partial C_i}{\partial t} = 0= D_{C_i} \frac{\partial^2C_i }{\partial z^2} - w\frac{\partial C_i }{\partial z} - k_i\cdot C_{i} \label{eq:ODE_OC}
@@ -410,14 +428,12 @@ The conservation equation for organic matter dynamics is thus given by :
 %  D_{C_i}&=0            &\text{if ($z > z_{\mathrm{bio}}$)} 
 % \end{align}
 with $D_{C_i}=D_{\mathrm{bio}}$ for $z\leq z_{\mathrm{bio}}$ and $D_{C_i}=0$ for $z > z_{\mathrm{bio}}$. \\
-
-Integration of equations \eqref{eq:ODE_OC} yields the following general solutions:
-
+Equation \eqref{eq:ODE_OC} has the following general solutions depending on the bioturbation depth:
 \begin{align}
-\intertext{I. Bioturbated Layer ($z\leq z_{bio}$)}
+\intertext{1. Layer ($z\leq z_{bio}$)}
  C_{1i}(z) &= A_{1i}\cdot exp(a_{1i} z)+B_{1i}\cdot exp(b_{1i} z) \notag\\% \qquad &\text{1. Layer: ($z\leqq z_{bio}$)} \notag\\
 	&\overset{\mathrm{BC 1)}}{=} A_{1i}\cdot [ exp(a_{1i} z)-exp(b_{1i} z)] +C_{0i}\cdot exp(b_{1i} z) \label{eq:GS_OM1}
-\intertext{II. Non-bioturbated Layer ($z_{bio} < z < z_{ox}$)}
+\intertext{2. Layer ($z_{bio} < z < z_{ox}$)}
  C_{2i}(z) &= A_{2i}\cdot exp(a_{2i} z)	\notag%  &\text{2. Layer: ($z> z_{bio}$)} \label{eq:GS_OM2} 
 \end{align}
 where
@@ -425,11 +441,13 @@ where
  a_{1i} = \frac{w - \sqrt{w^2+4D_{C_i}\cdot k_i}}{2D_{C_i}}, \quad b_{1i} = \frac{w + \sqrt{w^2+4D_{C_i}\cdot k_i}}{2D_{C_i}}, \quad a_{2i} = -\frac{k_i}{w}
 \end{equation}
 
-Determining the integration constants ($A_{1,i},\ B_{1,i},\ A_{2,i}$) requires the definition of a set of boundary conditions (Table \ref{Tab:BC_OM}). 
-For OM, OMEN-SED applies a known concentration/flux at the sediment-water interface and assumes continuity across the bottom of the bioturbated zone, $z_{\mathrm{bio}}$. See Section \ref{subsec:GBCM} for further details on how to find the analytical solution.
+The integration constants ($A_{1,i},\ B_{1,i},\ A_{2,i}$) are derived by assuming a set of boundary conditions (Table \ref{Tab:BC_OM}). 
+The model assumes a known concentration/flux at the sediment-water interface and continuity across the bioturbation boundary as transport is solely advective below $z_{\mathrm{bio}}$. 
+The steady-state solutions follow a simple exponential decay (see Eq. \ref{eq:GS_OM1} and \ref{eq:GS_OM2}) and drives the oxygen and nutrient dynamics. See Section \ref{subsec:GBCM} for further details 
+on how to find the analytical solution.
 
 \begin{table}[tbp]
-\caption{OM Boundary conditions applied in OMEN-SED. For the boundaries we define:  $z_{\mathrm{bio}}^- := \lim_{h\to0} (z_{\mathrm{bio}}-h)$ and $z_{\mathrm{bio}}^+ := \lim_{h\to0} (z_{\mathrm{bio}}+h)$. \textbf{Awesome! Du bist ja doch ein Mathematiker!}}
+\caption{Boundary conditions for organic matter. For the boundaries we define:  $z_{\mathrm{bio}}^- := \lim_{h\to0} (z_{\mathrm{bio}}-h)$ and $z_{\mathrm{bio}}^+ := \lim_{h\to0} (z_{\mathrm{bio}}+h)$.}
 % title of Table
 \centering
 % used for centering table
@@ -449,23 +467,35 @@ $z=z_{\mathrm{bio}}$&continuity& 2)& $C_i(z_{\mathrm{bio}}^-)$=$C_i(z_{\mathrm{b
 
 
 \subsubsection{Oxygen}
-OMEN-SED explicitly accounts for oxygen consumption by the aerobic degradation of organic matter within the oxic zone, as well as the oxidation of reduced species (e.g. \chem{NH_4}, \chem{H_2S}, \chem{CH_4}) produced in the suboxic and anoxic layers of the sediment. In the oxic layer ($z<z_{ox}$), the aerobic degradation consumes oxygen with a fixed \chem{O_2:C} ratio (\chem{O_2C}, Tab. \ref{table:reaction_parameters}). A predefined part, ($\gamma_\chem{NH_4}$), of the ammonium produced during the aerobic degradation of OM is partially nitrfied to nitrate, consuming two moles of oxygen per mole of ammonium produced. In addition, OMEN-SED implicitly accounts for the oxygen consumption due to oxidation of reduced species (\chem{NH_4}, \chem{H_2S}) produced below the oxic layer through the flux boundary condition at the dynamicaly calculated (see section ?? for details) oxygen penetration depth $z_{\mathrm{ox}}$. This simplification can be justified as it has been shown that these secondary redox reactions mainly occur at the oxic/suboxic interface \citep{soetaert_model_1996}. All oxygen consumption processes can thus be formulated as a function of organic matter degradation. The conservation equation for oxygen is given by: \textbf{I'd show the POC substitution in the equations below}:
-
+In marine sediments, oxygen is consumed via aerobic degradation of organic matter and a number of secondary redox reactions. 
+In the oxic layer ($z<z_{ox}$), the model explicitly accounts for the aerobic degradation of OM, which consumes oxygen with a fixed \chem{O_2:C} ratio (\chem{O_2C}, Tab. \ref{table:reaction_parameters}) 
+and produces ammonium, which is partially nitrified to nitrate ($\gamma_\chem{NH_4}$).
+%nitrification of parts of ammonium produced in the oxic layer of the sediment. 
+%Oxygen serves as the most powerful terminal electron acceptor for the heterotrophic degradation of organic carbon. In addition, the oxidation of reduced species produced through microbial activity throughout the 
+%sediment column further contributes to the consumption of oxygen. The model explicitly accounts for the consumption of oxygen by heterotrophic degradation and nitrification of ammonium in the oxic layer of the sediment. 
+%The nitrification of 1 mol of ammonium in the oxic layer consumes 2 mol of oxygen. 
+In addition, the oxygen consumption due to oxidation of reduced species (\chem{NH_4}, \chem{H_2S}) produced in the suboxic and anoxic layers of the sediment is implicitly taken into account 
+through the flux boundary condition at the dynamic oxygen penetration depth $z_{\mathrm{ox}}$. This simplification can be justified as it has been shown that these secondary redox reactions mainly occur at the oxic/suboxic 
+interface \citep{soetaert_model_1996}. The factor $\frac{1-\phi}{\phi}$ accounts for the volume conversion from the solid to the dissolved phase. 
+%Oxygen is described in mol\,cm$^{-3}$ liquid and conversion from the solid phase of mineralized organic matter (expressed in mol\,cm$^{-3}$ bulk sediment) to consumption of dissolved oxygen (or later nutrients) introduce 
+%a factor of $\frac{1-\phi}{\phi}$, where $\phi$ is the sediment porosity. 
+Oxygen concentration is driven by the organic matter dynamics and can thus generally be described by:
 \begin{align} 
  \frac{\partial \chem{O_2}}{\partial t} = 0 &= D_{\chem{ \chem{O_2}}}\frac{\partial^2  \chem{O_2} }{\partial z^2} - w\frac{\partial  \chem{O_2}}{\partial z} - \frac{1-\phi}{\phi}\sum_i k_i \cdot [ \chem{O_2C} + 2 \gamma_{\chem{NH_4}} \chem{NC_i} ]\cdot C_{i}(z) \label{eq:ODE_O2_1}
-\intertext{I Bioturbated Layer ($z\leq z_{bio}$)}
+\end{align}
+and therefore results in two representations depending on the bioturbation depth:
+\begin{align} 
+\intertext{1. Layer ($z\leq z_{bio}$)}
  \frac{\partial \chem{O_2^I}}{\partial t} &\overset{\ref{eq:GS_OM1}}{=} D^1_{\chem{ \chem{O_2}}}\frac{\partial^2  \chem{O_2} }{\partial z^2} - w\frac{\partial  \chem{O_2}}{\partial z} - \frac{1-\phi}{\phi}\sum_i k_i \cdot [ \chem{O_2C} + 2 \gamma_{\chem{NH_4}} \chem{NC_i} ]\cdot  \bigl\lgroup A_{1i}\cdot [ exp(a_{1i} z)-exp(b_{1i} z)] +C_{0i}\cdot exp(b_{1i} z) \bigr\rgroup\notag
-\intertext{II Non-bioturbated Layer ($z_{bio} < z < z_{ox}$)}
+\intertext{2. Layer ($z_{bio} < z < z_{ox}$)}
 \frac{\partial O_2^{II}}{\partial t} &\overset{\ref{eq:GS_OM2}}{=} D^2_{\chem{ \chem{O_2}}}\frac{\partial^2  \chem{O_2} }{\partial z^2} - w\frac{\partial  \chem{O_2}}{\partial z} - \frac{1-\phi}{\phi}\sum_i k_i \cdot [ \chem{O_2C} + 2 \gamma_{\chem{NH_4}} \chem{NC_i} ]\cdot \bigl\lgroup A_{2i}\cdot exp(a_{2i} z)  \bigr\rgroup\notag
 \end{align}
-
-where $D^1_{\chem{ \chem{O_2}}}$ and $D^2_{\chem{ \chem{O_2}}}$ denote the \chem{O_2} diffusion coefficient for the bioturbated and non-bioturbated layer, respectively;. The term $\frac{1-\phi}{\phi}$ accounts for the volume conversion from solid to dissolved phase,\chem{NC_i} is ...,  $\gamma_\chem{NH_4}$..., and \chem{O_2C}... \textbf{explain all terms}
- 
-Integration yields the following analytical solution for each layer: 
+with $D^1_{\chem{ \chem{O_2}}}$ and $D^2_{\chem{ \chem{O_2}}}$ being the \chem{O_2} diffusion coefficient for the bioturbated and non-bioturbated layer, respectively. 
+The analytical solutions depending on bioturbation depth are given by: 
 \begin{align}
-\intertext{I Bioturbated Layer ($z\leq z_{bio}$):}
+\intertext{1. Layer ($z\leq z_{bio}$):}
 O_2^I(z) &= A_{O_2}^1 + B_{O_2}^1 \cdot \exp(b_{O_2}^1 z) + \sum_i\Phi_{1,i}^I \cdot \exp(a_{1i}z)+  \sum_i\Phi_{1,i}^{II}\cdot \exp(b_{1i}z) +  \sum_i\Phi_{1,i}^{III} \cdot \exp(b_{1i}z)
-\intertext{II Non-bioturbated Layer ($z_{bio} < z < z_{ox}$)}
+\intertext{2. Layer ($z_{bio} < z < z_{ox}$)}
 O_2^{II}(z) &= A_{O_2}^2 + B_{O_2}^2 \cdot \exp(b_{O_2}^2 z) + \sum_i\Phi_{i,2}^I \cdot \exp(a_{2i}z)
 \end{align}
 with 
@@ -476,10 +506,14 @@ with
 &\Phi_{1,i}^{III} = \frac{1-\phi}{\phi}\cdot\frac{k_i\cdot(\chem{O_2C}+2 \gamma_{\chem{NH_4}} \chem{NC_i})\cdot C_{0i}}{D_{O_2}^1(-b_{1i})^2-w\cdot (-b_{1i})} \notag\\
 &\Phi_{i,2}^I := \frac{1-\phi}{\phi}\cdot\frac{k_i\cdot(\chem{O_2C}+2 \gamma_{\chem{NH_4}} \chem{NC_i})\cdot A_{2i}}{D_{O_2}^2(-a_{2i})^2-w\cdot (-a_{2i})} \notag
 \end{align}
+To determine the four integration constants ($A_{O_2}^1,\, B_{O_2}^1,\, A_{O_2}^2,\, B_{O_2}^2$) and to solve the diagenetic equations a set of boundary conditions needs to be defined (see Table \ref{Tab:BC_O2}). 
+OMEN-SED assumes a known bottom water concentration and the complete consumption of oxygen at the oxygen penetration depth (or zero flux if $z_{\mathrm{ox}}=z_\infty$). 
+Equal oxygen concentration and diffusive flux above ($z_{\mathrm{bio}}^-$) and below ($z_{\mathrm{bio}}^+$) the bioturbation boundary is considered. 
+In addition, the model accounts for reduced species produced by anaerobic mineralization diffusing into the oxic layer from below, 
+assuming that respective fractions ($\gamma_{\chem{NH_4}}$ and $\gamma_{\chem{H_2S}}$) are re-oxidised at the oxic/suboxic interface. 
 
-Determining the four integration constants ($A_{O_2}^1,\, B_{O_2}^1,\, A_{O_2}^2,\, B_{O_2}^2$), as well as the $a-priori$ unknown oxygen penetration depth requires the definition of five boundary conditions (see Table \ref{Tab:BC_O2}). 
-At the sediment-water interface, OMEN-SED applies a Dirichelet condition (i.e. known concentration) and assumes concentration and flux continuity across the bottom of the bioturbated zone, $z_{\mathrm{bio}}$. The oxygen penetration depth $z_{ox}$ marks the lower boundary and is dynamically calculated as the depth at which $O_2(z)=0$ (see section ref to boundary matching thingie). Therefore, OMEN-SED applies a Dirichelet boundary condition $O_2(zox)=0$ at $z_{ox}$. In addition, a flux boundary is applied that implicitly accounts for the oxygen consumption by the partial oxidation of $NH_4$ and $H_2S$ diffusing into the oxic layer from below.  It is assumed that respective fractions ($\gamma_{\chem{NH_4}}$ and $\gamma_{\chem{H_2S}}$) are directly re-oxidised at the oxic/suboxic interface. Alternatively if $z_{\mathrm{ox}}=z_\infty$,  a zero flux boundary condition is applied as lower boundary condition. 
-
+% was Sandra: In addition, it imposes a flux of reduce species through the bottom of the oxic zone that is calculated by integrating organic matter degradation rate and, thus, 
+%assumes a complete oxidation of these species at the oxic/suboxic interface:   
 \begin{table}[tbp]
 \caption{Boundary conditions for oxygen. For the boundaries we define:  $z_{\mathrm{bio}}^- := \lim_{h\to0} (z_{\mathrm{bio}}-h)$ and $z_{\mathrm{bio}}^+ := \lim_{h\to0} (z_{\mathrm{bio}}+h)$.}
 % title of Table
@@ -507,22 +541,35 @@ $z=z_{\mathrm{ox}}$&  \chem{O_2} consumption & 4)&\textbf{IF} $ (\chem{O_2}(z_\i
 \end{table}
 
 \subsubsection{Nitrate and Ammonium}
-Nitrogen dynamics in OMEN-SED are controlled by the metabolic production of ammonium, nitrification, denitirification as well as ammonium adsorption. 
-Ammonium is produced by organic matter degradation in both the oxic and anoxic zones, while denitirification \textbf{need explanation}. The adsorption of ammonium to sediment particles is formulated as an equilibrium process with constant equilibrium adsorption coefficient $K_\chem{NH_4}$, thus assuming that the adsorption is fast compared with the characteristic time scales of transport processes \citep{wang_multicomponent_1996}. In addition, a defined fraction, $\gamma_{\chem{NH_4}}$, of metabolically produced ammonium is directly nitrified to nitrate in the oxic zone, while the nitrification of upward diffusing ammonium produced in the anoxic layer is implicitly accounted for in the boundary conditions. The conservation equations for ammonium and nitrate are thus given by:
-
+%Nitrate and ammonium are described in $mol\ cm^{-3}$ liquid and a factor of $\frac{1-\phi}{\phi}$ is introduced to account for the conversion from mineralization rates to production of dissolved species. 
+%To model nutrient dynamics the sediment is partitioned into two geochemical layers (oxic and suboxic)
+To model nitrate and ammonium dynamics the sediment column is partitioned into two geochemical layers (oxic and suboxic), where different equations describe the biogeochemical processes. 
+Above the oxygen penetration depth organic matter mineralization produces ammonium, which is partly nitrified to nitrate (the fraction $\gamma_{\chem{NH_4}}$). 
+In the suboxic zone ($z>z_{\mathrm{ox}}$), oxygen concentration is zero and nitrate serves as the electron acceptor to respire organic matter, thus nitrate is consumed by denitrification and ammonium is produced. Below the nitrate 
+penetration depth $z_{\chem{NO_3}}$, ammonium is still produced via OM mineralization. The model assumes that adsorption of ammonium to sediment particles is fast compared with the characteristic transport time scales. 
+Thus, a constant equilibrium adsorption coefficient $K_\chem{NH_4}$ is used to parameterize the loss of dissolved \chem{NH_4} to adsorped \chem{NH_4} \citep{wang_multicomponent_1996}.
+Therefore the diagenetic equations for nitrate and ammonium are given by:
 \begin{align}
-\intertext{1. Oxic Layer ($z \leq z_{\mathrm{ox}}$)}
+\intertext{1. Layer ($z \leq z_{\mathrm{ox}}$)}
  \frac{\partial NO_3^I}{\partial t} &= 0 = D_{NO_3} \frac{\partial^2NO_3^I }{\partial z^2} - w\frac{\partial NO_3^I }{\partial z} + \gamma_{\chem{NH_4}} \frac{1-\phi}{\phi} \cdot \sum_i \chem{NC_i} \cdot k_i \cdot C_{i}(z)\label{eq:NO3_ODE1_L1}\\ %\qquad &\text{1. Layer ($z\leq z_{\mathrm{ox}}$)}\\
  \frac{\partial \chem{NH_4}^I}{\partial t} &= 0 = \frac{D_{\chem{NH_4}}}{1+K_\chem{NH_4}} \frac{\partial^2\chem{NH_4}^I }{\partial z^2} - w\frac{\partial \chem{NH_4}^I }{\partial z} + \frac{1-\gamma_{\chem{NH_4}}}{1+K_\chem{NH_4}}\cdot \frac{1-\phi}{\phi} \cdot \sum_i \chem{NC_i} \cdot k_i \cdot C_{i}(z)\label{eq:NH4_ODE1_L1}\\
- \intertext{2. Suboxic Layer ($z_{\mathrm{ox}} < z \leq z_{\chem{NO_3}}$)} 
+ \intertext{2. Layer ($z_{\mathrm{ox}} < z \leq z_{\chem{NO_3}}$)} 
 \frac{\partial NO_3^{II}}{\partial t} &= 0 = D_{NO_3} \frac{\partial^2NO_3^{II} }{\partial z^2} - w\frac{\partial NO_3^{II} }{\partial z} - \frac{1-\phi}{\phi} NO_3C \cdot \sum_i k_i \cdot C_{i}(z) \label{eq:NO3_ODE1_L2}\\
 \frac{\partial \chem{NH_4}^{II}}{\partial t} &= 0 = \frac{D_{\chem{NH_4}}}{1+K_\chem{NH_4}} \frac{\partial^2\chem{NH_4}^{II} }{\partial z^2} - w\frac{\partial \chem{NH_4}^{II} }{\partial z} \label{eq:NH4_ODE1_L2}
- \intertext{3. Anoxic Layer ($z_{\chem{NO_3}} < z \leq z_\infty$)} 
+ \intertext{3. Layer ($z_{\chem{NO_3}} < z \leq z_\infty$)} 
 \frac{\partial \chem{NH_4}^{III}}{\partial t} &= 0 = \frac{D_{\chem{NH_4}}}{1+K_\chem{NH_4}} \frac{\partial^2\chem{NH_4}^{III} }{\partial z^2} - w\frac{\partial \chem{NH_4}^{III} }{\partial z} + \frac{1}{1+K_\chem{NH_4}}\cdot\frac{1-\phi}{\phi} \cdot \sum_i \chem{NC_i} \cdot k_i \cdot C_{i}(z)\label{eq:NH4_ODE1_L2}
 \end{align}
-
-where ... \textbf{explain all things and also point out that D dependent on where the redox boundaries are located with respect to zbio}
-Integration of eq. yields the analytical solution, which are not further developed here but follow the procedure outline in section oxygen (also see Section \ref{subsec:GBCM} for more details on how to find the analytical solution). Table \ref{Tab:BC_NO3+NH4} summarises the boundary conditions applied in OME-SED to solve eq. .... The model assumes known bottom water concentrations for both species, the complete consumption of nitrate at the nitrate penetration depth (or zero flux if $z_{\chem{NO_3}}=z_\infty$) and no change in ammonium flux at $z_\infty$. It considers equal concentrations and diffusive fluxes at $z_{\mathrm{bio}}$ and $z_{\mathrm{ox}}$.  In addition, the re-oxidation of upward-diffusing reduced ammonium is considered in the oxic-suboxic boundary condition for nitrate and ammonium. 
+% where
+% \begin{align}
+%  D_{i}&=D_{i, 0}+D_{\mathrm{bio}} &\text{if ($z\leq z_{\mathrm{bio}}$)}\\
+%  D_{i}&=D_{i, 0}                &\text{if ($z > z_{\mathrm{bio}}$)} 
+% \end{align} 
+% and $i \in \{$NO$_3$, NH$_4\}$. 
+The boundary conditions to solve Equations \ref{eq:NO3_ODE1_L1} - \ref{eq:NH4_ODE1_L2} are summarized in Table \ref{Tab:BC_NO3+NH4}. The analytical solutions are not further stated here but follow the same logic as for oxygen (for more details 
+on how to find the analytical solution see Section \ref{subsec:GBCM}).
+The model assumes known bottom water concentrations 
+for both species, the complete consumption of nitrate at the nitrate penetration depth (or zero flux if $z_{\chem{NO_3}}=z_\infty$) and no change in ammonium flux at $z_\infty$. It considers equal concentrations and diffusive fluxes 
+at $z_{\mathrm{bio}}$ and $z_{\mathrm{ox}}$.  In addition, the re-oxidation of upward-diffusing reduced ammonium is considered in the oxic-suboxic boundary condition for nitrate and ammonium. 
 
 \begin{table}[tbp]
 \caption{Boundary conditions for nitrate and ammonium. For the boundaries we define:  $z^-_{\_\_} := \lim_{h\to0} (z_{\_\_}-h)$ and $z^+_{\_\_} := \lim_{h\to0} (z_{\_\_}+h)$.}
@@ -558,20 +605,17 @@ $z=z_{\infty}$& zero \chem{NH_4} flux & 8)& $\frac{\partial \chem{NH_4}}{\partia
 \end{tabular}
 \label{Tab:BC_NO3+NH4}
 \end{table}
-
-
 \subsubsection{Sulfate and Sulfide}
-Below the suboxic zone ($z>z_{NO_3}$), organic matter degradation is coupled to sulfate reduction, consuming sulfate (SO$_4$) and producing hydrogen sulfide (H$_2$S). In addition, the anaerobic oxidation of upward diffusing methane (AOM) produced below the sulfate penetration and the associated consumption of sulfate and production of sulfide; as well as the production of sulfate and consumption of sulphide through sulphide oxidation are implicitly accounted for through the boundary conditions.
-The conservation equations for sulfate and sulphide are thus given by:
-
+When nitrate is depleted, sulfate reduction is the pathway to mineralize organic matter, thus consuming sulfate (SO$_4$) and producing hydrogen sulfide (H$_2$S) until the sulfate penetration depth ($z_{\chem{\chem{SO_4}}}$). 
+Sulfate and sulfide dynamics are thus described by:
 \begin{align}
-\intertext{1. Oxic Layer ($z \leq z_{\chem{NO_3}}$)}
+\intertext{1. Layer ($z \leq z_{\chem{NO_3}}$)}
  \frac{\partial \chem{SO_4}^I}{\partial t} &= 0 = D_{\chem{SO_4}} \frac{\partial^2\chem{SO_4}^I }{\partial z^2} - w\frac{\partial \chem{SO_4}^I }{\partial z} \label{eq:SO4_ODE1_L1}\\ %\qquad &\text{1. Layer ($z\leq z_{\mathrm{ox}}$)}\\
  \frac{\partial \chem{H_2S}^I}{\partial t} &= 0 = D_{\chem{H_2S}} \frac{\partial^2\chem{H_2S}^I }{\partial z^2} - w\frac{\partial \chem{H_2S}^I }{\partial z}\label{eq:H2S_ODE1_L1}\\
- \intertext{2. Denitrification Layer ($z_{\chem{NO_3}} < z \leq z_{\chem{SO_4}}$)} 
+ \intertext{2. Layer ($z_{\chem{NO_3}} < z \leq z_{\chem{SO_4}}$)} 
 \frac{\partial \chem{SO_4}^{II}}{\partial t} &= 0 = D_{\chem{SO_4}} \frac{\partial^2\chem{SO_4}^{II} }{\partial z^2} - w\frac{\partial \chem{SO_4}^{II} }{\partial z} - \frac{1-\phi}{\phi} \cdot \sum_i \chem{SO_4C} \cdot k_i \cdot C_{i}(z) \label{eq:SO4_ODE1_L2}\\
 \frac{\partial \chem{H_2S}^{II}}{\partial t} &= 0 = D_{\chem{H_2S}} \frac{\partial^2\chem{H_2S}^{II} }{\partial z^2} - w\frac{\partial \chem{H_2S}^{II} }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i \chem{SO_4C}  \cdot k_i \cdot C_{i}(z)\label{eq:H2S_ODE1_L2}
- \intertext{3. Sulfidic Layer ($z_{\chem{SO_4}} < z \leq z_{\infty}$)} 
+ \intertext{3. Layer ($z_{\chem{SO_4}} < z \leq z_{\infty}$)} 
 \frac{\partial \chem{H_2S}^{III}}{\partial t} &= 0 = D_{\chem{H_2S}} \frac{\partial^2\chem{H_2S}^{III} }{\partial z^2} - w\frac{\partial \chem{H_2S}^{III} }{\partial z}\label{eq:H2S_ODE1_L3}
 \end{align}
 % where
@@ -580,13 +624,15 @@ The conservation equations for sulfate and sulphide are thus given by:
 %  D_{i}&=D_{i, 0}                &\text{if ($z > z_{\mathrm{bio}}$)} 
 % \end{align} 
 % and $i \in \{$SO$_4$, H$_2$S$\}$. 
-where ... \textbf{explain all things and also point out that D dependent on where the redox boundaries are located with respect to zbio}
-Integration of eq. yields the analytical solution and Table \ref{Tab:BC_SO4+H2S} summarises the boundary conditions applied in OME-SED to solve eq. \ref{eq:SO4_ODE1_L1} - \ref{eq:H2S_ODE1_L3} . OMEN-SED assumes known concentrations at the sediment-water interface and continuity 
+To solve equations \ref{eq:SO4_ODE1_L1} - \ref{eq:H2S_ODE1_L3} the model assumes known concentrations at the sediment-water interface and continuity 
 across the bioturbation depth and the nitrate penetration depth (see Table \ref{Tab:BC_SO4+H2S}). 
-The re-oxidation of reduced \chem{H_2S} to \chem{SO_4} is accounted for implicitly via the oxic-suboxic boundary condition for both species, while reduction of \chem{SO_4} and the associated production of \chem{H_2S} 
-is accounted through the respective boundary conditions at $z_\chem{SO_4}$. In case $z_{\chem{SO_4}}<z_\infty$, sulfate concentration is set to zero at $z_{\chem{SO_4}}$ and its diffusive flux must equal the amount of methane produced below; or, in case $z_{\chem{SO_4}}=z_\infty$, 
+The re-oxidation of reduced \chem{H_2S} to \chem{SO_4} is considered in the 
+oxic-suboxic boundary condition for both species, here including the methanic zone, as \chem{H_2S} is also produced during anaerobic oxidation of methane (AOM). 
+Furthermore, sulfate is used at $z_{\chem{SO_4}}$ to oxidize methane from below and thus producing \chem{H_2S}. 
+In case $z_{\chem{SO_4}}<z_\infty$, sulfate concentration is zero at $z_{\chem{SO_4}}$ and its diffusive flux must equal the amount of methane produced below; or, in case $z_{\chem{SO_4}}=z_\infty$, 
 a zero flux condition for sulfate is considered. At the lower boundary $z_\infty$ zero flux of \chem{H_2S} is considered. 
-
+%Additionally H$_2$S is produced by AOM which is considered in the flux boundary condition at $z_{\chem{SO_4}}$. 
+\textcolor{red}{correct??}\\
 
 \begin{table}[tbp]
 \caption{Boundary conditions for sulfate and sulfide. For the boundaries we define:  $z^-_{\_\_} := \lim_{h\to0} (z_{\_\_}-h)$ and $z^+_{\_\_} := \lim_{h\to0} (z_{\_\_}+h)$.}
@@ -650,7 +696,6 @@ $z=z_{\infty}$& zero \chem{H_2S} flux & 10)& $\frac{\partial \chem{H_2S}}{\parti
 
 
 \subsubsection{Phosphate}
-
 \begin{figure}[htbp]
 \begin{center}
 	\includegraphics[width=0.8\textwidth]{figures/P-cycle.pdf}
@@ -659,12 +704,13 @@ $z=z_{\infty}$& zero \chem{H_2S} flux & 10)& $\frac{\partial \chem{H_2S}}{\parti
 	\label{fig:P-cycle}
 	\end{center}
 \end{figure}
-
-The biogeochemical description of phosphorus (P) dynamics builds on the work of \citet{caroline_p_slomp_key_1996}  and accounts for phosphorous recycling through organic matter degradation, adsorption onto sediments and iron-hydroxides, as well as apatite formation (see Figure \ref{fig:P-cycle} for a schematic overview of the sedimentary P cycle. ). In the oxic zone of the sediment, PO$_4$ liberated through organic matter degradation can adsorp to Fe-hydroxides forming Fe-bound P (or M) or sediments \citep{slomp1998role}. Below the oxic zone, PO$_4$ is not only produced via organic matter degradation but can also be released from the Fe-bound P pool due to the reduction of Fe oxides under suboxic and anoxic conditions. Furthermore, in these zones phosphate concentrations build up and pore waters can thus become over-saturated with respect to apatite, thus triggering the formation of apatite \citep{cappellen_mathematical_1988}. Phosphorus bound in authigenic minerals represents a permanent sink for reactive phosphorus \citep{caroline_p_slomp_key_1996}. As for ammonium, the adsorption of P to the sediment matrix is treated as an equilibrium processes, parameterized with dimensionless adsorption coefficients for the oxic and anoxic zone, respectively \citep[$K_\chem{PO_4}^{ox}$, $K_\chem{PO_4}^{anox}$][]{slomp1998role}. 
-\textbf{needs more detailed description of Fe-adsoption and how this is dealt with in M}
-
-The conservation equations for phosphate and iron-bound phosphate is thus given by:
-
+To model phosphorus (P) dynamics in the sediments OMEN-SED takes into account the change with depth of phosphate (PO$_4$) and iron-bound P, thereby mainly following the description of \citet{caroline_p_slomp_key_1996} 
+and \citet{gypens_simple_2008}. Throughout the sediment column organic matter is mineralized resulting in a release of phosphate to the pore water. In the oxic part of the sediment, this PO$_4$ either 
+diffuses upward to the water column or is adsorped to Fe oxides forming Fe-bound P (or M) \citep{slomp1998role}. In the suboxic/anoxic zone, PO$_4$ is not only produced via organic matter degradation but is 
+also released from the Fe-bound P pool due to the reduction of Fe oxides. Furthermore, phosphate concentrations can become high enough in this layer for authigenic mineral formation to occur \citep{cappellen_mathematical_1988}. 
+This phosphorus bound in authigenic minerals represents a permanent sink for reactive phosphorus \citep{caroline_p_slomp_key_1996}. See Figure \ref{fig:P-cycle} for a schematic overview of the sedimentary P cycle. 
+As for ammonium, the adsorption of P to the sediment matrix is treated as an equilibrium processes, parameterized with dimensionless adsorption coefficients for the oxic and anoxic zone 
+\citep[$K_\chem{PO_4}^{ox}$, $K_\chem{PO_4}^{anox}$][]{slomp1998role}. Therefore the diagenetic equations for phosphate are written as:
 \begin{align}
 \intertext{1. Layer ($z \leq z_{\mathrm{ox}}$)}
  \frac{\partial \chem{PO_4}^I}{\partial t} &= \frac{D_{\chem{PO_4}}}{1+K_\chem{PO_4}^{ox}} \frac{\partial^2\chem{PO_4}^I }{\partial z^2} - w\frac{\partial \chem{PO_4}^I }{\partial z} + \frac{1-\phi}{\phi}\frac{1}{1+K_\chem{PO_4}^{ox}}\sum_i 
@@ -682,13 +728,12 @@ The conservation equations for phosphate and iron-bound phosphate is thus given 
 %  D_{\chem{PO_4}}&=D_{\chem{PO_4}, 0}+D_{\mathrm{bio}} &\text{ and }\quad D_{M}&= D_{\mathrm{bio}} &\text{if ($z\leq z_{\mathrm{bio}}$)}\\
 %  D_{\chem{PO_4}}&=D_{\chem{PO_4}, 0} &\text{ and }\quad D_{M}&= 0 &\text{if ($z > z_{\mathrm{bio}}$)} 
 % \end{align}
-where ... \textbf{explain all things and also point out that D dependent on where the redox boundaries are located with respect to zbio}
-Integration of eq. yields the analytical solution and Table \ref{Tab:BC_PO4+M} summarises the boundary conditions applied in OME-SED to solve Equations \ref{eq:PO4_ODE_L1} - \ref{eq:PO4_ODE_L2}.
-
+with $D_{M}=D_{\mathrm{bio}}$ for $z\leq z_{\mathrm{bio}}$ and $D_{M}=0$ for $z > z_{\mathrm{bio}}$. 
+The boundary conditions to solve Equations \ref{eq:PO4_ODE_L1} - \ref{eq:PO4_ODE_L2} are summarized in Table \ref{Tab:BC_PO4+M}. 
 The model assumes known bottom water concentrations and equal concentrations and diffusive fluxes at $z_{\mathrm{bio}}$ and $z_{\mathrm{ox}}$ for both species. 
-A no flux boundary condition is applied at $z_\infty$. \\
+Additionally it considers no change in phosphate flux and an asymptotic Fe-bound P concentration at $z_\infty$. \\
 
-
+% TODO: \textcolor{red}{@ Sandra: SWI Flux for M does not exist, right???}
 
 \begin{table}[tbp]
 \caption{Boundary conditions for phosphate and Fe-bound P (M). For the boundaries we define:  $z^-_{\_\_} := \lim_{h\to0} (z_{\_\_}-h)$ and $z^+_{\_\_} := \lim_{h\to0} (z_{\_\_}+h)$.}
@@ -722,21 +767,18 @@ $z=z_{\infty}$& asymptotic concentration & 10) $M(z_\infty)=M_\infty$\\
 
 
 \subsubsection{Dissolved Inorganic Carbon (DIC)}
-OMEN-SED accounts for the production of dissolved inorganic carbon (DIC) through organic matter degradation, as well as methane oxidation \textbf{need to say something about carbonates here}. Organic matter degradation produces dissolved inorganic carbon (DIC) with a stoichiometric DIC:C ratio of 1:2 in the methanic zone and 1:1 in the rest of the sediment column. DIC production through methane oxidation is implicitly taken into account through the boundary conditions. 
-The conservation equations for DIC is thus given by:
+Organic matter degradation produces dissolved inorganic carbon (DIC) with a stoichiometric DIC:C ratio of 1:2 in the methanic zone and 1:1 in the rest of the sediment column. 
+DIC dynamics in OMEN-SED are thus described by equations \ref{eq:DIC_ODE1_L1} and \ref{eq:DIC_ODE1_L1} and boundary conditions as summarized in Table \ref{Tab:BC_DIC}. 
+The model assumes a known DIC concentration at the sediment-water interface, a zero flux condition at the lower boundary $z_\infty$ and continuity across the bioturbation and sulfate penetration depth. 
+In addition, the anaerobic oxidation of methane at $z_{\chem{SO_4}}$ produces DIC (with 1:1 stoichiometry) which is accounted for through the flux boundary condition 
+at $z_{\chem{SO_4}}$ (Table \ref{Tab:BC_DIC} eq. 5)
 
 \begin{align}
-\intertext{1. Denitifircation Zone ($z \leq z_{\chem{SO_4}}$)}
+\intertext{1. Layer ($z \leq z_{\chem{SO_4}}$)}
   \frac{\partial DIC^I}{\partial t} &= 0 = D_{DIC} \frac{\partial^2DIC^I }{\partial z^2} - w\frac{\partial DIC^I }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i \chem{DICC^I} \cdot k_i \cdot C_{i}(z)\label{eq:DIC_ODE1_L1}\\ %\qquad &\text{1. Layer ($z\leq z_{\mathrm{ox}}$)}\\
- \intertext{2. Sulfate Reduction Zone ($z_{\chem{SO_4}} < z \leq z_\infty$)} 
+ \intertext{2. Layer ($z_{\chem{SO_4}} < z \leq z_\infty$)} 
   \frac{\partial DIC^{II}}{\partial t} &= 0 = D_{DIC} \frac{\partial^2DIC^{II} }{\partial z^2} - w\frac{\partial DIC^{II} }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i \chem{DICC^{II}} \cdot k_i \cdot C_{i}(z)\label{eq:DIC_ODE1_L2} %\qquad &\text{1. Layer ($z\leq z_{\mathrm{ox}}$)}\\
 \end{align}
-
-where ... \textbf{explain all things and also point out that D dependent on where the redox boundaries are located with respect to zbio}
-Integration of eq. yields the analytical solution and Table \ref{Tab:BC_DIC} summarises the boundary conditions applied in OME-SED to solve Equations\ref{eq:DIC_ODE1_L1} and \ref{eq:DIC_ODE1_L1}.
-
-
-A Dirichelet condition is applied at the sediment-water interface. In addition, the model assumes a zero flux through the lower boundary $z_\infty$ and continuity across the bottom of the bioturbated zone, as well as the sulfate penetration depth. An additional flux boundary condition at $z_{\chem{SO_4}}$, implicitly accounts for DIC production through anaerobic oxidation of methane  (Table \ref{Tab:BC_DIC} eq. 5).
 
 \begin{table}[tbp]
 \caption{Boundary conditions for \chem{DIC}. For the boundaries we define:  $z^-_{\_\_} := \lim_{h\to0} (z_{\_\_}-h)$ and $z^+_{\_\_} := \lim_{h\to0} (z_{\_\_}+h)$.}
@@ -761,26 +803,32 @@ $z=z_{\infty}$& zero \chem{DIC} flux & 6)& $\frac{\partial \chem{DIC}}{\partial 
 
 
 \subsubsection{Alkalinity}
-\textbf{again need to mention carboantes}
-Organic matter degradation and secondary redox reactions exert a complex influence on alkalinity  \citep{wolf-gladrow_total_2007}. To model alkalinity in OMEN-SED the sediment column is partitioned into four geochemical layers, where different equations describe the biogeochemical processes using variable stoichiometric coefficients (compare Tables \ref{table:reaction_parameters} and \ref{table:Reaction_Network}). 
-Above $z_{\mathrm{ox}}$, the combined effects of \chem{NH_4} and \chem{P} release due to aerobic OM mineralization increases alkalinity according to $\chem{ALK}^\mathrm{OX}$ whereas nitrification decreases alkalinity with stoichiometry $\chem{ALK}^\mathrm{NIT}$. 
-In the remaining three zones anaerobic OM mineralization generally results in an increase in alkalinity, whose exact magnitude depends on the nature of the terminal electron acceptor used (i.e. $\chem{ALK}^\mathrm{DEN}$, $\chem{ALK}^\mathrm{SUL}$, $\chem{ALK}^\mathrm{MET}$). In addition, the effect of secondary redox reactions, such as nitrification, methane and sulphide oxidation are implicitly accounted for in the boundary conditions. 
-
-In OMEN-SED, the conservation equations for alkalinity is thus given by:
+Organic matter degradation and secondary redox reactions exert a complex influence on alkalinity with opposite effects depending on the TEA involved \citep{wolf-gladrow_total_2007}. 
+%The dynamics are further complicated by the influence of secondary redox reactions. 
+To model alkalinity in OMEN-SED the sediment column is partitioned into four geochemical layers, where different equations describe the biogeochemical processes using variable stoichiometric coefficients 
+(compare Tables \ref{table:reaction_parameters} and \ref{table:Reaction_Network}). 
+Above $z_{\mathrm{ox}}$, the combined effects of \chem{NH_4} and \chem{P} release due to aerobic OM mineralization increases alkalinity according to $\chem{ALK}^\mathrm{OX}$ 
+whereas nitrification decreases alkalinity with stoichiometry $\chem{ALK}^\mathrm{NIT}$. 
+In the remaining three zones anaerobic OM mineralization increases alkalinity with variable stoichiometric coefficients (i.e. $\chem{ALK}^\mathrm{DEN}$, $\chem{ALK}^\mathrm{SUL}$, $\chem{ALK}^\mathrm{MET}$). 
+Thus, the diagenetic equations for alkalinity are written as:
 \begin{align}
- \intertext{1. Oxic Zone ($z \leq z_{\chem{ox}}$)} 
+ \intertext{1. Layer ($z \leq z_{\chem{ox}}$)} 
 \frac{\partial \chem{ALK}^{I}}{\partial t} &= 0 = D_{\chem{ALK}} \frac{\partial^2\chem{ALK}^{I} }{\partial z^2} - w\frac{\partial \chem{ALK}^{I} }{\partial z} \notag\\
 					  & + \frac{1-\phi}{\phi} \cdot \sum_i \left( \chem{ALK}^\mathrm{NIT} \cdot \frac{\gamma_{\chem{NH_4}}}{1+K_\chem{NH_4}} \chem{NC_i} + \chem{ALK}^\mathrm{OX}\right)\cdot k_i \cdot C_{i}(z) \label{eq:ALK_ODE1_L1}\\
- \intertext{2. Dentrification Zone ($z_{\chem{ox}} < z \leq z_{\chem{NO_3}} $)} 
+ \intertext{2. Layer ($z_{\chem{ox}} < z \leq z_{\chem{NO_3}} $)} 
 \frac{\partial \chem{ALK}^{II}}{\partial t} &= 0 = D_{\chem{ALK}} \frac{\partial^2\chem{ALK}^{II} }{\partial z^2} - w\frac{\partial \chem{ALK}^{II} }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i \chem{ALK}^\mathrm{DEN}\cdot k_i \cdot C_{i}(z)\label{eq:ALK_ODE1_L2}
- \intertext{3. Sulfate Reduction Zone ($z_{\chem{NO_3}} < z \leq z_{\chem{SO_4}} $)} 
+ \intertext{3. Layer ($z_{\chem{NO_3}} < z \leq z_{\chem{SO_4}} $)} 
 \frac{\partial \chem{ALK}^{III}}{\partial t} &= 0 = D_{\chem{ALK}} \frac{\partial^2\chem{ALK}^{III} }{\partial z^2} - w\frac{\partial \chem{ALK}^{III} }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i \chem{ALK}^\mathrm{SUL}\cdot k_i \cdot C_{i}(z)\label{eq:ALK_ODE1_L3}
- \intertext{4. Methanogenic Zone ($z_{\chem{SO_4}} < z \leq z_{\infty} $)} 
+ \intertext{4. Layer ($z_{\chem{SO_4}} < z \leq z_{\infty} $)} 
 \frac{\partial \chem{ALK}^{IV}}{\partial t} &= 0 = D_{\chem{ALK}} \frac{\partial^2\chem{ALK}^{IV} }{\partial z^2} - w\frac{\partial \chem{ALK}^{IV} }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i \chem{ALK}^\mathrm{MET}\cdot k_i \cdot C_{i}(z)\label{eq:ALK_ODE1_L4}
 \end{align}
-
-where ... \textbf{explain all things and also point out that D dependent on where the redox boundaries are located with respect to zbio}
-Integration of eq. yields the analytical solution and Table \ref{Tab:BC_ALK} summarises the boundary conditions applied in OME-SED to solve Equations  \ref{eq:ALK_ODE1_L1} - \ref{eq:ALK_ODE1_L4}. A Dirichlet boundary condition is applied at the sediment-water interface. The decrease of alkalinity due to oxidation of reduced species produced in the suboxic and anoxic layers (with stoichiometry $\chem{ALK}^\mathrm{NIT}$ and $\chem{ALK}^\mathrm{H_2S}$) is implicitly taken into account through the flux boundary condition at $z_{\mathrm{ox}}$ (Table \ref{Tab:BC_ALK} Eq. 5). Furthermore, the oxidation of methane by sulphate reduction increases alkalinity with stoichiometry $\chem{ALK}^\mathrm{AOM}$ which is accounted for through the flux boundary condition at $z_{\chem{SO_4}}$ (Table \ref{Tab:BC_ALK} eq. 9). At the lower boundary $z_\infty$ a zero flux condition is applied. 
+To solve equations \ref{eq:ALK_ODE1_L1} - \ref{eq:ALK_ODE1_L4} the model assumes a known concentration at the sediment-water interface and continuity 
+across the bioturbation depth and the penetration depths of \chem{O_2}, \chem{NO_3} and \chem{SO_4} (see Table \ref{Tab:BC_ALK}). 
+The decrease of alkalinity due to oxidation of reduced species produced in the suboxic and anoxic layers (with stoichiometry 
+$\chem{ALK}^\mathrm{NIT}$ and $\chem{ALK}^\mathrm{H_2S}$) is implicitly taken into account 
+through the flux boundary condition at $z_{\mathrm{ox}}$ (Table \ref{Tab:BC_ALK} Eq. 5). 
+Furthermore, the oxidation of methane by sulphate reduction increases alkalinity with stoichiometry $\chem{ALK}^\mathrm{AOM}$ which is accounted for through the flux boundary condition 
+at $z_{\chem{SO_4}}$ (Table \ref{Tab:BC_ALK} eq. 9). At the lower boundary $z_\infty$ a zero flux condition is applied. 
 
 \begin{table}[tbp]
 \caption{Boundary conditions for alkalinity. For the boundaries we define:  $z^-_{\_\_} := \lim_{h\to0} (z_{\_\_}-h)$ and $z^+_{\_\_} := \lim_{h\to0} (z_{\_\_}+h)$.}
@@ -809,106 +857,15 @@ $z=z_{\infty}$& zero \chem{ALK} flux & 10)& $\frac{\partial \chem{ALK}}{\partial
 \label{Tab:BC_ALK}
 \end{table}
 
-\subsection{Determination of Integration Constants}\label{subsec:module_Structure}
-
-The integration constants of all general analytical solutions derived above change in response to changing boundary conditions. OMEN-SED thus has to re-determine integration constants for each dynamic zone (i.e. $z_{\mathrm{ox}}, z_{\mathrm{bio}}, z_{\chem{NO_3}}$ and $z_{\chem{SO_4}}$) at every time step. The bioturbation boundary poses a particular challenge as it can theoretically occur in any of the dynamic geochemical zones (compare Fig. \ref{fig:Boundary_matching_algo}). Therefore, in order to generalise and simplify this recurring boundary matching problem, an independent algorithm (rather than a fully-worked-out algebraic solution), which only ever has to solve a two-simultaneous-equation problem is implemented.
-
-\subsubsection{Generic Boundary Condition Matching (GBCM)}\label{subsec:GBCM}
-A general steady-state transport-reaction equation for the set of coupled reaction-tansport equations implemented in OMEN-SED can be formulated as:
-
-\begin{align} 
- \frac{\partial C}{\partial t} &= 0 = D\frac{\partial^2C }{\partial z^2} - w\frac{\partial C }{\partial z} - \sum_i \alpha_i \exp(-\beta_i z) - k\cdot C + Q.
-\end{align}
-
-where $z$ is the sediment depth, $t$ the time, $D$ is the diffusion coefficient and $w$ is the advection rate \textbf{describe the other parameters too, e.g. alpha, Q etc}.\\
-
-The solution of eq. (the above) is of the general form:
-
-\begin{align}
- C(z) &= A \exp(az) + B  \exp(bz) + \sum_i \frac{\alpha_i}{D \beta_i^2-w\beta_i-k}\cdot \exp(-\beta_i z) + \frac{Q}{k} \label{eq:ODE_general_solution}
-\end{align}
-
-and can therefore be expressed as:
-
-\begin{align}
-C(z) = A \cdot E(z) + B \cdot F(z) + G(z) 
-\end{align}
-
-where $E(z)$, $F (z)$ are the homogeneous solutions of the ODE, G(z) the particular integral, and A, B are the integration constants (compare Fig. \ref{fig:Boundary_matching_algo} for the whole sediment column).\\[1em]
-
-Each boundary matching problem involves matching continuity and flux for the two solutions of the respective reaction-transport equation above, $C_U(z)$ (= 'upper'), and below, $C_L(z)$ (= 'lower'), the dynamic boundary at $z = z_b$:
-
-\begin{align}
-C_U(z) &= A_U \cdot E_U(z) + B_U \cdot F_U(z) + G_U(z) \label{ODE_solution_U}\\
-C_L(z) &= A_L \cdot E_L(z) + B_L \cdot F_L(z) + G_L(z) .\label{ODE_solution_L}
-\end{align}
-
-OMEN-SED generally applies concentration continuity and flux boundary conditions at its internal, dynamic boundaries: \\
-Continuity (where for generality we allow a discontinuity $V_b$) 
-\begin{align}
-  C_U(z_b) &= C_L(z_b) + V_b	\\
-\intertext{Flux}
- D_U C_U'(z_b) + wC_U(z_b) &=  D_LC_L'(z_b) + wC_L(z_b) + F_b
-\end{align}
-
-where $w$ is advection, $D$ are the diffusion coefficients and $F_b$ is any flux discontinuity.\\[1em]
-
-Substituting the general ODE solutions (\ref{ODE_solution_U}), (\ref{ODE_solution_L}), the boundary conditions can be thus two equations connecting the four integration constants:\\
-\begin{equation}
- \begin{pmatrix} E_U & F_U \\ D_UE_U' & D_UF_U' \end{pmatrix} \begin{pmatrix} A_U \\ B_U \end{pmatrix} = \begin{pmatrix} E_L & F_L \\ D_LE_L' & D_LF_L' \end{pmatrix} \begin{pmatrix} A_L \\ B_L \end{pmatrix} 
- + \begin{pmatrix} G_L - G_U + V_b \\ D_LG_L' - D_UG_U' + F_b - wV_b\end{pmatrix} \label{Solution_BC}
-\end{equation}
-
-where the ODE solutions $E,\ F,\ G$ are all evaluated at $z_b$.\\[1em]
-Equation (\ref{Solution_BC}) can now be solved to give $A_U$ and $B_U$ as a function of the integration constants from the layer below ($A_L$ and $B_L$), thereby constructing a piecewise solution for both layers, with just two integration constants (implemented in the function \textsf{\textbf{benthic\_utils.matchsoln}} of OMEN-SED ). \\[1em] % $A_L$ and $B_L$. \\[1em]
-
-\begin{equation}
-\begin{pmatrix} A_U \\ B_U \end{pmatrix} = \begin{pmatrix} c_1 & c_2 \\ c_3 & c_4 \end{pmatrix} \begin{pmatrix} A_L \\ B_L \end{pmatrix} + \begin{pmatrix} d_1 \\ d_2 \end{pmatrix} . \label{Solution_matchsoln} 
-\end{equation}
-
-Using (\ref{Solution_matchsoln}) $C_U(z)$ in (\ref{ODE_solution_U}) can now be rewritten as a function of $A_L$ and $B_L$ (implemented in  \textsf{\textbf{benthic\_utils.xformsoln}})):
-
-\begin{equation*}
- C_U(z) = (c_1 A_L + c_2 B_L + d_1) \cdot E_U(z) + (c_3 A_L + c_4 B_L + d_2) \cdot F_U(z) + G_U(z) 
-\end{equation*}
-
-and hence define the ``transformed'' basis functions $E_U^*(z),\ F_U^*(z),\ G_U^*(z)$ such that:
-
-\begin{equation}
- C_U(z) = A_L \cdot E_U^*(z) + B_L \cdot F_U^*(z) + G_U^*(z) \label{Solution_Upper_transformed_basis_fct}
-\end{equation}
-where
-\begin{align}
- E_U^*(z) &= c_1 E_U(z) + c_3 F_U(z) \notag\\
- F_U^*(z) &= c_2 E_U(z) + c_4 F_U(z) \label{Solution_NEW_EFG}\\
- G_U^*(z) &= G_U(z) + d_1 E_U(z) + d_2 F_U(z) \notag
-\end{align}
-
-\begin{figure}[htbp]
-\begin{center}
-	\includegraphics[width=0.3\textwidth]{figures/Boundary_Matching_zbio.pdf}
-	\caption{Schematic of the generic boundary condition matching (GBCM) problem. Showing the resulting integration constants ($A_i,\ B_i$) and ODE solutions ($E_i,\ F_i,\ G_i$) for the different sediment layers and the variable 
-	bioturbation boundary.}
-	\label{fig:Boundary_matching_algo}
-	\end{center}
-\end{figure}
-%\subsubsection*{Application in the model}\label{subsubsec:GBCM-Appl}
-
-Equations (\ref{Solution_matchsoln}), (\ref{Solution_Upper_transformed_basis_fct}) and (\ref{Solution_NEW_EFG}) can now be consecutively applied for each of the dynamic biogeochemical zone boundary, starting at the bottom of the sediment column. The net result is a piecewise solution of the whole sediment column with just two integration constants (coming from the lowest layer), which can then be solved for by applying the boundary conditions at the sediment-water interface and the bottom of the sediments . 
-
-\subsubsection*{Abstracting out the bioturbation boundary}
-The bioturbation boundary affects the diffusion coefficient of the modelled solutes, as well as the conservation equation of organic matter (and thereby the exact form of each reaction-transport equation). % which is available for mineralization. 
-The boundary is particularly inconvenient as it can, in principle, occur in the middle of any of the dynamically shifting biogeochemical zones and therefore generates multiple cases (compare Fig. \ref{fig:Boundary_matching_algo}). The GBCM algorithm described above is thus not only used to construct a piecewise solution, but also to abstract out the bioturbation boundary.  \textbf{This needs to be described better! Even I don't get this! For each timestep, the "bioturbation-status'' of each biogeochemical zone (fully bioturbated, fully non-bioturbated or crossing the bioturbation boundary) is initially tested and (if needed) a piecewise solution is constructed by matching boundary conditions across the bioturbation boundary \textbf{I don't think that this is clear to everyone}. The routine \textsf{\textbf{zTOC.prepfg\_l12}} hands back a structure \textsf{ls} containing the ``bioturbation-status'' for each layer and (if needed) the description of the piecewise solution (coeffcients $c_1, c_2, c_3, c_4, d_1, d_2$ as above \textbf{include direct reference here}). 
-For instance, in the case of sulfate, \textsf{\textbf{zTOC.prepfg\_l12}} is called three times before the actual profile is calculated (once per layer: oxic, suboxic, sulfidic) 
-and hands back three structures \textsf{ls} with information about the layer's ``bioturbation-status'' and all associated conditional logic \textbf{this is vague, be precise! what is handed back}. When calculating the solutions for the different layers, the pre-calculated structure \textsf{ls} is passed to the function \textsf{\textbf{zTOC.calcfg\_l12}} which sorts out the correct solution type to use. The main code therefore never needs to know whether it is dealing with a piecewise solution (i.e. matched across a bioturbation boundary) or a ``simple'' solution (i.e. the layer is fully bioturbated or fully non-bioturbated)}.
-
-
 \subsection{Model Parameters}
-The following section provides a summary of  global relationships used to constrain reaction and transport parameters in OMEN-SED. Table \ref{table:sed-charac_transport-parameters} synthesises sediment and transport parameters, while table \ref{table:reaction_parameters} provides an overview of all biogeochemical parameters used in OMEN-SED.
+This section describes the parameters used in OMEN-SED to describe sediment transport and biogeochemical reactions related to the burial and mineralization of organic matter under a wide range of environmental conditions. 
+Table \ref{table:sed-charac_transport-parameters} states the parameters for sediment characteristics and table \ref{table:reaction_parameters} summarizes the stoichiometric factors and 
+secondary reaction parameters used in the model.
 
 \subsubsection{Transport Parameters}
-The burial of sediments and porewater is directly related to the accumulation of new material on the seafloor \citep[i.e. sedimentation,][]{burdige2006geochemistry}. 
-This results in a downward advective flux of older sediment material and porewater in relation to the sediment-water interface. When coupled to an ocean model, its sedimentation flux can be readily used in OMEN-SED. The stand-alone version \textbf{is that the first time you mention stand-alone? this should be monetione in the general section- there is a stand alone } of OMEN-SED uses the empirical global relationship between sediment accumulation rate (cm yr$^{-1}$) and seafloor depth (m) of \citet{middelburg_empirical_1997}: 
+Advection is the bulk flow of sediments and can be directly related to the accumulation of new material on the seafloor \citep[i.e. sedimentation,][]{burdige2006geochemistry}. 
+This results in a downward flux of older sediment material and porewater in relation to the sediment-water interface. When coupled to an ocean model, its sedimentation flux can be readily used in OMEN-SED. 
+The stand-alone version of OMEN-SED uses the empirical global relationship between sediment accumulation rate (cm yr$^{-1}$) and seafloor depth (m) of \citet{middelburg_empirical_1997}: 
 \begin{equation}
  w = 3.3\cdot 10^{-0.87478367-0.00043512\cdot \text{depth}}\label{eq:sedimentation_rate},
 \end{equation}
@@ -917,9 +874,9 @@ The bioturbation coefficient $D_{\mathrm{bio}}$ (cm$^2$ yr$^-1$) is constant in 
 \begin{equation}
  D_{\mathrm{bio}} = 5.2\cdot 10^{0.76241122-0.00039724\cdot \text{depth}}\label{eq:bioturbation_coeff}
 \end{equation}
-Observations indicate that bioturbation is largely restricted to the upper 10 cm of the sediments and is only marginally related to seafloor depth \citep[e.g.][]{boudreau_mean_1998, teal_global_2010}. 
+Studies showed that bioturbational effects on a global scale are largely restricted to the upper 10 cm of the sediments and are only marginally related to seafloor depth \citep[e.g.][]{boudreau_mean_1998, teal_global_2010}. 
 Therefore, OMEN-SED imposes a globally invariant bioturbation depth $z_{\mathrm{bio}}$ of 10 cm. In case the bottom water oxygen concentration is below 5 nanomole cm$^{-3}$ 
-infaunnal activity is assumed to cease and $z_{\mathrm{bio}} = 0.01$ cm \textbf{need to explain why not 0}. 
+infaunnal activity is assumed to cease and $z_{\mathrm{bio}} = 0.01$ cm. 
 
 Bioirrigation can enhance the molecular diffusion coefficient $D_{i,0}=D_{\mathrm{mol},i}\cdot f_{ir}$ \citep{soetaert1996dynamic}. However, here we do not consider this effect 
 and set $f_{ir}$ to a constant value of 1. The specific molecular diffusion coefficients $D_{\mathrm{mol},i}$ are corrected for sediment porosity $\phi$, tortuosity F and are linearly interpolated for an ambient temperature $T$ using zero-degree 
@@ -985,17 +942,18 @@ $D_{\chem{ALK}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 7.93 &Diffusion c
 
 \subsubsection {Reaction Parameters and Stoichiometries}
 %The parameters relating to organic matter %The overall reactions implemented in OMEN-SED are listed in Table \ref{table:reactions_processes}. 
-\textbf{difficult to find a structure, I'd adapt to the order in the table and groups -as much as possible- according to chemical species, Also ALL parameters must be described and justified}.
-\textbf{Let me take care of this section:} The first-order organic matter degradation constants of compound class $i$, $k_i$ (yr$^{-1}$), are assumed invariant along the sediment column and therefore independent of the nature of the terminal electron acceptor. The rate constants can be 
+The applied 2G-approach for organic matter degradation considers specific degradation rate constants $k_i$ (yr$^{-1}$) for each compound class 
+which are assumed invariant along the sediment column and therefore independent of the nature of the terminal electron acceptor. The rate constants can be 
 altered manually to fit observed sediment profiles (compare Section \ref{subsec:SedProfiles}) or related to a master variable 
 (e.g. sedimentation rate or POC-flux) provided by a coupled Earth system model (compare Section \ref{subsubsec:ESM_coupling} and \ref{subsec:GENIE-pre-ind}). 
-\textbf{until here, also need to mention $f_i$}
-Organic matter degradation consumes oxygen with a 1:1 stoichiometry.\\
-\textbf{N-related parameters: N/C, \chem{NO_3C}, NH4, adsorption coefficient, gamma- explain nitrification}\\
-\textbf{SO4-H2S related parameters: \chem{SO_4C} ,  gamma, AOM} reduction of 1 mol organic matter additionally produces $\chem{SO_4C}=\frac{138}{212}$ mol of hydrogen sulfide \\
-\textbf{methane: MC, AOM} \chem{MC} = 0.5 mol of methane. \\
-The rate constants sorption of \chem{PO_4} to Fe oxides, $k_s$, release of \chem{PO_4} from Fe-bound P due to Fe-oxide reduction $k_m$  and authigenic CFA precipitation $k_a$ are constrained on the basis of ??. The pore water equilibrium concentrations for P sorption and CFA precipation ($\chem{PO_4}^s$, $\chem{PO_4}^a$ ) and the asymptotic concentration for Fe-bound P ($\chem{M}^\infty$ ) are taken from  \citet{palastanga_long_term_2011}. The phosphorus to carbon ratio represents the composition of organic matter and is chosen as ?? based on ??.\\
-
+The rate constants for P related processes (i.e. sorption of \chem{PO_4} to Fe oxides, release of \chem{PO_4} from Fe-bound P 
+due to Fe-oxide reduction and authigenic CFA precipitation) are $k_s,\ k_m,\ k_a$ respectively. 
+The pore water equilibrium concentrations for P sorption and CFA precipation ($\chem{PO_4}^s$, $\chem{PO_4}^a$ ) and the asymptotic concentration for Fe-bound P ($\chem{M}^\infty$ ) 
+are taken from \citet{caroline_p_slomp_key_1996} \textcolor{red}{maybe change to \citet{palastanga_long_term_2011} as these are values used in a global model...}.
+The stoichiometry of organic matter is represented by the factors \chem{NC_i} and \chem{PC_i} denoting the molecular nitrogen to carbon and phosphorus to carbon ratio. 
+In the sulfidic and methanic zone the 
+reduction of 1 mol organic matter additionally produces $\chem{SO_4C}=\frac{138}{212}$ mol of hydrogen sulfide and \chem{MC} = 0.5 mol of methane. 
+In the total sediment column organic matter mineralization consumes the specific TEA with a fixed ratio (\chem{O_2C}, \chem{NO_3C} and \chem{SO_4C} respectively). 
 See Table \ref{table:reaction_parameters} for a complete summary of the parameters and their values.
 % \textcolor{red}{Or bit longer:}\\
 % In the sulfidic and methanic zone the 
@@ -1074,13 +1032,101 @@ $\chem{M}^\infty$ & mol\,cm$^{-3}$ & \textcolor{red}{$1.99\cdot 10^{-10}$} & asy
 \label{table:reaction_parameters}
 \end{table}
 
-\section{Sensitivity Study \& Case Studies \textbf{working title, need to come up with something!}}
-\subsection{Sensitivity Study}
+\subsection{Module Structure}\label{subsec:module_Structure}
+An analytical steady-state solution is found for the reaction-transport equation of each chemical species for every layer. 
+At each boundary (i.e. $z_{\mathrm{ox}}, z_{\mathrm{bio}}, z_{\chem{NO_3}}$ and $z_{\chem{SO_4}}$) the model has to match continuity and flux for the 
+ODE solutions of the layer above and below the specific boundary. 
+In particular the bioturbation boundary is problematic as it can theoretically occur in any geochemical layer (compare Fig. \ref{fig:Boundary_matching_algo}). 
+In order to simplify this recurring boundary matching problem it is implemented in an independent algorithm 
+which is described in Section \ref{subsec:GBCM}. Instructions and requirements for coupling OMEN-SED to a global Earth Sytem Model are given in Section \ref{subsubsec:ESM_coupling}.
 
+\subsubsection{Generic Boundary Condition Matching (GBCM)}\label{subsec:GBCM}
+A general steady-state advection-diffusion-reaction (ADR) diagenetic equation looks like:
+\begin{align} 
+ \frac{\partial C}{\partial t} &= 0 = D\frac{\partial^2C }{\partial z^2} - w\frac{\partial C }{\partial z} - \sum_i \alpha_i \exp(-\beta_i z) - k\cdot C + Q.
+\end{align}
+where $z$ is the sediment depth, $t$ the time, $D$ is the diffusion coefficient and $w$ is the advection rate.\\
+The ODE solution is of the general form:
+\begin{align}
+ C(z) &= A \exp(az) + B  \exp(bz) + \sum_i \frac{\alpha_i}{D \beta_i^2-w\beta_i-k}\cdot \exp(-\beta_i z) + \frac{Q}{k} \label{eq:ODE_general_solution}
+\end{align}
+and can therefore be expressed as:
+\begin{align}
+C(z) = A \cdot E(z) + B \cdot F(z) + G(z) 
+\end{align}
+where $E(z)$, $F (z)$ are the homogeneous solutions of the ODE, G(z) the particular integral, and A, B are the integration constants (compare Fig. \ref{fig:Boundary_matching_algo} for the whole sediment column).\\[1em]
+Each boundary matching problem involves matching continuity and flux for the two solutions $C_U(z)$ (= 'upper') and $C_L(z)$ (= 'lower') across a boundary at $z = z_b$. Therefore, we get two ODE solutions of the genral form:
+\begin{align}
+C_U(z) &= A_U \cdot E_U(z) + B_U \cdot F_U(z) + G_U(z) \label{ODE_solution_U}\\
+C_L(z) &= A_L \cdot E_L(z) + B_L \cdot F_L(z) + G_L(z) .\label{ODE_solution_L}
+\end{align}
+The two boundary conditions are: for continuity (where for generality we allow a discontinuity $V_b$) 
+\begin{align}
+  C_U(z_b) &= C_L(z_b) + V_b	\\
+\intertext{and for flux}
+ D_U C_U'(z_b) + wC_U(z_b) &=  D_LC_L'(z_b) + wC_L(z_b) + F_b
+\end{align}
+where $w$ is advection, $D$ are the diffusion coefficients and $F_b$ is any flux discontinuity.\\[1em]
+In terms of the ODE solutions (\ref{ODE_solution_U}), (\ref{ODE_solution_L}), the boundary conditions represent two equations connecting the four integration constants:\\
+\begin{equation}
+ \begin{pmatrix} E_U & F_U \\ D_UE_U' & D_UF_U' \end{pmatrix} \begin{pmatrix} A_U \\ B_U \end{pmatrix} = \begin{pmatrix} E_L & F_L \\ D_LE_L' & D_LF_L' \end{pmatrix} \begin{pmatrix} A_L \\ B_L \end{pmatrix} 
+ + \begin{pmatrix} G_L - G_U + V_b \\ D_LG_L' - D_UG_U' + F_b - wV_b\end{pmatrix} \label{Solution_BC}
+\end{equation}
+where the ODE solutions $E,\ F,\ G$ are all evaluated at $z_b$.\\[1em]
+Equation (\ref{Solution_BC}) can be solved to give $A_U$ and $B_U$ as a function of the integration constants from the layer below ($A_L$ and $B_L$), thereby constructing a piecewise solution for both layers, 
+with just two integration constants. \\[1em] % $A_L$ and $B_L$. \\[1em]
+In the code the function \textsf{\textbf{benthic\_utils.matchsoln}} provides this solution in the form:
+\begin{equation}
+\begin{pmatrix} A_U \\ B_U \end{pmatrix} = \begin{pmatrix} c_1 & c_2 \\ c_3 & c_4 \end{pmatrix} \begin{pmatrix} A_L \\ B_L \end{pmatrix} + \begin{pmatrix} d_1 \\ d_2 \end{pmatrix} . \label{Solution_matchsoln} 
+\end{equation}
+Using (\ref{Solution_matchsoln}) we can now rewrite $C_U(z)$ in (\ref{ODE_solution_U}) as a function of $A_L$ and $B_L$:
+\begin{equation*}
+ C_U(z) = (c_1 A_L + c_2 B_L + d_1) \cdot E_U(z) + (c_3 A_L + c_4 B_L + d_2) \cdot F_U(z) + G_U(z) 
+\end{equation*}
+and hence define the ``transformed'' basis functions $E_U^*(z),\ F_U^*(z),\ G_U^*(z)$ such that:
+\begin{equation}
+ C_U(z) = A_L \cdot E_U^*(z) + B_L \cdot F_U^*(z) + G_U^*(z) \label{Solution_Upper_transformed_basis_fct}
+\end{equation}
+where
+\begin{align}
+ E_U^*(z) &= c_1 E_U(z) + c_3 F_U(z) \notag\\
+ F_U^*(z) &= c_2 E_U(z) + c_4 F_U(z) \label{Solution_NEW_EFG}\\
+ G_U^*(z) &= G_U(z) + d_1 E_U(z) + d_2 F_U(z) \notag
+\end{align}
+(in the code this is done by \textsf{\textbf{benthic\_utils.xformsoln}}).
 
-\subsection{Case Study: Stand-Alone simulations of global ocean transect}
-\subsection{Case Study: Coupled pre-industrial Earth System Model Simulations}
-\textbf{I wonder if we should not include a case Study section here, and if you should not provide technical details about the stand alone}
+\begin{figure}[htbp]
+\begin{center}
+	\includegraphics[width=0.3\textwidth]{figures/Boundary_Matching_zbio.pdf}
+	\caption{Schematic of the generic boundary condition matching (GBCM) problem. Showing the resulting integration constants ($A_i,\ B_i$) and ODE solutions ($E_i,\ F_i,\ G_i$) for the different sediment layers and the variable 
+	bioturbation boundary.}
+	\label{fig:Boundary_matching_algo}
+	\end{center}
+\end{figure}
+%\subsubsection*{Application in the model}\label{subsubsec:GBCM-Appl}
+
+\subsubsection*{Solving the sediment layer stack}
+Equations (\ref{Solution_matchsoln}), (\ref{Solution_Upper_transformed_basis_fct}) and (\ref{Solution_NEW_EFG}) can now be applied for each layer boundary, working up from the bottom of the sediments. 
+The net result is a piecewise solution of the whole sediment column with just two integration constants (coming from the lowest layer), which can then be solved for by applying one boundary condition for the sediment-water interface 
+and one for the bottom of the sediments (e.g. a concentration condition at the SWI and a zero flux condition at $z_\infty$). 
+% The key point here is that this is now an algorithm (rather than a fully-worked-out algebraic solution), which only ever has to solve a two-simultaneous-equation problem as above.
+
+\subsubsection*{Abstracting out the bioturbation boundary}
+The bioturbation boundary affects the diffusion coefficient of the modelled solutes and the conservation equation of organic matter. % which is available for mineralization. 
+The boundary is particularly inconvenient as it can, in principle, occur in the middle of any ``geochemical'' layer and therefore generates multiple cases (compare Fig. \ref{fig:Boundary_matching_algo}). 
+To simplify this for solutes, the GBCM algorithm above is used to construct a piecewise solution and to abstract out the bioturbation boundary. 
+An initial test for each ``geochemical'' layer is made to identify its ``bioturbation-status'' (fully bioturbated, fully non-bioturbated or crossing the bioturbation boundary) and (if needed) a piecewise solution is 
+constructed by matching boundary conditions across the bioturbation boundary. 
+The ``outside'' code therefore never needs to know whether it is dealing with a piecewise solution (i.e. matched across a bioturbation boundary) or a ``simple'' solution (i.e. the layer is fully bioturbated
+or fully non-bioturbated).
+
+In the code, this is performed by \textsf{\textbf{zTOC.prepfg\_l12}} which hands back a structure \textsf{ls} containing the ``bioturbation-status'' for each layer and (if needed) 
+the description of the piecewise solution (coeffcients $c_1, c_2, c_3, c_4, d_1, d_2$ as above). 
+For example in the case of sulfate, \textsf{\textbf{zTOC.prepfg\_l12}} is called three times before the actual profile is calculated (once per layer: oxic, suboxic, sulfidic) 
+and hands back three structures \textsf{ls} with information about the layer's ``bioturbation-status'' and all associated conditional logic. %, abstracting away the bioturbation boundary
+When calculating the solutions for the different layers, the pre-calculated structure \textsf{ls} is passed to the function \textsf{\textbf{zTOC.calcfg\_l12}} which sorts out the correct
+solution type to use.
+
 \subsubsection{Coupling to an Earth System Model}\label{subsubsec:ESM_coupling}
 % Describe what needs to be done/checked. Compare/use as example what I did with GENIE coupling. What are the if-clauses used? Input to OMEN-SED, output of OMEN-SED. 
 \begin{figure}[tbp]
@@ -1090,9 +1136,8 @@ $\chem{M}^\infty$ & mol\,cm$^{-3}$ & \textcolor{red}{$1.99\cdot 10^{-10}$} & asy
 	\label{fig:OMEN-GENIE-coupling}
 	\end{center}
 \end{figure}
-OMEN-SED is coupled to the carbon-centric version of the ``GENIE'' Earth system model \citep[cGENIE][]{ridgwell_marine_2007} to illustrate the abilities of the newly developed model. The following section provides a brief description of cGENIE and the   
 
-is described  (Fig. \ref{fig:OMEN-GENIE-coupling}). 
+The coupling of OMEN-SED to the carbon-centric version of the ``GENIE'' Earth system model \citep[cGENIE][]{ridgwell_marine_2007} is described  (Fig. \ref{fig:OMEN-GENIE-coupling}). 
 Results from pre-industrial experiments are presented in Section \ref{subsec:GENIE-pre-ind}. 
 %cGENIE Earth System model is described, in particular its incorporation into the sediment geochemistry model \citep[SEDGEM,][]{ridgwell_regulation_2007}. 
 cGENIE is a model of Intermediate Complexity based on the efficient climate model ``C-GOLDSTEIN''  of \citet{edwards_uncertainties_2005}, featuring a frictional-geostrophic 3D-ocean circulation model coupled to a fast 
@@ -1365,17 +1410,21 @@ All simulations are run for 20,000 years to steady-state. OMEN-SED is called for
 fraction of POC preserved in the sediments to cGENIE. 
 
 As shown in our sensitivity analysis (Figure \ref{fig:Sensitivity_Analysis}) and discussed by \citet{arndt_quantifying_2013} the 
-degradation rate constants for OM ($k_i$) are the most influential parameters and strongly determine the SWI-flux of redox-sensitive elements. 
+degradation rate constants for OM ($k_i$) are the most influential parameters and strongly determine the SWI-flux of redox-sensitive elements as well as the burial rate of OM. 
 Yet, their spatial variability is unknown at the global scale and reported rate constants can vary by almost 10 orders of magnitude \citep{arndt_quantifying_2013}, 
 thus defining appropriate OM degradation rate constants is a major challenge and source of uncertainty for diagenetic models. The rate constants in models are either determined through profile fitting for a specific site or, 
 for global applications, they are related to a single, readily available characteristic (or master variable) of the local environmental conditions. 
 For instance, considerable effort has been expended to relate the apparent rate constant for oxic and 
 anoxic OM degradation to sedimentation rate ($w$) and various empirical relations have been proposed \citep{toth_organic_1977, tromp_global_1995, boudreau1997diagenetic, stolpovsky_toward_2015}. 
 Nevertheless, these relationships are generally based on limited data sets and their global applicability is questionable \citep{arndt_quantifying_2013}. 
-We test globally invariant values for the OM degradation rate constants as well as different published parameterisations (see Table \ref{table:OM_degrad_para}) to test 
-whether the different approaches are able to recreate main sediment characteristics. %importance of this parameter for our model results. 
-Depending on oxygen concentration in the bottom water, $k_1$ is defined as the oxic or anoxic degradation rate (anoxic for $[\chem{O_2}] < 5$ nanomole cm$^{-3}$ ). 
-The more refractory component is assumed to degrade one hundred times slower \citep[$k_2 = k_1/100$, see e.g.][]{boudreau1997diagenetic}. 
+
+Here, we test globally invariant values for the OM degradation rate constants as well as the empirical relation of \citet{boudreau1997diagenetic}. Modelled 
+mean POC content in the upper 5cm of the sediments are compared to the global POC observations in surface sediments (< 5cm sediment depth) of \citet{seiter_organic_2004}. 
+The original data field is interpolated on a $1^{\circ}\times 1^{\circ}$ grid and has been transformed onto the $72\times 72$ SEDGEM grid (Figure \ref{}).
+
+%published parameterisations (see Table \ref{table:OM_degrad_para}) to test whether the different approaches are able to recreate main sediment characteristics. %importance of this parameter for our model results. 
+% Depending on oxygen concentration in the bottom water, $k_1$ is defined as the oxic or anoxic degradation rate (anoxic for $[\chem{O_2}] < 5$ nanomole cm$^{-3}$ ). 
+% The more refractory component is assumed to degrade one hundred times slower \citep[$k_2 = k_1/100$, see e.g.][]{boudreau1997diagenetic}. 
 
 \begin{table}[btp]
 \caption{List of  coupled OMEN-cGENIE experiments with oxic and anoxic rate constants ($k_1$, yr$^{-1}$). The rate constant $k_2$ for the more refractory component is 
