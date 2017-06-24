@@ -36,10 +36,12 @@ classdef benthic_test
         
         function run_OMEN()            
             clear
+            tic;
             swi=benthic_test.default_swi()
 %            % set date-time
 %            str_date = datestr(now,'ddmmyy_HH_MM_SS');
             res=benthic_test.test_benthic(1,swi);
+            toc;
             benthic_test.plot_column(res, false, swi, 'FULL_OMEN_0504')
             
             % calculate depth integrated OM degradation rates
@@ -113,7 +115,7 @@ classdef benthic_test
             res.zDIC = benthic_zDIC(res.bsd, res.swi);
             res.zALK = benthic_zALK(res.bsd, res.swi);
    
-            tic;
+%            tic;
             res = res.zTOC.calc(res.bsd,res.swi, res);
             % check O2 demand using O2 to C ratio and (convert POC concentr. to flux analog to fortran)
             % POC_flux*OC = POC_conc * w * 1/(1 - por) * OC  
@@ -143,7 +145,7 @@ classdef benthic_test
              res = res.zPO4_M.calc(res.bsd, res.swi, res);
              res = res.zDIC.calc(res.bsd, res.swi, res);
              res = res.zALK.calc(res.bsd, res.swi, res);
-            toc;
+%            toc;
             
             %%%%% WRITE OUTPUT:
             answ = res
