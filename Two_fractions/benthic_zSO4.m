@@ -47,8 +47,8 @@ classdef benthic_zSO4
                 else
                     bctype = 1;
                     conczinf = 0.0;
-                    funzno3=fun(r.zno3)
-                    funzinf=fun(bsd.zinf)
+                    funzno3=fun(r.zno3);
+                    funzinf=fun(bsd.zinf);
                     r.zso4=fzero(fun,[max(r.zno3, 1e-10), bsd.zinf],bsd.fzerooptions);
                 end
             else  % vectorized version

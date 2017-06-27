@@ -36,13 +36,13 @@ classdef benthic_zO2
             if bsd.usescalarcode
                 if fun0 >= 0   % i.e. zero oxygen at swi bc O2 flows into sediments (so -)
                     r.zox = 0;
-                    bctype = 1;
+                    bctype = 1;       	% BC: zero concentration 
                     conczinf = 0.0;
-                elseif conczinf >=0      % still O2 at zinf -> zox = zinf
+                elseif conczinf >=0    	% still O2 at zinf -> zox = zinf
                     r.zox = bsd.zinf;
-                    bctype = 2;
+                    bctype = 2;      	% BC: zero flux 
                 else                    % search zox in the interval
-                    bctype = 1;
+                    bctype = 1;         % BC: zero concentration
                     r.zox=fzero(fun,[1e-10 bsd.zinf],bsd.fzerooptions);
                     conczinf = 0.0;
                 end
