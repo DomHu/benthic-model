@@ -1378,13 +1378,32 @@ The first order rate constant is related to the burial velocity, $w$ (cm year$^{
 This rate constant can be assumed as the mean reactivity of the organic matter fractions which are degraded in the upper, bioturbated $10-20$ cm of the sediments. 
 Thus, more reactive fractions (degraded during days/weeks close to the SWI) and more refractory fractions (degraded on longer time scales deeper in the sediments) are not captured by this relationship \citep{boudreau1997diagenetic}. 
 BRNS simulations were performed using boundary conditions and parameters for depths representative for shelf, slope and deep sea sediments (i.e. SFD of 100m, 200m, 500m, 1000m, 2000m, 3500m and 5000m). 
-In order to reproduce these results, OMEN-SED is configured as a 1-G model and boundary conditions and model parameters are defined as given in Table 3 of \citep[][]{thullner_global_scale_2009}. 
-%>>>
-\marginnote{\textbf{DH}: Shall I include the actual table with the parameters for diff. SFD here?}[-1cm]%<<<
-%>>>
+In order to reproduce these results, OMEN-SED is configured as a 1-G model and boundary conditions and model parameters are defined as in \citet[][see Table \ref{table:Hypsometry_params}]{thullner_global_scale_2009}. 
 As OMEN-SED assumes a fixed fraction of reduced substances to be reoxidised, which exerts a large impact on the resulting SWI-fluxes (compare Section \ref{subsec:SA}), 
 we perform two sets of simulations in order to show the range of possible model outputs. In the first setup 95\% of the reduced substances are reoxidised (i.e. $\gamma_{NH_4}=\gamma_{H_2S}=0.95$) and in the 
 second only 5\% are reoxidised (all other model parameters and boundary conditions are equal). 
+\begin{table}[hbtp]
+\caption{Seafloor depth dependency of key model parameters and boundary conditions (adapted from \citet{thullner_global_scale_2009}.} 
+% Note: Constant concentrations at all sites for \chem{SO_4} ($28000 \mu$mol cm$^{-3}$) and \chem{H_2S} (0.0 $\mu$mol cm$^{-3}$).}
+\centering
+% used for centering table
+\begin{tabular}{c c c c c c c c} 
+% centered columns (15 columns)
+\hline
+& \multicolumn{7}{c}{\textbf{Seafloor Depth}}\\
+\cline{2-8}
+ & 100 m & 200 m & 500 m  & 1000 m & 2000 m & 3500 m & 5000 m\\
+\hline
+\multicolumn{1}{l}{Model parameters}\\
+ $w{}^a$ (cm yr$^{-1}$) & $3.98 \times 10^{-1}$ & $ 3.60 \times 10^{-1}$ & $ 2.67 \times 10^{-1}$ & $ 1.62 \times 10^{-1}$ & $5.94  \times 10^{-2}$ & $ 1.32 \times 10^{-2}$ & $ 2.94 \times 10^{-3}$\\
+ $D_{\mathrm{bio}}{}^a$ (cm$^2$ yr$^{-1}$) & 27.5 & 25.1 & 19.0 & 12.1 & 4.83 & 1.23 & 0.310\\
+\multicolumn{1}{l}{Upper boundary conditions}\\
+\hline
+\multicolumn{8}{l}{${}^a$ Derived from \citet{middelburg_empirical_1997}.}
+% inserts double horizontal lines
+\end{tabular}
+\label{table:Hypsometry_params}
+\end{table}
 
 
 \subsection{Case Study: Coupled pre-industrial Earth system model simulations}
@@ -1628,14 +1647,18 @@ Figure \ref{fig:hypsometry} compares simulated SWI-fluxes of TEAs (i.e. \chem{O_
 Observations for \chem{O_2} and \chem{NO_3} fluxes are taken from \citet{middelburg_denitrification_1996}. Also plotted in Fig. \ref{fig:hypsometry}A are the total oxygen uptake (TOU) estimates presented in 
 \citet{thullner_global_scale_2009} (filled red symbols), who assumed the organic matter flux to be equivalent to TOU. 
 Due to the applied empirical relations organic matter flux to the seafloor decreases by 2 orders of magnitude from 100 to 5000 m and its degradation rate constant by 1 order of magnitude (Table \ref{table:Hypsometry_params}). 
-Therefore, the rate of organic matter degradation is about 50 times greater at 100 m \textcolor{red}{(value $\mu$mol cm$^{-3}$ yr$^{-1}$ ???)} than at 5000 m \textcolor{red}{(value ???)}, thus resulting in a decrease of TEA-fluxes along the 
+Therefore, the rate of organic matter degradation is about 50 times greater at 100 m than at 5000 m \citep[compare][]{thullner_global_scale_2009}, thus resulting in a decrease of TEA-fluxes along the 
 hypsometry (Figure \ref{fig:hypsometry}). 
+% actual OMEN values are weird: Therefore, the rate of organic matter degradation is about 15 times greater at 100 m (2765 $\mu$mol cm$^{-2}$ yr$^{-1}$) than at 5000 m (175 $\mu$mol cm$^{-2}$ yr$^{-1}$), thus resulting in a decrease of TEA-fluxes along the hypsometry (Figure \ref{fig:hypsometry}). 
+The 95\%-reoxidation experiments ($\bullet$, in Fig. \ref{fig:hypsometry}) show proportionally higher \chem{O_2} in-fluxes as the 5\%-reoxidation experiments ($\blacktriangledown$) because more \chem{O_2} is utilised for 
+in situ production of \chem{NO_3} and \chem{SO_4} in the sediments. This is also mirrored by the increased \chem{NO_3} out-flux and decreased \chem{SO_4} in-flux for shallower SFDs. 
+This is in line with results of \citet{thullner_global_scale_2009} who could show that in situ production is an important source for \chem{SO_4} and is responsible for $\sim$80\% of the total OM degradation rate at depths 
+between 100 and 2000 m (\chem{SO_4} is not used for OM degradation in OMEN-SED below 2000m).
+%>>>
+\marginnote{\textbf{DH}: Not sure, if this 80\% is correct (seems to be pretty high)... but that's how I understand \citet{thullner_global_scale_2009} - see pg. 12 for 80\%!}[-1cm]%<<<
+In general, Figure \ref{fig:hypsometry} shows that OMEN-SED captures the main trends in observed TEA fluxes well and fluxes calculated with BRNS fall within the range of possible OMEN-SED results. 
 
-\textbf{quickly describe what we see, i.e. fluxes decrease along the global hypsometry and mention why\\
-also describe and explain  the differences between the OMEN min-max simulations}\\
-Results show that OMEN-SED captures the main trends in observed TEA fluxes well. In general, fluxes calculated with BRNS fall within the range of possible OMEN-SED results. 
-
-In particular, the observed \chem{O_2} fluxes in the upper 2000m are well predicted by the two OMEN-SED simulations (Fig. \ref{fig:hypsometry}A). Oxygen fluxes for the deep-sea sediments, however, are slightly underestimated. 
+In particular, the observed \chem{O_2} fluxes in the upper 2000m are well predicted by the two OMEN-SED simulations. Oxygen fluxes for the deep-sea sediments, however, are slightly underestimated. 
 These deviations can presumably be related to the assumed 1-G description of organic matter degradation, which neglects the more labile OM pool. This highly reactive pool is degraded close to the sediment surface, 
 thus promoting higher aerobic degradation rates and higher \chem{O_2} fluxes.  
 Nitrate fluxes in the upper 500m of the Atlantic Ocean are well predicted. However, as in \citet{middelburg_denitrification_1996} the direction of calculated nitrate fluxes in the upper 1000m of the Pacific Ocean differ from the observations. 
@@ -1649,7 +1672,8 @@ In addition, bottom water conditions are changed to low oxygen/high nitrate leve
 \begin{center}
 	\includegraphics[width=0.8\textwidth]{figures/0_OMEN_Thullner_hypsometry_fluxes_diff_NCratio.pdf}
 	\caption{Fluxes of \chem{O_2}, \chem{NO_3} and \chem{SO_4} to the sediment along the global hypsometry. 
-	Red lines (with open symbols) are modelled fluxes from \citet{thullner_global_scale_2009} using BRNS; black lines are results from OMEN-SED ($\bullet$ : $\gamma_{NH_4}=\gamma_{H_2S}=0.95$; $\blacktriangledown$: $\gamma_{NH_4}=\gamma_{H_2S}=0.05$). 
+	Red lines (with open symbols) are modelled fluxes from \citet{thullner_global_scale_2009} using BRNS; black lines are results from OMEN-SED ($\bullet$ : $\gamma_{NH_4}=\gamma_{H_2S}=0.95$; 
+	$\blacktriangledown$: $\gamma_{NH_4}=\gamma_{H_2S}=0.05$). 
 	Observations of TEA fluxes are taken from \citet{middelburg_denitrification_1996} ($\Diamond$: Atlantic, $\square$: Pacific, $\times$: Arctic/Indian Ocean). 
 	Also plotted in Figure (A) are the total oxygen uptake (TOU) estimates of \citet{thullner_global_scale_2009} (filled red symbols). The green line indicates OMEN-SED results for low oxygen/high nitrate levels and the lower 
 	NC-ratio. Negative values are directed out of the sediments.
