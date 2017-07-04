@@ -257,23 +257,23 @@ representation of the benthic-pelagic coupling in Earth system models. A suitabl
 benthic uptake/return fluxes of oxygen, growth-limiting nutrients and reduced species. As a consequence, the reaction network must account for the most important primary and secondary redox reactions, equilibrium reactions, 
 mineral precipitation/dissolution and adsorption/desorption, resulting in a complex set of coupled reaction-transport equations. 
 
-Even though there are more appropriate sediment representations, in most current ESMs sediment-water dynamics are either neglected or treated in a very simplistic way \citep{soetaert_coupling_2000, huelse_biopump_models_2017}. 
+Even though there are more appropriate sediment representations, in most current ESMs sediment-water dynamics are either neglected or treated in a very simplistic way \citep{soetaert_coupling_2000, hulse_understanding_2017}. 
 Most Earth system Models of Intermediate Complexity (EMICs) and also some of the higher resolution global carbon cycle models represent the sediment-water interface either as a 
-reflective or a conservative/semi-reflective boundary \citep{huelse_biopump_models_2017}. 
+reflective or a conservative/semi-reflective boundary \citep{hulse_understanding_2017}. 
 Thus, all particulate material deposited on the seafloor is either instantaneously consumed (reflective boundary), or a fixed fraction is buried in the sediments (conservative/semi-reflective boundary). 
 Both highly simplified approaches furthermore completely neglect the exchange of solute species through the sediment-water interface and, therefore, cannot resolve the complex benthic-pelagic coupling. 
 However, due to their computational efficiency, both representations are often used in global biogeochemical models \citep[e.g.][]{najjar_impact_2007, ridgwell_marine_2007, goosse_description_2010}. 
-A superior approach is the vertically integrated dynamic model, which represents the whole sediment column as a single box \citep{huelse_biopump_models_2017}. Here, OM deposited on 
+A superior approach is the vertically integrated dynamic model, which represents the whole sediment column as a single box \citep{hulse_understanding_2017}. Here, OM deposited on 
 the seafloor is added to the sediment box where it gets degraded and dissolved species diffuse through the sediment-water interface in accordance with these transformations. 
 This approach thus ignores the vertical extent of the sediments and the temporary storage of dissolved species \citep{soetaert_coupling_2000}. Yet, it is computationally efficient and 
 allows differentiating between various fractions of organic matter. Most EMICs incorporate a vertically integrated dynamic model for particulate inorganic carbon only 
-(i.e. mainly \chem{CaCO_3}) and just a few  consider oxic-only sediment degradation of organic matter \citep{huelse_biopump_models_2017}. 
+(i.e. mainly \chem{CaCO_3}) and just a few  consider oxic-only sediment degradation of organic matter \citep{hulse_understanding_2017}. 
 
 The most complex description of diagenetic organic matter degradation in Earth system models is the second group of vertically resolved diagenetic models as discussed above 
 \citep[e.g.][]{heinze_global_1999, munhoven_glacialinterglacial_2007, shaffer_presentation_2008}. 
 These models solve the one-dimensional reaction-transport equation for a number of solid and dissolved species for the upper, bioturbated 10\,cm of the sediments. 
 Examples of global ESMs employing a vertically resolved diagenetic model are NorESM \citep{tjiputra_evaluation_2013} and HAMOCC \citep{palastanga_long_term_2011, ilyina_global_2013}, 
-both using a version of \citet{heinze_global_1999}. None of the EMICs reviewed by \citet{huelse_biopump_models_2017} use such a sediment representation. 
+both using a version of \citet{heinze_global_1999}. None of the EMICs reviewed by \citet{hulse_understanding_2017} use such a sediment representation. 
 DCESS \citep{shaffer_presentation_2008} and MBM \citep{munhoven_glacialinterglacial_2007} are box models employing a vertically resolved diagenetic model. 
 However, in general oxygen is the only TEA explicitly modelled and secondary redox reactions and reduced species are completely neglected in these approaches. 
 Furthermore, all models represent the bulk OM pool as a single fraction with a fixed degradation rate constant. 
@@ -1481,7 +1481,9 @@ In section \ref{subsec:GENIE-pre-ind}, we test globally invariant values for the
 Section \ref{subsec:globalhypsometry}. The modelled mean POC weight percent (wt\%) in the upper 5cm of the sediments is compared to the global distribution pattern of POC content in surface sediments 
 (< 5cm sediment depth) of \citet{seiter_organic_2004}. 
 Therefore, the original POC distribution pattern in $1^\circ \times 1^\circ$ grid resolution \citep[generated from > 5500 measurements, compare][]{seiter_organic_2004} has been transformed onto the $72\times 72$ SEDGEM grid 
-(Figure \ref{fig:TOC_Obs_regridded}). \textcolor{red}{TODO: mention problem that we loose resolution, e.g. very high wt\% on the shelf}
+(Figure \ref{fig:TOC_Obs_regridded}). \textcolor{red}{TODO: mention problem that we loose resolution, e.g. very high wt\% on the shelf} 
+\textit{First, the original observations have been interpolated to generate a $1^\circ \times 1^\circ$ grid resolution \citep{seiter_organic_2004} which has subsequently been transformed onto the $72\times 72$ SEDGEM grid 
+(Figure \ref{fig:TOC_Obs_regridded}). }
 The relationship proposed by \citet{boudreau1997diagenetic} relates the apparent OM degradation rate constant in the bioturbated layer to the burial velocity, $w$ (cm year$^{-1}$):
 \begin{equation}
  k_\mathrm{app} = 0.38 \cdot w^{0.59}.
@@ -1500,7 +1502,7 @@ assumed to degrade 2, 4, 5, 8, 10, 20 and 50 times faster, respectively.
 \section{Sensitivity Analysis}\label{subsec:SA}
 Fig. \ref{fig:Sensitivity_Analysis} summarises results of the sensitivity analysis (compare Section\ref{subsec:methods_SA}) as a colour map. 
 Results indicate that generally the most significant parameters for all model outputs are the degradation rate constant for the labile OM part ($\chem{k_1}$) and the fraction of the labile pool in the total OM pool ($\chem{f_1}$). 
-Other parameters play a minor role for the SWI-fluxes, with the exception of the secondary redox parameters (i.e. $\gamma_\chem{NH_4},\ \gamma_\chem{H_2S}$) in the oxic scenario.
+Other parameters play a minor role for the SWI-fluxes, with the secondary redox parameters (i.e. $\gamma_\chem{NH_4},\ \gamma_\chem{H_2S}$) in the oxic scenario being an exception.
 Here, \chem{NH_4}, \chem{SO_4} and \chem{H_2S} are very sensitive to changes in $\gamma_\chem{NH_4}$ and $\gamma_\chem{H_2S}$, as these parameters determine how much of the respective TEA is produced in situ via reoxidation 
 of the corresponding reduced substance with \chem{O_2}, thus affecting the resulting SWI-fluxes. For the oxic setup, the reoxidation of \chem{H_2S} produced in the sulfidic layer ($\gamma_\chem{H_2S}$, Table \ref{Tab:BC_ALK} Eq. 5) 
 also has a strong influence on alkalinity as it decreases alkalinity by 2 moles per mole of \chem{S} ($\chem{ALK}^\mathrm{H_2S}$, Table \ref{table:reaction_parameters}). 
@@ -1700,74 +1702,98 @@ In addition, bottom water conditions are changed to low oxygen/high nitrate leve
 \end{figure}
 
 \subsection{Coupled pre-industrial simulations}\label{subsec:GENIE-pre-ind}
-OMEN-SED has been coupled to the global Earth system model cGENIE as described in Section \ref{subsubsec:Methods_ESM_coupling}. Figure \ref{fig:OMEN_GENIE_Boudreau_results} compares POC wt\% from the regridded global distribution 
-pattern of \citet{seiter_organic_2004} with modelled POC wt\% using the relationship of \citet{boudreau1997diagenetic} and the assumptions of Eq. (\ref{boudreau_assumption1}) and (\ref{boudreau_assumption2}) to calculate $k_1$ 
-and $k_2$. The colour of the points represents the SFD of the respective cGENIE grid-cell. As the individual data-points are highly scattered and in order to see if a certain relation between $k_1$ and $k_2$ performs 
-better for specific ocean depth, the data-points are binned into 6 uniform depth-classes of 1000 m each (respective mean POC wt\% and SFD are represented by the triangles). The regression line (and the corresponding R$^2$-value) is 
-calculated for the 6 bin-classes and included in the figures. \\
-\textbf{TODO: from here: }
-First, the relation between the two degradation rate constants (compare Eq. (\ref{boudreau_assumption2})) is changed globally, thus independent of the seafloor depth (Figure \ref{fig:OMEN_GENIE_Boudreau_results} A-J). 
-The crossplots show that it is not possible to achieve a solution where all bin-classes fall onto or close to the 1:1 line. However, if looking at the individual bin classes it can be seen that shallow ocean depths are better 
-represented by smaller differences between $k_1$ and $k_2$ (e.g. $k_2 = k_1/4$), and the deep ocean by a larger spread (e.g. $k_2 = k_1/100$). This can be interpreted, in a greatly simplified way, as OM in the shallow ocean 
-being fresher and more reactive, therefore the degradation rate constants are more similar. 
-
+\textbf{Dominik: Needs polishing!}\\
+OMEN-SED is coupled to the global Earth system model cGENIE as described in Section \ref{subsubsec:Methods_ESM_coupling}. The crossplots in this section (Figures \ref{fig:OMEN_GENIE_Boudreau_results} - \ref{fig:OMEN_GENIE_invariant_and_Boudreau}) 
+compare POC wt\% from the regridded global distribution pattern of \citet{seiter_organic_2004} with modelled POC wt\% using different parameterisations for the degradation rate constants $k_1$ and $k_2$. 
+The colour of the points in Figures \ref{fig:OMEN_GENIE_Boudreau_results} - \ref{fig:OMEN_GENIE_invariant_and_Boudreau} represents the SFD of the respective cGENIE grid-cell. As the individual data-points are highly scattered and 
+in order to see if a certain relation between $k_1$ and $k_2$ performs better for specific ocean depths, the data-points are binned into 6 uniform depth-classes of 1000 m each (respective mean POC wt\% and SFD are represented by 
+the triangles). The regression line (and the corresponding R$^2$-value) is calculated for the 6 bin-classes and included in the figures.
 \begin{figure}[htbp]
 \begin{center}
 	\includegraphics[width=1.0\textwidth]{figures/OMEN-GENIE-Exp/0906_Boudreau97_5_5cm_CROSSPLOT_REGRESSION_no_title.pdf}
 	\caption{Crossplot comparing modelled and observed POC wt\% in the upper 5 cm of the sediments using the relationship of \citet{boudreau1997diagenetic} and the assumptions of Eq. (\ref{boudreau_assumption1}) and 
-	(\ref{boudreau_assumption2}) to calculate $k_1$ and $k_2$. }
+	(\ref{boudreau_assumption2}) to calculate $k_1$ and $k_2$. Will be updated with new 20kyr runs and will make it prettier!}
 	\label{fig:OMEN_GENIE_Boudreau_results}
 \end{center}
 \end{figure}
 
+First, the relationship of \citet{boudreau1997diagenetic} and the assumptions of Eq. (\ref{boudreau_assumption1}) and (\ref{boudreau_assumption2}) are used to calculate $k_1$ 
+and $k_2$. In Figure \ref{fig:OMEN_GENIE_Boudreau_results} (A-J) the relation between the two degradation rate constants (Eq. (\ref{boudreau_assumption2})) is changed globally, thus independent of the seafloor depth. 
+The crossplots show that it is not possible to achieve a solution where all bin-classes fall onto, or close to, the 1:1 line. Also, the slope of the regression lines are generally much larger or smaller than 1.0 
+(with the exception of Figure \ref{fig:OMEN_GENIE_Boudreau_results}C), indicating that the rate of change in modeled and observed POC wt\% for the bin-classes is different. 
+The R$^2$ values are strictly monotonically increasing for increasing $x$ because a depth-dependency is artificially imposed for the modelled POC wt\% through the relation between $k_1$ and $k_2$. 
+However, when looking at the individual bin-classes it can be seen that shallow ocean depths are better represented by smaller differences between $k_1$ and $k_2$ (e.g. $k_2 = k_1/4$, Figure \ref{fig:OMEN_GENIE_Boudreau_results}B),
+and the deep ocean by a larger spread (e.g. $k_2 = k_1/100$, Figure \ref{fig:OMEN_GENIE_Boudreau_results}I). 
+In a greatly simplified way, this can be interpreted as bulk POC in the shallow ocean being more reactive (i.e. higher $k_\mathrm{app}$) and consisting of fresher organic matter types, therefore the degradation rate constants of the 
+two pools are more similar (i.e. $k_2 < k_1$). In the deeper ocean, bulk POC is generally less reactive (i.e. lower $k_\mathrm{app}$) and due to the preferential degradation of more reactive organic matter types in the water-column 
+\citep{wakeham_compositions_1997, lee_composition_2000} the refractory POC pool can be considered as being several orders of magnitude less reactive compared to the labile POC pool (i.e. $k_2 \ll k_1$). 
+We use these observations to create a depth dependent relationship between the two degradation rate constants, where $x$ in Eq. (\ref{boudreau_assumption2}) takes values of 5, 10, 25, 50, 100 and 125 
+for the 6 SFD bin-classes, respectively. The resulting regression model (Figure \ref{fig:OMEN_GENIE_Boudreau_results}K) accounts for 85.8\% of the variance of the modeled POC wt\% around the observed mean of the bin-classes. 
+In addition, the slope of the regression line (1.0339) indicates that the rate of change in modeled and observed POC wt\% for the bin-classes is very similar.
+%>>>
+\marginnote{\textbf{DH}: more statistics, e.g. p-value don't make much sense right?}[-1cm]%<<<
 
-
-Describe Figure \ref{fig:GENIE_OMEN_Exps} and compare with what we know. E.g. Thullner et al. 2009! \\
-
-Schulz and Zabel: 
-The basic mechanism inducing microbial activity
-is the supply of organic matter to the seafloor and
-this is generally coupled to surface water produc-
-tivity. Most of the highly productive areas in the
-global ocean are adjacent to the continents, so 
-that we can expect a decrease of degradation inten-
-sity from the coastal marine environments over
-the continental shelves and slopes into the deep-
-sea. This becomes evident when we look at the
-data compiled by Middelburg et al. (1993) which
-indicate that 83\% mineralization and 87\% burial in
-marine sediments occurs in the coastal zone
-occupying only ~9\% of the total ocean area. This
-means that the sediments with the highest respi-
-ration rates also have the highest burial efficiency
-in marine environments.
-Fluxes of oxygen and nitrate, therefore, vary
-over several orders of magnitude between oligo-
-trophic open ocean areas and continental shelf and
-slope areas. This is about 50 to 6,000 mmol m -2 yr -1
-for oxygen and -600 to 380 mmol m -2 yr -1 for nitrate ...
-
-(SHOW O2, NO3 AND E.G. PO4 SWI-fluxes).
+However, imposing the depth dependent relation of the degradation rate constants is rather arbitrary and the POC wt\% data used for the comparison have their own limitations (compare Section\ref{subsubsec:Methods_pre-ind_ESM_simul}). 
+In addition, the empirical relationship used \citep{boudreau1997diagenetic} and the regression model obtained is based on modern day observations and very likely not valid under different environmental conditions during Earth 
+history \citep[e.g.][]{hulse_understanding_2017}.
+Therefore, next we try to parameterise the degradation rate constants based on model intrinsic information. By providing two pools of POC from the water-column characterised by different degradation rate constants, cGENIE accounts 
+for the decrease in bulk POC degradability with water-depth. Therefore, the imposed depth dependent relation of the degradation rate constants presented in Figure \ref{fig:OMEN_GENIE_Boudreau_results} could also be regarded as 
+double-accounting. Figure \ref{fig:OMEN_GENIE_invariant_results} presents results for the globally invariant degradation rate experiments, where $k_2$ is systematically varied between 0.0002 and 0.005 year$^{-1}$ and 
+the more labile OM component, $k_1$, is assumed to degrade 2, 4, 5, 8, 10, 20 and 50 times faster, respectively. In general, 5 of the 6 bin-classes are located closer to the 1:1 line as in the previous experiments (with the exception 
+of the shallow ocean bin-class). Also the slope of some regression lines is close to 1.0 (e.g.), indicating that this simple parameterisation captures the rate of change in modeled and observed POC wt\% for the bin-classes rather well. 
+The shallowest bin-class (between 0 and 1000 m) represents an exception, as OMEN-SED tends to overestimate POC preservation for this depth class. However, this could also be related to the regridding of the original POC distribution 
+pattern of \citep{seiter_organic_2004} on to the SEDGEM grid, as some sites with higher POC wt\% on the continental margin are lost due to the restricted SEDGEM grid-resolution 
+(compare e.g. maximum values for the East Pacific and upwelling waters of the Namibian shelf, Figure \ref{fig:TOC_Obs_regridded}). 
 
 \begin{figure}[htbp]
 \begin{center}
 	\includegraphics[width=1.0\textwidth]{figures/OMEN-GENIE-Exp/1406_invariant_k_5cmNORMAL_CROSSPLOT_WITH_REGRESSION_notitle.pdf}
-	\caption{TEXT TEXT TEXT TEXT}\label{fig:OMEN_GENIE_invariant_results}
+	\caption{TEXT TEXT: Will be updated with new 20kyr runs and will make it prettier!}\label{fig:OMEN_GENIE_invariant_results}
 \end{center}
 \end{figure}
 
+\textbf{\textcolor{red}{DH: TODO go on from here!}} Compare different results... hopefully very different -> SA over k's is very important for global analysis! 
 
-Could also plot Figure 4 from Palastanga et al. (2011) with POC wt\% for different sites in the ocean!
-\textcolor{red}{UNITS of Fe-P! This is a solid! Therefore not nmol/cm3 rather mol/g as in Palastanga... }\\
+Describe Figure \ref{fig:GENIE_OMEN_Exps} and compare with what we know. E.g. Thullner et al. 2009! \\
 
-Also check what water column features to show and maybe sediment P or Fe-P concentrations (see PALASTANGA et al. 2011, 2013).
+% Schulz and Zabel: 
+% The basic mechanism inducing microbial activity
+% is the supply of organic matter to the seafloor and
+% this is generally coupled to surface water produc-
+% tivity. Most of the highly productive areas in the
+% global ocean are adjacent to the continents, so 
+% that we can expect a decrease of degradation inten-
+% sity from the coastal marine environments over
+% the continental shelves and slopes into the deep-
+% sea. This becomes evident when we look at the
+% data compiled by Middelburg et al. (1993) which
+% indicate that 83\% mineralization and 87\% burial in
+% marine sediments occurs in the coastal zone
+% occupying only ~9\% of the total ocean area. This
+% means that the sediments with the highest respi-
+% ration rates also have the highest burial efficiency
+% in marine environments.
+% Fluxes of oxygen and nitrate, therefore, vary
+% over several orders of magnitude between oligo-
+% trophic open ocean areas and continental shelf and
+% slope areas. This is about 50 to 6,000 mmol m -2 yr -1
+% for oxygen and -600 to 380 mmol m -2 yr -1 for nitrate ...
+% 
+% (SHOW O2, NO3 AND E.G. PO4 SWI-fluxes).
 
-Stolpovsky: bioturbated sediments deposited at continental margins quickly become anoxic within a few millimeters [Wenzhöfer and Glud, 2002].
+
+
+% Could also plot Figure 4 from Palastanga et al. (2011) with POC wt\% for different sites in the ocean!
+% \textcolor{red}{UNITS of Fe-P! This is a solid! Therefore not nmol/cm3 rather mol/g as in Palastanga... }\\
+% 
+% Also check what water column features to show and maybe sediment P or Fe-P concentrations (see PALASTANGA et al. 2011, 2013).
+% 
+% Stolpovsky: bioturbated sediments deposited at continental margins quickly become anoxic within a few millimeters [Wenzhöfer and Glud, 2002].
 
 \begin{figure}[htbp]
 \begin{center}
 	\includegraphics[width=1.0\textwidth]{figures/OMEN-GENIE-Exp/1406_COMPARE_CROSSPLOTS_INVARIANT_BOUDREAU.pdf}
-	\caption{TEXT TEXT TEXT TEXT}\label{fig:OMEN_GENIE_invariant_and_Boudreau}
+	\caption{TEXT TEXT: TODO: Include other figures as in Fig. \ref{fig:GENIE_OMEN_Exps} here!}\label{fig:OMEN_GENIE_invariant_and_Boudreau}
 \end{center}
 \end{figure}
 
@@ -1929,8 +1955,8 @@ AOM & $\chem{CH_4 + CO_2 + SO_4^{2-}} \rightarrow \chem{2HCO_3^- + H_2S}$\\
 
 \begin{acknowledgements}
 We thank Claire Reimers and Filip Meysman for supplying the dataset from the Santa Barbara Basin, as well as Martin Thullner and Jack Middelburg for making the BRNS results and observations 
-included in Section \ref{subsec:globalhypsometry} available. We are also grateful to Andy Dale for providing the global flux database used in Section \ref{subsec:SA}.
-acknowledge BODC for OMEXDIA dataset - check CD!  
+included in Section \ref{subsec:globalhypsometry} available. We are also grateful to Andy Dale for providing the global flux database used in Section \ref{subsec:SA} and 
+acknowledge BODC for the OMEXDIA dataset (check CD!).
 We are also grateful to Francesca Pianosi for helpful insights into sensitivity analysis. 
 DH is supported by a graduate teaching studentship by the University of Bristol. SA is supported by funding from
 the European Unions Horizon 2020 research and innovation programme under the Marie Sk\l{}odowska-Curie grant agreement no.
