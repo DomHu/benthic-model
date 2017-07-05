@@ -409,7 +409,7 @@ classdef benthic_test
             conv_cm3_kg = 1000;
             
             % set wdepth
-          	res.bsd.wdepth = -bc(end-1);
+          	res.bsd.wdepth = -bc(end-2);
 
             res.bsd = benthic_main(1, res.bsd.wdepth);
             res.bsd.usescalarcode = true;
@@ -419,8 +419,9 @@ classdef benthic_test
             else
                 
                 % calculate sediment accumulation rate using POC, CaCO3 and
-                % detrital rain flux (convert from mol to cm3)            
-                res.bsd.w = 1/(1-res.bsd.por)*(conv_POC_mol_cm3*bc(1)+conv_cal_mol_cm3*bc(8) + conv_det_mol_cm3*bc(9));   % + bc(10))
+                % detrital burial/rain flux (convert from mol to cm3)            
+                res.bsd.w = 1/(1-res.bsd.por)*(conv_POC_mol_cm3*bc(end)+conv_cal_mol_cm3*bc(8) + conv_det_mol_cm3*bc(9));   % + bc(10))
+% without POC               res.bsd.w = 1/(1-res.bsd.por)*(conv_cal_mol_cm3*bc(8) + conv_det_mol_cm3*bc(9));   % + bc(10))
                 if(res.bsd.w<5.0e-4)                    
                     res.bsd.w=5.0e-4;
                 end
@@ -429,8 +430,8 @@ classdef benthic_test
                 swi.T = bc(11); %20.0;                         %temperature (degree C)
                 
                 % set fraction of labile and refractory POC
-                f1=1-bc(end);
-                f2=bc(end);
+                f1=1-bc(end-1);
+                f2=bc(end-1);
                 swi.Fnonbio1 = f1*bc(1);    % [mol/(cm2 yr)] according non-bioturbated flux
                 swi.Fnonbio2 = f2*bc(1);
                 
@@ -461,6 +462,20 @@ classdef benthic_test
                 case 'boudreau1997'
                 	% use parameterisation of Boudreau 1997 dependent on sediment accumulation rate (w)
                     loc_k_apparent = 0.38*res.bsd.w^0.59;
+                    if(res.bsd.wdepth < 1000)
+                        k2scaling=5.0;
+                    elseif(res.bsd.wdepth < 2000)
+                        k2scaling=10.0;
+                    elseif(res.bsd.wdepth < 3000)
+                        k2scaling=25.0;
+                    elseif(res.bsd.wdepth < 4000)
+                        k2scaling=50.0;
+                    elseif(res.bsd.wdepth < 5000)
+                        k2scaling=100.0;
+                    else
+                        k2scaling=125.0;
+                   end
+                    
                     res.zTOC.k1=loc_k_apparent/(f1+f2*k2scaling);
                     res.zTOC.k2=res.zTOC.k1*k2scaling;
 
@@ -471,7 +486,8 @@ classdef benthic_test
                 case 'boudreau1997fPOC'
                     OMEN_result(j,i) = test.Cox_rate_total;
                	case 'invariant'
-                    OMEN_result(j,i) = test.Cox_rate_total;
+                    res.zTOC.k1=4*0.0045;
+                    res.zTOC.k2=0.0045;
                otherwise
                     error('Error. Unknown k parameterization.')
                 end
@@ -486,25 +502,24 @@ classdef benthic_test
             % if anoxic, decrease zbio and use anoxic degradation rate
             if(swi.O20 < 5.0e-9 )
                 res.bsd.zbio=0.01;
-                switch k_parametr
-                    case 'boudreau1997'
-                        % use parameterisation of Boudreau 1997 dependent on sediment accumulation rate (w)
-                        % which is actually Toth and Lerman (1977) - as no anoxic rate in Boudreau 1997:
-                        loc_k_apparent = 0.04*res.bsd.w^2;
-                        res.zTOC.k1=loc_k_apparent/(f1+f2/100);
-                        res.zTOC.k2=res.zTOC.k1/100;
-                    case 'tromp1995'
-                        OMEN_result(j,i) = test.zso4;
-                    case 'stolpovsky2016'
-                        OMEN_result(j,i) = test.Cox_rate_total;
-                    case 'boudreau1997fPOC'
-                        OMEN_result(j,i) = test.Cox_rate_total;
-                    case 'invariant'
-                        OMEN_result(j,i) = test.Cox_rate_total;
-                   otherwise
-                    error('Error. Unknown k parameterization.')
-                end
-
+%                 switch k_parametr
+%                     case 'boudreau1997'
+%                         % use parameterisation of Boudreau 1997 dependent on sediment accumulation rate (w)
+%                         % which is actually Toth and Lerman (1977) - as no anoxic rate in Boudreau 1997:
+%                         loc_k_apparent = 0.04*res.bsd.w^2;
+%                         res.zTOC.k1=loc_k_apparent/(f1+f2/100);
+%                         res.zTOC.k2=res.zTOC.k1/100;
+%                     case 'tromp1995'
+%                         OMEN_result(j,i) = test.zso4;
+%                     case 'stolpovsky2016'
+%                         OMEN_result(j,i) = test.Cox_rate_total;
+%                     case 'boudreau1997fPOC'
+%                         OMEN_result(j,i) = test.Cox_rate_total;
+%                     case 'invariant'
+%                         OMEN_result(j,i) = test.Cox_rate_total;
+%                    otherwise
+%                     error('Error. Unknown k parameterization.')
+%                 end
             end
             
 %            res.zTOC.k2 = res.zTOC.k1/100;            
@@ -555,7 +570,7 @@ classdef benthic_test
             res = res.zALK.calc(res.bsd, res.swi, res);
             
             %%%%% WRITE OUTPUT:
-            sed_depth=10.0;
+            sed_depth=100.0;
             answ = res;
             [Cinf, C1inf, C2inf] = res.zTOC.calcC( sed_depth, res.bsd, res.swi, res);
             [Cswi, C1swi, C2swi] = res.zTOC.calcC( 0, res.bsd, res.swi, res);
