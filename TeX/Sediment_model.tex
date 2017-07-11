@@ -71,7 +71,33 @@
 \usepackage{marginnote} %Dominik for commments during drafting
 \setlength{\marginparwidth}{35mm}
 
+\usepackage{empheq}
+\definecolor{myblue}{rgb}{.8, .8, 1}
+\newlength\mytemplen
+\newsavebox\mytempbox
 
+\makeatletter
+\newcommand\mybluebox{%
+    \@ifnextchar[%]
+       {\@mybluebox}%
+       {\@mybluebox[0pt]}}
+
+\def\@mybluebox[#1]{%
+    \@ifnextchar[%]
+       {\@@mybluebox[#1]}%
+       {\@@mybluebox[#1][0pt]}}
+
+\def\@@mybluebox[#1][#2]#3{
+    \sbox\mytempbox{#3}%
+    \mytemplen\ht\mytempbox
+    \advance\mytemplen #1\relax
+    \ht\mytempbox\mytemplen
+    \mytemplen\dp\mytempbox
+    \advance\mytemplen #2\relax
+    \dp\mytempbox\mytemplen
+    \colorbox{myblue}{\hspace{1em}\usebox{\mytempbox}\hspace{1em}}}
+
+\makeatother
 \begin{document}
 
 %\linenumbers
@@ -326,11 +352,9 @@ Here, the model is presented as a 2G-approach, however, a third, non-degradable 
 % -name redox zones according to Canfield paper\\
 % - be consistent in the paper and always use the same terminology e.g. zone, boundary,... \\
 % - don't use I and II for the bioturb, non-bioturb zones and the redox zones. For the redox zones, you actually do not need to use I, II, and III at all, because you name the zone explicitly, so this should be clear}
-%>>>
-\marginnote{\textbf{DH}: Not 100\% sure about redox zones: I don't use suboxic anymore \citep{canfield_towards_2009}, and just use anoxic when referring to all zones $z < z_{\mathrm{ox}}$ together, defined in Sec. \ref{subsubsec:O2})??}[-1cm]%<<<
 
 \section{Model Description}
-OMEN-SED a new, one-dimensional, computationally efficient reaction-transport model is designed for the coupling to regional/global biogeochemical and Earth system models. 
+OMEN-SED is a new, one-dimensional, computationally efficient reaction-transport model is designed for the coupling to regional/global biogeochemical and Earth system models. 
 OMEN-SED is implemented as a Fortran version that can be easily coupled to a pelagic model via the coupling routine \textsf{\textbf{OMEN\_SED\_main}}. 
 In addition, OMEN-SED exists as a stand-alone version implemented in MATLAB and the entire model can be executed on a standard personal computer in less than 0.1 seconds. 
 The source code of both, the Fortran and the MATLAB stand-alone version, as well as instructions for executing OMEN-SED and for plotting model results are available as a supplement to this paper.
@@ -340,13 +364,15 @@ The following section provides a detailed description of OMEN-SED. Tables \ref{t
 and \ref{table:reaction_parameters} provide a glossary of model parameters along with their respective units.
 
 \subsection {General Model Approach} \label{subsec:GeneralModelApproach}
-The calculation of benthic uptake, recycling and burial fluxes is based on the vertically resolved conservation equation for solid and dissolved species in porous media 
+In OMEN-SED, the calculation of benthic uptake, recycling and burial fluxes is based on the vertically resolved conservation equation for solid and dissolved species in porous media 
 \citep[e.g.][]{berner_early_1980, boudreau1997diagenetic}:
 \begin{equation} 
-\frac{\partial \xi C_i}{\partial t}=-\frac{\partial F}{\partial z}+\xi \sum_j R_i^j \label{eq:Eq_generaldiagenetic}
+\frac{\partial \xi C_i}{\partial t}=-\frac{\partial}{\partial z}\left( -\xi D_i \frac{\partial C_i}{\partial z} +\xi w C_i\right)    +\xi \sum_j R_i^j \label{eq:Eq_generaldiagenetic}
+%\frac{\partial \xi C_i}{\partial t}=-\frac{\partial F}{\partial z}+\xi \sum_j R_i^j \label{eq:Eq_generaldiagenetic}
 \end{equation}
 where $C_i$ is the concentration of biogeochemical species $i$, $\xi$ equals the porosity $\phi$ for solute species and $(1-\phi)$ for solid species. The term $z$ is the sediment depth, $t$ denotes the time, 
-$F$ summarises the transport fluxes and $\sum_j R_i^j$ represents the sum of all biogeochemical rates $j$ affecting species $i$. 
+$D_i$ is the apparent diffusion coefficient of species $i$ ($D_i=D_{i,0}+D_{\mathrm{bio}}=D_{\mathrm{mol},i}\cdot f_{ir}+D_{\mathrm{bio}}$ for dissolved species 
+and $D_i=D_{\mathrm{bio}}$ for solid species), $w$ is the burial rate  and $\sum_j R_i^j$ represents the sum of all biogeochemical rates $j$ affecting species $i$. 
 
 \begin{figure}[htbp]
 \begin{center}
@@ -361,13 +387,13 @@ neglecting the effect of sediment compaction (i.e. $\frac{\partial \phi}{\partia
 The molecular diffusion of dissolved species is described by Fick's law applying a species-specific apparent diffusion coefficient, $D_{\mathrm{mol},i}$.  In addition, the activity of infaunal organisms in the bioturbated zone 
 is simulated using a diffusive term \citep[e.g.][]{boudreau_mathematics_1986}, with a constant bioturbation coefficient $D_{\mathrm{bio}}$ in the bioturbated zone, while $D_{\mathrm{bio}}$ is set to zero below $z_{bio}$. 
 The pumping activity by burrow-dwelling animals and the resulting ventilation of tubes, the so-called bioirrigation, is encapsulated in a factor $f_{ir}$ that enhances the molecular diffusion coefficient 
-\citep[hence, $D_{i,0}=D_{\mathrm{mol},i}\cdot f_{ir}$,][]{soetaert1996dynamic}. The flux divergence is thus given by:
-\begin{equation}
-\frac{\partial F}{\partial z}=-\frac{\partial}{\partial z}\left( -\xi D_i \frac{\partial C_i}{\partial z} +\xi w C_i\right) \label{Eq_flux_divergence}
-\end{equation}
-where $D_i$ is the apparent diffusion coefficient of species $i$ ($D_i=D_{i,0}+D_{\mathrm{bio}}=D_{\mathrm{mol},i}\cdot f_{ir}+D_{\mathrm{bio}}$ for dissolved species and $D_i=D_{\mathrm{bio}}$ for solid species) and $w$ is the 
-burial rate.
-
+\citep[hence, $D_{i,0}=D_{\mathrm{mol},i}\cdot f_{ir}$,][]{soetaert1996dynamic}. 
+% The flux divergence is thus given by:
+% \begin{equation}
+% \frac{\partial F}{\partial z}=-\frac{\partial}{\partial z}\left( -\xi D_i \frac{\partial C_i}{\partial z} +\xi w C_i\right) \label{Eq_flux_divergence}
+% \end{equation}
+% where $D_i$ is the apparent diffusion coefficient of species $i$ ($D_i=D_{i,0}+D_{\mathrm{bio}}=D_{\mathrm{mol},i}\cdot f_{ir}+D_{\mathrm{bio}}$ for dissolved species and $D_i=D_{\mathrm{bio}}$ for solid species) and $w$ is the 
+% burial rate.
 The reaction network of OMEN-SED accounts for the most important primary and secondary redox reactions, equilibrium reactions, mineral dissolution and precipitation, as well as adsorption and desorption processes that affect 
 the dissolved and solid species explicitly resolved in OMEN-SED. Tables \ref{table:reactions_processes} and \ref{table:Reaction_Network} provide a summary of the reactions and biogeochemical tracers considered in OMEN-SED together 
 with their respective reaction stoichiometry. %Table \ref{table:Reaction_Network} summarises their reaction stoichiometry and Table \ref{table:ReactionOverview} provides an overview of their description in the model.
@@ -401,56 +427,61 @@ Biogeochemical tracers & Organic matter (2-G), oxygen, nitrate, ammonium, sulfat
 
 \end{table}
  
-Because OMEN-SED is designed for the coupling to Earth system models it requires a computationally efficient solution of Eq. (\ref{eq:Eq_generaldiagenetic}) and, thus, solves Eq. (\ref{eq:Eq_generaldiagenetic})
-analytically, by assuming steady state conditions (i.e.$ \frac{\partial C_i}{\partial t}=0$).
-By describing the reactive term $R_i^j$ in Eq. (\ref{eq:Eq_generaldiagenetic}) more explicitly and applying Eq. (\ref{Eq_flux_divergence}), the general steady-state transport-reaction equation 
-for a generic tracer $C_i$ can be formulated as: % implemented in OMEN-SED
-\begin{align} 
- \frac{\partial C_i}{\partial t} &= 0 = D_i\frac{\partial^2C_i }{\partial z^2} - w\frac{\partial C_i }{\partial z} - k\cdot C_i - \sum_j \alpha_j \exp(-\beta_j z) + Q \label{eq:generalODE}
-% with \xi: \frac{\partial \xi C_i}{\partial t} &= 0 = \xi D_i\frac{\partial^2C_i }{\partial z^2} - \xi w\frac{\partial C_i }{\partial z} + \xi (- k\cdot C_i - \sum_j \alpha_j \exp(-\beta_j z) + Q) \label{eq:generalODE}
+All parameters in Eq. (\ref{eq:Eq_generaldiagenetic}) may vary with depth and many reaction rate expressions depend on the concentration of other species. 
+Expressing Eq. (\ref{eq:Eq_generaldiagenetic}) for a set of chemical species thus results in a highly non-linear, coupled set of equations that can only 
+be solved numerically. 
+However, OMEN-SED is designed for the coupling to Earth system models and, therefore, cannot afford a computationally expensive numerical solution. 
+Yet, a computationally efficient analytical solution of Eq. (\ref{eq:Eq_generaldiagenetic}) can be derived by 1) assuming steady state conditions (i.e.$ \frac{\partial C_i}{\partial t}=0$) 
+and 2) reducing the vertical variability in parameters and reaction rate expressions by dividing the sediment column into a number of functional 
+biogeochemical zones \citep[Fig. \ref{fig:Sediment_layers}, compare e.g. ][for similar solutions]{billen1982idealized, goloway_diagenetic_1982, tromp_global_1995, gypens_simple_2008}. 
+More specifically, OMEN-SED divides the sediment column into: I) a bioturbated and 
+II) a non-bioturbated zone defined by an imposed, constant bioturbation depth $z_{\mathrm{bio}}$ (Fig. \ref{fig:Sediment_layers}). Furthermore, it resolves the dynamic redox stratification of marine sediments by dividing 
+the sediment into 1) an oxic zone delineated by the oxygen penetration depth $z_{\mathrm{ox}}$; 2) a denitrification (or nitrogenous) zone situated between $z_{\mathrm{ox}}$ and the nitrate penetration depth $z_{\chem{NO_3}}$;
+3) a sulfate reduction zone situated between $z_{\chem{NO_3}}$ and the sulfate penetration depth $z_{\chem{SO_4}}$; and 4) a methanogenic zone situated below $z_{\chem{SO_4}}$ (Fig. \ref{fig:Sediment_layers}).  
+In each of these zones Eq. (\ref{eq:Eq_generaldiagenetic}) is applied with depth invariant parameters. Yet, parameter values may differ across zones. 
+The biogeochemical zones are linked by stating continuity in both concentrations and fluxes at the dynamic, internal boundaries 
+($z_b \in \{z_{\mathrm{bio}}, z_{\mathrm{ox}}, z_{\chem{NO_3}}, z_{\chem{SO_4}} \}$). Its important to note that the boundaries of all biogeochemical zones 
+(i.e. TEA penetration depths) are dynamically calculated and their depth thus varies in response to changing boundary conditions and forcings 
+(see Section \ref{subsec:GBCM} for details). 
+In addition, the formulation of the reaction term in Eq. (\ref{eq:Eq_generaldiagenetic}) varies between zones and encapsulates the most pertinent reaction 
+processes within the respective zone (see Section \ref{subsec:ReactionNetwork}), thus simplifying the mathematical description of the reaction network while 
+retaining most of its biogeochemical complexity.
+
+All consumption or production processes of dissolved species related to the degradation of organic matter are a function of the organic matter concentration and can thus be expressed 
+as a series of exponential terms ($ \sum_j \alpha_j \exp(-\beta_j z)$, see Eq. (\ref{eq:generalODE})). In addition, adsorption and mineral precipitation 
+processes can be expressed as zero or first order reaction ($Q$ or $k\cdot C_i$, in Eq. (\ref{eq:generalODE})). 
+Fast adsorption is described as an instantaneous equilibrium reaction. 
+The reoxidation of reduced substances is accounted for implicitly by adding a (consumption/production) flux to the internal boundary conditions 
+(see Sections \ref{subsubsec:O2}, \ref{subsubsec:N} and \ref{subsubsec:S} \textbf{SA: make reference to the section where this is explained in detail}). 
 %>>>
-\marginnote{\textbf{DH}: What about $\xi$ in Eq. \ref{eq:generalODE}? Also include it here? Is this correct?}[-0cm]%<<<
-\end{align}
-where $k$ is a generic reaction rate constant % $t$ is time, $z$ is sediment depth, $D$ is the diffusion coefficient, $w$ is advection rate and 
-and $g(z) = - \sum_j \alpha_j \exp(-\beta_j z) + Q$ describes the inhomogeneous reaction (production/consumption) of tracer $C_i$, where $Q$ is a zeroth-order (or constant) rate of $C_i$ reaction, 
-$1/\beta_j$ can be interpreted as the length scale and $\alpha_j$ as the relative importance (or the magnitude at $z = 0$) of reaction $j$ \citep{boudreau1997diagenetic}.
+\marginnote{\textbf{DH}: Do you mean these sections? Not discussed in further details anywhere else}[-1.5cm]%<<<
+%>>>
+This simplification has been used previously by \citet{gypens_simple_2008} for nitrate and ammonium and can be justified as it has been shown that the 
+reoxidation mainly occurs at an infinitesimally thin layer at the oxic/anoxic interface \citep{soetaert_model_1996}. 
+The general reaction-transport equation of OMEN-SED is thus given by:
+\begin{empheq}[box={\mybluebox[5pt]}]{equation}
+  \frac{\partial C_i}{\partial t} = 0 = D_i\frac{\partial^2C_i }{\partial z^2} - w\frac{\partial C_i }{\partial z} - k\cdot C_i - \sum_j \alpha_j \exp(-\beta_j z) + Q \label{eq:generalODE}
+\end{empheq}
+% \begin{equation} 
+%  \boxed{\frac{\partial C_i}{\partial t} = 0 = D_i\frac{\partial^2C_i }{\partial z^2} - w\frac{\partial C_i }{\partial z} - k\cdot C_i - \sum_j \alpha_j \exp(-\beta_j z) + Q} \label{eq:generalODE_orig}
+%  \end{equation}
+where $1/\beta_j$ can be interpreted as the length scale and $\alpha_j$ as the relative importance (or the magnitude at $z = 0$) of reaction $j$ \citep{boudreau1997diagenetic}, 
+$k$ is a generic first order reaction rate constant, $Q$ is a zeroth-order (or constant) reaction rate.
 
 The analytical solution of Eq. (\ref{eq:generalODE}) is of the general form:
 \begin{align}
  C_i(z) &= A \exp(az) + B  \exp(bz) + \sum_j \frac{\alpha_j}{D \beta_j^2-w\beta_j-k}\cdot \exp(-\beta_j z) + \frac{Q}{k} \label{eq:ODE_general_solution_generalapproach}
 \end{align}
-%>>>
-\marginnote{\textbf{DH}: Should it be $D \beta_i^2+w\beta_i-k$ in the denom. - see \citet{boudreau1997diagenetic} Exp 6-13 Eq. 6.121}[-1.5cm]%<<<
-%>>>
-where $A$ and $B$ are integration constants that are determined with the boundary conditions (see Section \ref{subsec:module_Structure}). 
-In addition to assuming steady-state conditions, the sediment column is divided into a number of distinct geochemical zones which do not allow an overlap of degradation pathways (Fig. \ref{fig:Sediment_layers}). 
-Each of these zones is characterised by a different set of equations that encapsulate the most pertinent reaction and transport processes within the respective zone in a linear form (see Section \ref{subsec:ReactionNetwork}), 
-thus allowing a simplification of the coupled set of equations in order to find the analytical solutions \citep[compare e.g. ][for similar solutions]{billen1982idealized, goloway_diagenetic_1982, tromp_global_1995, gypens_simple_2008}. 
-%>>>
-\marginnote{\textbf{DH}:More Info on these models given in Intro! which Vandenborght papers? - also ERSEM unclear (see Intro)}[-1cm]%<<<
-%>>>
-% {\small \textit{\textbf{DH: added to Intro: } Such analytical approaches with distinct layers were implemented and used in the eighties to describe observed pore water profiles 
-% \citep[e.g.][]{billen1982idealized, goloway_diagenetic_1982} and later for inclusion into global Earth system models \citep{tromp_global_1995}. 
-% However, these models in addition to the oxic layer these models only describe one anoxic layer, either a denitrification layer \citep{billen1982idealized, goloway_diagenetic_1982} or a sulfate reduction layer \citep{tromp_global_1995}.
-% In addition, they ignore reoxidation of reduced species produced in the anoxic layers.}}
-More specifically, OMEN-SED divides the sediment column into I) a bioturbated and 
-II) a non-bioturbated zone defined by an imposed, constant bioturbation depth $z_{\mathrm{bio}}$ ( Fig. \ref{fig:Sediment_layers}). Furthermore, it resolves the dynamic redox stratification of marine sediments by dividing 
-the sediment into 1) an oxic zone delineated by the oxygen penetration depth $z_{\mathrm{ox}}$; 2) a denitrification (or nitrogenous) zone situated between $z_{\mathrm{ox}}$ and the nitrate penetration depth $z_{\chem{NO_3}}$;
-3) a sulfate reduction zone situated between $z_{\chem{NO_3}}$ and the sulfate penetration depth $z_{\chem{SO_4}}$; and 4) a methanogenic zone situated below $z_{\chem{SO_4}}$ (Fig. \ref{fig:Sediment_layers}).  
-All penetration depths are dynamically calculated by the model and their depth thus varies in response to changing boundary conditions and forcings. 
-At each dynamic, internal boundary ($z_b \in \{z_{\mathrm{bio}}, z_{\mathrm{ox}}, z_{\chem{NO_3}}, z_{\chem{SO_4}} \}$) the concentration and flux for the two solutions of the respective reaction-transport equation above and below 
-$z_b$ is matched \citep[compare e.g.][and Section \ref{subsec:GBCM}]{billen1982idealized, gypens_simple_2008}. 
-%>>>
-\marginnote{\textbf{DH}: @ Sandra: Not sure what Bernie confused (flux of reduced sp. or general boundary matching) \& which paper it is: \citep{boudreau_early_1992, boudreau_kinetic_1992}!!??}[-1cm]%<<<
-%>>>
-The steady-state solution for OM, which follows a simple exponential decay, is calculated first (Section \ref{subsubsec:OM}) and drives the oxygen (Section \ref{subsubsec:O2}) and 
-other porewater dynamics (Sections \ref{subsubsec:N} - \ref{subsubsec:ALK}). 
-The reoxidation of reduced substances is accounted for implicitly by adding a (consumption/production) flux to the internal boundary condition at $z_{\mathrm{ox}}$ and $z_\chem{SO_4}$ for oxygen and the respective tracers 
-(Section \ref{subsec:ReactionNetwork}). This simplification has been used previously by \citet{gypens_simple_2008} for nitrate and ammonium and can be justified as it has been shown that the reoxidation mainly occurs at an 
-infinitesimally thin layer at the oxic/anoxic interface \citep{soetaert_model_1996}. 
+with 
+\begin{equation} 
+ a = \frac{w - \sqrt{w^2+4\cdot D\cdot k}}{2\cdot D}, \quad b = \frac{w + \sqrt{w^2+4\cdot D\cdot k}}{2\cdot D}
+\end{equation}
+where $A$ and $B$ are integration constants that can be determined by applying a set of internal boundary conditions (see Section \ref{subsec:module_Structure}).
+% %>>>
+% \marginnote{\textbf{DH}: Should it be $D \beta_i^2+w\beta_i-k$ in the denom. - see \citet{boudreau1997diagenetic} Exp 6-13 Eq. 6.121}[-1.5cm]%<<<
+% %>>>
 
-
-Based on Eq. (\ref{eq:generalODE}) and its analytical solution Eq. (\ref{eq:ODE_general_solution_generalapproach}), OMEN-SED calculates the fraction of particulate organic carbon (POC) buried in the sediment, 
+Based on Eq. (\ref{eq:generalODE}) and its analytical solution Eq. (\ref{eq:ODE_general_solution_generalapproach}), OMEN-SED returns the fraction of particulate organic carbon (POC) buried in the sediment, 
 $f_{\mathrm{POC}}$, as well as the benthic uptake/return fluxes $F_{C_i}$ of dissolved species $C_i$ (in mol cm$^{-2}$ year$^{-1}$) in response to changing boundary conditions and forcings:
 \begin{align}
 f_{\mathrm{POC}} &= \frac{\mathrm{POC}(z_\infty)}{\mathrm{POC}(0)} \\
@@ -487,7 +518,7 @@ Integration of equations \eqref{eq:ODE_OC} yields the following general solution
 \end{align}
 where
 \begin{equation} 
- a_{1i} = \frac{w - \sqrt{w^2+4D_{\chem{POC}_i}\cdot k_i}}{2D_{\chem{POC}_i}}, \quad b_{1i} = \frac{w + \sqrt{w^2+4D_{\chem{POC}_i}\cdot k_i}}{2D_{\chem{POC}_i}}, \quad a_{2i} = -\frac{k_i}{w}
+ a_{1i} = \frac{w - \sqrt{w^2+4\cdot D_{\chem{POC}_i}\cdot k_i}}{2\cdot D_{\chem{POC}_i}}, \quad b_{1i} = \frac{w + \sqrt{w^2+4\cdot D_{\chem{POC}_i}\cdot k_i}}{\cdot 2D_{\chem{POC}_i}}, \quad a_{2i} = -\frac{k_i}{w}
 \end{equation}
 Determining the integration constants ($A_{1,i},\ B_{1,i},\ A_{2,i}$) requires the definition of a set of boundary conditions (Table \ref{Tab:BC_OM}). 
 For organic matter, OMEN-SED applies a known concentration/flux at the sediment-water interface and assumes continuity across the bottom of the bioturbated zone, $z_{\mathrm{bio}}$. 
@@ -954,9 +985,9 @@ As discussed in Section \ref{subsec:GeneralModelApproach}, the solution of the g
 \begin{align}
  C(z) &= A \exp(az) + B  \exp(bz) + \sum_j \frac{\alpha_j}{D \beta_j^2-w\beta_j-k}\cdot \exp(-\beta_j z) + \frac{Q}{k} \label{eq:ODE_general_solution}
 \end{align}
-%>>>
-\marginnote{\textbf{DH}: Should it be $D \beta_i^2+w\beta_i-k$ in the denom. - see \citet{boudreau1997diagenetic} Exp 6-13 Eq. 6.121}[-1.5cm]%<<<
-%>>>
+% %>>>
+% \marginnote{\textbf{DH}: Should it be $D \beta_i^2+w\beta_i-k$ in the denom. - see \citet{boudreau1997diagenetic} Exp 6-13 Eq. 6.121}[-1.5cm]%<<<
+% %>>>
 and can therefore be expressed as:
 \begin{align}
 C(z) = A \cdot E(z) + B \cdot F(z) + G(z) 
