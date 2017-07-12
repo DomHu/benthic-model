@@ -68,7 +68,7 @@ CONTAINS
     REAL::loc_sed_stack_top_th                                 ! sediment stack top thickness (i.e., of the incomplete sub-layer)
     real::loc_sed_dis_frac                                     ! (organic matter) fraction remineralized (<-> dissolution)
     real::loc_sed_dis_frac_P                                   ! (organic matter P) fraction remineralized (<-> dissolution)
-    real::loc_sed_diagen_fracC                                 ! fraction of organic matter available for (CaCO3) diagenesis
+    real::loc_sed_diagen_fCorg                                 ! flux fraction of organic matter available for (CaCO3) diagenesis
     real::loc_sed_poros                                        ! 
     real::loc_sed_poros_top                                    ! 
     real::loc_r_sed_por                                        ! thickness ratio due to porosity differences (stack / surface layer)
@@ -212,6 +212,8 @@ CONTAINS
              end if
           end if
        end DO
+       ! set fractional flux of POC available for CaCO3 diagenesis
+       loc_sed_diagen_fCorg = loc_dis_sed(is_POC)
     case ('dunne2007')
        ! Following Dunne et al. [2007]
        ! NOTE: the units of the Corg flux must be changed from (cm3 cm-2) to (mol cm-2 yr-1) and then to (mmol m-2 d-1)
@@ -235,12 +237,21 @@ CONTAINS
              end if
           end if
        end DO
+       ! set fractional flux of POC available for CaCO3 diagenesis
+       loc_sed_diagen_fCorg = loc_dis_sed(is_POC)
     case ('huelse2016')
        ! Huelse et al. [2016]
        ! NOTE: 'new sed' is not adjusted within sub_huelseetal2016_main and eneds modifying externally
+!       CALL sub_huelseetal2016_main( &
+!            & dum_dtyr,dum_D,loc_new_sed(:),sed_fsed(is_POC_frac2,dum_i,dum_j),dum_sfcsumocn(:), &
+!            & loc_sed_pres_fracC,loc_sed_pres_fracP,loc_exe_ocn(:),loc_sed_mean_OM &
+!            & )
        CALL sub_huelseetal2016_main( &
-            & dum_dtyr,dum_D,loc_new_sed(:),sed_fsed(is_POC_frac2,dum_i,dum_j), dum_sfcsumocn(:),loc_sed_pres_fracC,loc_sed_pres_fracP,loc_exe_ocn(:), loc_sed_mean_OM &
+            & dum_dtyr,dum_D,sed_OM_bur(dum_i,dum_j),loc_new_sed(:),sed_fsed(is_POC_frac2,dum_i,dum_j),dum_sfcsumocn(:), &
+            & loc_sed_pres_fracC,loc_sed_pres_fracP,loc_exe_ocn(:),loc_sed_mean_OM &
             & )
+       ! set fractional flux of POC available for CaCO3 diagenesis
+       loc_sed_diagen_fCorg = (1.0 - loc_sed_pres_fracC)*loc_new_sed(is_POC)
        ! calculate the return rain flux back to ocean
        ! NOTE: diagenetic function calculates all (dissolved) exchange fluxes
        !       => 'sed' dissolution is effectively zero
@@ -271,11 +282,9 @@ CONTAINS
        end DO
        ! correct dissovled flux units (mol cm-2 per year -> mol cm-2 per time-step) and set output array
        sedocn_fnet(:,dum_i,dum_j) = sedocn_fnet(:,dum_i,dum_j) + dum_dtyr*loc_exe_ocn(:)
-       ! set fraction of POC available for CaCO3 diagenesis
-       loc_sed_diagen_fracC = 1.0 - loc_sed_pres_fracC
+       ! set OM output data array values
+       sed_OM_wtpct(dum_i,dum_j) = loc_sed_mean_OM
     case default
-       ! set fraction of POC available for CaCO3 diagenesis
-       loc_sed_diagen_fracC = 1.0
        DO l=1,n_l_sed
           is = conv_iselected_is(l)
           if ( &
@@ -294,6 +303,8 @@ CONTAINS
              end if
           end if
        end DO
+       ! set fractional flux of POC available for CaCO3 diagenesis
+       loc_sed_diagen_fCorg = (1.0 - par_sed_diagen_fracCpres_ox)*loc_new_sed(is_POC)
     end select
     ! error-catching of negative dissoluiton: return rain flux back to ocean
     If (loc_dis_sed(is_POC) < -const_real_nullsmall) then
@@ -327,7 +338,7 @@ CONTAINS
          & )
        CALL sub_calc_sed_dis_CaCO3(                                                  &
             & dum_dtyr,                                                              &
-            & dum_D,sed_carb(ic_dCO3_cal,dum_i,dum_j),loc_sed_diagen_fracC,          &
+            & dum_D,sed_carb(ic_dCO3_cal,dum_i,dum_j),loc_sed_diagen_fCorg,          &
             & dum_sfcsumocn(:),sed_carbconst(:,dum_i,dum_j),sed_carb(:,dum_i,dum_j), &
             & loc_dis_sed(:),loc_new_sed(:),sed_top(:,dum_i,dum_j),                  &
             & phys_sed(ips_mix_k0,dum_i,dum_j)                                       &
@@ -452,6 +463,9 @@ CONTAINS
             & /),.FALSE. &
             & )
     end if
+    
+    IF (ctrl_misc_debug4) print*,'*** diagenesis - calculate total solids dissolved ***'
+    ! *** diagenesis - calculate total solids dissolved ***
     ! calculate volume of removed material (as SOILD matter. i.e., zero porosity), in units of cm3 (cm-2)
     ! NOTE: nutrients associated with organic carbon (POP, PON, POFe) have only a 'virtual volume' and so are not counted
     ! NOTE: ditto for isotope tracers
@@ -470,7 +484,9 @@ CONTAINS
             & /),.TRUE. &
             & )
     END IF
-
+    ! set OMEN output data array values
+    sed_OM_bur(dum_i,dum_j) = (loc_new_sed_vol - loc_dis_sed_vol)
+   
     IF (ctrl_misc_debug3) print*,'(d) update sediment stack'
     ! *** (d) update sediment stack
     !         add the new sediment to the top sediment layer, and deduct the calculated dissolved material
@@ -826,8 +842,9 @@ CONTAINS
     REAL,DIMENSION(n_sed)::loc_dis_sed                       ! remineralized top layer material
     REAL,DIMENSION(n_sed)::loc_exe_sed                       ! top layer material to be exchanged with stack
     real::loc_delta_CaCO3,loc_delta_Corg
-    real::loc_alpha                                          ! 
+    real::loc_alpha,loc_delta,loc_standard                                          ! 
     real::loc_R,loc_r7Li,loc_r44Ca                           ! local isotope R, local (isotope specific) r's
+    real::loc_86Sr,loc_87Sr,loc_88Sr
     real::loc_ohm,loc_TC                                     ! 
 
     ! *** INITIALIZE VARIABLES ****************************************************************************************************
@@ -876,6 +893,8 @@ CONTAINS
     !       (precipitation rate scaling constants are mol cm-2 yr-1)
     if (par_sed_CaCO3burial > const_real_nullsmall) then
        ! (1) imposed production
+       ! NOTE: par_sed_CaCO3burial is over-ridded by the value of parameter par_sed_CaCO3burialTOT if non-zero
+       !       (par_sed_CaCO3burial is set from par_sed_CaCO3burialTOT in sedgem)
        sed_fsed(is_CaCO3,dum_i,dum_j) = par_sed_CaCO3burial
     elseif (loc_ohm > par_sed_CaCO3_abioticohm_min) then
        ! (2) abiotic + reef production
@@ -930,8 +949,10 @@ CONTAINS
        loc_r44Ca = 0.0
     end if
     ! calculate Li incorporation and isotopes (if selected)	
+    ! NOTE: use (i.e. set non-zero) ONLY ONE of par_bio_red_CaCO3_LiCO3 and par_bio_red_CaCO3_LiCO3_alpha
+    !       (they represent 2 and mutuially exclusive ways of doing it)
     if (ocn_select(io_Li) .AND. ocn_select(io_Ca) .AND. sed_select(is_LiCO3)) then
-       sed_fsed(is_LiCO3,dum_i,dum_j) = sed_fsed(is_CaCO3_13C,dum_i,dum_j)* &
+       sed_fsed(is_LiCO3,dum_i,dum_j) = sed_fsed(is_LiCO3,dum_i,dum_j)* &
             & (par_bio_red_CaCO3_LiCO3 + par_bio_red_CaCO3_LiCO3_alpha*dum_sfcsumocn(io_Li)/dum_sfcsumocn(io_Ca))
     end if
     ! calculate 7/6Li fractionation between Li and LiCO3
@@ -946,6 +967,33 @@ CONTAINS
        sed_fsed(is_LiCO3_7Li,dum_i,dum_j) = sed_fsed(is_LiCO3,dum_i,dum_j)* &
             & (loc_alpha*loc_R/(1.0 + loc_alpha*loc_R))
     end if
+    ! Sr
+    ! NOTE: assume that this is the first (non zero) incidence of sed_fsed Sr fluxes
+    IF (sed_select(is_SrCO3_87Sr) .AND. sed_select(is_SrCO3_88Sr)) THEN
+       if (sed_fsed(is_CaCO3,dum_i,dum_j) > const_real_nullsmall) then
+          ! initialization
+          loc_86Sr = dum_sfcsumocn(io_Sr)-dum_sfcsumocn(io_Sr_87Sr)-dum_sfcsumocn(io_Sr_88Sr)
+          sed_fsed(is_SrCO3,dum_i,dum_j) = &
+               & sed_fsed(is_CaCO3,dum_i,dum_j)*par_bio_red_CaCO3_SrCO3_alpha*(dum_sfcsumocn(io_Sr)/dum_sfcsumocn(io_Ca))
+          ! calculate d87Sr of precipitating carbonate
+          loc_87Sr = dum_sfcsumocn(io_Sr_87Sr)
+          loc_standard = const_standardsR(ocn_type(io_Sr_87Sr))
+          loc_delta = fun_calc_isotope_deltaR(loc_86Sr,loc_87Sr,loc_standard,const_real_null) + par_d88Sr_SrCO3_epsilon/2.0
+          sed_fsed(is_SrCO3_87Sr,dum_i,dum_j) = loc_delta
+          ! calculate d88Sr of precipitating carbonate
+          loc_88Sr = dum_sfcsumocn(io_Sr_88Sr)
+          loc_standard = const_standardsR(ocn_type(io_Sr_88Sr))
+          loc_delta = fun_calc_isotope_deltaR(loc_86Sr,loc_88Sr,loc_standard,const_real_null) + par_d88Sr_SrCO3_epsilon
+          sed_fsed(is_SrCO3_88Sr,dum_i,dum_j) = loc_delta
+          ! calculate Sr ISOTOPES -- 87Sr
+          loc_87Sr = fun_calc_isotope_abundanceR012sed(is_SrCO3_87Sr,is_SrCO3_88Sr,sed_fsed(:,dum_i,dum_j),1)
+          ! calculate Sr ISOTOPES -- 88Sr
+          loc_88Sr = fun_calc_isotope_abundanceR012sed(is_SrCO3_87Sr,is_SrCO3_88Sr,sed_fsed(:,dum_i,dum_j),2)
+          ! update flux array
+          sed_fsed(is_SrCO3_87Sr,dum_i,dum_j) = loc_87Sr
+          sed_fsed(is_SrCO3_88Sr,dum_i,dum_j) = loc_88Sr
+       end IF
+    end IF
     ! add age tracer
     sed_fsed(is_CaCO3_age,dum_i,dum_j) = sed_age*sed_fsed(is_CaCO3,dum_i,dum_j)
     ! create Corg component
@@ -954,17 +1002,40 @@ CONTAINS
     if (par_sed_Corgburial > const_real_nullsmall) then
        sed_fsed(is_POC,dum_i,dum_j) = par_sed_Corgburial
        if (ctrl_sed_Corgburial_fixedD13C) then
-       loc_delta_Corg = par_sed_Corgburial_Dd13C + 15.10 - 4232.0/dum_sfcsumocn(io_T)
-       loc_alpha = 1.0 + loc_delta_Corg/1000.0
-       loc_R = sed_carbisor(ici_HCO3_r13C,dum_i,dum_j)/(1.0 - sed_carbisor(ici_HCO3_r13C,dum_i,dum_j))
-       sed_fsed(is_POC_13C,dum_i,dum_j) = sed_fsed(is_POC,dum_i,dum_j)*(loc_alpha*loc_R/(1.0 + loc_alpha*loc_R))
+          loc_delta_Corg = par_sed_Corgburial_Dd13C + 15.10 - 4232.0/dum_sfcsumocn(io_T)
+          loc_alpha = 1.0 + loc_delta_Corg/1000.0
+          loc_R = sed_carbisor(ici_HCO3_r13C,dum_i,dum_j)/(1.0 - sed_carbisor(ici_HCO3_r13C,dum_i,dum_j))
+          sed_fsed(is_POC_13C,dum_i,dum_j) = sed_fsed(is_POC,dum_i,dum_j)*(loc_alpha*loc_R/(1.0 + loc_alpha*loc_R))
        else
-       loc_R = fun_Corg_Rfrac( &
-            & dum_sfcsumocn(io_T),sed_carb(ic_conc_CO2,dum_i,dum_j), &
-            & sed_carbisor(ici_CO2_r13C,dum_i,dum_j),par_d13C_DIC_Corg_ef,.false. &
-            & )
-       sed_fsed(is_POC_13C,dum_i,dum_j) = loc_R*sed_fsed(is_POC,dum_i,dum_j)
+          loc_R = fun_Corg_Rfrac( &
+               & dum_sfcsumocn(io_T),sed_carb(ic_conc_CO2,dum_i,dum_j), &
+               & sed_carbisor(ici_CO2_r13C,dum_i,dum_j),par_d13C_DIC_Corg_ef,.false. &
+               & )
+          sed_fsed(is_POC_13C,dum_i,dum_j) = loc_R*sed_fsed(is_POC,dum_i,dum_j)
        end if     
+    end if
+
+    ! *** DIAGENESIS **************************************************************************************************************
+    ! 
+    ! Sr
+    ! NOTE: assume that this is the first (non zero) incidence of sedocn_fnet Sr fluxes
+    IF (sed_select(is_SrCO3_87Sr) .AND. sed_select(is_SrCO3_88Sr)) THEN
+       if (par_sed_SrCO3recryst > const_real_nullsmall) then
+          ! initialization
+          loc_86Sr = dum_sfcsumocn(io_Sr)-dum_sfcsumocn(io_Sr_87Sr)-dum_sfcsumocn(io_Sr_88Sr)
+          sed_fdis(is_SrCO3,dum_i,dum_j) = par_sed_SrCO3recryst
+          ! d87Sr of Sr released by recrystalizing carbonate
+          sed_fdis(is_SrCO3_87Sr,dum_i,dum_j) = (par_r87Sr_SrCO3recryst/const_standardsR(ocn_type(io_Sr_87Sr)) - 1.0)*1000.0
+          ! d88Sr of Sr released by recrystalizing carbonate
+          sed_fdis(is_SrCO3_88Sr,dum_i,dum_j) = par_d88Sr_SrCO3recryst
+          ! calculate Sr ISOTOPES -- 87Sr
+          loc_87Sr = fun_calc_isotope_abundanceR012sed(is_SrCO3_87Sr,is_SrCO3_88Sr,sed_fdis(:,dum_i,dum_j),1)
+          ! calculate Sr ISOTOPES -- 88Sr
+          loc_88Sr = fun_calc_isotope_abundanceR012sed(is_SrCO3_87Sr,is_SrCO3_88Sr,sed_fdis(:,dum_i,dum_j),2)
+          ! update flux array
+          sed_fdis(is_SrCO3_87Sr,dum_i,dum_j) = loc_87Sr
+          sed_fdis(is_SrCO3_88Sr,dum_i,dum_j) = loc_88Sr
+       end IF
     end if
 
     ! *** CALCULATE OCEAN-SEDIMENT EXCHANGE ***************************************************************************************
@@ -982,7 +1053,8 @@ CONTAINS
        loc_tot_i = conv_sed_ocn_i(0,is)
        do loc_i=1,loc_tot_i
           io = conv_sed_ocn_i(loc_i,is)
-          sedocn_fnet(io,dum_i,dum_j) = sedocn_fnet(io,dum_i,dum_j) - conv_sed_ocn(io,is)*sed_fsed(is,dum_i,dum_j)
+          sedocn_fnet(io,dum_i,dum_j) = sedocn_fnet(io,dum_i,dum_j) + &
+               & conv_sed_ocn(io,is)*(sed_fdis(is,dum_i,dum_j)-sed_fsed(is,dum_i,dum_j))
        end do
     end DO
 
@@ -1389,8 +1461,13 @@ CONTAINS
     case ('huelse2016')
        ! Huelse et al. [2016]
        ! NOTE: 'new sed' is not adjusted within sub_huelseetal2016_main and eneds modifying externally
+!       CALL sub_huelseetal2016_main( &
+!            & dum_dtyr,dum_D,loc_new_sed(:),sed_fsed(is_POC_frac2,dum_i,dum_j),dum_sfcsumocn(:), &
+!            & loc_sed_pres_fracC,loc_sed_pres_fracP,loc_exe_ocn(:),loc_sed_mean_OM &
+!            & )
        CALL sub_huelseetal2016_main( &
-            & dum_dtyr,dum_D,loc_new_sed(:),sed_fsed(is_POC_frac2,dum_i,dum_j), dum_sfcsumocn(:),loc_sed_pres_fracC,loc_sed_pres_fracP,loc_exe_ocn(:), loc_sed_mean_OM &
+            & dum_dtyr,dum_D,sed_OM_bur(dum_i,dum_j),loc_new_sed(:),sed_fsed(is_POC_frac2,dum_i,dum_j),dum_sfcsumocn(:), &
+            & loc_sed_pres_fracC,loc_sed_pres_fracP,loc_exe_ocn(:),loc_sed_mean_OM &
             & )
        ! calculate the return rain flux back to ocean
        ! NOTE: diagenetic function calculates all (dissolved) exchange fluxes
@@ -1422,6 +1499,8 @@ CONTAINS
        end DO
        ! correct dissovled flux units (mol cm-2 per year -> mol cm-2 per time-step) and set output array
        sedocn_fnet(:,dum_i,dum_j) = sedocn_fnet(:,dum_i,dum_j) + dum_dtyr*loc_exe_ocn(:)
+       ! set OM output data array values
+       sed_OM_wtpct(dum_i,dum_j) = loc_sed_mean_OM
     case default
        DO l=1,n_l_sed
           is = conv_iselected_is(l)
@@ -1480,6 +1559,10 @@ CONTAINS
           end if
        end if
     end DO
+    
+    
+    IF (ctrl_misc_debug4) print*,'*** diagenesis - calculate total solids dissolved ***'
+    ! *** diagenesis - calculate total solids dissolved ***
     ! calculate volume of removed material (as SOILD matter. i.e., zero porosity), in units of cm3 (cm-2)
     loc_dis_sed_vol = fun_calc_sed_vol(loc_dis_sed(:))
     ! catch negative sediment dissolution
@@ -1495,6 +1578,8 @@ CONTAINS
             & /),.TRUE. &
             & )
     END IF
+    ! set OMEN output data array values
+    sed_OM_bur(dum_i,dum_j) = (loc_new_sed_vol - loc_dis_sed_vol)
     
     ! *** ADD PRESCRIBED CORG BURIAL **********************************************************************************************
     ! 
@@ -1716,7 +1801,7 @@ CONTAINS
        & dum_dtyr,                   &
        & dum_D,                      &
        & dum_dCO3_cal,               &
-       & dum_sed_diagen_fPOCfrac,    &
+       & dum_sed_diagen_fCorg,       &
        & dum_ocn,                    &
        & dum_carbconst,              &
        & dum_carb,                   &
@@ -1728,7 +1813,7 @@ CONTAINS
     IMPLICIT NONE
     ! dummy arguments
     real,intent(in)::dum_dtyr
-    real,intent(in)::dum_D,dum_dCO3_cal,dum_sed_diagen_fPOCfrac
+    real,intent(in)::dum_D,dum_dCO3_cal,dum_sed_diagen_fCorg
     real,intent(in),DIMENSION(n_ocn)::dum_ocn
     REAL,intent(in),DIMENSION(n_carbconst)::dum_carbconst
     REAL,INTENT(in),DIMENSION(n_carb)::dum_carb
@@ -1770,7 +1855,7 @@ CONTAINS
     loc_sed_wt_top = fun_calc_sed_mass(dum_sed_top(:))
     loc_frac_CaCO3_top = conv_cal_cm3_g*dum_sed_top(is_CaCO3)/loc_sed_wt_top
     ! Corg rain rate
-    loc_fPOC = dum_sed_diagen_fPOCfrac*conv_POC_cm3_mol*dum_sed_new(is_POC)/dum_dtyr
+    loc_fPOC = dum_sed_diagen_fCorg*conv_POC_cm3_mol/dum_dtyr
     IF (loc_fPOC > par_sed_diagen_fPOCmax) loc_fPOC = par_sed_diagen_fPOCmax
     ! prevent negative oxygen concentrations being passed
     loc_O2 = dum_ocn(io_O2)

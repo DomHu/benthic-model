@@ -153,10 +153,12 @@ CONTAINS
     !   *****************************************************************
     !------------------------------------------------------------------------------------
 
+!    !!!SUBROUTINE sub_huelseetal2016_main &
+!    !!!(dum_i, dum_j, dum_dtyr, dum_D, loc_new_sed, dum_is_POC_frac2, dum_sfcsumocn, dum_sed_pres_fracC, dum_sed_pres_fracP, dum_new_swifluxes, dum_sed_mean_OM)
 !    SUBROUTINE sub_huelseetal2016_main &
-!    (dum_i, dum_j, dum_dtyr, dum_D, loc_new_sed, dum_is_POC_frac2, dum_sfcsumocn, dum_sed_pres_fracC, dum_sed_pres_fracP, dum_new_swifluxes, dum_sed_mean_OM)
+!    (dum_dtyr, dum_D, loc_new_sed, dum_is_POC_frac2, dum_sfcsumocn, dum_sed_pres_fracC, dum_sed_pres_fracP, dum_new_swifluxes, dum_sed_mean_OM)
     SUBROUTINE sub_huelseetal2016_main &
-    (dum_dtyr, dum_D, loc_new_sed, dum_is_POC_frac2, dum_sfcsumocn, dum_sed_pres_fracC, dum_sed_pres_fracP, dum_new_swifluxes, dum_sed_mean_OM)
+    (dum_dtyr, dum_D, dum_sed_OM_bur, loc_new_sed, dum_is_POC_frac2, dum_sfcsumocn, dum_sed_pres_fracC, dum_sed_pres_fracP, dum_new_swifluxes, dum_sed_mean_OM)
         !   __________________________________________________________
         !
         !   Main subroutine: 
@@ -171,6 +173,7 @@ CONTAINS
         REAL,INTENT(in)::dum_dtyr                               ! time-step
 !        integer,intent(in) :: dum_i, dum_j                      ! grid point (i,j)
         REAL,INTENT(in)::dum_D                                  ! depth
+        REAL,INTENT(in)::dum_sed_OM_bur                         ! burial rate (w) for OMEN-SED (solid cm3 cm-2 yr-1, NOTE: from previous time-step)
         REAL,INTENT(in)::dum_is_POC_frac2                       ! fraction of refractory POC
         REAL,DIMENSION(n_sed),intent(in)::loc_new_sed                         ! new (sedimenting) top layer material
         real,DIMENSION(n_ocn),intent(in)::dum_sfcsumocn                     ! ocean composition interface array
@@ -181,6 +184,7 @@ CONTAINS
         real,INTENT(inout)::dum_sed_mean_OM                              ! mean OM wt% in upper mixed layer
 
         ! local variables        
+        real::loc_sed_burial                                        ! burial rate (w) - corrected for porosity
         real::loc_BW_O2_anoxia                                      ! BW [O2} threshold for zbio switch to 0.01cm 
         real::loc_total_POC_flux                                    ! total POC flux at SWI (POC1 + POC2) [mol/(cm^2 yr)]
         real::loc_POC1_flux_swi, loc_POC2_flux_swi                  ! POC flux at SWI [mol/(cm^2 yr)]
@@ -264,16 +268,31 @@ CONTAINS
 !        loc_new_sed_vol=10.0**(-0.87478367-0.00043512*dum_D)*3.3              ! sedimentation rate, cm/yr / burial velocity / advection (Middelburg et al., Deep Sea Res. 1, 1997)
 !        print*,'loc_new_sed_vol Middelburg =', loc_new_sed_vol
         ! w from GENIE
-        loc_new_sed_vol = 1/(1-por)*fun_calc_sed_vol(loc_new_sed(:))
+        loc_new_sed_vol = 1/(1-por)*fun_calc_sed_vol(loc_new_sed(:))            ! using sedimentation rate
+        loc_sed_burial = 1/(1-por)*dum_sed_OM_bur                               ! new actual burial rate: (Andy mail 11.07.2017)
+
+!        print*,'dum_D = ', dum_D
 !        print*,'loc_new_sed_vol GENIE =', loc_new_sed_vol
+!        print*,'loc_sed_burial =', loc_sed_burial
+!        print*,''
 
         ! Model crashed for low sediment accumulation rates, therefore:
         if(loc_new_sed_vol .LE. 5.0e-4)then
-!            print*,' loc_new_sed_vol, grid point (i,j)', loc_new_sed_vol, dum_i, dum_j, dum_D
+            print*,'dum_D = ', dum_D
+            print*,'loc_new_sed_vol_OLD =', loc_new_sed_vol
+            print*,'loc_sed_burial_NEW =', loc_sed_burial
+            print*,''
             loc_new_sed_vol =  5.0e-4
 !            STOP
         end if
 
+        !!! CHECK new burial rate for low values!
+!        if(loc_sed_burial .LE. 5.0e-4)then
+!            print*,'dum_D = ', dum_D
+!            print*,'loc_new_sed_vol_OLD =', loc_new_sed_vol
+!            print*,'loc_sed_burial_NEW =', loc_sed_burial
+!            print*,''
+!        end if
 
         ! DH TODO: some of initialize should be called just once, not for every grid point
         call sub_huelseetal2016_initialize(dum_D, loc_T, loc_new_sed_vol/dum_dtyr)

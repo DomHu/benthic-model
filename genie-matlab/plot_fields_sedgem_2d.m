@@ -184,7 +184,7 @@ lat_min = -090;
 lat_max = +090;
 lon_min = plot_lon_origin;
 lon_max = lon_min+360;
-lon_offset = 0;
+lon_offset = -260;
 % set passed parameters
 exp_1 = PEXP1;
 exp_2 = PEXP2;
@@ -1038,7 +1038,7 @@ end
 %
 set(gcf,'CurrentAxes',fh(1));
 if (plot_format_old == 'y')
-    print('-dpsc2', [filename '.' str_date '.ps']);
+    print('-dpsc2', [filename '.' str_date '.eps']);
 else
     switch plot_format
         case 'png'

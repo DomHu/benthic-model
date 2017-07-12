@@ -1072,7 +1072,8 @@ it is dealing with a piecewise solution (i.e. matched across the bioturbation bo
 
 
 \subsection{Model Parameters}
-The following section provides a summary of  global relationships used to constrain reaction and transport parameters in OMEN-SED. Table \ref{table:sed-charac_transport-parameters} synthesises sediment and transport parameters, while table \ref{table:reaction_parameters} provides an overview of all biogeochemical parameters used in OMEN-SED.
+The following section provides a summary of  global relationships used to constrain reaction and transport parameters in OMEN-SED. Table \ref{table:sed-charac_transport-parameters} 
+synthesises sediment and transport parameters, while table \ref{table:reaction_parameters} provides an overview of all biogeochemical parameters used in OMEN-SED.
 
 \subsubsection{Transport Parameters}
 The burial of sediments and porewater is directly related to the accumulation of new material on the seafloor \citep[i.e. sedimentation,][]{burdige2006geochemistry}. 
@@ -1250,19 +1251,21 @@ $\chem{M}^\infty$ & mol\,cm$^{-3}$ & \textcolor{red}{$1.99\cdot 10^{-10}$} & asy
 \end{table}
 
 
-\section{Methodology for sensitivity and case studies}
-% In this section we describe the methodology for our experiments to validate our model approach. 
-% 
-% (Maybe make sure the following is added to the different sections below).
-% An extensive sensitivity analysis for the most important model parameters is performed with the stand-alone model and resulting sediment-water interface fluxes are compared with a global 
-% database (Section \ref{subsec:SA}). 
-% In addition, results of the stand-alone model are compared with observed pore water profiles from different ocean depths (Section \ref{subsec:SedProfiles}) and OMEN-SED simulations of TEA-fluxes along a typical ocean transect 
-% are compared with observations and results from a complete, numerical diagenetic model (Section \ref{}). Furthermore, OMEN-SED iss coupled to the cGENIE Earth system model 
-% and different published parameterisations for the OM degradation rate constants are tested on a global scale (Section \ref{subsec:GENIE-pre-ind}).
+\section{Stand-alone sensitivity analysis and case studies}
+To validate the stand-alone version of OMEN-SED an extensive sensitivity analysis for the most important model parameters is performed and 
+resulting sediment-water interface fluxes are compared with a global database (Section \ref{subsec:SA}). 
+In addition, results of the stand-alone model are compared with observed pore water profiles from different ocean depths (Section \ref{subsec:SedProfiles}) and OMEN-SED 
+simulations of TEA-fluxes along a typical ocean transect are compared with observations and results from a complete, numerical diagenetic model (Section \ref{subsec:globalhypsometry}). 
 
-\subsection{Sensitivity Analysis}\label{subsec:methods_SA}
-To validate our model approach an extensive sensitivity analysis for the most important model parameters is performed with the stand-alone version of OMEN-SED and resulting sediment-water interface fluxes are compared with a global 
-database (Section \ref{subsec:SA}). 
+% (Maybe make sure the following is added to the different sections below).
+% % An extensive sensitivity analysis for the most important model parameters is performed with the stand-alone model and resulting sediment-water interface fluxes are compared with a global 
+% % database (Section \ref{subsec:SA}). 
+% % In addition, results of the stand-alone model are compared with observed pore water profiles from different ocean depths (Section \ref{subsec:SedProfiles}) and OMEN-SED simulations of TEA-fluxes along a typical ocean transect 
+% % are compared with observations and results from a complete, numerical diagenetic model (Section \ref{}). Furthermore, OMEN-SED iss coupled to the cGENIE Earth system model 
+% % and different published parameterisations for the OM degradation rate constants are tested on a global scale (Section \ref{subsec:GENIE-pre-ind}).
+
+\subsection{Sensitivity Analysis}\label{subsec:SA}
+\subsubsection{Methodology}
 Model parameters implicitly account for processes that are not explicitly resolved. Therefore, model parameters are notoriously difficult to constrain and a source of uncertainty for numerical and analytical models. 
 A comprehensive sensitivity analysis (SA) can help quantify this uncertainty and identify the most sensitive parameters. More specifically, sensitivity analysis is used to investigate how the variations in the outputs 
 ($y_1,\ ...,\ y_N$) of a model can be attributed to variations in the different input parameters \citep[$x_1,\ ...,\ x_M$,][]{pianosi_sensitivity_2016}. Different types of sensitivity indices, which quantify this relative 
@@ -1337,202 +1340,9 @@ Depth (m) & Temp. ({}$^\circ$C)& OC (wt\%) & \chem{O_2} & \chem{NO_3} & \chem{SO
 \label{table:SA_2Cases}
 \end{table}
 
-\subsection{Case study: Stand-alone simulations of sediment cores}\label{subsec:SedProfiles_methods}
-%>>>
-\marginnote{\textbf{SA}: needs polishing \\
-\textcolor{red}{\textbf{DH}: Better like this?}}[-0cm]%<<<
-In order to illustrate the capabilities of OMEN-SED, comprehensive datasets from the Santa Barbara Basin \citep{reimers_porewater_1996}, as well as from the Iberian margin and the Nazar\'e Canyon \citep{epping_oxidation_2002} 
-are modelled. Section \ref{subsec:SedProfiles} compares modelled profiles with measured pore water data from different depths including the continental shelf (108\,m) and the lower slope (2213\,m) located at the Iberian margin,
-the upper slope (585\,m) from the Santa Barbara Basin, and a deep sea site (4298\,m) in the Nazar\'e Canyon. 
-The Santa Barbara Basin is characterised by anoxic bottom waters, high POC concentrations and varved sediments \citep{reimers_seasonal_1990}, therefore the depth of bioturbation in OMEN-SED 
-is restricted to the upper 0.01 cm. In the uppermost sediments iron(III) hydroxides are reduced, releasing \chem{Fe^{2+}} which reacts with sulfide to form iron sulfides. 
-Thus, the \chem{Fe} cycle exerts a strong control on sulfide concentrations in the sediments of this basin \citep{reimers_porewater_1996}. 
-In addition, the sediments are generally supersaturated with respect to carbonate fluorapatite by and below 2 cm \citep{reimers_porewater_1996}. 
-The Iberian margin, situated in the northeastern Atlantic, generally belongs to the more productive regions of the global ocean \citep{longhurst_estimate_1995}, however, seasonal changes in upwelling creates a strong temporal variablity in 
-primary productivity and organic carbon deposition and submarine canyons in this area (like the Nazar\'e Canyon) may deliver organic carbon from the shelf to the ocean interior \citep{van_weering_recent_2002, epping_oxidation_2002}.
-For a more detailed description of the study areas and the experimental work, the interested reader is referred to the \citet{reimers_porewater_1996} and \citet{epping_oxidation_2002}. 
-
-In OMEN-SED sediment characteristics and boundary conditions are set to the observed values where available (Table \ref{table:Profiles_BC}). Other sediment characteristics (e.g. sedimentation rate, porosity, density), 
-stoichiometric factors and secondary reaction parameters are set to the default value (see Tables \ref{table:sed-charac_transport-parameters} and \ref{table:reaction_parameters}).
-Organic matter is modelled as two fractions, with different first-order degradation rate constants. 
-The POC and pore water profiles were fitted by optimizing the POC partitioning into the fast and slow degrading pool and their respective first-order degradation rate constants (priority is given to reproduce the POC 
-and \chem{O_2} profiles). For phosphorus the equilibrium concentration for authigenic P formation (\chem{PO_4^a}) was adjusted to fit the \chem{PO_4} concentration at $z_\infty$. 
-
-\begin{table}[btp]
-\caption{Model boundary conditions for the sampling stations in Figure \ref{fig:Sediment_profiles}. (For all sites DIC bottom water concentration of 
-2,400 nanomole cm$^{-3}$ is assumed.)} 
-% Note: Constant concentrations at all sites for \chem{SO_4} ($28000 \mu$mol cm$^{-3}$) and \chem{H_2S} (0.0 $\mu$mol cm$^{-3}$).}
-\centering
-% used for centering table
-\begin{tabular}{l c c c c c c c c} 
-% centered columns (15 columns)
-\hline\hline
-\multicolumn{8}{l}{\textbf{Sediment characteristics:}}\\
-Depth & Temp. & $z_{\mathrm{bio}}$ & $D_{\mathrm{bio}}$  & \chem{POC_1} & \chem{POC_2} & \chem{k_1} & \chem{k_2}\\
- (m) & ($^{\circ}$C) & (cm) & (cm$^2$yr$^{-1}$) &(wt\%) & (wt\%) & (yr$^{-1}$) & (yr$^{-1}$)\\
-\hline
-108 & 12.5 & 1.0 & 0.02 & 2.64 & 1.8 & 0.65 & $1.0e^{-5}$ \\
-585 & 5.85 & 0.01 & 0.02 & 2.0 & 3.5 & 0.2 & $8.0e^{-4}$\\
-2213 & 3.2 & 10.0 & 0.17 & 0.45 & 0.5 & 0.1 & $4.0e^{-4}$\\
-4298 & 2.5 & 4.2 & 0.18 & 0.83 & 1.2 & 0.052 & $1e^{-5}$\\
-\hline\hline
-\multicolumn{8}{l}{\textbf{Bottom water concentrations of solutes} (all in nanomole cm$^{-3}$):}\\
-Depth & \chem{O_2} & \chem{NO_3} & \chem{SO_4} & \chem{NH_4} & \chem{H_2S} & \chem{PO_4} & \chem{PO_4^a} & \chem{Alkalinity}\\
-%(m) & ($\frac{\mu mol}{cm^3}$) &  ($\frac{\mu mol}{cm^3}$) &  ($\frac{\mu mol}{cm^3}$) &  ($\frac{\mu mol}{cm^3}$) &  ($\frac{\mu mol}{cm^3}$)  &   ($\frac{\mu mol}{cm^3}$) &   ($\frac{\mu mol}{cm^3}$) \\
-\hline
-108 & 210 & 9.6 & 28,000 & 0.4 & 0.0 & 0.0 & 15.0 & 2,400\\
-585 & 10 & 25.0 & 28,000 & 0.0 & 0.0 & 50.0 & 90.0 & 2,480\\
-2213 & 250 & 25.0 & 28,000 & 0.6 & 0.0 & 0.0 & 5.0 & 2,400\\
-4298 & 243 & 30.1 & 28,000 & 0.22 & 0.0 & 0.0 & 5.0 & 2,400\\
-% inserts double horizontal lines
-\end{tabular}
-\label{table:Profiles_BC}
-\end{table}
-
-
-\subsection{Case study: Stand-alone simulations of global ocean transect}\label{subsec:globalhypsometry_methods}
-%>>>
-\marginnote{\textbf{SA}: needs polishing \\
-\textcolor{red}{\textbf{DH}: Better like this?}}[-0cm]%<<<
-%>>>
-In section \ref{subsec:globalhypsometry} it is tested to which degree OMEN-SED is capable of capturing the dynamics of organic matter degradation pathways and related TEA-fluxes as simulated with a complete, numerical diagenetic model. 
-Therefore, we reproduce the simulations of typical conditions along a global ocean hypsometry of \citet{thullner_global_scale_2009} and compare our modeled TEA-fluxes with the results of the complete model and observations 
-from \citet{middelburg_denitrification_1996}. To explore the global degradation of OM in the seafloor 
-\citet{thullner_global_scale_2009} quantified various diagenetic processes using the Biogeochemical Reaction Network Simulator \citep[BRNS,][]{aguilera_knowledge-based_2005}, 
-a flexible simulation environment suitable for reactive transport simulations of complex biogeochemical problems \citep[e.g.][]{jourabchi_quantitative_2005, thullner_modeling_2005}. 
-\citet{thullner_global_scale_2009} use seafloor depth (SFD) as the master variable and calculate model parameters, such as $w$, $D_{bio}$ and $\phi$, from existing empirical relationships 
-\citep[e.g.][]{van1995metal, middelburg_empirical_1997}. 
-Organic matter degradation is described with a 1-G approach, thus assuming a single pool of organic matter of uniform reactivity. 
-The first order rate constant is related to the burial velocity, $w$ (cm year$^{-1}$), following the empirical relationship of \citet{boudreau1997diagenetic}:
-\begin{equation}
- k=0.38\cdot w^{0.59}.
-\end{equation}
-This rate constant can be assumed as the mean reactivity of the organic matter fractions which are degraded in the upper, bioturbated $10-20$ cm of the sediments. 
-Thus, more reactive fractions (degraded during days/weeks close to the SWI) and more refractory fractions (degraded on longer time scales deeper in the sediments) are not captured by this relationship \citep{boudreau1997diagenetic}. 
-BRNS simulations were performed using boundary conditions and parameters for depths representative for shelf, slope and deep sea sediments (i.e. SFD of 100m, 200m, 500m, 1000m, 2000m, 3500m and 5000m). 
-In order to reproduce these results, OMEN-SED is configured as a 1-G model and boundary conditions and model parameters are defined as in \citet[][see Table \ref{table:Hypsometry_params}]{thullner_global_scale_2009}. 
-As OMEN-SED assumes a fixed fraction of reduced substances to be reoxidised, which exerts a large impact on the resulting SWI-fluxes (compare Section \ref{subsec:SA}), 
-we perform two sets of simulations in order to show the range of possible model outputs. In the first setup 95\% of the reduced substances are reoxidised (i.e. $\gamma_{NH_4}=\gamma_{H_2S}=0.95$) and in the 
-second only 5\% are reoxidised (all other model parameters and boundary conditions are equal). 
-\begin{table}[hbtp]
-\caption{Seafloor depth dependency of key model parameters and boundary conditions (adapted from \citet{thullner_global_scale_2009}.} 
-% Note: Constant concentrations at all sites for \chem{SO_4} ($28000 \mu$mol cm$^{-3}$) and \chem{H_2S} (0.0 $\mu$mol cm$^{-3}$).}
-\centering
-% used for centering table
-\begin{tabular}{c c c c c c c c} 
-% centered columns (15 columns)
-\hline
-& \multicolumn{7}{c}{\textbf{Seafloor depth}}\\
-\cline{2-8}
- & 100 m & 200 m & 500 m  & 1000 m & 2000 m & 3500 m & 5000 m\\
-\hline
-\multicolumn{1}{l}{\textbf{Model parameters}}\\
- $w{}^a$ (cm yr$^{-1}$) & $3.98 \times 10^{-1}$ & $ 3.60 \times 10^{-1}$ & $ 2.67 \times 10^{-1}$ & $ 1.62 \times 10^{-1}$ & $5.94  \times 10^{-2}$ & $ 1.32 \times 10^{-2}$ & $ 2.94 \times 10^{-3}$\\
- $D_{\mathrm{bio}}{}^a$ (cm$^2$ yr$^{-1}$) & 27.5 & 25.1 & 19.0 & 12.1 & 4.83 & 1.23 & 0.310\\
- $\phi^b$ & 0.85 & 0.85 & 0.80 & 0.80 & 0.80 & 0.80 & 0.80\\
- T${}^c$ ($^{\circ}$C) & 10.3 & 9.7 & 8.1 & 5.8 & 3.0 & 1.5 & 1.4\\
- $\rho_{\mathrm{sed}}{}^c$ (g\,cm$^{-3}$) & 2.5  & 2.5 & 2.5 & 2.5 & 2.5 & 2.5 & 2.5\\
- $k^d$ (yr$^{-1}$) & 0.221 & 0.208 & 0.174 & 0.130 & 0.0718 & 0.0296 & 0.0122\\
-\multicolumn{1}{l}{\textbf{Upper boundary conditions}}\\
-\chem{POC_{flux}}$^a$ ($\mu$mol cm$^{-2}$yr$^{-1}$) & 510 & 467 & 357 & 228 & 93.0 & 24.3 & 6.33\\
-\chem{O_{20}}$^c$ (nanomole cm$^{-3}$) & 132 & 129 & 121 & 114 & 116 & 135 & 141\\
-\chem{NO_{30}}$^c$ (nanomole cm$^{-3}$) & 17.3 & 18.6 & 22.1 & 26.5 & 31.0 & 31.6 & 31.6\\
-\chem{SO_{40}}$^b$ (nanomole cm$^{-3}$) & 28,000 & 28,000 & 28,000 & 28,000 & 28,000 & 28,000 & 28,000\\
-\hline
-\multicolumn{8}{l}{${}^a$ Derived from \citet{middelburg_empirical_1997}.}\\
-\multicolumn{8}{l}{${}^b$ Derived from \citet{van1995metal}.}\\
-\multicolumn{8}{l}{${}^c$ Derived from \citet{conkright2002world}.}\\
-\multicolumn{8}{l}{${}^d$ Derived from \citet{boudreau1997diagenetic}.}
-% inserts double horizontal lines
-\end{tabular}
-\label{table:Hypsometry_params}
-\end{table}
-
-
-\subsection{Case Study: Coupled pre-industrial Earth system model simulations}
-\subsubsection{Coupling to the cGENIE Earth system model}\label{subsubsec:Methods_ESM_coupling}
-% Describe what needs to be done/checked. Compare/use as example what I did with GENIE coupling. What are the if-clauses used? Input to OMEN-SED, output of OMEN-SED. 
-\begin{figure}[tbp]
-\begin{center}
-	\includegraphics[width=0.8\textwidth]{figures/OMEN-GENIE-coupling.pdf}
-	\caption{Schematic of the relationship between OMEN-SED and cGENIE. Arrows and accompanied text represent the information transferred between models. }
-	\label{fig:OMEN-GENIE-coupling}
-	\end{center}
-\end{figure}
-OMEN-SED is coupled to the carbon-centric version of the ``GENIE'' Earth system model \citep[cGENIE,][]{ridgwell_marine_2007} to illustrate the abilities of the newly developed model. 
-The following section provides a brief description of cGENIE and the coupling procedure (Fig. \ref{fig:OMEN-GENIE-coupling}). 
-cGENIE is a model of Intermediate Complexity based on the efficient climate model ``C-GOLDSTEIN''  of \citet{edwards_uncertainties_2005}, featuring a frictional-geostrophic 3D-ocean circulation model coupled to a fast 
-Energy-Moisture Balance 2D-atmosphere together with a dynamic-thermodynamic sea-ice component. 
-The version of cGENIE used here includes the marine geochemical cycling of carbon, oxygen, phosphorus and sulfur \citep{ridgwell_marine_2007}, 
-preservation of carbonates in deep-sea sediments \citep[SEDGEM,][]{ridgwell_regulation_2007} and terrestrial weathering \citep{colbourn_rock_2013}. 
-The ocean model is implemented on a 36$\times$36 equal-area horizontal grid with 16 vertical levels using the pre-industrial continental configuration and bathymetry as in \citet{archer_atmospheric_2009}. 
-A finer grid (72$\times$72) is used for the sediments. 
-%In contrast to \citet{archer_atmospheric_2009} the same grid resolution (36$\times$36) is used for the sediment geochemistry model SEDGEM. 
-Instead of completely degrading POC at the seafloor, OMEN-SED is called by SEDGEM for each wet ocean grid point. 
-Depending on the overlying biogeochemical ocean model, processes can be included or excluded in OMEN-SED and stoichiometric factors need to be adjusted to ensure preservation of mass. 
-As nitrogen is not modelled explicitly in the employed cGENIE configuration, related stoichiometries in OMEN-SED are set to zero (i.e. \chem{NC_i}, $\chem{ALK}^\mathrm{NIT}$ and $\chem{ALK}^\mathrm{DEN}$). 
-cGENIE, however, implicitly includes the effects of \chem{NH_4} release and its complete nitrification on alkalinity and neglects the impact of P release. Therefore, alkalinity 
-stoichiometries from aerobic degradation and sulfate reduction are changed to $\chem{ALK}^\mathrm{OX} = -16/106$ and $\chem{ALK}^\mathrm{SUL} = 122/106$ (compare to default in Table \ref{table:reaction_parameters}).
-
-Several biogeochemical tracers and parameters are transferred from SEDGEM to OMEN-SED and have to be converted into the required units. 
-Bottom water concentrations of solutes are converted from mol\,kg$^{-1}$ to mol\,cm$^{-3}$ and the depositional flux of POC (\chem{POC_{flux}}) is converted from cm$^{3}$\,cm$^{-2}$\,yr$^{-1}$ 
-to mol\,cm$^{-2}$\,yr$^{-1}$ assuming an average density of POC of 1.0\,cm$^{3}$\,g$^{-1}$.
-Other parameters used from cGENIE are seafloor depth, local temperature and the partitioning of bulk POC into the slower and faster degrading pool 
-\citep[as cGENIE represents a labile and a refractory POC fraction, see][]{ridgwell_marine_2007}. 
-%For bottom water oxygen concentrations below 5 $\mu$mol kg$^{-1}$ the bioturbation depth is changed from 10 to 0.01 cm to account for the reduced presence of organisms under anoxia.  
-The advection/burial rate ($w$) is generally taken from cGENIE, however, a minimum value of $w=0.5$\,cm\,kyrs$^{-1}$ is imposed as OMEN-SED tends to be unstable for lower values. 
-The bulk \chem{POC_{flux}} is seperated into the labile and refractory component and the routine to find the steady-state solution for POC is called. 
-Here, the two POC depositional fluxes are first converted into SWI concentrations (in mol\,cm$^{-3}$) by solving Eq. (\ref{Eq_flux_divergence}) for z=0. 
-OMEN-SED then computes the fraction of POC preserved in the sediment at a depth of 100 cm (\chem{POC_{pres}}) and subsequently calls the routines to find the steady-state solutions for the solute substances. 
-Finally, \chem{POC_{pres}} and the SWI-fluxes of solutes (in mol\,cm$^{-2}$\,yr$^{-1}$) are returned to cGENIE. 
-In case no POC is deposited on the seafloor (i.e. $\chem{POC_{flux}}=0$), OMEN-SED is not called and the SWI-fluxes of solutes and \chem{POC_{pres}} are set to zero. 
-In order to reduce memory requirements the sediment profiles (e.g. as shown in Fig. \ref{fig:Sediment_profiles}) are not calculated in the FORTRAN version of OMEN-SED, 
-however, the boundary conditions are saved at the end of the experiment and sediment profiles for specific grid-cells, ocean basins and ocean transects can be plotted 
-using the stand-alone MATLAB version of OMEN-SED
-
-\subsubsection{Coupled pre-industrial simulations}\label{subsubsec:Methods_pre-ind_ESM_simul}
-All simulations presented in section \ref{subsec:GENIE-pre-ind} are run for 20,000 years to steady-state and OMEN-SED is called for each grid-cell in every time step, feeding back the resulting SWI-fluxes and the 
-fraction of POC preserved in the sediments to cGENIE. As shown in our sensitivity analysis (Section \ref{subsec:SA}) and discussed by \citet{arndt_quantifying_2013} the 
-degradation rate constants for OM ($k_i$) are the most influential parameters and strongly determine the SWI-flux of redox-sensitive elements as well as the preservation of organic matter. 
-Yet, their spatial variability is unknown at the global scale and reported rate constants can vary by almost 10 orders of magnitude \citep{arndt_quantifying_2013}. 
-Thus defining appropriate OM degradation rate constants is a major challenge and source of uncertainty for diagenetic models. The rate constants in models are either determined through profile fitting for a specific site or, 
-for global applications, they are related to a single, readily available characteristic (or master variable) of the local environmental conditions. 
-For instance, considerable effort has been expended to relate the apparent rate constant for oxic and 
-anoxic OM degradation to sedimentation rate ($w$) and various empirical relations have been proposed \citep{toth_organic_1977, tromp_global_1995, boudreau1997diagenetic, stolpovsky_toward_2015}. 
-Nevertheless, these relationships are generally based on limited data sets and their global applicability is questionable \citep{arndt_quantifying_2013}. 
-
-\begin{figure}[htbp]
-\begin{center}
-	\includegraphics[width=1.0\textwidth]{figures/OMEN-GENIE-Exp/Seiter_etal_2004_regridded.pdf}
-	\caption{\textcolor{red}{TODO: Update with new regridded observations using MATLAB.} Global distribution of TOC observations (N=5500) from the database of \citet[][left]{seiter_organic_2004} 
-	and regridded observations onto the SEDGEM grid (right). Grid points without any observations are left blank (white, grey).}\label{fig:TOC_Obs_regridded}
-\end{center}
-\end{figure}
-
-In section \ref{subsec:GENIE-pre-ind}, modelled mean POC weight percent (wt\%) in the upper 5cm of the sediments is compared to the global distribution pattern of POC content in surface sediments 
-(< 5cm sediment depth) of \citet{seiter_organic_2004}. 
-Therefore, the original POC distribution pattern in $1^\circ \times 1^\circ$ grid resolution \citep[interpolated from > 5500 measurements, compare][]{seiter_organic_2004} has been transformed onto the $72\times 72$ SEDGEM grid 
-(Figure \ref{fig:TOC_Obs_regridded}). The regridding of the original POC distribution obviously affects the resolution of the data especially for the continental margin, as some sites with higher POC wt\% are lost due to the 
-restricted SEDGEM grid-resolution (compare e.g. maximum values for the East Pacific and upwelling waters of the Namibian shelf, Figure \ref{fig:TOC_Obs_regridded}). 
-
-To parameterise the reactivity of organic matter we test two different approaches. First, the empirical relationship proposed by \citet{boudreau1997diagenetic} is used (see also Section \ref{subsec:globalhypsometry_methods}), 
-which relates the apparent OM degradation rate constant in the bioturbated layer to the burial velocity, $w$ (cm year$^{-1}$):
-\begin{equation}
- k_\mathrm{app} = 0.38 \cdot w^{0.59}.
-\end{equation}
-We assume that $k_\mathrm{app}$ represents the mean OM reactivity in the bioturbated layer and make the following assumptions in order to calculate the two degradation rate constants for OMEN-SED:
-\begin{align}
-  k_\mathrm{app} &= f_1 \cdot k_1 + f_2 \cdot k_2 \label{boudreau_assumption1}\\
-  k_2 &= k_1/x					\label{boudreau_assumption2}
-\end{align}
-where $x$ describes the relation between $k_1$ and $k_2$ and is subject to sensitivity experiments in Section \ref{subsec:GENIE-pre-ind} (with values of $x \in \{2, 4, 5, 8, 10, 25, 50, 100, 125\}$). 
-As the fractions of labile and refractory OM reaching the sediments ($f_1, f_2$) is known from cGENIE we can calculate $k_1$ and $k_2$ independently for each grid-cell. 
-For the second approach, we assume globally invariant degradation rate constants. The rate constants for the more refractory OM pool, $k_2$, is systematically varied between 0.0002 and 0.005 year$^{-1}$ and the more labile 
-OM component, described by $k_1$, is assumed to degrade 2, 4, 5, 8, 10, 20 and 50 times faster, respectively. 
-
-
-\section{Sensitivity Analysis}\label{subsec:SA}
-Fig. \ref{fig:Sensitivity_Analysis} summarises results of the sensitivity analysis (compare Section\ref{subsec:methods_SA}) as a colour map. 
+\subsubsection{Results}
+%\section{Sensitivity Analysis}\label{subsec:SA}
+Fig. \ref{fig:Sensitivity_Analysis} summarises results of the sensitivity analysis as a colour map. 
 Results indicate that generally the most significant parameters for all model outputs are the degradation rate constant for the labile OM part ($\chem{k_1}$) and the fraction of the labile pool in the total OM pool ($\chem{f_1}$). 
 Other parameters play a minor role for the SWI-fluxes, with the secondary redox parameters (i.e. $\gamma_\chem{NH_4},\ \gamma_\chem{H_2S}$) in the oxic scenario being an exception.
 Here, \chem{NH_4}, \chem{SO_4} and \chem{H_2S} are very sensitive to changes in $\gamma_\chem{NH_4}$ and $\gamma_\chem{H_2S}$, as these parameters determine how much of the respective TEA is produced in situ via reoxidation 
@@ -1591,21 +1401,62 @@ leads to a higher SWI-flux.
 \end{figure}
 
 
+\subsection{Case study: Simulations of sediment cores}\label{subsec:SedProfiles}
+\subsubsection{Methodology}
+%>>>
+\marginnote{\textbf{SA}: needs polishing \\
+\textcolor{red}{\textbf{DH}: Better like this?}}[-0cm]%<<<
+In order to illustrate the capabilities of OMEN-SED, comprehensive datasets from the Santa Barbara Basin \citep{reimers_porewater_1996}, as well as from the Iberian margin and the Nazar\'e Canyon \citep{epping_oxidation_2002} 
+are modelled. Modelled profiles are compared with measured pore water data from different depths including the continental shelf (108\,m) and the lower slope (2213\,m) located at the Iberian margin,
+the upper slope (585\,m) from the Santa Barbara Basin, and a deep sea site (4298\,m) in the Nazar\'e Canyon. 
+The Santa Barbara Basin is characterised by anoxic bottom waters, high POC concentrations and varved sediments \citep{reimers_seasonal_1990}, therefore the depth of bioturbation in OMEN-SED 
+is restricted to the upper 0.01 cm. In the uppermost sediments iron(III) hydroxides are reduced, releasing \chem{Fe^{2+}} which reacts with sulfide to form iron sulfides. 
+Thus, the \chem{Fe} cycle exerts a strong control on sulfide concentrations in the sediments of this basin \citep{reimers_porewater_1996}. 
+In addition, the sediments are generally supersaturated with respect to carbonate fluorapatite by and below 2 cm \citep{reimers_porewater_1996}. 
+The Iberian margin, situated in the northeastern Atlantic, generally belongs to the more productive regions of the global ocean \citep{longhurst_estimate_1995}, however, seasonal changes in upwelling creates a strong temporal variablity in 
+primary productivity and organic carbon deposition and submarine canyons in this area (like the Nazar\'e Canyon) may deliver organic carbon from the shelf to the ocean interior \citep{van_weering_recent_2002, epping_oxidation_2002}.
+For a more detailed description of the study areas and the experimental work, the interested reader is referred to the \citet{reimers_porewater_1996} and \citet{epping_oxidation_2002}. 
 
-% 
-% \subsection{Benthic fluxes on a global scale}
-% Application to Seitert, 2004 OM, burwiczk see rate data and evaluation based on global data (Archer)
+In OMEN-SED sediment characteristics and boundary conditions are set to the observed values where available (Table \ref{table:Profiles_BC}). Other sediment characteristics (e.g. sedimentation rate, porosity, density), 
+stoichiometric factors and secondary reaction parameters are set to the default value (see Tables \ref{table:sed-charac_transport-parameters} and \ref{table:reaction_parameters}).
+Organic matter is modelled as two fractions, with different first-order degradation rate constants. 
+The POC and pore water profiles were fitted by optimizing the POC partitioning into the fast and slow degrading pool and their respective first-order degradation rate constants (priority is given to reproduce the POC 
+and \chem{O_2} profiles). For phosphorus the equilibrium concentration for authigenic P formation (\chem{PO_4^a}) was adjusted to fit the \chem{PO_4} concentration at $z_\infty$. 
 
+\begin{table}[btp]
+\caption{Model boundary conditions for the sampling stations in Figure \ref{fig:Sediment_profiles}. (For all sites DIC bottom water concentration of 
+2,400 nanomole cm$^{-3}$ is assumed.)} 
+% Note: Constant concentrations at all sites for \chem{SO_4} ($28000 \mu$mol cm$^{-3}$) and \chem{H_2S} (0.0 $\mu$mol cm$^{-3}$).}
+\centering
+% used for centering table
+\begin{tabular}{l c c c c c c c c} 
+% centered columns (15 columns)
+\hline\hline
+\multicolumn{8}{l}{\textbf{Sediment characteristics:}}\\
+Depth & Temp. & $z_{\mathrm{bio}}$ & $D_{\mathrm{bio}}$  & \chem{POC_1} & \chem{POC_2} & \chem{k_1} & \chem{k_2}\\
+ (m) & ($^{\circ}$C) & (cm) & (cm$^2$yr$^{-1}$) &(wt\%) & (wt\%) & (yr$^{-1}$) & (yr$^{-1}$)\\
+\hline
+108 & 12.5 & 1.0 & 0.02 & 2.64 & 1.8 & 0.65 & $1.0e^{-5}$ \\
+585 & 5.85 & 0.01 & 0.02 & 2.0 & 3.5 & 0.2 & $8.0e^{-4}$\\
+2213 & 3.2 & 10.0 & 0.17 & 0.45 & 0.5 & 0.1 & $4.0e^{-4}$\\
+4298 & 2.5 & 4.2 & 0.18 & 0.83 & 1.2 & 0.052 & $1e^{-5}$\\
+\hline\hline
+\multicolumn{8}{l}{\textbf{Bottom water concentrations of solutes} (all in nanomole cm$^{-3}$):}\\
+Depth & \chem{O_2} & \chem{NO_3} & \chem{SO_4} & \chem{NH_4} & \chem{H_2S} & \chem{PO_4} & \chem{PO_4^a} & \chem{Alkalinity}\\
+%(m) & ($\frac{\mu mol}{cm^3}$) &  ($\frac{\mu mol}{cm^3}$) &  ($\frac{\mu mol}{cm^3}$) &  ($\frac{\mu mol}{cm^3}$) &  ($\frac{\mu mol}{cm^3}$)  &   ($\frac{\mu mol}{cm^3}$) &   ($\frac{\mu mol}{cm^3}$) \\
+\hline
+108 & 210 & 9.6 & 28,000 & 0.4 & 0.0 & 0.0 & 15.0 & 2,400\\
+585 & 10 & 25.0 & 28,000 & 0.0 & 0.0 & 50.0 & 90.0 & 2,480\\
+2213 & 250 & 25.0 & 28,000 & 0.6 & 0.0 & 0.0 & 5.0 & 2,400\\
+4298 & 243 & 30.1 & 28,000 & 0.22 & 0.0 & 0.0 & 5.0 & 2,400\\
+% inserts double horizontal lines
+\end{tabular}
+\label{table:Profiles_BC}
+\end{table}
 
-
-\section{Case-studies}
-\subsection{Stand-alone simulation of sediment cores}\label{subsec:SedProfiles}
-% % \textbf{Sandra: needs more critical analysis\\
-% % state that the model is able to capture main features across a wide range of different environments\\
-% % -quckly explain the dynamics at each location- e.g. what are the dominant processes and how does OMEN do in capturing these?
-% % -point out where it does well\\
-% % -then point out where it does not soo well and explain why}
-Fig. \ref{fig:Sediment_profiles} compares modelled sediment profiles with measured pore water data for the Santa Barbara Basin and the Iberian margin (compare Section\ref{subsec:SedProfiles_methods}). Results show 
+\subsubsection{Results}
+%\subsection{Stand-alone simulation of sediment cores}\label{subsec:SedProfiles}
+Fig. \ref{fig:Sediment_profiles} compares modelled sediment profiles with measured pore water data for the Santa Barbara Basin and the Iberian margin. Results show 
 that OMEN-SED is able to capture main features across a range of different environments without changing model parameters (e.g. stoichiometric ratios or secondary reaction parameters) to site specific conditions. 
 For the two open Iberian margin stations (108 and 2213 m) OMEN-SED fits all observations well. OMEN-SED does especially well at depth 2213 m by reproducing the deep \chem{O_2} penetration and the subsurface maximum in \chem{NO_3} 
 concentration due to the nitrification of \chem{NH_4}. For the anoxic Santa Barbara Basin (585 m) the decrease in \chem{SO_4} and the increase in \chem{ALK} concentration with sediment depth is well represented, indicating the 
@@ -1627,64 +1478,6 @@ and exploring the parameter space for the secondary reaction parameters ($\gamma
 However, considering these generalisations and our assumption of steady-state, which might not be valid, particularly for the complex Santa Barbara basin, the shallow core and the Nazar\'e Canyon, which are affected by seasonality 
 and biology, OMEN-SED performs well in capturing the main dynamics. 
 
-% %%%%%% Info on specific sites:
-% % \textit{Explanation later for high $H_2S$ in OMEN from Reimers (also check abstract):\\
-% % Fe cycling exerts a strong control on the dissolved sulfide concentrations in the uppermost sediments of the SBB\\
-% % for PO4: sediments become saturated with respect to carbonate fluorapatite and calcite within the first 0.25 mm and are highly supersaturated by and below 2 cm\\
-% % from conclusion: for H2S and PO4: SBB conforms to a model of mineral paragenesis wherein CFA
-% % accumulation is restricted to the near-surface of organic-rich
-% % sediments. ...This finding is interpreted as an indication of the nonsteady state nature of the surface reactions...
-% % In such surface sediments, a critical factor is that
-% % iron oxyhydroxides are reduced, which raises pH and re-
-% % leases sorbed phosphate, fluoride, and Fe*‘. The Fe*+ is then
-% % available to sequester dissolved sulfide into FeS, leading to
-% % pyrite formation. Also, colloidal precipitates of iron or sulfur,
-% % or fresh bacterial products are suggested to supply surfaces
-% % which may initiate CFA precipitation.\\
-% % Generally, sulfide is undetectable in the uppermost 2-4 cm of sediment (detection limit 0.5 microM), and sulfide concentrations do not begin to
-% % increase rapidly until depths where dissolved Fe is absent (Reimers et al., 1990). Porewater sulfide concentrations are below detection in spite of the presence of high rates of
-% % sulfate reduction in the first O-2, and 2-4 cm of sediment (Fig. 5). In this zone, Fe is clearly being reduced and reacting with sulfide (primarily in the 2-4 cm interval) to form iron sulfides represented
-% % as acid-volatile S and pyrite...\\
-% % For the $PO_4$ minium - from Reimers: Ruttenberg and Bemer ( 1993) suggest diagenetic redistribution of organic P into CFA may be a nearly
-% % continuous process at least to 50 cm in terrigenous dominated coastal sediments.}\\
-% % 
-% % \textbf{The NW Iberian Margin} ranks among the more productive areas of the global ocean (Longhurst, Sathyendranath, Platt, \& Caverhill, 1995)... The equatorward slope/shelf
-% % current during summer is generally associated with the development of a band of cool upwelled North Atlantic Central Water (Fraga, 1981; Van Aken, 2001), which results there being high primary production
-% % along the Iberian Margin.... The pattern of upwelling along the Iberian Margin is intermittent generating strong temporal variability in primary productivity and benthic deposition of carbon.
-% % 
-% % \textit{Site 108m - 99-06:\\
-% % The concentrations of reduced iron and manganese at the sandy station were less, possibly the consequence of lower deposition of metal-oxides at this site}\\
-% % 
-% % \textit{Site 2213m - 99-04:\\ \textbf{could have been improved with a change of $\gamma_{NH_4}$}
-% % The pore water profiles show that there was a much deeper penetration of oxygen and nitrate compared to the shelf stations,
-% % whereas ammonium and dissolved iron and manganese did not accumulate above a depth of 12 cm. Con-
-% % ceivably, carbon oxidation at this station is dominated by aerobic oxidation so that at this site denitrification
-% % and anaerobic oxidation appear to be of minor importance. \textbf{Ammonium, released during organic matter
-% % mineralization is effectively nitrified to nitrate as evidenced by the subsurface maximum in nitrate concentration, indicating a tight coupling between nitrification and denitrification at this station}.
-% % }
-% % 
-% % \textit{Site 4298m (canyon) - 99-17:\\
-% % At 4298 m, however, sandy layers are intercalated
-% % with layers of high silt content, which is reflected in the erratic, but analytically highly reproducible distrbution of sediment organic carbon. These intercalations hint at the possibility of episodic deposition events
-% % occurring over the fan of the canyon.\\
-% % For the canyon, a problem arises because the oxygen microprofiles
-% % were probably not being influenced by non-local exchanges because of the extremely small volume of pore
-% % water that is sensed by the tip of the electrode, whereas the profiles of ammonium and nitrate are. Secondly,
-% % OMEXDIA does not include a non-local transport routine\\ 
-% % }
-% % {\small probably not important: The accumulation of reduced manganese and iron
-% % in the pore water as well as their declining concentrations down core, point to an intensive cycling of
-% % metal-oxides and at a significant precipitation of sulfides and carbonates in these sediments}
-% % 
-% % \textbf{Overall need to consider that these are non-steady state conditions:}
-% % (from Epping):
-% % assuming steady state
-% % conditions and, although the data were collected throughout the upwelling season, it will be considered to
-% % represent yearly averages. Particularly for the Nazare Canyon and the shallow stations on the shelf, which
-% % are subject to significant seasonality in physical and biological conditions, these assumptions may not be
-% % valid.
-% % and from Reimers: This finding is interpreted as an indication of the nonsteady state nature of the surface reactions
-
 \begin{sidewaysfigure}[tbp]
 	\includegraphics[width=1.0\textwidth]{figures/Profiles/0_ALL_PROFILES_COMBINED_1503.pdf}
 	\caption{Modelled (curves) and measured (filled dots) dissolved and solid phase pore water profiles for four different sediment cores. Note that different 
@@ -1693,10 +1486,70 @@ and biology, OMEN-SED performs well in capturing the main dynamics.
 \end{sidewaysfigure}
 
 
-\subsection{Stand-alone simulations of global ocean transect}\label{subsec:globalhypsometry}
+\subsection{Case study: Stand-alone simulations of global ocean transect}\label{subsec:globalhypsometry}
+\subsubsection{Methodology}
+%>>>
+\marginnote{\textbf{SA}: needs polishing \\
+\textcolor{red}{\textbf{DH}: Better like this?}}[-0cm]%<<<
+%>>>
+In this section it is tested to which degree OMEN-SED is capable of capturing the dynamics of organic matter degradation pathways and related TEA-fluxes as simulated with a complete, numerical diagenetic model. 
+Therefore, we reproduce the simulations of typical conditions along a global ocean hypsometry of \citet{thullner_global_scale_2009} and compare our modeled TEA-fluxes with the results of the complete model and observations 
+from \citet{middelburg_denitrification_1996}. To explore the global degradation of OM in the seafloor 
+\citet{thullner_global_scale_2009} quantified various diagenetic processes using the Biogeochemical Reaction Network Simulator \citep[BRNS,][]{aguilera_knowledge-based_2005}, 
+a flexible simulation environment suitable for reactive transport simulations of complex biogeochemical problems \citep[e.g.][]{jourabchi_quantitative_2005, thullner_modeling_2005}. 
+\citet{thullner_global_scale_2009} use seafloor depth (SFD) as the master variable and calculate model parameters, such as $w$, $D_{bio}$ and $\phi$, from existing empirical relationships 
+\citep[e.g.][]{van1995metal, middelburg_empirical_1997}. 
+Organic matter degradation is described with a 1-G approach, thus assuming a single pool of organic matter of uniform reactivity. 
+The first order rate constant is related to the burial velocity, $w$ (cm year$^{-1}$), following the empirical relationship of \citet{boudreau1997diagenetic}:
+\begin{equation}
+ k=0.38\cdot w^{0.59}.
+\end{equation}
+This rate constant can be assumed as the mean reactivity of the organic matter fractions which are degraded in the upper, bioturbated $10-20$ cm of the sediments. 
+Thus, more reactive fractions (degraded during days/weeks close to the SWI) and more refractory fractions (degraded on longer time scales deeper in the sediments) are not captured by this relationship \citep{boudreau1997diagenetic}. 
+BRNS simulations were performed using boundary conditions and parameters for depths representative for shelf, slope and deep sea sediments (i.e. SFD of 100m, 200m, 500m, 1000m, 2000m, 3500m and 5000m). 
+In order to reproduce these results, OMEN-SED is configured as a 1-G model and boundary conditions and model parameters are defined as in \citet[][see Table \ref{table:Hypsometry_params}]{thullner_global_scale_2009}. 
+As OMEN-SED assumes a fixed fraction of reduced substances to be reoxidised, which exerts a large impact on the resulting SWI-fluxes (compare Section \ref{subsec:SA}), 
+we perform two sets of simulations in order to show the range of possible model outputs. In the first setup 95\% of the reduced substances are reoxidised (i.e. $\gamma_{NH_4}=\gamma_{H_2S}=0.95$) and in the 
+second only 5\% are reoxidised (all other model parameters and boundary conditions are equal). 
+\begin{table}[hbtp]
+\caption{Seafloor depth dependency of key model parameters and boundary conditions (adapted from \citet{thullner_global_scale_2009}.} 
+% Note: Constant concentrations at all sites for \chem{SO_4} ($28000 \mu$mol cm$^{-3}$) and \chem{H_2S} (0.0 $\mu$mol cm$^{-3}$).}
+\centering
+% used for centering table
+\begin{tabular}{c c c c c c c c} 
+% centered columns (15 columns)
+\hline
+& \multicolumn{7}{c}{\textbf{Seafloor depth}}\\
+\cline{2-8}
+ & 100 m & 200 m & 500 m  & 1000 m & 2000 m & 3500 m & 5000 m\\
+\hline
+\multicolumn{1}{l}{\textbf{Model parameters}}\\
+ $w{}^a$ (cm yr$^{-1}$) & $3.98 \times 10^{-1}$ & $ 3.60 \times 10^{-1}$ & $ 2.67 \times 10^{-1}$ & $ 1.62 \times 10^{-1}$ & $5.94  \times 10^{-2}$ & $ 1.32 \times 10^{-2}$ & $ 2.94 \times 10^{-3}$\\
+ $D_{\mathrm{bio}}{}^a$ (cm$^2$ yr$^{-1}$) & 27.5 & 25.1 & 19.0 & 12.1 & 4.83 & 1.23 & 0.310\\
+ $\phi^b$ & 0.85 & 0.85 & 0.80 & 0.80 & 0.80 & 0.80 & 0.80\\
+ T${}^c$ ($^{\circ}$C) & 10.3 & 9.7 & 8.1 & 5.8 & 3.0 & 1.5 & 1.4\\
+ $\rho_{\mathrm{sed}}{}^c$ (g\,cm$^{-3}$) & 2.5  & 2.5 & 2.5 & 2.5 & 2.5 & 2.5 & 2.5\\
+ $k^d$ (yr$^{-1}$) & 0.221 & 0.208 & 0.174 & 0.130 & 0.0718 & 0.0296 & 0.0122\\
+\multicolumn{1}{l}{\textbf{Upper boundary conditions}}\\
+\chem{POC_{flux}}$^a$ ($\mu$mol cm$^{-2}$yr$^{-1}$) & 510 & 467 & 357 & 228 & 93.0 & 24.3 & 6.33\\
+\chem{O_{20}}$^c$ (nanomole cm$^{-3}$) & 132 & 129 & 121 & 114 & 116 & 135 & 141\\
+\chem{NO_{30}}$^c$ (nanomole cm$^{-3}$) & 17.3 & 18.6 & 22.1 & 26.5 & 31.0 & 31.6 & 31.6\\
+\chem{SO_{40}}$^b$ (nanomole cm$^{-3}$) & 28,000 & 28,000 & 28,000 & 28,000 & 28,000 & 28,000 & 28,000\\
+\hline
+\multicolumn{8}{l}{${}^a$ Derived from \citet{middelburg_empirical_1997}.}\\
+\multicolumn{8}{l}{${}^b$ Derived from \citet{van1995metal}.}\\
+\multicolumn{8}{l}{${}^c$ Derived from \citet{conkright2002world}.}\\
+\multicolumn{8}{l}{${}^d$ Derived from \citet{boudreau1997diagenetic}.}
+% inserts double horizontal lines
+\end{tabular}
+\label{table:Hypsometry_params}
+\end{table}
+
+\subsubsection{Results}
+%\subsection{Stand-alone simulations of global ocean transect}\label{subsec:globalhypsometry}
 %Figure \ref{fig:hypsometry} (A-C) compares simulated depth-integrated organic matter mineralisation rates ($\mu$mol C cm$^{-2}$\,yr$^{-1}$) by three degradation pathways along the global hypsometry. 
 Figure \ref{fig:hypsometry} compares simulated SWI-fluxes of TEAs (i.e. \chem{O_2}, \chem{NO_3} and \chem{SO_4}) along the global hypsometry using OMEN-SED (black lines) with the results of \citet{thullner_global_scale_2009} 
-(red lines, see Section \ref{subsec:globalhypsometry_methods} for the methodology). 
+(red lines). 
 Observations for \chem{O_2} and \chem{NO_3} fluxes are taken from \citet{middelburg_denitrification_1996}. Also plotted in Fig. \ref{fig:hypsometry}A are the total oxygen uptake (TOU) estimates presented in 
 \citet{thullner_global_scale_2009} (filled red symbols), who assumed the organic matter flux to be equivalent to TOU. 
 Due to the applied empirical relations organic matter flux to the seafloor decreases by 2 orders of magnitude from 100 to 5000 m and its degradation rate constant by 1 order of magnitude (Table \ref{table:Hypsometry_params}). 
@@ -1710,17 +1563,6 @@ between 100 and 2000 m (\chem{SO_4} is not used for OM degradation in OMEN-SED b
 %>>>
 \marginnote{\textbf{DH}: Not sure, if this 80\% is correct (seems to be pretty high)... but that's how I understand \citet{thullner_global_scale_2009} - see pg. 12 for 80\%!}[-1cm]%<<<
 In general, Figure \ref{fig:hypsometry} shows that OMEN-SED captures the main trends in observed TEA fluxes well and fluxes calculated with BRNS fall within the range of possible OMEN-SED results. 
-
-In particular, the observed \chem{O_2} fluxes in the upper 2000m are well predicted by the two OMEN-SED simulations. Oxygen fluxes for the deep-sea sediments, however, are slightly underestimated. 
-These deviations can presumably be related to the assumed 1-G description of organic matter degradation, which neglects the more labile OM pool. This highly reactive pool is degraded close to the sediment surface, 
-thus promoting higher aerobic degradation rates and higher \chem{O_2} fluxes.  
-Nitrate fluxes in the upper 500m of the Atlantic Ocean are well predicted. However, as in \citet{middelburg_denitrification_1996} the direction of calculated nitrate fluxes in the upper 1000m of the Pacific Ocean differ from the observations. 
-\citet{middelburg_denitrification_1996} related these discrepancies to the globally averaged model parameters and the applied boundary conditions. They could reduce the disagreements significantly by using more representative 
-bottom water concentrations for the eastern Pacific and a higher flux of labile organic matter for their 2-G model. By changing the boundary conditions and the NC-atomic ratio of organic matter for the whole hypsometry, it is possible 
-to obtain a better model-data fit with OMEN-SED for the shallow Pacific Ocean (green line in Fig. \ref{fig:hypsometry}B). 
-Following \citet{bohlen_simple_2012}, who could show that the atomic NC-ratio strongly deviates from Redfield stoichiometry (0.151) with specifically lower values for the East Pacific Ocean, we adopt their globally averaged value of 0.067. 
-In addition, bottom water conditions are changed to low oxygen/high nitrate levels more likely to be found in the shallow Pacific Ocean ($\chem{O_2} = 10$ nanomole cm$^{-3}$ and $\chem{NO_3} = 80$ nanomole cm$^{-3}$). 
-
 \begin{figure}[htbp]
 \begin{center}
 	\includegraphics[width=0.8\textwidth]{figures/0_OMEN_Thullner_hypsometry_fluxes_diff_NCratio.pdf}
@@ -1734,8 +1576,103 @@ In addition, bottom water conditions are changed to low oxygen/high nitrate leve
 \end{center}
 \end{figure}
 
-\subsection{Coupled pre-industrial simulations}\label{subsec:GENIE-pre-ind}
-\textbf{Dominik: Needs polishing, this is my first draft - also discussion of Fig. \ref{fig:OMEN_GENIE_invariant_and_Boudreau} not done yet as results with new sedimentation rate might change slightly!}\\
+In particular, the observed \chem{O_2} fluxes in the upper 2000m are well predicted by the two OMEN-SED simulations. Oxygen fluxes for the deep-sea sediments, however, are slightly underestimated. 
+These deviations can presumably be related to the assumed 1-G description of organic matter degradation, which neglects the more labile OM pool. This highly reactive pool is degraded close to the sediment surface, 
+thus promoting higher aerobic degradation rates and higher \chem{O_2} fluxes.  
+Nitrate fluxes in the upper 500m of the Atlantic Ocean are well predicted. However, as in \citet{middelburg_denitrification_1996} the direction of calculated nitrate fluxes in the upper 1000m of the Pacific Ocean differ from the observations. 
+\citet{middelburg_denitrification_1996} related these discrepancies to the globally averaged model parameters and the applied boundary conditions. They could reduce the disagreements significantly by using more representative 
+bottom water concentrations for the eastern Pacific and a higher flux of labile organic matter for their 2-G model. By changing the boundary conditions and the NC-atomic ratio of organic matter for the whole hypsometry, it is possible 
+to obtain a better model-data fit with OMEN-SED for the shallow Pacific Ocean (green line in Fig. \ref{fig:hypsometry}B). 
+Following \citet{bohlen_simple_2012}, who could show that the atomic NC-ratio strongly deviates from Redfield stoichiometry (0.151) with specifically lower values for the East Pacific Ocean, we adopt their globally averaged value of 0.067. 
+In addition, bottom water conditions are changed to low oxygen/high nitrate levels more likely to be found in the shallow Pacific Ocean ($\chem{O_2} = 10$ nanomole cm$^{-3}$ and $\chem{NO_3} = 80$ nanomole cm$^{-3}$). 
+
+
+\section{Coupled pre-industrial Earth system model simulations}
+\subsection{Coupling to the cGENIE Earth system model}\label{subsubsec:Methods_ESM_coupling}
+% Describe what needs to be done/checked. Compare/use as example what I did with GENIE coupling. What are the if-clauses used? Input to OMEN-SED, output of OMEN-SED. 
+\begin{figure}[tbp]
+\begin{center}
+	\includegraphics[width=0.8\textwidth]{figures/OMEN-GENIE-coupling.pdf}
+	\caption{Schematic of the relationship between OMEN-SED and cGENIE. Arrows and accompanied text represent the information transferred between models. }
+	\label{fig:OMEN-GENIE-coupling}
+	\end{center}
+\end{figure}
+OMEN-SED is coupled to the carbon-centric version of the ``GENIE'' Earth system model \citep[cGENIE,][]{ridgwell_marine_2007} to illustrate the abilities of the newly developed model. 
+The following section provides a brief description of cGENIE and the coupling procedure (Fig. \ref{fig:OMEN-GENIE-coupling}). 
+cGENIE is a model of Intermediate Complexity based on the efficient climate model ``C-GOLDSTEIN''  of \citet{edwards_uncertainties_2005}, featuring a frictional-geostrophic 3D-ocean circulation model coupled to a fast 
+Energy-Moisture Balance 2D-atmosphere together with a dynamic-thermodynamic sea-ice component. 
+The version of cGENIE used here includes the marine geochemical cycling of carbon, oxygen, phosphorus and sulfur \citep{ridgwell_marine_2007}, 
+preservation of carbonates in deep-sea sediments \citep[SEDGEM,][]{ridgwell_regulation_2007} and terrestrial weathering \citep{colbourn_rock_2013}. 
+The ocean model is implemented on a 36$\times$36 equal-area horizontal grid with 16 vertical levels using the pre-industrial continental configuration and bathymetry as in \citet{archer_atmospheric_2009}. 
+A finer grid (72$\times$72) is used for the sediments. 
+%In contrast to \citet{archer_atmospheric_2009} the same grid resolution (36$\times$36) is used for the sediment geochemistry model SEDGEM. 
+Instead of completely degrading POC at the seafloor, OMEN-SED is called by SEDGEM for each wet ocean grid point. 
+Depending on the overlying biogeochemical ocean model, processes can be included or excluded in OMEN-SED and stoichiometric factors need to be adjusted to ensure preservation of mass. 
+As nitrogen is not modelled explicitly in the employed cGENIE configuration, related stoichiometries in OMEN-SED are set to zero (i.e. \chem{NC_i}, $\chem{ALK}^\mathrm{NIT}$ and $\chem{ALK}^\mathrm{DEN}$). 
+cGENIE, however, implicitly includes the effects of \chem{NH_4} release and its complete nitrification on alkalinity and neglects the impact of P release. Therefore, alkalinity 
+stoichiometries from aerobic degradation and sulfate reduction are changed to $\chem{ALK}^\mathrm{OX} = -16/106$ and $\chem{ALK}^\mathrm{SUL} = 122/106$ (compare to default in Table \ref{table:reaction_parameters}).
+
+Several biogeochemical tracers and parameters are transferred from SEDGEM to OMEN-SED and have to be converted into the required units. 
+Bottom water concentrations of solutes are converted from mol\,kg$^{-1}$ to mol\,cm$^{-3}$ and the depositional flux of POC (\chem{POC_{flux}}) is converted from cm$^{3}$\,cm$^{-2}$\,yr$^{-1}$ 
+to mol\,cm$^{-2}$\,yr$^{-1}$ assuming an average density of POC of 1.0\,cm$^{3}$\,g$^{-1}$.
+Other parameters used from cGENIE are seafloor depth, local temperature and the partitioning of bulk POC into the slower and faster degrading pool 
+\citep[as cGENIE represents a labile and a refractory POC fraction, see][]{ridgwell_marine_2007}. 
+%For bottom water oxygen concentrations below 5 $\mu$mol kg$^{-1}$ the bioturbation depth is changed from 10 to 0.01 cm to account for the reduced presence of organisms under anoxia.  
+The advection/burial rate ($w$) is generally taken from cGENIE, however, a minimum value of $w=0.5$\,cm\,kyrs$^{-1}$ is imposed as OMEN-SED tends to be unstable for lower values. 
+The bulk \chem{POC_{flux}} is seperated into the labile and refractory component and the routine to find the steady-state solution for POC is called. 
+Here, the two POC depositional fluxes are first converted into SWI concentrations (in mol\,cm$^{-3}$) by solving Eq. (\ref{Eq_flux_divergence}) for z=0. 
+OMEN-SED then computes the fraction of POC preserved in the sediment at a depth of 100 cm (\chem{POC_{pres}}) and subsequently calls the routines to find the steady-state solutions for the solute substances. 
+Finally, \chem{POC_{pres}} and the SWI-fluxes of solutes (in mol\,cm$^{-2}$\,yr$^{-1}$) are returned to cGENIE. 
+In case no POC is deposited on the seafloor (i.e. $\chem{POC_{flux}}=0$), OMEN-SED is not called and the SWI-fluxes of solutes and \chem{POC_{pres}} are set to zero. 
+In order to reduce memory requirements the sediment profiles (e.g. as shown in Fig. \ref{fig:Sediment_profiles}) are not calculated in the FORTRAN version of OMEN-SED, 
+however, the boundary conditions are saved at the end of the experiment and sediment profiles for specific grid-cells, ocean basins and ocean transects can be plotted 
+using the stand-alone MATLAB version of OMEN-SED
+
+\subsection{Coupled pre-industrial simulations}\label{subsubsec:Methods_pre-ind_ESM_simul}
+\subsubsection{Methodology}
+All simulations presented here are run for 20,000 years to steady-state and OMEN-SED is called for each grid-cell in every time step, feeding back the resulting SWI-fluxes and the 
+fraction of POC preserved in the sediments to cGENIE. As shown in our sensitivity analysis (Section \ref{subsec:SA}) and discussed by \citet{arndt_quantifying_2013} the 
+degradation rate constants for OM ($k_i$) are the most influential parameters and strongly determine the SWI-flux of redox-sensitive elements as well as the preservation of organic matter. 
+Yet, their spatial variability is unknown at the global scale and reported rate constants can vary by almost 10 orders of magnitude \citep{arndt_quantifying_2013}. 
+Thus defining appropriate OM degradation rate constants is a major challenge and source of uncertainty for diagenetic models. The rate constants in models are either determined through profile fitting for a specific site or, 
+for global applications, they are related to a single, readily available characteristic (or master variable) of the local environmental conditions. 
+For instance, considerable effort has been expended to relate the apparent rate constant for oxic and 
+anoxic OM degradation to sedimentation rate ($w$) and various empirical relations have been proposed \citep{toth_organic_1977, tromp_global_1995, boudreau1997diagenetic, stolpovsky_toward_2015}. 
+Nevertheless, these relationships are generally based on limited data sets and their global applicability is questionable \citep{arndt_quantifying_2013}. 
+
+\begin{figure}[htbp]
+\begin{center}
+	\includegraphics[width=1.0\textwidth]{figures/OMEN-GENIE-Exp/Seiter_etal_2004_regridded.pdf}
+	\caption{\textcolor{red}{TODO: Update with new regridded observations using MATLAB.} Global distribution of TOC observations (N=5500) from the database of \citet[][left]{seiter_organic_2004} 
+	and regridded observations onto the SEDGEM grid (right). Grid points without any observations are left blank (white, grey).}\label{fig:TOC_Obs_regridded}
+\end{center}
+\end{figure}
+
+In section \ref{subsec:GENIE-pre-ind}, modelled mean POC weight percent (wt\%) in the upper 5cm of the sediments is compared to the global distribution pattern of POC content in surface sediments 
+(< 5cm sediment depth) of \citet{seiter_organic_2004}. 
+Therefore, the original POC distribution pattern in $1^\circ \times 1^\circ$ grid resolution \citep[interpolated from > 5500 measurements, compare][]{seiter_organic_2004} has been transformed onto the $72\times 72$ SEDGEM grid 
+(Figure \ref{fig:TOC_Obs_regridded}). The regridding of the original POC distribution obviously affects the resolution of the data especially for the continental margin, as some sites with higher POC wt\% are lost due to the 
+restricted SEDGEM grid-resolution (compare e.g. maximum values for the East Pacific and upwelling waters of the Namibian shelf, Figure \ref{fig:TOC_Obs_regridded}). 
+
+To parameterise the reactivity of organic matter we test two different approaches. First, the empirical relationship proposed by \citet{boudreau1997diagenetic} is used (see also Section \ref{subsec:globalhypsometry_methods}), 
+which relates the apparent OM degradation rate constant in the bioturbated layer to the burial velocity, $w$ (cm year$^{-1}$):
+\begin{equation}
+ k_\mathrm{app} = 0.38 \cdot w^{0.59}.
+\end{equation}
+We assume that $k_\mathrm{app}$ represents the mean OM reactivity in the bioturbated layer and make the following assumptions in order to calculate the two degradation rate constants for OMEN-SED:
+\begin{align}
+  k_\mathrm{app} &= f_1 \cdot k_1 + f_2 \cdot k_2 \label{boudreau_assumption1}\\
+  k_2 &= k_1/x					\label{boudreau_assumption2}
+\end{align}
+where $x$ describes the relation between $k_1$ and $k_2$ and is subject to sensitivity experiments in Section \ref{subsec:GENIE-pre-ind} (with values of $x \in \{2, 4, 5, 8, 10, 25, 50, 100, 125\}$). 
+As the fractions of labile and refractory OM reaching the sediments ($f_1, f_2$) is known from cGENIE we can calculate $k_1$ and $k_2$ independently for each grid-cell. 
+For the second approach, we assume globally invariant degradation rate constants. The rate constants for the more refractory OM pool, $k_2$, is systematically varied between 0.0002 and 0.005 year$^{-1}$ and the more labile 
+OM component, described by $k_1$, is assumed to degrade 2, 4, 5, 8, 10, 20 and 50 times faster, respectively. 
+
+\subsubsection{Results}
+%\subsection{Coupled pre-industrial simulations}\label{subsec:GENIE-pre-ind}
+\textbf{Dominik: Needs polishing, this is my first draft - also discussion of Fig. \ref{fig:OMEN_GENIE_invariant_and_Boudreau} not done yet as results with new 
+sedimentation rate might change slightly!}\\
 
 OMEN-SED is coupled to the global Earth system model cGENIE as described in Section \ref{subsubsec:Methods_ESM_coupling}. 
 Our objective is not to perform and discuss a detailed calibration of the two models, as this is beyond the scope of this sediment model development paper. We rather want to showcase, that a coupling is
@@ -1866,6 +1803,7 @@ Describe Figure \ref{fig:OMEN_GENIE_invariant_and_Boudreau} and compare with wha
 % 
 % Middelburg: Ocean margin sediments (<2000 m) account for about 85% of the material
 % accumulating in the ocean and about 80-90\% of the mineralization in marine sediments.  
+
 
 \section{Scope of applicability and model limitations}
 \textbf{Dominik: Needs polishing, this is my first draft}

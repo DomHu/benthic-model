@@ -45,10 +45,12 @@ dlmwrite('zo_Seiter_offset_72x72_0606.txt',zo)    % better copy from matlab, as 
 % have to line it up by eye e.g. east end of europe...
 % 2) overlap observations with GENIE grid - where not NaN in both use wtpc
 % otherwhise NaN
-% 3) save this as .csv file and
-% 4) run make_regrid_ASCII2netcdf_GENIE(...)
-% e.g. make_regrid_ASCII2netcdf_GENIE('Seiter_Obs_72x72_0606.csv','TOC wtprc','regridded Seiter TOC wt perc','wt%',72,72);
+% 3) save this as .csv file and 
+% 4) create and load land ocean mask:
+% PMASK_72x72=xlsread('Seiter_on_GENIE_72x72.xlsx','Land_OCEAN_MASK','C79:BV150');
+% 5) run make_regrid_ASCII2netcdf_GENIE(...)
+% e.g. make_regrid_ASCII2netcdf_GENIE('Seiter_Obs_72x72_0606.csv','TOC wtprc','regridded Seiter TOC wt perc','wt%',72,72,PMASK_72x72,'GENIE');
 % e.g. make_regrid_ASCII2netcdf_GENIE('Seiter_Obs_on_GENIE_1905.csv','TOC wtprc','regridded Seiter TOC wt perc','wt%',36,36);
 %
-% 5) plot observations with matlab:
-% plot_fields_sedgem_2d('0_Seiter_Observations','','TOC wt%','',0.0,0.0,0,'',1.0,0.0,3.0,20,'','','')
+% 6) plot observations with matlab:
+% plot_fields_sedgem_2d('0_Seiter_Observations','','TOC wtprc','',0.0,0.0,0,'',1.0,0.0,5.0,20,'','','')
