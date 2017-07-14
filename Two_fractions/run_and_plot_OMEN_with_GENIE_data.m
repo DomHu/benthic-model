@@ -133,7 +133,7 @@ plotvar= POUTVAR;
 
 % DOM: data needed from GENIE:
 Nitrogen=false;
-data_fsed_POC='fsed_POC  ';
+data_fsed_POC='fsed_POC  ';   % "mol cm-2 yr-1"
 %dataid_1=strtrim(data_fsed_POC);
 data_ocn_O2='ocn_O2    ';
 data_ocnNO3='ocn_NO3   ';
@@ -144,9 +144,9 @@ data_ocn_PO4='ocn_PO4   ';
 data_ocn_ALK='ocn_ALK   ';
 data_ocn_DIC='ocn_DIC   ';
 
-data_fsed_CaCO3='fsed_CaCO3';
-data_fsed_det='fsed_det  ';
-data_fsed_ash='fsed_ash  ';
+data_fsed_CaCO3='fsed_CaCO3';   % "mol cm-2 yr-1"
+data_fsed_det='fsed_det  ';     % "mol cm-2 yr-1"
+data_fsed_ash='fsed_ash  ';     % "mol cm-2 yr-1"
 data_is_POC_frac2='';           % Dom: need this as netcdf!
 
 data_ben_temp='ocn_temp  ';

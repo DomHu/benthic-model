@@ -1620,7 +1620,11 @@ Other parameters used from cGENIE are seafloor depth, local temperature and the 
 %For bottom water oxygen concentrations below 5 $\mu$mol kg$^{-1}$ the bioturbation depth is changed from 10 to 0.01 cm to account for the reduced presence of organisms under anoxia.  
 The advection/burial rate ($w$) is generally taken from cGENIE, however, a minimum value of $w=0.5$\,cm\,kyrs$^{-1}$ is imposed as OMEN-SED tends to be unstable for lower values. 
 The bulk \chem{POC_{flux}} is seperated into the labile and refractory component and the routine to find the steady-state solution for POC is called. 
-Here, the two POC depositional fluxes are first converted into SWI concentrations (in mol\,cm$^{-3}$) by solving Eq. (\ref{Eq_flux_divergence}) for z=0. 
+Here, the two POC depositional fluxes are first converted into SWI concentrations (in mol\,cm$^{-3}$) by solving the flux divergence equation: 
+\begin{equation}
+\frac{\partial F}{\partial z}=-\frac{\partial}{\partial z}\left( -\xi D_i \frac{\partial C_i}{\partial z} +\xi w C_i\right) \label{Eq_flux_divergence}
+\end{equation}
+for z=0. 
 OMEN-SED then computes the fraction of POC preserved in the sediment at a depth of 100 cm (\chem{POC_{pres}}) and subsequently calls the routines to find the steady-state solutions for the solute substances. 
 Finally, \chem{POC_{pres}} and the SWI-fluxes of solutes (in mol\,cm$^{-2}$\,yr$^{-1}$) are returned to cGENIE. 
 In case no POC is deposited on the seafloor (i.e. $\chem{POC_{flux}}=0$), OMEN-SED is not called and the SWI-fluxes of solutes and \chem{POC_{pres}} are set to zero. 
@@ -1642,19 +1646,23 @@ Nevertheless, these relationships are generally based on limited data sets and t
 
 \begin{figure}[htbp]
 \begin{center}
-	\includegraphics[width=1.0\textwidth]{figures/OMEN-GENIE-Exp/Seiter_etal_2004_regridded.pdf}
-	\caption{\textcolor{red}{TODO: Update with new regridded observations using MATLAB.} Global distribution of TOC observations (N=5500) from the database of \citet[][left]{seiter_organic_2004} 
-	and regridded observations onto the SEDGEM grid (right). Grid points without any observations are left blank (white, grey).}\label{fig:TOC_Obs_regridded}
+	\includegraphics[width=0.8\textwidth]{figures/OMEN-GENIE-Exp/Seiter_interpol_TOCwtpc_compare_until5+GENIEgrid.pdf}
+	\caption{Observed distribution of sediment surface (< 5cm) POC wt\% (A, B) and cGENIE bathymetry (C). 
+	(A) Original global distribution of POC wt\% interpolated on a $1^\circ \times 1^\circ$ grid from more than 5500 individual data points 
+	\citep[compare][for the interpolation procedure]{seiter_organic_2004}. 
+	(B) Observed POC wt\% data transformed onto the $72\times 72$ SEDGEM grid. Grid points without any observations are left blank (grey). 
+	(C) Gridded continental configuration and ocean bathymetry of the 16-level, $72\times 72$ equal-area cGENIE grid.
+	}\label{fig:TOC_Obs_regridded}
 \end{center}
 \end{figure}
 
-In section \ref{subsec:GENIE-pre-ind}, modelled mean POC weight percent (wt\%) in the upper 5cm of the sediments is compared to the global distribution pattern of POC content in surface sediments 
+Modelled mean POC weight percentages (wt\%) in the upper 5cm of the sediments are compared to the global distribution pattern of POC content in surface sediments 
 (< 5cm sediment depth) of \citet{seiter_organic_2004}. 
 Therefore, the original POC distribution pattern in $1^\circ \times 1^\circ$ grid resolution \citep[interpolated from > 5500 measurements, compare][]{seiter_organic_2004} has been transformed onto the $72\times 72$ SEDGEM grid 
-(Figure \ref{fig:TOC_Obs_regridded}). The regridding of the original POC distribution obviously affects the resolution of the data especially for the continental margin, as some sites with higher POC wt\% are lost due to the 
-restricted SEDGEM grid-resolution (compare e.g. maximum values for the East Pacific and upwelling waters of the Namibian shelf, Figure \ref{fig:TOC_Obs_regridded}). 
+(Figure \ref{fig:TOC_Obs_regridded}). The regridding of the original POC distribution obviously affects the resolution of the data, especially for the continental margin, as some sites with higher POC wt\% are lost due to the 
+restricted SEDGEM grid-resolution (compare e.g. maximum values for the East Pacific and upwelling waters of the Namibian shelf, Figure \ref{fig:TOC_Obs_regridded}A + B). 
 
-To parameterise the reactivity of organic matter we test two different approaches. First, the empirical relationship proposed by \citet{boudreau1997diagenetic} is used (see also Section \ref{subsec:globalhypsometry_methods}), 
+To parameterise the reactivity of organic matter we test two different approaches. First, the empirical relationship proposed by \citet{boudreau1997diagenetic} is used (see also Section \ref{subsec:globalhypsometry}), 
 which relates the apparent OM degradation rate constant in the bioturbated layer to the burial velocity, $w$ (cm year$^{-1}$):
 \begin{equation}
  k_\mathrm{app} = 0.38 \cdot w^{0.59}.
@@ -1664,7 +1672,7 @@ We assume that $k_\mathrm{app}$ represents the mean OM reactivity in the bioturb
   k_\mathrm{app} &= f_1 \cdot k_1 + f_2 \cdot k_2 \label{boudreau_assumption1}\\
   k_2 &= k_1/x					\label{boudreau_assumption2}
 \end{align}
-where $x$ describes the relation between $k_1$ and $k_2$ and is subject to sensitivity experiments in Section \ref{subsec:GENIE-pre-ind} (with values of $x \in \{2, 4, 5, 8, 10, 25, 50, 100, 125\}$). 
+where $x$ describes the relation between $k_1$ and $k_2$ and is subject to sensitivity experiments (with values of $x \in \{2, 4, 5, 8, 10, 25, 50, 100, 125\}$). 
 As the fractions of labile and refractory OM reaching the sediments ($f_1, f_2$) is known from cGENIE we can calculate $k_1$ and $k_2$ independently for each grid-cell. 
 For the second approach, we assume globally invariant degradation rate constants. The rate constants for the more refractory OM pool, $k_2$, is systematically varied between 0.0002 and 0.005 year$^{-1}$ and the more labile 
 OM component, described by $k_1$, is assumed to degrade 2, 4, 5, 8, 10, 20 and 50 times faster, respectively. 

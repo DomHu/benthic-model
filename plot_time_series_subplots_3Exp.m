@@ -3,10 +3,10 @@
 clear all;
 
 % set experiment 
-exp_1 = './cgenie_output/EXAMPLE05._rwlma.PO4_S18x18.OPEN_noCaCO3_Corg_all_remin_2211';
+exp_1 = './cgenie_output/0906_Archeretal2009_OMEN.boudreau1997_25_fromrestart_5cm';
 %exp_2 = './cgenie_output/EXAMPLE05.worbe2.S36x36_Corg_ksmaller.OPEN_0811';
-exp_3 = './cgenie_output/EXAMPLE05._rwlma.PO4_S18x18.OPEN_noCaCO3_2211';
-exp_4 = './cgenie_output/EXAMPLE._rwlma.PO4_S18x18.SPIN1';
+exp_3 = './cgenie_output/1207_Archer_Boudreau_TEST_old_w';
+exp_4 = './cgenie_output/1207_Archer_Boudreau_TEST_new_w';
 % %%%% load other data
 
 REF_sed_O2_allremin = load(fullfile(exp_1,'/biogem/biogem_series_ocn_O2.res'),'ascii');
@@ -52,7 +52,8 @@ plot(REF_sed_O2_allremin(:,1),REF_sed_O2_allremin(:,3)*1e+6,'b',REF_sed_O2_NoOME
 %plot(REF_sed_O2_allremin(:,1),REF_sed_O2_allremin(:,3)*1e+6,'b',REF_sed_O2_smallerk(:,1),REF_sed_O2_smallerk(:,3)*1e+6,'r',REF_sed_O2_NoOMEN(:,1),REF_sed_O2_NoOMEN(:,3)*1e+6,'g--',REF_sed_O2_SPIN(:,1),REF_sed_O2_SPIN(:,3)*1e+6,'k:'); 
 xlabel('yrs ');
 ylabel('O_2 (\mumol kg^{-1})');
-hleg=legend('OPEN: No CaCO3, OMEN: all remin','OPEN: No CaCO3, No-OMEN', 'SPIN: Closed with CaCO3 - No OMEN'); ylim([0 300])
+hleg=legend('OLD EXP','OLD w - sed-rate', 'NEW w - burial rate'); 
+ylim([0 300])
 set(hleg,'FontSize',4);
 set(hleg,'Location','best')
 

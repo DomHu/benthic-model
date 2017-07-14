@@ -247,7 +247,7 @@ CONTAINS
 !            & loc_sed_pres_fracC,loc_sed_pres_fracP,loc_exe_ocn(:),loc_sed_mean_OM &
 !            & )
        CALL sub_huelseetal2016_main( &
-            & dum_dtyr,dum_D,sed_OM_bur(dum_i,dum_j),loc_new_sed(:),sed_fsed(is_POC_frac2,dum_i,dum_j),dum_sfcsumocn(:), &
+            & dum_i,dum_j,dum_dtyr,dum_D,sed_OM_bur(dum_i,dum_j),loc_new_sed(:),sed_fsed(is_POC_frac2,dum_i,dum_j),dum_sfcsumocn(:), &
             & loc_sed_pres_fracC,loc_sed_pres_fracP,loc_exe_ocn(:),loc_sed_mean_OM &
             & )
        ! set fractional flux of POC available for CaCO3 diagenesis
@@ -1466,7 +1466,7 @@ CONTAINS
 !            & loc_sed_pres_fracC,loc_sed_pres_fracP,loc_exe_ocn(:),loc_sed_mean_OM &
 !            & )
        CALL sub_huelseetal2016_main( &
-            & dum_dtyr,dum_D,sed_OM_bur(dum_i,dum_j),loc_new_sed(:),sed_fsed(is_POC_frac2,dum_i,dum_j),dum_sfcsumocn(:), &
+            & dum_i,dum_j,dum_dtyr,dum_D,sed_OM_bur(dum_i,dum_j),loc_new_sed(:),sed_fsed(is_POC_frac2,dum_i,dum_j),dum_sfcsumocn(:), &
             & loc_sed_pres_fracC,loc_sed_pres_fracP,loc_exe_ocn(:),loc_sed_mean_OM &
             & )
        ! calculate the return rain flux back to ocean
