@@ -1,0 +1,24 @@
+% lon, lat, Fe-P data (mumol/g), Ca-P data (mumol/g), Region ID, Region, Reference
+-3.00	269.00	1.7	3.6	1.0	% Equatorial Pacific	Fillippelli and Delaney (1996)
+3.00	249.00	2.0	7.0	1.0	% Equatorial Pacific	Fillippelli and Delaney (1996)
+4.00	225.00	-	11.4	1.0	% Equatorial Pacific	Murray and Leinen (1993)
+-19.00	236.00	6.8	12.2	2.0	% East Pacific rise	Poulton and Canfield (2006)
+-19.00	240.00	11.5	16.6	2.0	% East Pacific rise	Poulton and Canfield (2006)
+25.00	297.00	3.5	-	3.0	% North Atlantic	Morse (1978)
+-5.00	337.00	4.9	12.3	4.0	% Equatorial Atlantic	Ruttenberg (1993)
+35.00	21.00	3.0	3.0	5.0	% Mediterranean Sea	Slomp et al (2002)
+33.00	24.00	3.7	7.9	5.0	% Mediterranean Sea	Eijsink et al. (2000)
+-48.00	5.00	3.7	3	6	% Southern Oceans	Latimer and Filippelli (2001)
+-54.00	355.00	2.2	0.5	6	% Southern Oceans	
+-45.00	106.00	5	2	6	% Southern Oceans	
+-41.00	9.00	9.8	7.4	6.0	% Southern Oceans	Latimer et al. (2006).
+-50.00	5.00	0.9	1.7	6.0	% Southern Oceans	
+-53.00	5.00	1.6	1.9	6.0	% Southern Oceans	
+20.00	62.00	4.8	5.4	7.0	% Arabian Sea 	Schenau et al. (2005).
+23.00	66.00	3.2	4.8	7.0	% Arabian Sea 	Schenau et al. (2000)
+19.00	58.00	2.7	43.5	8.0	% Oman margin	Tamburini et al. (2003)
+37.00	132.00	2.5	3.5	8.0	% China Sea margin	Cha et al. (2005)
+40.00	350.00	7.0	2.0	8.0	% Iberian margin	van der Zee et al. (2002)
+49.00	347.00	3.0	3.0	8.0	% North Atlantic slope 	Slomp et al. (1996)
+
+

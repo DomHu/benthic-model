@@ -120,7 +120,7 @@ hold on
 % Plot conditional CDFs in gray scale:
 for j=1:n
     plot(YF,FC{iii(j)},'Color',map(j,:),'LineWidth',2)    
-    set(gca,'FontSize',fs)%,'YLim',[0 1.1],'YTick',[0 0.5 1])
+    set(gca,'FontSize',fs,'YLim',[0 1.1],'YTick',[0 0.5 1])
     xlabel(y_label,'FontSize',fs);
 end
 axis([min(YF),max(YF),-0.02,1.02])
@@ -129,7 +129,7 @@ if flag % Add colorbar on the left
     ColorBarLabels = cell(1,n);
     for j=1:n; ColorBarLabels{j} = sprintf('%5.4g',ccc(j)); end
     h=colorbar('location','eastoutside','FontSize',12,...
-        'YTick',1.5:1.5+n,'YTickLabel',ColorBarLabels);
+        'YTick',[0+1/(2*n):1/n:1-1/(2*n)],'YTickLabel',ColorBarLabels);
     title(h,x_label,'FontSize',fs);
 end
 

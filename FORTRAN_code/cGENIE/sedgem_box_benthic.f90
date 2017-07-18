@@ -321,12 +321,12 @@ CONTAINS
 
             ! CHECK if still lower than 5.0e-4, than cut there, as OMEN produces positive O2 SWI-fluxes
             if(loc_sed_burial .LE. 4.0e-4)then
-!                print*,''
-!                print*,'OMEN burial < 5.0e-4 !!!!!!!!!!!!!!!!!!!!!!!!!!'
-!                print*,'dum_D = ', dum_D
-!                print*,'loc_new_sed_vol_OLD =', loc_new_sed_vol
-!                print*,'loc_sed_burial_NEW before cut=', loc_sed_burial
-!                print*,'1/(1-por)*loc_new_sed(is_det) = ', 1/(1-por)*loc_new_sed(is_det)
+                !                print*,''
+                !                print*,'OMEN burial < 5.0e-4 !!!!!!!!!!!!!!!!!!!!!!!!!!'
+                !                print*,'dum_D = ', dum_D
+                !                print*,'loc_new_sed_vol_OLD =', loc_new_sed_vol
+                !                print*,'loc_sed_burial_NEW before cut=', loc_sed_burial
+                !                print*,'1/(1-por)*loc_new_sed(is_det) = ', 1/(1-por)*loc_new_sed(is_det)
                 loc_sed_burial = 4.0e-4
             end if
 
@@ -340,19 +340,19 @@ CONTAINS
             loc_POC2_flux_swi = conv_POC_cm3_mol*dum_is_POC_frac2*loc_fPOC
 
             ! make the k1 - k2 relation depth dependent:
-            !        if(dum_D .LE. 1000.0)then
-            !            par_sed_huelse2017_k2_order = 5.0
-            !        elseif (dum_D .LE. 2000.0)then
-            !            par_sed_huelse2017_k2_order = 10.0
-            !        elseif (dum_D .LE. 3000.0)then
-            !            par_sed_huelse2017_k2_order = 25.0
-            !        elseif (dum_D .LE. 4000.0)then
-            !            par_sed_huelse2017_k2_order = 50.0
-            !        elseif (dum_D .LE. 5000.0)then
-            !            par_sed_huelse2017_k2_order = 100.0
-            !        else
-            !            par_sed_huelse2017_k2_order = 125.0
-            !        end if
+!            if(dum_D .LE. 1000.0)then
+!                par_sed_huelse2017_k2_order = 2.0
+!            elseif (dum_D .LE. 2000.0)then
+!                par_sed_huelse2017_k2_order = 5.0
+!            elseif (dum_D .LE. 3000.0)then
+!                par_sed_huelse2017_k2_order = 10.0
+!            !elseif (dum_D .LE. 4000.0)then
+!            !    par_sed_huelse2017_k2_order = 50.0
+!            !elseif (dum_D .LE. 5000.0)then
+!            !    par_sed_huelse2017_k2_order = 100.0
+!            else
+!                par_sed_huelse2017_k2_order = 25.0
+!            end if
 
             ! use oxic degradation rates
             select case (par_sed_huelse2017_kscheme)
@@ -361,7 +361,7 @@ CONTAINS
                     loc_k_apparent = 0.38*w**0.59
                     k1=loc_k_apparent/((1-dum_is_POC_frac2)+dum_is_POC_frac2/par_sed_huelse2017_k2_order)
                     k2=k1/par_sed_huelse2017_k2_order
-                !                print*,'boudreau1997 oxic k1, k2 =', k1, k2
+!                    print*,'boudreau1997 oxic dum_D, k2_order, k1, k2 =', dum_D, par_sed_huelse2017_k2_order, k1, k2
                 case ('tromp1995')
                     ! use parameterisation of Tromp et al. 1995:
                     loc_k_apparent = 2.97*w**0.62
@@ -387,7 +387,7 @@ CONTAINS
                     ! globally invariant k1 and k2 as set in par_sed_huelse2017_k1, par_sed_huelse2017_k2
                     k1=par_sed_huelse2017_k1
                     k2=k1/par_sed_huelse2017_k2_order
-                    !print*,'default degradation: k1, k2 =', k1, k2
+!                    print*,'default degradation: k1, k2 =', k1, k2
                     ! make the k1 - k2 relation depth dependent:
             !                if(dum_D .LE. 2000.0)then
             !                    loc_k_apparent = par_sed_huelse2017_k1

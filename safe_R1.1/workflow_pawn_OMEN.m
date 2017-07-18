@@ -127,21 +127,22 @@ for j=1:out
 [ YF, Fu, Fc  ] = pawn_cdfs(Yu,YY, j) ;
 
 
-% % % Plot CDFs:
-% % figure
-% % for i=1:M
-% %    subplot(1,M,i)
-% %    pawn_plot_cdf(YF, Fu, Fc(i,:),[],'SWI-flux')
-% % end
-% % title(Titles(j))
-% % 
-% % % Further analyze CDF of one input:
-% % i = 1 ;
-% % figure;
-% % pawn_plot_cdf(YF, Fu, Fc(i,:),xc{i},'SWI-flux',labelparams{i}) % same
-% % title(Titles(j))
-% % % function as before but exploiting more optional input arguments
-% % 
+% Plot CDFs:
+figure
+for i=1:M
+   subplot(1,M,i)
+   pawn_plot_cdf(YF, Fu, Fc(i,:),[],'SWI-flux')
+end
+title(Titles(j))
+
+% Further analyze CDF of one input:
+i = 1 ;
+figure;
+pawn_plot_cdf(YF, Fu, Fc(i,:),xc{i},'SWI-flux',labelparams{i}) % same
+title(Titles(j))
+print('-depsc2', ['00_CDFs_400m_' char(Titles(j)) 'param_' labelparams{i} '_1807.ps']);
+% function as before but exploiting more optional input arguments
+
 % Compute KS statistics:
 KS = pawn_ks(YF,Fu,Fc) ;
 
