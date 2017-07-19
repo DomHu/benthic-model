@@ -331,14 +331,12 @@ the redox dependent P release from marine sediments and its implications for pri
 
 
 \textbf{Solution presented here:}\\
-\textit{\textbf{DH: Include this discussion here:}
-Analytical approaches with distinct layers were implemented and used in the eighties to describe observed pore water profiles 
-\citep[e.g.][]{billen1982idealized, goloway_diagenetic_1982} and later for inclusion into global Earth system models \citep{tromp_global_1995}. 
-However, in addition to the oxic zone these models only describe one anoxic zone, either a denitrification layer \citep{billen1982idealized, goloway_diagenetic_1982} or a sulfate reduction layer \citep{tromp_global_1995}. 
-In addition, they ignore reoxidation of reduced species produced in the anoxic layers.}\\ 
-%>>>
-\marginnote{\textbf{DH:} @ Sandra: which Vandenborght papers? \& with ERSEM you mean the Plymouth model? Their model is vertically integrated...}[-1cm]%<<<
-
+Analytical approaches with distinct biogeochemical zones were implemented and used in the seventies and eighties to describe observed pore water profiles 
+\citep[e.g.][]{vanderborght_vertical_1975, vanderborght_kinetic_1977, billen1982idealized, goloway_diagenetic_1982} and later for inclusion into global Earth system models \citep{tromp_global_1995}. 
+However, in addition to the oxic zone these models only describe one anoxic zone, either a denitrification \citep{vanderborght_vertical_1975, vanderborght_kinetic_1977, billen1982idealized, goloway_diagenetic_1982} 
+or a sulfate reduction zone \citep{tromp_global_1995}. 
+Furthermore, the approaches of \citet{vanderborght_vertical_1975}, \citet{goloway_diagenetic_1982} and \citet{tromp_global_1995} do not explicitly model the produced reduced 
+species (i.e. \chem{NH_4} and \chem{H_2S}, respectively). In addition, the model of \citet{tromp_global_1995} ignores reoxidation of \chem{H_2S} produced during sulfate reduction. 
 In order to provide a more realistic description of organic matter degradation and nutrient cycles in marine sediments we have developed the OrganicMatter ENabled SEDiment model (OMEN-SED), 
 a new, one-dimensional, numerically efficient reactive transport model. OMEN-SED is the first analytical model to explicitly describe OM cycling as well as associated dynamics of the most important TEAs 
 (i.e. \chem{O_2}, \chem{NO_3}, \chem{SO_4}), related reduced substances (\chem{NH_4}, \chem{H_2S}), the full suite of secondary-redox reactions, macronutrients (\chem{PO_4}) and associated pore water quantities (\chem{ALK}, \chem{DIC}). 
@@ -346,6 +344,20 @@ To represent a redox-dependent sedimentary P cycle we consider the formation and
 Thus, OMEN-SED captures most of the features of a complex, numerical diagenetic model, however, its computational efficiency allows the coupling to global Earth system models and therefore the investigation of coupled global biogeochemical 
 dynamics over different timescales. 
 Here, the model is presented as a 2G-approach, however, a third, non-degradable OM fraction can easily be added and OMEN-SED can be further extended to a Multi-G approach. 
+
+The first part of the paper provides a detailed description of OMEN-SED (Section \ref{sec:model_description}). This includes descriptions of the general model approach (Section \ref{subsec:GeneralModelApproach}), 
+of the conservation equations for all explicitly represented biogeochemical tracers (Section \ref{subsec:ReactionNetwork}), as well as a summary of global relationships 
+used to constrain reaction and transport parameters in OMEN-SED (Section \ref{subsec:ModelParameters}). 
+In addition, a generic algorithm is described which is used to match internal boundary conditions and to determine the integration constants for the analytical solutions 
+(Section \ref{subsec:Determine_IC}). 
+In order to validate the stand-alone version of OMEN-SED the second part of the paper performs an extensive sensitivity analysis for the most important model parameters and 
+resulting sediment-water interface fluxes are compared with a global database (Section \ref{subsec:SA}). 
+In addition, results of the stand-alone model are compared with observed pore water profiles from different ocean depths (Section \ref{subsec:SedProfiles}) and OMEN-SED 
+simulations of TEA-fluxes along a typical ocean transect are compared with observations and results from a complete, numerical diagenetic model (Section \ref{subsec:globalhypsometry}). 
+Thereafter, the coupling of OMEN-SED to the carbon-centric version of the ``GENIE'' Earth system model \citep[cGENIE,][]{ridgwell_marine_2007} is describe (Section \ref{subsubsec:Methods_ESM_coupling}). 
+Sensitivity studies are carried out using this coupled model and modelled organic matter concentrations in the surface sediments are compared to a global database \citep[][Section \ref{subsubsec:Methods_pre-ind_ESM_simul}]{seiter_organic_2004}. 
+Finally, potential applicabilities of OMEN-SED are suggested and model limitations are critically analyzed (Section \ref{sec:Appl_Limitations}).
+
 % (including one ``refractory'' OM pool, whose degradability is not relevant for the timescales considered)
 %See Van Cappellen and Wang (1996): ``Metal cycling in surface sediments: Modeling the interplay or transport and reaction'' for some good basic info! 
 
@@ -356,7 +368,7 @@ Here, the model is presented as a 2G-approach, however, a third, non-degradable 
 % - be consistent in the paper and always use the same terminology e.g. zone, boundary,... \\
 % - don't use I and II for the bioturb, non-bioturb zones and the redox zones. For the redox zones, you actually do not need to use I, II, and III at all, because you name the zone explicitly, so this should be clear}
 
-\section{Model Description}
+\section{Model Description}\label{sec:model_description}
 OMEN-SED is a new, one-dimensional, computationally efficient reaction-transport model is designed for the coupling to regional/global biogeochemical and Earth system models. 
 OMEN-SED is implemented as a Fortran version that can be easily coupled to a pelagic model via the coupling routine \textsf{\textbf{OMEN\_SED\_main}}. 
 In addition, OMEN-SED exists as a stand-alone version implemented in MATLAB and the entire model can be executed on a standard personal computer in less than 0.1 seconds. 
@@ -367,7 +379,7 @@ The following section provides a detailed description of OMEN-SED. Tables \ref{t
 and \ref{table:reaction_parameters} provide a glossary of model parameters along with their respective units.
 
 \subsection {General Model Approach} \label{subsec:GeneralModelApproach}
-In OMEN-SED, the calculation of benthic uptake, recycling and burial fluxes is based on the vertically resolved conservation equation for solid and dissolved species in porous media 
+In OMEN-SED, the calculation of benthic uptake, recycling and burial fluxes is generally based on the vertically resolved conservation equation for solid and dissolved species in porous media 
 \citep[e.g.][]{berner_early_1980, boudreau1997diagenetic}:
 \begin{equation} 
 \frac{\partial \xi C_i}{\partial t}=-\frac{\partial}{\partial z}\left( -\xi D_i \frac{\partial C_i}{\partial z} +\xi w C_i\right)    +\xi \sum_j R_i^j \label{eq:Eq_generaldiagenetic}
@@ -388,7 +400,8 @@ and $D_i=D_{\mathrm{bio}}$ for solid species), $w$ is the burial rate  and $\sum
 OMEN-SED accounts for both the advective, as well as the diffusive transport of dissolved and solid species. Solid and dissolved species are buried in the sediment according to a constant burial rate $w$, thus 
 neglecting the effect of sediment compaction (i.e. $\frac{\partial \phi}{\partial z}=0$) due to mathematical constraints. 
 The molecular diffusion of dissolved species is described by Fick's law applying a species-specific apparent diffusion coefficient, $D_{\mathrm{mol},i}$.  In addition, the activity of infaunal organisms in the bioturbated zone 
-is simulated using a diffusive term \citep[e.g.][]{boudreau_mathematics_1986}, with a constant bioturbation coefficient $D_{\mathrm{bio}}$ in the bioturbated zone, while $D_{\mathrm{bio}}$ is set to zero below $z_{bio}$. 
+is simulated using a diffusive term \citep[e.g.][]{boudreau_mathematics_1986}, with a constant bioturbation coefficient $D_{\mathrm{bio}}$ in the bioturbated zone, 
+while $D_{\mathrm{bio}}$ is set to zero below the maximum bioturbation depth, $z_{bio}$. 
 The pumping activity by burrow-dwelling animals and the resulting ventilation of tubes, the so-called bioirrigation, is encapsulated in a factor $f_{ir}$ that enhances the molecular diffusion coefficient 
 \citep[hence, $D_{i,0}=D_{\mathrm{mol},i}\cdot f_{ir}$,][]{soetaert1996dynamic}. 
 % The flux divergence is thus given by:
@@ -399,7 +412,7 @@ The pumping activity by burrow-dwelling animals and the resulting ventilation of
 % burial rate.
 The reaction network of OMEN-SED accounts for the most important primary and secondary redox reactions, equilibrium reactions, mineral dissolution and precipitation, as well as adsorption and desorption processes that affect 
 the dissolved and solid species explicitly resolved in OMEN-SED. Tables \ref{table:reactions_processes} and \ref{table:Reaction_Network} provide a summary of the reactions and biogeochemical tracers considered in OMEN-SED together 
-with their respective reaction stoichiometry. %Table \ref{table:Reaction_Network} summarises their reaction stoichiometry and Table \ref{table:ReactionOverview} provides an overview of their description in the model.
+with their respective reaction stoichiometries. %Table \ref{table:Reaction_Network} summarises their reaction stoichiometry and Table \ref{table:ReactionOverview} provides an overview of their description in the model.
 %>>>
 \marginnote{\textbf{SA:} Tab 1 is maybe a bit redundant? \textbf{DH:} I still think it's a good summary/overview!? and the other one could go into the appendix!?}[-1.5cm]%<<<
 
@@ -431,7 +444,7 @@ Biogeochemical tracers & Organic matter (2-G), oxygen, nitrate, ammonium, sulfat
 \end{table}
  
 All parameters in Eq. (\ref{eq:Eq_generaldiagenetic}) may vary with depth and many reaction rate expressions depend on the concentration of other species. 
-Expressing Eq. (\ref{eq:Eq_generaldiagenetic}) for a set of chemical species thus results in a highly non-linear, coupled set of equations that can only 
+Expressing Eq. (\ref{eq:Eq_generaldiagenetic}) for a set of chemical species thus results in a non-linear, coupled set of equations that can only 
 be solved numerically. 
 However, OMEN-SED is designed for the coupling to Earth system models and, therefore, cannot afford a computationally expensive numerical solution. 
 Yet, a computationally efficient analytical solution of Eq. (\ref{eq:Eq_generaldiagenetic}) can be derived by 1) assuming steady state conditions (i.e.$ \frac{\partial C_i}{\partial t}=0$) 
@@ -443,33 +456,34 @@ the sediment into 1) an oxic zone delineated by the oxygen penetration depth $z_
 3) a sulfate reduction zone situated between $z_{\chem{NO_3}}$ and the sulfate penetration depth $z_{\chem{SO_4}}$; and 4) a methanogenic zone situated below $z_{\chem{SO_4}}$ (Fig. \ref{fig:Sediment_layers}).  
 In each of these zones Eq. (\ref{eq:Eq_generaldiagenetic}) is applied with depth invariant parameters. Yet, parameter values may differ across zones. 
 The biogeochemical zones are linked by stating continuity in both concentrations and fluxes at the dynamic, internal boundaries 
-($z_b \in \{z_{\mathrm{bio}}, z_{\mathrm{ox}}, z_{\chem{NO_3}}, z_{\chem{SO_4}} \}$). Its important to note that the boundaries of all biogeochemical zones 
-(i.e. TEA penetration depths) are dynamically calculated and their depth thus varies in response to changing boundary conditions and forcings 
-(see Section \ref{subsec:GBCM} for details). 
+($z_b \in \{z_{\mathrm{bio}}, z_{\mathrm{ox}}, z_{\chem{NO_3}}, z_{\chem{SO_4}} \}$). These boundaries are dynamic because their depth varies in response to changing ocean 
+boundary conditions and forcings (see Section \ref{subsec:GBCM} for details). Furthermore, the maximum bioturbation depth is not restricted to a specific biogeochemical zone, 
+hence OMEN-SED allows bioturbation to occur in the anoxic zones of the sediment (here all zones $z > z_{\mathrm{ox}}$ combined). 
 In addition, the formulation of the reaction term in Eq. (\ref{eq:Eq_generaldiagenetic}) varies between zones and encapsulates the most pertinent reaction 
 processes within the respective zone (see Section \ref{subsec:ReactionNetwork}), thus simplifying the mathematical description of the reaction network while 
 retaining most of its biogeochemical complexity.
 
-All consumption or production processes of dissolved species related to the degradation of organic matter are a function of the organic matter concentration and can thus be expressed 
-as a series of exponential terms ($ \sum_j \alpha_j \exp(-\beta_j z)$, see Eq. (\ref{eq:generalODE})). In addition, adsorption and mineral precipitation 
-processes can be expressed as zero or first order reaction ($Q$ or $k\cdot C_i$, in Eq. (\ref{eq:generalODE})). 
-Fast adsorption is described as an instantaneous equilibrium reaction. 
+All consumption or production processes of dissolved species related to the degradation of organic matter are a function of the organic matter concentration and, 
+because first-order decay is assumed in the kinetic expression, can  be expressed 
+as a series of exponential terms ($ \sum_j \alpha_j \exp(-\beta_j z)$, see Eq. (\ref{eq:generalODE})). In addition, slow adsorption/desorption and mineral precipitation 
+processes can be expressed as zero or first order (reversible) reaction ($Q$ or $k\cdot (C_i - \tilde{C})$, in Eq. (\ref{eq:generalODE})). 
+Fast adsorption is described as an instantaneous equilibrium reaction using a constant adsorption coefficient $K_i$. 
 The reoxidation of reduced substances is accounted for implicitly by adding a (consumption/production) flux to the internal boundary conditions 
 (see Sections \ref{subsubsec:O2}, \ref{subsubsec:N} and \ref{subsubsec:S} \textbf{SA: make reference to the section where this is explained in detail}). 
 %>>>
 \marginnote{\textbf{DH}: Do you mean these sections? Not discussed in further details anywhere else}[-1.5cm]%<<<
 %>>>
 This simplification has been used previously by \citet{gypens_simple_2008} for nitrate and ammonium and can be justified as it has been shown that the 
-reoxidation mainly occurs at an infinitesimally thin layer at the oxic/anoxic interface \citep{soetaert_model_1996}. 
+reoxidation mainly occurs within a thin layer at the oxic/anoxic interface \citep{soetaert_model_1996}. 
 The general reaction-transport equation of OMEN-SED is thus given by:
 \begin{empheq}[box={\mybluebox[5pt]}]{equation}
-  \frac{\partial C_i}{\partial t} = 0 = D_i\frac{\partial^2C_i }{\partial z^2} - w\frac{\partial C_i }{\partial z} - k\cdot C_i - \sum_j \alpha_j \exp(-\beta_j z) + Q \label{eq:generalODE}
+  \frac{\partial C_i}{\partial t} = 0 = \frac{D_i}{1+K_i}\frac{\partial^2C_i }{\partial z^2} - w\frac{\partial C_i }{\partial z} - \frac{1}{1+K_i} \left( k\cdot (C_i - \tilde{C}) + \sum_j \alpha_j \exp(-\beta_j z) - Q \right) \label{eq:generalODE}
 \end{empheq}
 % \begin{equation} 
 %  \boxed{\frac{\partial C_i}{\partial t} = 0 = D_i\frac{\partial^2C_i }{\partial z^2} - w\frac{\partial C_i }{\partial z} - k\cdot C_i - \sum_j \alpha_j \exp(-\beta_j z) + Q} \label{eq:generalODE_orig}
 %  \end{equation}
 where $1/\beta_j$ can be interpreted as the length scale and $\alpha_j$ as the relative importance (or the magnitude at $z = 0$) of reaction $j$ \citep{boudreau1997diagenetic}, 
-$k$ is a generic first order reaction rate constant, $Q$ is a zeroth-order (or constant) reaction rate.
+$k$ is a generic first order reaction rate constant, $\tilde{C}$ is an equilibrium or asymptotic concentration of $C$ and $Q$ is a zeroth-order (or constant) reaction rate.
 
 The analytical solution of Eq. (\ref{eq:generalODE}) is of the general form:
 \begin{align}
@@ -479,7 +493,7 @@ with
 \begin{equation} 
  a = \frac{w - \sqrt{w^2+4\cdot D\cdot k}}{2\cdot D}, \quad b = \frac{w + \sqrt{w^2+4\cdot D\cdot k}}{2\cdot D}
 \end{equation}
-where $A$ and $B$ are integration constants that can be determined by applying a set of internal boundary conditions (see Section \ref{subsec:module_Structure}).
+where $A$ and $B$ are integration constants that can be determined by applying a set of internal boundary conditions (see Section \ref{subsec:Determine_IC}).
 % %>>>
 % \marginnote{\textbf{DH}: Should it be $D \beta_i^2+w\beta_i-k$ in the denom. - see \citet{boudreau1997diagenetic} Exp 6-13 Eq. 6.121}[-1.5cm]%<<<
 % %>>>
@@ -515,8 +529,9 @@ Integration of equations \eqref{eq:ODE_OC} yields the following general solution
 \begin{align}
 \intertext{I. Bioturbated zone ($z\leq z_{bio}$)}
  \chem{POC}_{i}^I(z) &= A_{1i}\cdot exp(a_{1i} z)+B_{1i}\cdot exp(b_{1i} z) \notag\\% \qquad &\text{1. Layer: ($z\leqq z_{bio}$)} \notag\\
-	&\overset{\mathrm{BC 1)}}{=} A_{1i}\cdot [ exp(a_{1i} z)-exp(b_{1i} z)] +\chem{POC}_{0i}\cdot exp(b_{1i} z) \label{eq:GS_OM1}
-\intertext{II. Non-bioturbated zone ($z_{bio} < z < z_{ox}$)}
+ \intertext{which using the boundary condition at z = 0 can be rewritten as:}
+ \chem{POC}_{i}^I(z) &\overset{\mathrm{BC 1)}}{=} A_{1i}\cdot [ exp(a_{1i} z)-exp(b_{1i} z)] +\chem{POC}_{0i}\cdot exp(b_{1i} z) \label{eq:GS_OM1}
+\intertext{II. Non-bioturbated zone ($z_{bio} < z$)}
  \chem{POC}_{i}^{II}(z) &= A_{2i}\cdot exp(a_{2i} z) \label{eq:GS_OM2}%  &\text{2. Layer: ($z> z_{bio}$)} \label{eq:GS_OM2} 
 \end{align}
 where
@@ -547,25 +562,28 @@ $z=z_{\mathrm{bio}}$&continuity& 2)& $\chem{POC}_i(z_{\mathrm{bio}}^-)$=$\chem{P
 
 
 \subsubsection{Oxygen}\label{subsubsec:O2}
-OMEN-SED explicitly accounts for oxygen consumption by the aerobic degradation of organic matter within the oxic zone, as well as the oxidation of reduced species (e.g. \chem{NH_4}, \chem{H_2S}, \chem{CH_4}) 
-produced in the anoxic zones of the sediment (here all zones $z < z_{\mathrm{ox}}$ combined). In the oxic zone ($z<z_{ox}$), the aerobic degradation consumes oxygen with a fixed \chem{O_2:C} ratio (\chem{O_2C}, Tab. \ref{table:reaction_parameters}). 
+OMEN-SED explicitly accounts for oxygen consumption by the aerobic degradation of organic matter within the oxic zone, as well as the oxidation of reduced species (i.e. \chem{NH_4}, \chem{H_2S}) 
+produced in the anoxic zones of the sediment. 
+In the oxic zone ($z<z_{ox}$), the aerobic degradation consumes oxygen with a fixed \chem{O_2:C} ratio (\chem{O_2C}, Tab. \ref{table:reaction_parameters}). 
 A predefined fraction, $\gamma_\chem{NH_4}$, of the ammonium produced during the aerobic degradation of OM is nitrified to nitrate, consuming two moles of oxygen per mole of ammonium produced. 
 In addition, OMEN-SED implicitly accounts for the oxygen consumption due to oxidation of reduced species (\chem{NH_4}, \chem{H_2S}) produced below the oxic zone through the flux boundary condition at the dynamically calculated 
 (\textbf{SA:} see section ?? for details) oxygen penetration depth $z_{\mathrm{ox}}$. 
 %>>>
 \marginnote{\textbf{DH}: comment Sandra, which Section do you mean here?}[-1cm]%<<<
-This simplification can be justified as it has been shown that these secondary redox reactions mainly occur at the oxic/anoxic 
-interface \citep{soetaert_model_1996}. All oxygen consumption processes can thus be formulated as a function of organic matter degradation. 
+%This simplification can be justified as it has been shown that these secondary redox reactions mainly occur at the oxic/anoxic interface \citep{soetaert_model_1996}. 
+All oxygen consumption processes can thus be formulated as a function of organic matter degradation. 
 The conservation equation for oxygen is given by: \textbf{SA: I'd show the POC substitution in the equations below}:
 %>>>
 \marginnote{\textbf{DH}: you mean the way I did it or in the solution? I think it's easier to understand (also how to get the solution) if it's done in the ODE}[-0.5cm]%<<<
 
 \begin{align} 
  \frac{\partial \chem{O_2}}{\partial t} = 0 &= D_{\chem{ \chem{O_2}}}\frac{\partial^2  \chem{O_2} }{\partial z^2} - w\frac{\partial  \chem{O_2}}{\partial z} - \frac{1-\phi}{\phi}\sum_i k_i \cdot [ \chem{O_2C} + 2 \gamma_{\chem{NH_4}} \chem{NC_i} ]\cdot \chem{POC}_{i}(z) \label{eq:ODE_O2_1}
+\intertext{which, using Eq. (\ref{eq:GS_OM1}) and (\ref{eq:GS_OM2}) for the depth-distribution of \chem{POC_i(z)}, can be written as:}
 \intertext{I Bioturbated zone ($z\leq z_{\mathrm{bio}}$)}
- \frac{\partial \chem{O_2^I}}{\partial t} &\overset{\ref{eq:GS_OM1}}{=} D^{I}_{\chem{ \chem{O_2}}}\frac{\partial^2  \chem{O_2} }{\partial z^2} - w\frac{\partial  \chem{O_2}}{\partial z} - \frac{1-\phi}{\phi}\sum_i k_i \cdot [ \chem{O_2C} + 2 \gamma_{\chem{NH_4}} \chem{NC_i} ]\cdot  \bigl\lgroup A_{1i}\cdot [ exp(a_{1i} z)-exp(b_{1i} z)] +\chem{POC}_{0i}\cdot exp(b_{1i} z) \bigr\rgroup\notag
+ \frac{\partial \chem{O_2^I}}{\partial t} &= 0 \overset{\ref{eq:GS_OM1}}{=} D^{I}_{\chem{ \chem{O_2}}}\frac{\partial^2  \chem{O_2} }{\partial z^2} - w\frac{\partial  \chem{O_2}}{\partial z} \notag\\
+ &\quad - \frac{1-\phi}{\phi}\sum_i k_i \cdot [ \chem{O_2C} + 2 \gamma_{\chem{NH_4}} \chem{NC_i} ]\cdot  \bigl\lgroup A_{1i}\cdot [ exp(a_{1i} z)-exp(b_{1i} z)] +\chem{POC}_{0i}\cdot exp(b_{1i} z) \bigr\rgroup\notag
 \intertext{II Non-bioturbated zone ($z_{\mathrm{bio}} < z < z_{\mathrm{ox}}$)}
-\frac{\partial \chem{O_2}^{II}}{\partial t} &\overset{\ref{eq:GS_OM2}}{=} D^{II}_{\chem{ \chem{O_2}}}\frac{\partial^2  \chem{O_2} }{\partial z^2} - w\frac{\partial  \chem{O_2}}{\partial z} - \frac{1-\phi}{\phi}\sum_i k_i \cdot [ \chem{O_2C} + 2 \gamma_{\chem{NH_4}} \chem{NC_i} ]\cdot \bigl\lgroup A_{2i}\cdot exp(a_{2i} z)  \bigr\rgroup\notag
+\frac{\partial \chem{O_2}^{II}}{\partial t} &=0 \overset{\ref{eq:GS_OM2}}{=} D^{II}_{\chem{ \chem{O_2}}}\frac{\partial^2  \chem{O_2} }{\partial z^2} - w\frac{\partial  \chem{O_2}}{\partial z} - \frac{1-\phi}{\phi}\sum_i k_i \cdot [ \chem{O_2C} + 2 \gamma_{\chem{NH_4}} \chem{NC_i} ]\cdot \bigl\lgroup A_{2i}\cdot exp(a_{2i} z)  \bigr\rgroup\notag
 \end{align}
 where $D^I_{\chem{ \chem{O_2}}}$ and $D^{II}_{\chem{ \chem{O_2}}}$ denote the \chem{O_2} diffusion coefficient for the bioturbated and non-bioturbated zone, respectively. 
 The term $\frac{1-\phi}{\phi}$ accounts for the volume conversion from solid to dissolved phase and \chem{NC_i} is the nitrogen to carbon ratio in OM. \textbf{SA: explain all terms}\\
@@ -587,13 +605,13 @@ with
 &\Phi_{i,2}^I := \frac{1-\phi}{\phi}\cdot\frac{k_i\cdot(\chem{O_2C}+2 \gamma_{\chem{NH_4}} \chem{NC_i})\cdot A_{2i}}{D_{\chem{O_2}}^{II}(-a_{2i})^2-w\cdot (-a_{2i})} \notag
 \end{align}
 
-Determining the four integration constants ($A_{\chem{O_2}}^1,\, B_{\chem{O_2}}^1,\, A_{\chem{O_2}}^2,\, B_{\chem{O_2}}^2$, see Section \ref{subsec:module_Structure} for details), as well as the $a-priori$ unknown oxygen penetration 
+Determining the four integration constants ($A_{\chem{O_2}}^1,\, B_{\chem{O_2}}^1,\, A_{\chem{O_2}}^2,\, B_{\chem{O_2}}^2$, see Section \ref{subsec:Determine_IC} for details), as well as the $a-priori$ unknown oxygen penetration 
 depth requires the definition of five boundary conditions (see Table \ref{Tab:BC_O2}). 
 At the sediment-water interface, OMEN-SED applies a Dirichlet condition (i.e. known concentration) and assumes concentration and flux continuity across the bottom of the bioturbated zone, $z_{\mathrm{bio}}$. 
 The oxygen penetration depth $z_{\mathrm{ox}}$ marks the lower boundary and is dynamically calculated as the depth at which $\chem{O_2}(z)=0$. 
 Therefore, OMEN-SED applies a Dirichlet boundary condition $\chem{O_2}(z_{\mathrm{ox}})=0$. In addition, a flux boundary is applied that implicitly accounts for the oxygen consumption by the partial oxidation 
 of $\chem{NH_4}$ and $\chem{H_2S}$ diffusing into the oxic zone from below (BC 4.2, Table \ref{Tab:BC_O2}). It is assumed that respective fractions ($\gamma_{\chem{NH_4}}$ and $\gamma_{\chem{H_2S}}$) are directly reoxidised 
-at the oxic/anoxic interface. OMEN-SED iteratively solves for $z_{\mathrm{ox}}$ by first testing if there is oxygen left at $z_\infty$ (i.e. $\chem{O_2}(z_\infty) > 0$) and, otherwise, by finding the root for the flux 
+at the oxic/anoxic interface and the remaining fraction escapes reoxidation. OMEN-SED iteratively solves for $z_{\mathrm{ox}}$ by first testing if there is oxygen left at $z_\infty$ (i.e. $\chem{O_2}(z_\infty) > 0$) and, otherwise, by finding the root for the flux 
 boundary condition 4.2 (Table \ref{Tab:BC_O2}). If $z_{\mathrm{ox}}=z_\infty$,  a zero flux boundary condition is applied as lower boundary condition. 
 %>>>
 \marginnote{\textbf{DH}: Edited explanation of finding $z_{ox}$}[-1.5cm]%<<<
@@ -616,7 +634,7 @@ $z=z_{\mathrm{ox}}$&  \chem{O_2} consumption & 4)&\textbf{IF} $ (\chem{O_2}(z_\i
 & & &\textbf{ELSE} \\
 & ($z_{\mathrm{ox}} < z_\infty$) & 4.2) &\quad $  \chem{O_2}(z_{\mathrm{ox}})=0$  \quad and \quad $-D_{ \chem{O_2}} \cdot \frac{\partial  \chem{O_2}}{\partial z}|_{z_{\mathrm{ox}}}=F_{red}(z_\mathrm{ox})$\\
 %$z=z_{\mathrm{ox}}$& & 5) $-D_{ \chem{O_2}} \cdot \frac{\partial  \chem{O_2}}{\partial z}|_{z_{\mathrm{ox}}}=F_{red, z_{\mathrm{ox}}}$\\   
-&with flux from below &&$\quad F_{red}(z_\mathrm{ox})=\frac{1-\phi}{\phi} \cdot \int_{z_{\mathrm{ox}}}^{\infty}  \sum_i \left( 2\gamma_{\chem{NH_4}} \chem{NC_i} + 2\gamma_{\chem{H_2S}} \chem{SO_4C} \right) k_i \chem{POC}_i\ dz$ \\
+& with &&$\quad F_{red}(z_\mathrm{ox})=\frac{1-\phi}{\phi} \cdot \int_{z_{\mathrm{ox}}}^{\infty}  \sum_i \left( 2\gamma_{\chem{NH_4}} \chem{NC_i} + 2\gamma_{\chem{H_2S}} \chem{SO_4C} \right) k_i \chem{POC}_i\ dz$ \\
 % was from Sandra &with:&$F_{red,z_{\mathrm{ox}}}=\beta \cdot \int_{z_{\mathrm{ox}}}^{\inf}  \sum_i k_i\cdot \chem{POC}_i  dz  + 2\cdot \gamma \cdot \int_{z_{\mathrm{ox}}}^{\inf}  \sum_i k_i\cdot \chem{POC}_i  -  $ \\
 \hline    
 \end{tabular}
@@ -650,7 +668,7 @@ where $D_\chem{NO_3}$ and $D_{\chem{NH_4}}$ denote the diffusion coefficients fo
 Integration of Eq. (\ref{eq:NO3_ODE1_L1}) - (\ref{eq:NH4_ODE1_L3}) yields the analytical solutions, which are not further developed here but follow the procedure outlined in Section \ref{subsubsec:O2} for oxygen 
 (also see Section \ref{subsec:GBCM} for more details on how to find the analytical solution). Table \ref{Tab:BC_NO3+NH4} summarises the boundary conditions applied in OMEN-SED to solve Eq. (\ref{eq:NO3_ODE1_L1}) - (\ref{eq:NH4_ODE1_L3}) 
 and to find the $a-priori$ unknown nitrate penetration depth, $z_\chem{NO_3}$. 
-The model assumes known bottom water concentrations for both species, the complete consumption of nitrate at the nitrate penetration depth (in case  $z_{\chem{NO_3}} < z_\infty$) and no change in nitrate and ammonium 
+The model assumes known bottom water concentrations for both \chem{NO_3} and \chem{NH_4}, the complete consumption of nitrate at the nitrate penetration depth (in case  $z_{\chem{NO_3}} < z_\infty$) and no change in nitrate and ammonium 
 flux at $z_\infty$. In addition, concentration and diffusive flux continuity across $z_{\mathrm{bio}}$ and $z_{\mathrm{ox}}$ is considered for \chem{NO_3} and \chem{NH_4}. 
 Furthermore, the reoxidation of upward-diffusing reduced ammonium is accounted for in the oxic-anoxic boundary condition for nitrate and ammonium. 
 OMEN-SED iteratively solves for $z_{\chem{NO_3}}$ by first testing if there is nitrate left at $z_\infty$ (i.e. $\chem{NO_3}(z_\infty) > 0$) and, otherwise, by finding the root for the flux 
@@ -670,7 +688,7 @@ $z=z_{\mathrm{bio}}$&continuity& 2)& $\chem{NO_3}(z_{\mathrm{bio}}^-)$=$\chem{NO
                && 3)& $-\left(D_{\chem{NO_3},0}+D_{\mathrm{bio}}\right )\cdot \frac{\partial \chem{NO_3}}{\partial z}|_{z_{\mathrm{bio}}^-}=-D_{\chem{NO_3},0} \cdot \frac{\partial \chem{NO_3}}{\partial z}|_{z_{\mathrm{bio}}^+}$\\
 $z=z_{\mathrm{ox}}$& continuity& 4)& $\chem{NO_3}(z_{\mathrm{ox}}^-)$=$\chem{NO_3}(z_{\mathrm{ox}}^+)$\\
                && 5)& $-D_{\chem{NO_3}} \cdot \frac{\partial \chem{NO_3}}{\partial z}|_{z_{\mathrm{ox}}^-} + \gamma_{\chem{NH_4}}\cdot F_{\chem{NH_4}}(z_{\mathrm{ox}})=-D_{\chem{NO_3}} \cdot \frac{\partial \chem{NO_3}}{\partial z}|_{z_{\mathrm{ox}}^+}$\\
-&where: & &$ F_{\chem{NH_4}}(z_{\mathrm{ox}})=\frac{1}{1+K_\chem{NH_4}}\cdot \frac{1-\phi}{\phi} \cdot \int_{z_{\chem{NO_3}}}^{\infty}  \sum_i k_i \cdot \chem{NC_i} \cdot \chem{POC}_i\ dz$ \\          
+&where: & &$ F_{\chem{NH_4}}(z_{\mathrm{ox}})=\frac{1}{1+K_\chem{NH_4}}\cdot \frac{1-\phi}{\phi} \cdot \int_{z_{\chem{NO_3}}}^{\infty}  \sum_i \chem{NC_i} \cdot k_i \cdot \chem{POC}_i\ dz$ \\          
 $z=z_{\chem{NO_3}}$& \chem{NO_3} consumption & 6) & \textbf{IF} $ (\chem{NO_3}(z_\infty)> 0 )$\\
 & ($z_{\chem{NO_3}} = z_\infty$) & 6.1) & \quad $\frac{\partial \chem{NO_3}}{\partial z}|_{z_{\chem{NO_3}}}=0$\\
 & & &\textbf{ELSE} \\
@@ -682,7 +700,7 @@ $z=z_{\mathrm{bio}}$&continuity& 2)& $\chem{NH_4}(z_{\mathrm{bio}}^-)$=$\chem{NH
                && 3)& $-\frac{D_{\chem{NH_4},0}+D_{\mathrm{bio}}}{1+K_\chem{NH_4}}\cdot \frac{\partial \chem{NH_4}}{\partial z}|_{z_{\mathrm{bio}}^-}=-\frac{D_{\chem{NH_4},0}}{1+K_\chem{NH_4}} \cdot \frac{\partial \chem{NH_4}}{\partial z}|_{z_{\mathrm{bio}}^+}$\\
 $z=z_{\mathrm{ox}}$& continuity& 4)& $\chem{NH_4}(z_{\mathrm{ox}}^-)$=$\chem{NH_4}(z_{\mathrm{ox}}^+)$\\
   & & 5)& $-\frac{D_{\chem{NH_4}}}{1+K_\chem{NH_4}} \cdot \frac{\partial \chem{NH_4}}{\partial z}|_{z_{\mathrm{ox}}^-} -\gamma_{\chem{NH_4}}\cdot F_{\chem{NH_4}}(z_{\mathrm{ox}})=-\frac{D_{\chem{NH_4}}}{1+K_\chem{NH_4}} \cdot \frac{\partial \chem{NH_4}}{\partial z}|_{z_{\mathrm{ox}}^+}$\\
-&where: & & $F_{\chem{NH_4}}(z_{\mathrm{ox}})=\frac{1}{1+K_\chem{NH_4}}\cdot \frac{1-\phi}{\phi} \cdot \int_{z_{\chem{NO_3}}}^{\infty}  \sum_i k_i \cdot \chem{NC_i} \cdot \chem{POC}_i\ dz$ \\          
+&where: & & $F_{\chem{NH_4}}(z_{\mathrm{ox}})=\frac{1}{1+K_\chem{NH_4}}\cdot \frac{1-\phi}{\phi} \cdot \int_{z_{\chem{NO_3}}}^{\infty}  \sum_i \chem{NC_i} \cdot k_i \cdot \chem{POC}_i\ dz$ \\          
 $z=z_{\chem{NO_3}}$&continuity& 6)& $\chem{NH_4}(z_{\chem{NO_3}}^-)$=$\chem{NH_4}(z_{\chem{NO_3}}^+)$\\
                & flux & 7)& $-\frac{D_{\chem{NH_4}}}{1+K_\chem{NH_4}}\cdot \frac{\partial \chem{NH_4}}{\partial z}|_{z_{\chem{NO_3}}^-}=-\frac{D_{\chem{NH_4}}}{1+K_\chem{NH_4}} \cdot \frac{\partial \chem{NH_4}}{\partial z}|_{z_{\chem{NO_3}}^+}$\\
 $z=z_{\infty}$& zero \chem{NH_4} flux & 8)& $\frac{\partial \chem{NH_4}}{\partial z}|_{z_\infty}=0$\\
@@ -714,12 +732,12 @@ The conservation equations for sulfate and sulfide are thus given by:
 %  D_{i}&=D_{i, 0}                &\text{if ($z > z_{\mathrm{bio}}$)} 
 % \end{align} 
 % and $i \in \{$SO$_4$, H$_2$S$\}$. 
-where $D_\chem{SO_4}$ and $D_{\chem{H_2S}}$ denote the diffusion coefficients for \chem{SO_4} and \chem{H_4S} which depend on the bioturbation status of the respective geochemical zone (compare Section \ref{subsec:GBCM}). 
+where $D_\chem{SO_4}$ and $D_{\chem{H_2S}}$ denote the diffusion coefficients for \chem{SO_4} and \chem{H_2S} which depend on the bioturbation status of the respective geochemical zone (compare Section \ref{subsec:GBCM}). 
 Integration of Eq. (\ref{eq:SO4_ODE1_L1}) - (\ref{eq:H2S_ODE1_L3}) yields the analytical solution and Table \ref{Tab:BC_SO4+H2S} summarises the boundary conditions applied. 
 OMEN-SED assumes known concentrations at the sediment-water interface and continuity across the bioturbation depth and the nitrate penetration depth. 
 The reoxidation of reduced \chem{H_2S} to \chem{SO_4} is accounted for implicitly via the oxic-anoxic boundary condition for both species, while reduction of \chem{SO_4} and the associated production of \chem{H_2S} via AOM 
 is accounted for through the respective boundary conditions at $z_\chem{SO_4}$. In case $z_{\chem{SO_4}}<z_\infty$, OMEN-SED assumes zero sulfate concentration at $z_{\chem{SO_4}}$ and its diffusive flux must equal the amount of 
-methane produced below; or, in case $z_{\chem{SO_4}}=z_\infty$, a zero flux condition for sulfate is considered. 
+methane produced below (with a methane to carbon ratio of \chem{MC}); or, in case $z_{\chem{SO_4}}=z_\infty$, a zero flux condition for sulfate is considered. 
 OMEN-SED iteratively solves for $z_{\chem{SO_4}}$ by first testing if there is sulfate left at $z_\infty$ (i.e. $\chem{SO_4}(z_\infty) > 0$) and, otherwise, by finding the root for the flux 
 boundary condition 8.2 (Table \ref{Tab:BC_SO4+H2S}). At the lower boundary $z_\infty$ zero flux of \chem{H_2S} is considered. 
 
@@ -738,14 +756,14 @@ $z=z_{\mathrm{bio}}$&continuity& 2)& $\chem{SO_4}(z_{\mathrm{bio}}^-)$=$\chem{SO
                & flux & 3)& $-\left(D_{\chem{SO_4},0}+D_{\mathrm{bio}}\right )\cdot \frac{\partial \chem{SO_4}}{\partial z}|_{z_{\mathrm{bio}}^-}=-D_{\chem{SO_4},0} \cdot \frac{\partial \chem{SO_4}}{\partial z}|_{z_{\mathrm{bio}}^+}$\\
 $z=z_{\mathrm{ox}}$& continuity& 4)& $\chem{SO_4}(z_{\mathrm{ox}}^-)$=$\chem{SO_4}(z_{\mathrm{ox}}^+)$\\
                & flux & 5)& $-D_{\chem{SO_4}} \cdot \frac{\partial \chem{SO_4}}{\partial z}|_{z_{\mathrm{ox}}^-} + \gamma_{\chem{H_2S}}\cdot F_{\chem{H_2S}}(z_{\mathrm{ox}})=-D_{\chem{SO_4}} \cdot \frac{\partial \chem{SO_4}}{\partial z}|_{z_{\mathrm{ox}}^+}$\\
-&where:& &$\quad F_{\chem{H_2S}}(z_{\mathrm{ox}})=\frac{1-\phi}{\phi} \cdot \left( \int_{z_{\chem{NO_3}}}^{\chem{SO_4}}  \sum_i \chem{SO_4C} \cdot k_i \cdot \chem{POC}_i\ dz + \gamma_\chem{CH_4}\cdot \int_{z_{\chem{SO_4}}}^{\infty}  \sum_i \chem{MC} \cdot k_i \cdot \chem{POC}_i\ dz \right)$\\          
+&where:& &$F_{\chem{H_2S}}(z_{\mathrm{ox}})=\frac{1-\phi}{\phi} \cdot \left( \int_{z_{\chem{NO_3}}}^{\chem{SO_4}}  \sum_i \chem{SO_4C} \cdot k_i \cdot \chem{POC}_i\ dz + \gamma_\chem{CH_4}\cdot \int_{z_{\chem{SO_4}}}^{\infty}  \sum_i \chem{MC} \cdot k_i \cdot \chem{POC}_i\ dz \right)$\\          
 $z=z_{\chem{NO_3}}$&continuity& 6)& $\chem{SO_4}(z_{\chem{NO_3}}^-)$=$\chem{SO_4}(z_{\chem{NO_3}}^+)$\\
                & flux & 7)& $-D_{\chem{SO_4}}\cdot \frac{\partial \chem{SO_4}}{\partial z}|_{z_{\chem{NO_3}}^-}=-D_{\chem{SO_4}} \cdot \frac{\partial \chem{SO_4}}{\partial z}|_{z_{\chem{NO_3}}^+}$\\
 $z=z_{\chem{SO_4}}$& SO$_4$ consumption & 8)&  \textbf{IF} $ (\chem{SO_4}(z_\infty)> 0 )$\\
 & ($z_{\chem{SO_4}} = z_\infty$) & 8.1) & \quad $\frac{\partial SO_4}{\partial z}|_{z_{\chem{SO_4}}}=0$\\
 & & &\textbf{ELSE} \\
 & ($z_{\chem{SO_4}} < z_\infty$) & 8.2) & \quad $\chem{SO_4}(z_{\chem{SO_4}})=0$ \quad and \quad $-D_{\chem{SO_4}} \cdot \frac{\partial \chem{SO_4}}{\partial z}|_{z_{\chem{SO_4}}}= \gamma_\chem{CH_4} \cdot F_{\chem{CH_4}}(z_{\chem{SO_4}})$\\%\quad \textcolor{red}{or/and (???)} \quad $\frac{\partial \chem{SO_4}}{\partial z}|_{z_{\chem{SO_4}}}= 0$\\   
-&with flux from below:& &$ \quad F_{\chem{CH_4}}(z_{\chem{SO_4}})=\frac{1-\phi}{\phi} \cdot \int_{z_{\chem{SO_4}}}^{\infty}  \sum_i \chem{MC} \cdot k_i \cdot \chem{POC}_i\ dz$ \\
+& with & &$ \quad F_{\chem{CH_4}}(z_{\chem{SO_4}})=\frac{1-\phi}{\phi} \cdot \int_{z_{\chem{SO_4}}}^{\infty}  \sum_i \chem{MC} \cdot k_i \cdot \chem{POC}_i\ dz$ \\
 % was from Sandra &with:&$F_{red,z_{\mathrm{ox}}}=\beta \cdot \int_{z_{\mathrm{ox}}}^{\inf}  \sum_i k_i\cdot \chem{POC}_i  dz  + 2\cdot \gamma \cdot \int_{z_{\mathrm{ox}}}^{\inf}  \sum_i k_i\cdot \chem{POC}_i  -  $ \\
 \hline
 $z=0$& known concentration& 1)& $\chem{H_2S}(0)=\chem{H_2S}_{0}$  \\
@@ -753,7 +771,7 @@ $z=z_{\mathrm{bio}}$&continuity& 2)& $\chem{H_2S}(z_{\mathrm{bio}}^-)$=$\chem{H_
                & flux & 3)& $-\left(D_{\chem{H_2S},0}+D_{\mathrm{bio}}\right )\cdot \frac{\partial \chem{H_2S}}{\partial z}|_{z_{\mathrm{bio}}^-}=-D_{\chem{H_2S},0} \cdot \frac{\partial \chem{H_2S}}{\partial z}|_{z_{\mathrm{bio}}^+}$\\
 $z=z_{\mathrm{ox}}$& continuity& 4)& $\chem{H_2S}(z_{\mathrm{ox}}^-)$=$\chem{H_2S}(z_{\mathrm{ox}}^+)$\\
                & flux & 5)& $-D_{\chem{H_2S}} \cdot \frac{\partial \chem{H_2S}}{\partial z}|_{z_{\mathrm{ox}}^-} - \gamma_\chem{H_2S}  F_{\chem{H_2S}}(z_{\mathrm{ox}})=-D_{\chem{H_2S}} \cdot \frac{\partial \chem{H_2S}}{\partial z}|_{z_{\mathrm{ox}}^+}$\\
-&where: & &$\quad F_{\chem{H_2S}}(z_{\mathrm{ox}})=\frac{1-\phi}{\phi} \cdot \left( \int_{z_{\chem{NO_3}}}^{\chem{SO_4}}  \sum_i \chem{SO_4C} \cdot k_i \cdot \chem{POC}_i\ dz + \gamma_\chem{CH_4}\cdot \int_{z_{\chem{SO_4}}}^{\infty}  \sum_i \chem{MC} \cdot k_i \cdot \chem{POC}_i\ dz \right)$\\            
+&where: & &$F_{\chem{H_2S}}(z_{\mathrm{ox}})=\frac{1-\phi}{\phi} \cdot \left( \int_{z_{\chem{NO_3}}}^{\chem{SO_4}}  \sum_i \chem{SO_4C} \cdot k_i \cdot \chem{POC}_i\ dz + \gamma_\chem{CH_4}\cdot \int_{z_{\chem{SO_4}}}^{\infty}  \sum_i \chem{MC} \cdot k_i \cdot \chem{POC}_i\ dz \right)$\\            
 $z=z_{\chem{NO_3}}$&continuity& 6)& $\chem{H_2S}(z_{\chem{NO_3}}^-)$=$\chem{H_2S}(z_{\chem{NO_3}}^+)$\\
                & flux & 7)& $-D_{\chem{H_2S}}\cdot \frac{\partial \chem{H_2S}}{\partial z}|_{z_{\chem{NO_3}}^-}=-D_{\chem{H_2S}} \cdot \frac{\partial \chem{H_2S}}{\partial z}|_{z_{\chem{NO_3}}^+}$\\
 $z=z_{\chem{SO_4}}$& continuity & 8)& $\chem{H_2S}(z_{\chem{SO_4}}^-)$=$\chem{H_2S}(z_{\chem{SO_4}}^+)$\\ %$\frac{\partial \chem{H_2S}}{\partial z}|_{z_{\chem{H_2S}}}=0$\\
@@ -763,10 +781,6 @@ $z=z_{\infty}$& zero \chem{H_2S} flux & 10)& $\frac{\partial \chem{H_2S}}{\parti
 \hline    
 \end{tabular}
 \label{Tab:BC_SO4+H2S}
-%>>>
-\marginnote{\textcolor{red}{\textbf{DH}: @Sandra: BC 5) Include $\int_{z_{\chem{\chem{SO_4}}}}^{\infty}$ here?}}[-13cm]%<<<
-%>>>
-\marginnote{\textcolor{red}{\textbf{DH}: @Sandra: think yes, because at 8) \chem{CH_4} from $\int_{z_{\chem{\chem{SO_4}}}}^{\infty}$ is oxidised to \chem{H_2S}; at 5) this \chem{H_2S} to \chem{SO_4}}}[-10.5cm]%<<<
 \end{table}
 % % % % Sulfate:\\
 % % % % BC (5): Diffusive flux at $z_{\mathrm{ox}}$ is equal, considering the flux of reduced substances (H$_2$S) from below 
@@ -799,39 +813,41 @@ $z=z_{\infty}$& zero \chem{H_2S} flux & 10)& $\frac{\partial \chem{H_2S}}{\parti
 The biogeochemical description of phosphorus (P) dynamics builds on the work of \citet{caroline_p_slomp_key_1996} and accounts for phosphorus recycling through organic matter degradation, adsorption onto sediments and 
 iron(III) hydroxides (Fe-bound P), as well as carbonate fluorapatite (\chem{CFA} or authigenic P) formation (see Figure \ref{fig:P-cycle} for a schematic overview of the sedimentary P cycle). 
 In the oxic zone of the sediment, \chem{PO_4} liberated through organic matter degradation can adsorb 
-to iron(III) hydroxides forming Fe-bound P \citep[or \chem{M},][]{slomp1998role}. Below the oxic zone,  \chem{PO_4} is not only produced via organic matter degradation but can also be released from the Fe-bound P pool due to the 
+to iron(III) hydroxides forming Fe-bound P \citep[or \chem{FeP},][]{slomp1998role}. Below the oxic zone,  \chem{PO_4} is not only produced via organic matter degradation but can also be released from the Fe-bound P pool due to the 
 reduction of iron(III) hydroxides under anoxic conditions. Furthermore, in these zones phosphate concentrations build up and pore waters can thus become supersaturated with respect to carbonate fluorapatite, 
 thus triggering the authigenic formation of \chem{CFA} \citep{cappellen_mathematical_1988}. Phosphorus bound in these authigenic minerals represents a permanent sink for reactive phosphorus \citep{caroline_p_slomp_key_1996}. 
 As for ammonium, the adsorption of P to the sediment matrix is treated as an equilibrium processes, parameterised with dimensionless adsorption coefficients for the oxic and anoxic zone, 
 respectively \citep[$K_\chem{PO_4}^{\mathrm{ox}}$, $K_\chem{PO_4}^{\mathrm{anox}}$][]{slomp1998role}. 
 The sorption and desorption of P to iron(III) hydroxides as well as the authigenic fluorapatite formation are described as first-order reactions with rate constants $k_s$, $k_m$ and $k_a$, respectively (Table \ref{table:reaction_parameters}). 
-The rate of the respective process is calculated as the product of the rate constant and the difference between the current concentration (of \chem{PO_4} and \chem{M}) and an equilibrium or asymptotic concentration \citet{caroline_p_slomp_key_1996}. 
-The asymptotic Fe-bound P concentration is $\chem{M}^\infty$ and the equilibrium concentration for P sorption and authigenic fluorapatite formation are $\chem{PO_4}^s$ and $\chem{PO_4}^a$, respectively (Table \ref{table:reaction_parameters}). 
-%>>>
-\marginnote{\textbf{DH}: enough Info on Fe-adsorption and M?}[-1cm]%<<<
-%>>>The conservation equations for phosphate and Fe-bound P are thus given by:
+The rate of the respective process is calculated as the product of the rate constant and the difference between the current concentration (of \chem{PO_4} and \chem{FeP}) and an equilibrium or asymptotic concentration \citet{caroline_p_slomp_key_1996}. 
+The asymptotic Fe-bound P concentration is $\chem{FeP}^\infty$ and the equilibrium concentration for P sorption and authigenic fluorapatite formation are $\chem{PO_4}^s$ and $\chem{PO_4}^a$, respectively (Table \ref{table:reaction_parameters}). 
+The last term in Eq. (\ref{eq:PO4_ODE_L1}) and (\ref{eq:M_ODE_L1}) represents sorption of \chem{PO_4} to \chem{FeP} in the oxic zone, the last term in 
+Eq. (\ref{eq:M_ODE_L2}) and (\ref{eq:PO4_ODE_L2}) is the release of \chem{PO_4} from the \chem{FeP} pool and the 4th term in Eq. (\ref{eq:PO4_ODE_L2}) represents the permanent 
+loss of \chem{PO_4} to authigenic fluorapatite formation. 
+The conservation equations for phosphate and Fe-bound P are thus given by:
 \begin{align}
 \intertext{1. Oxic zone ($z \leq z_{\mathrm{ox}}$)}
  \frac{\partial \chem{PO_4}^I}{\partial t} &= \frac{D_{\chem{PO_4}}}{1+K_\chem{PO_4}^{\mathrm{ox}}} \frac{\partial^2\chem{PO_4}^I }{\partial z^2} - w\frac{\partial \chem{PO_4}^I }{\partial z} + \frac{1-\phi}{\phi}\frac{1}{1+K_\chem{PO_4}^{\mathrm{ox}}}\sum_i 
 					\left( \chem{PC}_i \cdot k_i \cdot \chem{POC}_{i}(z) \right) \notag\\
 					& - \frac{k_{s}}{1+K_\chem{PO_4}^{\mathrm{ox}}}(\chem{PO_4}^I-\chem{PO_4}^s)\label{eq:PO4_ODE_L1}\\  %&\text{1. Layer ($z\leq z_{\mathrm{\mathrm{ox}}} \leq zbio$)}\label{eq:SO4_ODE1_Case1_sub1}\\
- \frac{\partial \chem{M}^I}{\partial t} &= D_{\chem{M}}\frac{\partial^2\chem{M}^I }{\partial z^2} - w\frac{\partial \chem{M}^I }{\partial z} + \frac{\phi}{1-\phi}k_{s}(\chem{PO_4}^I-\chem{PO_4}^s)\label{eq:M_ODE_L1}\\  
+ \frac{\partial \chem{FeP}^I}{\partial t} &= D_{\chem{FeP}}\frac{\partial^2\chem{FeP}^I }{\partial z^2} - w\frac{\partial \chem{FeP}^I }{\partial z} + \frac{\phi}{1-\phi}k_{s}(\chem{PO_4}^I-\chem{PO_4}^s)\label{eq:M_ODE_L1}\\  
  \intertext{2. Anoxic zones ($z_{\mathrm{ox}} < z \leq z_{\infty}$)} 
- \frac{\partial \chem{M}^{II}}{\partial t} & = D_{\chem{M}}\frac{\partial^2\chem{M}^{II} }{\partial z^2} - w\frac{\partial \chem{M}^{II} }{\partial z} - k_{m}(\chem{M}^{II} - \chem{M}^\infty)\label{eq:M_ODE_L2}\\  
+ \frac{\partial \chem{FeP}^{II}}{\partial t} & = D_{\chem{FeP}}\frac{\partial^2\chem{FeP}^{II} }{\partial z^2} - w\frac{\partial \chem{FeP}^{II} }{\partial z} - k_{m}(\chem{FeP}^{II} - \chem{FeP}^\infty)\label{eq:M_ODE_L2}\\  
  \frac{\partial \chem{PO_4}^{II}}{\partial t} &= \frac{D_{\chem{PO_4}}}{1+K_\chem{PO_4}^{\mathrm{anox}}} \frac{\partial^2\chem{PO_4}^{II} }{\partial z^2} - w\frac{\partial \chem{PO_4}^{II} }{\partial z} + \frac{1-\phi}{\phi} \frac{1}{1+K_\chem{PO_4}^{\mathrm{anox}}}\sum_i 
 					\left( \chem{PC}_i \cdot k_i \cdot \chem{POC}_{i}(z) \right) \notag\\
-					& - \frac{k_{a}}{1+K_\chem{PO_4}^{\mathrm{anox}}}(\chem{PO_4}^{II}-\chem{PO_4}^a) + \frac{(1-\phi)}{\phi}\frac{k_{m}}{1+K_\chem{PO_4}^{\mathrm{anox}}}(\chem{M}^{II}-\chem{M}^\infty)\label{eq:PO4_ODE_L2}
+					& - \frac{k_{a}}{1+K_\chem{PO_4}^{\mathrm{anox}}}(\chem{PO_4}^{II}-\chem{PO_4}^a) + \frac{(1-\phi)}{\phi}\frac{k_{m}}{1+K_\chem{PO_4}^{\mathrm{anox}}}(\chem{FeP}^{II}-\chem{FeP}^\infty)\label{eq:PO4_ODE_L2}
 \end{align}
 % where
 % \begin{align}
-%  D_{\chem{PO_4}}&=D_{\chem{PO_4}, 0}+D_{\mathrm{bio}} &\text{ and }\quad D_{\chem{M}}&= D_{\mathrm{bio}} &\text{if ($z\leq z_{\mathrm{bio}}$)}\\
-%  D_{\chem{PO_4}}&=D_{\chem{PO_4}, 0} &\text{ and }\quad D_{\chem{M}}&= 0 &\text{if ($z > z_{\mathrm{bio}}$)} 
+%  D_{\chem{PO_4}}&=D_{\chem{PO_4}, 0}+D_{\mathrm{bio}} &\text{ and }\quad D_{\chem{FeP}}&= D_{\mathrm{bio}} &\text{if ($z\leq z_{\mathrm{bio}}$)}\\
+%  D_{\chem{PO_4}}&=D_{\chem{PO_4}, 0} &\text{ and }\quad D_{\chem{FeP}}&= 0 &\text{if ($z > z_{\mathrm{bio}}$)} 
 % \end{align}
 where $D_\chem{PO_4}$ denotes the diffusion coefficient for \chem{PO_4} which depends on the bioturbation status of the respective geochemical zone and 
-$D_{\chem{M}}=D_{\mathrm{bio}}$ for $z\leq z_{\mathrm{bio}}$ and $D_{\chem{M}}=0$ for $z > z_{\mathrm{bio}}$ (compare Section \ref{subsec:GBCM}). 
+$D_{\chem{FeP}}=D_{\mathrm{bio}}$ for $z\leq z_{\mathrm{bio}}$ and $D_{\chem{FeP}}=0$ for $z > z_{\mathrm{bio}}$ (compare Section \ref{subsec:GBCM}). 
 Integration of Eq. (\ref{eq:PO4_ODE_L1}) - (\ref{eq:PO4_ODE_L2}) yields the analytical solution and Table \ref{Tab:BC_PO4+M} summarises the boundary conditions applied in OMEN-SED.
 The model assumes known bottom water concentrations and equal concentrations and diffusive fluxes at $z_{\mathrm{bio}}$ and $z_{\mathrm{ox}}$ for both species. 
-A no flux boundary condition is applied at $z_\infty$.
+Additionally OMEN-SED considers no change in phosphate flux and an asymptotic Fe-bound P concentration at $z_\infty$.
+%A no flux boundary condition is applied at $z_\infty$.
 %>>>
 \marginnote{\textbf{DH}: I think what I wrote before also applies: a asymptotic Fe-bound P concentration at $z_{\infty}$ is assumed! (but is the same as ``no flux condition'' as it is now?')}[-2cm]%<<<
 %>>>
@@ -839,7 +855,7 @@ A no flux boundary condition is applied at $z_\infty$.
 
 
 \begin{table}[tbp]
-\caption{Boundary conditions for phosphate and Fe-bound P (\chem{M}). For the boundaries we define:  $z^-_{\_\_} := \lim_{h\to0} (z_{\_\_}-h)$ and $z^+_{\_\_} := \lim_{h\to0} (z_{\_\_}+h)$.}
+\caption{Boundary conditions for phosphate and Fe-bound P (\chem{FeP}). For the boundaries we define:  $z^-_{\_\_} := \lim_{h\to0} (z_{\_\_}-h)$ and $z^+_{\_\_} := \lim_{h\to0} (z_{\_\_}+h)$.}
 % title of Table
 \centering
 % used for centering table
@@ -855,13 +871,13 @@ $z=z_{\mathrm{ox}}$& continuity& 4) $\chem{PO_4}(z_{\mathrm{ox}}^-)$=$\chem{PO_4
 %&where:\textcolor{red}{$\int_{z_{\chem{SO_4}}}^{\infty}$ here?} & $\quad F_{\chem{H_2S}}(z_{\mathrm{ox}})=\frac{1-\phi}{\phi} \cdot \textcolor{red}{\gamma_{\chem{H_2S}}\cdot} \left( \int_{z_{\chem{NO_3}}}^{SO_4}  \sum_i SO_4C \cdot k_i \cdot \chem{POC}_i\ dz + \gamma_{CH_4}\cdot \int_{z_{\chem{SO_4}}}^{\infty}  \sum_i SO_4C \cdot k_i \cdot \chem{POC}_i\ dz \right)$\\          
 $z=z_{\infty}$& flux & 10) $\frac{\partial \chem{PO_4}}{\partial z}|_{z_\infty}=0$\\
 \hline
-$z=0$& known concentration& 1) $\chem{M}(0)=\chem{M}_0$  \\
-$z=z_{\mathrm{bio}}$&continuity& 2) $\chem{M}(z_{\mathrm{bio}}^-)$=$\chem{M}(z_{\mathrm{bio}}^+)$\\
-  & flux & 3) $\frac{\partial \chem{M}}{\partial z}|_{z_{\mathrm{bio}}^-}=\frac{\partial \chem{M}}{\partial z}|_{z_{\mathrm{bio}}^+}$\\
-$z=z_{\mathrm{ox}}$& continuity& 4) $\chem{M}(z_{\mathrm{ox}}^-)$=$\chem{M}(z_{\mathrm{ox}}^+)$\\
-  & flux & 5) $\frac{\partial \chem{M}}{\partial z}|_{z_{\mathrm{ox}}^-} =\frac{\partial \chem{M}}{\partial z}|_{z_{\mathrm{ox}}^+}$\\
+$z=0$& known concentration& 1) $\chem{FeP}(0)=\chem{FeP}_0$  \\
+$z=z_{\mathrm{bio}}$&continuity& 2) $\chem{FeP}(z_{\mathrm{bio}}^-)$=$\chem{FeP}(z_{\mathrm{bio}}^+)$\\
+  & flux & 3) $\frac{\partial \chem{FeP}}{\partial z}|_{z_{\mathrm{bio}}^-}=\frac{\partial \chem{FeP}}{\partial z}|_{z_{\mathrm{bio}}^+}$\\
+$z=z_{\mathrm{ox}}$& continuity& 4) $\chem{FeP}(z_{\mathrm{ox}}^-)$=$\chem{FeP}(z_{\mathrm{ox}}^+)$\\
+  & flux & 5) $\frac{\partial \chem{FeP}}{\partial z}|_{z_{\mathrm{ox}}^-} =\frac{\partial \chem{FeP}}{\partial z}|_{z_{\mathrm{ox}}^+}$\\
 %&where:\textcolor{red}{$\int_{z_{\chem{SO_4}}}^{\infty}$ here?} & $\quad F_{\chem{H_2S}}(z_{\mathrm{ox}})=\frac{1-\phi}{\phi} \cdot \textcolor{red}{\gamma_{\chem{H_2S}}\cdot} \left( \int_{z_{\chem{NO_3}}}^{SO_4}  \sum_i SO_4C \cdot k_i \cdot \chem{POC}_i\ dz + \gamma_{CH_4}\cdot \int_{z_{\chem{SO_4}}}^{\infty}  \sum_i SO_4C \cdot k_i \cdot \chem{POC}_i\ dz \right)$\\          
-$z=z_{\infty}$& asymptotic concentration & 10) $\chem{M}(z_\infty)=\chem{M}_\infty$\\
+$z=z_{\infty}$& asymptotic concentration & 10) $\chem{FeP}(z_\infty)=\chem{FeP}_\infty$\\
 \hline    
 \end{tabular}
 \label{Tab:BC_PO4+M}
@@ -967,7 +983,7 @@ $z=z_{\infty}$& zero \chem{ALK} flux & 10)& $\frac{\partial \chem{ALK}}{\partial
 \label{Tab:BC_ALK}
 \end{table}
 
-\subsection{Determination of Integration Constants}\label{subsec:module_Structure}
+\subsection{Determination of Integration Constants}\label{subsec:Determine_IC}
 
 The integration constants of all general analytical solutions derived above change in response to changing boundary conditions. Thus, OMEN-SED has to re-determine integration constants for each dynamic zone 
 (i.e. $z_{\mathrm{ox}}, z_{\mathrm{bio}}, z_{\chem{NO_3}}$ and $z_{\chem{SO_4}}$) at every time step. The bioturbation boundary poses a particular challenge as it can theoretically occur in any of the dynamic geochemical 
@@ -1074,7 +1090,7 @@ The main GBCM algorithm therefore never needs to know whether
 it is dealing with a piecewise solution (i.e. matched across the bioturbation boundary) or a ``simple'' solution (i.e. the layer is fully bioturbated or fully non-bioturbated). 
 
 
-\subsection{Model Parameters}
+\subsection{Model Parameters}\label{subsec:ModelParameters}
 The following section provides a summary of  global relationships used to constrain reaction and transport parameters in OMEN-SED. Table \ref{table:sed-charac_transport-parameters} 
 synthesises sediment and transport parameters, while table \ref{table:reaction_parameters} provides an overview of all biogeochemical parameters used in OMEN-SED.
 
@@ -1085,7 +1101,7 @@ The stand-alone version of OMEN-SED uses the empirical global relationship betwe
 \begin{equation}
  w = 3.3\cdot 10^{-0.87478367-0.00043512\cdot \text{depth}}\label{eq:sedimentation_rate},
 \end{equation}
-As mentioned before (Sec. \ref{subsec:GeneralModelApproach}), the diffusion coefficient of species $i$ is calculated as $D_i=D_{i,0}+D_{\mathrm{bio}}=D_{\mathrm{mol},i}\cdot f_{ir}+D_{\mathrm{bio}}$ for dissolved species and $D_i=D_{\mathrm{bio}}$ for solid species. 
+As mentioned before (Section \ref{subsec:GeneralModelApproach}), the diffusion coefficient of species $i$ is calculated as $D_i=D_{i,0}+D_{\mathrm{bio}}=D_{\mathrm{mol},i}\cdot f_{ir}+D_{\mathrm{bio}}$ for dissolved species and $D_i=D_{\mathrm{bio}}$ for solid species. 
 The bioturbation coefficient $D_{\mathrm{bio}}$ (cm$^2$ yr$^-1$) is constant in the bioturbated zone and also follows the empirical relationship by \citet{middelburg_empirical_1997}:
 \begin{equation}
  D_{\mathrm{bio}} = 5.2\cdot 10^{0.76241122-0.00039724\cdot \text{depth}}\label{eq:bioturbation_coeff}
@@ -1173,7 +1189,10 @@ Organic matter degradation consumes oxygen with a 1:1 stoichiometry.\\
 \textbf{N-related parameters: N/C, \chem{NO_3C}, NH4, adsorption coefficient, gamma- explain nitrification}\\
 \textbf{SO4-H2S related parameters: \chem{SO_4C} ,  gamma, AOM} reduction of 1 mol organic matter additionally produces $\chem{SO_4C}=\frac{138}{212}$ mol of hydrogen sulfide \\
 \textbf{methane: MC, AOM} \chem{MC} = 0.5 mol of methane. \\
-The rate constants sorption of \chem{PO_4} to Fe oxides, $k_s$, release of \chem{PO_4} from Fe-bound P due to Fe-oxide reduction $k_m$  and authigenic CFA precipitation $k_a$ are constrained on the basis of ??. The pore water equilibrium concentrations for P sorption and CFA precipation ($\chem{PO_4}^s$, $\chem{PO_4}^a$ ) and the asymptotic concentration for Fe-bound P ($\chem{M}^\infty$ ) are taken from  \citet{palastanga_long_term_2011}. The phosphorus to carbon ratio represents the composition of organic matter and is chosen as ?? based on ??.\\
+The rate constants sorption of \chem{PO_4} to Fe oxides, $k_s$, release of \chem{PO_4} from Fe-bound P due to Fe-oxide reduction $k_m$  and 
+authigenic CFA precipitation $k_a$ are constrained on the basis of ??. The pore water equilibrium concentrations for P sorption and CFA precipation 
+($\chem{PO_4}^s$, $\chem{PO_4}^a$ ) and the asymptotic concentration for Fe-bound P ($\chem{FeP}^\infty$ ) are taken from  \citet{palastanga_long_term_2011}. 
+The phosphorus to carbon ratio represents the composition of organic matter and is chosen as ?? based on ??.\\
 
 See Table \ref{table:reaction_parameters} for a complete summary of the parameters and their values.
 % \textcolor{red}{Or bit longer:}\\
@@ -1240,7 +1259,7 @@ $\chem{PO_4}^s$ & mol\,cm$^{-3}$ & \textcolor{red}{$1\cdot 10^{-9}$} & equilibri
 &&&\citep{caroline_p_slomp_key_1996}\\
 $\chem{PO_4}^a$ & mol\,cm$^{-3}$ &  \textcolor{red}{$3.7\cdot 10^{-9}$} & equilibrium conc. for authigenic P precipitation\\
 &&&\citep{caroline_p_slomp_key_1996}\\
-$\chem{M}^\infty$ & mol\,cm$^{-3}$ & \textcolor{red}{$1.99\cdot 10^{-10}$} & asymptotic concentration for Fe-bound P\\
+$\chem{FeP}^\infty$ & mol\,cm$^{-3}$ & \textcolor{red}{$1.99\cdot 10^{-10}$} & asymptotic concentration for Fe-bound P\\
 &&&\citep{caroline_p_slomp_key_1996}\\
 
 % $k_i$ & yr$^{-1}$ & --- & OM degradation rate constants\\
@@ -1255,10 +1274,10 @@ $\chem{M}^\infty$ & mol\,cm$^{-3}$ & \textcolor{red}{$1.99\cdot 10^{-10}$} & asy
 
 
 \section{Stand-alone sensitivity analysis and case studies}
-To validate the stand-alone version of OMEN-SED an extensive sensitivity analysis for the most important model parameters is performed and 
-resulting sediment-water interface fluxes are compared with a global database (Section \ref{subsec:SA}). 
-In addition, results of the stand-alone model are compared with observed pore water profiles from different ocean depths (Section \ref{subsec:SedProfiles}) and OMEN-SED 
-simulations of TEA-fluxes along a typical ocean transect are compared with observations and results from a complete, numerical diagenetic model (Section \ref{subsec:globalhypsometry}). 
+% To validate the stand-alone version of OMEN-SED an extensive sensitivity analysis for the most important model parameters is performed and 
+% resulting sediment-water interface fluxes are compared with a global database (Section \ref{subsec:SA}). 
+% In addition, results of the stand-alone model are compared with observed pore water profiles from different ocean depths (Section \ref{subsec:SedProfiles}) and OMEN-SED 
+% simulations of TEA-fluxes along a typical ocean transect are compared with observations and results from a complete, numerical diagenetic model (Section \ref{subsec:globalhypsometry}). 
 
 % (Maybe make sure the following is added to the different sections below).
 % % An extensive sensitivity analysis for the most important model parameters is performed with the stand-alone model and resulting sediment-water interface fluxes are compared with a global 
@@ -1303,10 +1322,11 @@ For a brief description of the methodology see Fig. \ref{fig:Sensitivity_Analysi
 	Red dots represent points for calculating the unconditional CDF (NU, here 15), grey dots are points for calculating each conditional CDF (NC, here 10), here for 
 	n = 2 conditioning points. The user can change the values of NU, NC and n. The number of model evaluations equals $\chem{N_{eval}} = $NU + n$\cdot$NC$\cdot$M, 
 	where M is the number of uncertain input parameters. 
-	B + C: Two examples of CDFs of the model calculated SWI-flux of \chem{NO_3}. 
+	B + C: Two examples of CDFs of the model calculated SWI-flux of \chem{NO_3} using NU = 200, NC = 100 and n = 10. 
 	The red lines are the unconditional distribution functions $F_y(\chem{NO_3})$ and the grey lines are the conditional distribution functions $F_{y|x_i}(\chem{NO_3})$ 
-	at different fixed values for input parameter $k_1$ (B) and $K_{\chem{NH_4}}$, using n = 10 conditioning points. As the maximal distance between conditional CDFs 
-	and unconditional CDF is greater for $k_1$ this parameter is more influentiaL for the model output (here SWI-flux of \chem{NO_3}, compare Fig. \ref{fig:Sensitivity_Analysis}). 
+	at different fixed values for input parameter $k_1$ (B) and $K_{\chem{NH_4}}$ (C). 
+	As the maximal distance between conditional CDFs and unconditional CDF is greater for $k_1$ this parameter is more influentiaL for the model output 
+	(here SWI-flux of \chem{NO_3}, compare Fig. \ref{fig:Sensitivity_Analysis}). 
 	}
 	\label{fig:Sensitivity_Analysis_methodology}
 	\end{center}
@@ -1375,7 +1395,7 @@ of the corresponding reduced substance with \chem{O_2}, thus affecting the resul
 also has a strong influence on alkalinity as it decreases alkalinity by 2 moles per mole of \chem{S} ($\chem{ALK}^\mathrm{H_2S}$, Table \ref{table:reaction_parameters}). 
 For the anoxic setup the secondary redox parameters are essentially non-influential as no \chem{O_2} is available for the reoxidation of reduced substances. 
 Especially for the oxic condition the $\chem{PO_4}$ SWI-flux appears to be insensitive to P-related parameters (i.e. $K_\chem{PO_4}^\mathrm{ox}$, $K_\chem{PO_4}^\mathrm{anox}$, $k_s$, $k_m$, $k_a$) as the majority is absorbed to $\chem{Fe}$-oxides. 
-The sensitivities change if other $\chem{PO_4}$ related equilibrium concentrations $\chem{PO_4}^s$, $\chem{PO_4}^a$ and $\chem{M}^\infty$ are used (not shown).
+The sensitivities change if other $\chem{PO_4}$ related equilibrium concentrations $\chem{PO_4}^s$, $\chem{PO_4}^a$ and $\chem{FeP}^\infty$ are used (not shown).
 Overall the results of the sensitivity analysis are in line with what one expects from a diagenetic model and thus provide ground to confirm  that OMEN-SED is able to provide sensible results.
 
 % % \textbf{Sandra: also need to be careful how we formulate it, as you made k2 dependant on k1}. 
@@ -1612,7 +1632,7 @@ Following \citet{bohlen_simple_2012}, who could show that the atomic NC-ratio st
 In addition, bottom water conditions are changed to low oxygen/high nitrate levels more likely to be found in the shallow Pacific Ocean ($\chem{O_2} = 10$ nanomole cm$^{-3}$ and $\chem{NO_3} = 80$ nanomole cm$^{-3}$). 
 
 
-\section{Coupled pre-industrial Earth system model simulations}
+\section{Coupled pre-industrial Earth system model simulations}\label{sec:ESM_coupling}
 \subsection{Coupling to the cGENIE Earth system model}\label{subsubsec:Methods_ESM_coupling}
 % Describe what needs to be done/checked. Compare/use as example what I did with GENIE coupling. What are the if-clauses used? Input to OMEN-SED, output of OMEN-SED. 
 \begin{figure}[tbp]
@@ -1843,7 +1863,7 @@ Describe Figure \ref{fig:OMEN_GENIE_invariant_and_Boudreau} and compare with wha
 % accumulating in the ocean and about 80-90\% of the mineralization in marine sediments.  
 
 
-\section{Scope of applicability and model limitations}
+\section{Scope of applicability and model limitations}\label{sec:Appl_Limitations}
 \textbf{Dominik: Needs polishing, this is my first draft}
 State-of-the art numerical models representing the full complexity of the diagenetic processes typically perform adequately at reproducing site-specific biogeochemical dynamics, however, tuning model parameters is laborious, 
 the computational demand is high and, thus, their transferability to the global scale is limited. On the other hand, analytical models are very efficient, but existing approaches coupled to global models generally use highly 
