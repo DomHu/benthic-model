@@ -7,12 +7,12 @@ plot_mean = false;
 
 % set experiment 
 %exp_1 = './cgenie_output/DOM_TEST_artifical_world_abiotic_nogastransf_noweathering_NoOMEN_0401';
-exp_1 = './cgenie_output/01_OMEN_GENIE_PreInd_April2017/2404_01_worjh2_closed_No_OMEN';
-exp_2 = './cgenie_output/01_OMEN_GENIE_PreInd_April2017/2804_01_worjh2_closed_with_PO4_Full_OMEN_zbio_wMiddelb_k_0.01';                                   
-exp_3 = './cgenie_output/01_OMEN_GENIE_PreInd_April2017/2804_02_worjh2_closed_with_PO4_Full_OMEN_zbio_wMiddelb_k_1.0';
-exp_4 = './cgenie_output/01_OMEN_GENIE_PreInd_April2017/2804_07_worjh2_closed_with_PO4_Full_OMEN_zbio_wMiddelb_k_MIN';
-exp_5 = './cgenie_output/01_OMEN_GENIE_PreInd_April2017/2804_03_worjh2_closed_with_PO4_Full_OMEN_zbio_wMiddelb_k_Tromp_oxic_anoxic';
-exp_6 = './cgenie_output/01_OMEN_GENIE_PreInd_April2017/2804_04_worjh2_closed_with_PO4_Full_OMEN_zbio_wMiddelb_k_Boudreau_oxic_anoxic';
+exp_1 = './cgenie_output/EXAMPLE.worjh2.Archeretal2009.SPIN1';                                   
+exp_2 = './cgenie_output/1507_36_Archeretal2009_OMEN.boudreau1997_3';
+exp_3 = './cgenie_output/1507_37_Archeretal2009_OMEN.boudreau1997_4';
+exp_4 = './cgenie_output/1507_38_Archeretal2009_OMEN.boudreau1997_5';
+exp_5 = './cgenie_output/1507_41_Archeretal2009_OMEN.boudreau1997_25_fromRestart';
+exp_6 = './cgenie_output/1507_42_Archeretal2009_OMEN.boudreau1997_50';
 exp_7 = './cgenie_output/01_OMEN_GENIE_PreInd_April2017/2804_05_worjh2_closed_with_PO4_Full_OMEN_zbio_wMiddelb_k_Stolpovsky_oxic_anoxic';
 % %%%% load other data
 
@@ -107,7 +107,7 @@ else    % total (mol)
     ylabel('SO_4 (mol)');
 end
 xlabel('yrs ');
-hleg=legend('No OMEN', 'k=0.01', 'k=1.0', 'k=MIN(Arndt et al.)', 'Tromp k1','Boudreau: k1 ~ w', 'Stolpovsky oxic, Boudreau anoxic k1~w'); 
+hleg=legend('Archer default', 'Boudreau - kord 3', 'Boudreau - kord 4', 'Boudreau - kord 5', 'Boudreau - kord 25', 'Boudreau - kord 50'); 
 % hleg=legend('No OMEN', 'Tromp: k1 + k2 ~ w', 'Tromp: k1 ~ w', 'Boudreau: k1 + k2 ~ w', 'Boudreau: k1 ~ w', 'Stolpovsky: k1 ~ w', 'Boudreau: k1 ~ fPOC'); 
 set(hleg,'FontSize',6);
 set(hleg,'Location','SouthEast');
@@ -194,9 +194,9 @@ xlabel('yrs ');
 % set(h,'Visible','on'); 
 
 if(plot_mean)  % mean (mol/kg)
-    print('-depsc', 'cgenie_output/0_PLOTS/plots_1503_INF_HACK/2103_DEFAULT_calcALK=false_7Exp__MEAN');
+    print('-depsc', 'cgenie_output/000_FOR_GMD_V1507_1707_20kyr/TIMESERIES/1707_invariant_1_MEAN');
 else
-    print('-depsc', 'cgenie_output/0_PLOTS/2804_for_GMD/2804_Exps_NO_burial_wMiddelburg_1');
+    print('-depsc', 'cgenie_output/000_FOR_GMD_V1507_1707_20kyr/TIMESERIES/1707_invariant_1');
 end
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% atm O2 and CO2

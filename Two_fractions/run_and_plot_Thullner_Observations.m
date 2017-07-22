@@ -42,8 +42,8 @@
                         swi.O20=132.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
                         swi.NO30=17.3e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
                         % for Pacific
-                        swi.O20=0.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
-                        swi.NO30=40.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
+%                         swi.O20=0.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
+%                         swi.NO30=40.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
                         swi.Nitrogen=true;
                         swi.NH40=0.0e-9;                                                %NH4 concentration at SWI (mol/cm^3)
                         swi.SO40=28000.0e-9;                                            %SO4 concentration at SWI (mol/cm^3)
@@ -82,8 +82,8 @@
                         swi.O20=129.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
                         swi.NO30=18.6e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
                         % for Pacific
-                        swi.O20=10.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
-                        swi.NO30=80.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
+%                         swi.O20=10.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
+%                         swi.NO30=80.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
                         swi.Nitrogen=true;
                         swi.NH40=0.0e-9;                                                %NH4 concentration at SWI (mol/cm^3)
                         swi.SO40=28000.0e-9;                                            %SO4 concentration at SWI (mol/cm^3)
@@ -124,8 +124,8 @@
                         swi.O20=121.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
                         swi.NO30=22.1e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
                         % for Pacific
-                        swi.O20=10.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
-                        swi.NO30=80.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
+%                         swi.O20=10.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
+%                         swi.NO30=80.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
                         swi.Nitrogen=true;
                         swi.NH40=0.0e-9;                                                %NH4 concentration at SWI (mol/cm^3)
                         swi.SO40=28000.0e-9;                                            %SO4 concentration at SWI (mol/cm^3)
@@ -166,8 +166,8 @@
                         swi.O20=114.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
                         swi.NO30=26.5e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
                         % for Pacific
-                        swi.O20=10.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
-                        swi.NO30=80.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
+%                         swi.O20=10.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
+%                         swi.NO30=80.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
                         swi.Nitrogen=true;
                         swi.NH40=0.0e-9;                                                %NH4 concentration at SWI (mol/cm^3)
                         swi.SO40=28000.0e-9;                                            %SO4 concentration at SWI (mol/cm^3)
@@ -208,8 +208,8 @@
                         swi.O20=116.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
                         swi.NO30=31.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
                         % for Pacific
-                        swi.O20=10.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
-                        swi.NO30=80.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
+%                         swi.O20=10.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
+%                         swi.NO30=80.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
                         swi.Nitrogen=true;
                         swi.NH40=0.0e-9;                                                %NH4 concentration at SWI (mol/cm^3)
                         swi.SO40=28000.0e-9;                                            %SO4 concentration at SWI (mol/cm^3)
@@ -251,8 +251,8 @@
                         swi.O20=135.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
                         swi.NO30=31.6e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
                         % for Pacific
-                        swi.O20=10.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
-                        swi.NO30=80.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
+%                         swi.O20=10.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
+%                         swi.NO30=80.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
                         swi.Nitrogen=true;
                         swi.NH40=0.0e-9;                                                %NH4 concentration at SWI (mol/cm^3)
                         swi.SO40=28000.0e-9;                                            %SO4 concentration at SWI (mol/cm^3)
@@ -293,8 +293,8 @@
                         swi.O20=141.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
                         swi.NO30=31.6e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
                          % for Pacific
-                        swi.O20=10.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
-                        swi.NO30=80.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
+%                         swi.O20=10.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
+%                         swi.NO30=80.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
                        swi.Nitrogen=true;
                         swi.NH40=0.0e-9;                                                %NH4 concentration at SWI (mol/cm^3)
                         swi.SO40=28000.0e-9;                                            %SO4 concentration at SWI (mol/cm^3)
@@ -366,7 +366,8 @@
             fprintf('both concentration at swi %g \n',  Cswi);
            
             fprintf('sed preservation of POC %g \n',  Cinf/Cswi);
-            
+            fprintf('POC1 wtpc SWI %g \n',  res.swi.C01*100*12/res.bsd.rho_sed);
+            fprintf('POC2 wtpc SWI %g \n',  res.swi.C02*100*12/res.bsd.rho_sed);
             % calculate depth integrated OM degradation rates
             Cox_rate.Cox_total = res.zTOC.calcReac(0.0, res.bsd.zinf, 1, 1, res.bsd, swi, res);
             Cox_rate.Cox_aerobic = res.zTOC.calcReac(0.0, res.zox, 1, 1, res.bsd, swi, res);

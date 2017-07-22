@@ -18,11 +18,11 @@ plot_mean = false;
 % %%%% load other data
 % 8 level ocean
 exp_1 = './cgenie_output/EXAMPLE.worjh2.Archeretal2009.SPIN1';                                   
-exp_2 = './cgenie_output/1507_36_Archeretal2009_OMEN.boudreau1997_3';
-exp_3 = './cgenie_output/1507_37_Archeretal2009_OMEN.boudreau1997_4';
-exp_4 = './cgenie_output/1507_38_Archeretal2009_OMEN.boudreau1997_5';
-exp_5 = './cgenie_output/1507_39_Archeretal2009_OMEN.boudreau1997_8';
-exp_6 = './cgenie_output/1507_42_Archeretal2009_OMEN.boudreau1997_50';
+exp_2 = './cgenie_output/1707_26_Archeretal2009_OMEN.inv_k2_0.007_k1_0.014_ord_2';
+exp_3 = './cgenie_output/1707_27_Archeretal2009_OMEN.inv_k2_0.007_k1_0.021_ord_3';
+exp_4 = './cgenie_output/1707_28_Archeretal2009_OMEN.inv_k2_0.007_k1_0.028_ord_4';
+exp_5 = './cgenie_output/1707_29_Archeretal2009_OMEN.inv_k2_0.007_k1_0.035_ord_5';
+exp_6 = './cgenie_output/1707_30_Archeretal2009_OMEN.inv_k2_0.007_k1_0.07_ord_10';
 
 REF_sed_O2_exp1 = load(fullfile(exp_1,'/biogem/biogem_series_ocn_O2.res'),'ascii');
 REF_sed_O2_exp2 = load(fullfile(exp_2,'/biogem/biogem_series_ocn_O2.res'),'ascii');
@@ -108,7 +108,7 @@ else    % total (mol)
     ylabel('SO_4 (mol)');
 end
 xlabel('yrs ');
-hleg=legend('Archer default', 'Boudreau - kord 3', 'Boudreau - kord 4', 'Boudreau - kord 5', 'Boudreau - kord 8', 'Boudreau - kord 50'); 
+hleg=legend('Archer default', 'Invariant - kord 2', 'Invariant - kord 3', 'Invariant - kord 4', 'Invariant - kord 5', 'Invariant - kord 10'); 
 set(hleg,'FontSize',6);
 set(hleg,'Location','SouthEast');
 
@@ -172,7 +172,7 @@ xlabel('yrs ');
 if(plot_mean)  % mean (mol/kg)
     print('-depsc', 'cgenie_output/000_FOR_GMD_V1507_1707_20kyr/TIMESERIES/1507_Boudreau_2_mean');
 else
-    print('-depsc', 'cgenie_output/000_FOR_GMD_V1507_1707_20kyr/TIMESERIES/1507_Boudreau_2');
+    print('-depsc', 'cgenie_output/000_FOR_GMD_V1507_1707_20kyr/TIMESERIES/1707_invariant_007');
 end
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% atm O2 and CO2

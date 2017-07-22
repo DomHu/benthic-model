@@ -1,14 +1,53 @@
 function DOM_PLOT_OM_burial_CROSSPLOTS()
 
+%%%%%%%%%% 1707 set of experimemts using invariant and actual burial rate
+% plot_fields_sedgem_2d('1707_01_Archeretal2009_OMEN.inv_k2_0.0045_k1_0.009_ord_2','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1707_01_invariant_k2_0045')
+% plot_fields_sedgem_2d('1707_02_Archeretal2009_OMEN.inv_k2_0.0045_k1_0.0135_ord_3','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1707_02_invariant_k2_0045')
+% plot_fields_sedgem_2d('1707_03_Archeretal2009_OMEN.inv_k2_0.0045_k1_0.018_ord_4','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1707_03_invariant_k2_0045')
+% plot_fields_sedgem_2d('1707_04_Archeretal2009_OMEN.inv_k2_0.0045_k1_0.0225_ord_5','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1707_04_invariant_k2_0045')
+% plot_fields_sedgem_2d('1707_05_Archeretal2009_OMEN.inv_k2_0.0045_k1_0.045_ord_10','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1707_05_invariant_k2_0045')
+% 
+% plot_fields_sedgem_2d('1707_06_Archeretal2009_OMEN.inv_k2_0.005_k1_0.01_ord_2','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1707_06_invariant_k2_005')
+% plot_fields_sedgem_2d('1707_07_Archeretal2009_OMEN.inv_k2_0.005_k1_0.015_ord_3','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1707_07_invariant_k2_005')
+% plot_fields_sedgem_2d('1707_08_Archeretal2009_OMEN.inv_k2_0.005_k1_0.02_ord_4','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1707_08_invariant_k2_005')
+% plot_fields_sedgem_2d('1707_09_Archeretal2009_OMEN.inv_k2_0.005_k1_0.025_ord_5','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1707_09_invariant_k2_005')
+% plot_fields_sedgem_2d('1707_10_Archeretal2009_OMEN.inv_k2_0.005_k1_0.05_ord_10','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1707_10_invariant_k2_005')
+% 
+% plot_fields_sedgem_2d('1707_11_Archeretal2009_OMEN.inv_k2_0.0055_k1_0.011_ord_2','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1707_11_invariant_k2_0055')
+% plot_fields_sedgem_2d('1707_12_Archeretal2009_OMEN.inv_k2_0.0055_k1_0.0165_ord_3','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1707_12_invariant_k2_0055')
+% plot_fields_sedgem_2d('1707_13_Archeretal2009_OMEN.inv_k2_0.0055_k1_0.022_ord_4','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1707_13_invariant_k2_0055')
+% plot_fields_sedgem_2d('1707_14_Archeretal2009_OMEN.inv_k2_0.0055_k1_0.0275_ord_5','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1707_14_invariant_k2_0055')
+% plot_fields_sedgem_2d('1707_15_Archeretal2009_OMEN.inv_k2_0.0055_k1_0.055_ord_10','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1707_15_invariant_k2_0055')
+% 
+% plot_fields_sedgem_2d('1707_16_Archeretal2009_OMEN.inv_k2_0.006_k1_0.012_ord_2','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1707_16_invariant_k2_006')
+% plot_fields_sedgem_2d('1707_17_Archeretal2009_OMEN.inv_k2_0.006_k1_0.018_ord_3','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1707_17_invariant_k2_006')
+% plot_fields_sedgem_2d('1707_18_Archeretal2009_OMEN.inv_k2_0.006_k1_0.024_ord_4','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1707_18_invariant_k2_006')
+plot_fields_sedgem_2d('1707_19_Archeretal2009_OMEN.inv_k2_0.006_k1_0.03_ord_5','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1707_19_invariant_k2_006')
+% plot_fields_sedgem_2d('1707_20_Archeretal2009_OMEN.inv_k2_0.006_k1_0.06_ord_10','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1707_20_invariant_k2_006')
+% 
+plot_fields_sedgem_2d('1707_21_Archeretal2009_OMEN.inv_k2_0.0065_k1_0.013_ord_2','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1707_21_invariant_k2_0065')
+% plot_fields_sedgem_2d('1707_22_Archeretal2009_OMEN.inv_k2_0.0065_k1_0.0195_ord_3','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1707_22_invariant_k2_0065')
+% plot_fields_sedgem_2d('1707_23_Archeretal2009_OMEN.inv_k2_0.0065_k1_0.026_ord_4','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1707_23_invariant_k2_0065')
+% plot_fields_sedgem_2d('1707_24_Archeretal2009_OMEN.inv_k2_0.0065_k1_0.0325_ord_5','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1707_24_invariant_k2_0065')
+% plot_fields_sedgem_2d('1707_25_Archeretal2009_OMEN.inv_k2_0.0065_k1_0.065_ord_10','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1707_25_invariant_k2_0065')
+% 
+% plot_fields_sedgem_2d('1707_26_Archeretal2009_OMEN.inv_k2_0.007_k1_0.014_ord_2','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1707_26_invariant_k2_007')
+% plot_fields_sedgem_2d('1707_27_Archeretal2009_OMEN.inv_k2_0.007_k1_0.021_ord_3','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1707_27_invariant_k2_007')
+% plot_fields_sedgem_2d('1707_28_Archeretal2009_OMEN.inv_k2_0.007_k1_0.028_ord_4','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1707_28_invariant_k2_007')
+% plot_fields_sedgem_2d('1707_29_Archeretal2009_OMEN.inv_k2_0.007_k1_0.035_ord_5','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1707_29_invariant_k2_007')
+% plot_fields_sedgem_2d('1707_30_Archeretal2009_OMEN.inv_k2_0.007_k1_0.07_ord_10','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1707_30_invariant_k2_007')
+
+
 %%%%%%%%%% 1507 set of experimemts using Boudreau and actual burial rate
 %plot_fields_sedgem_2d('1507_34_Archeretal2009_OMEN.boudreau1997_k_depthdep','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1507_34_Boudreau_depthdep')
 %plot_fields_sedgem_2d('1507_35_Archeretal2009_OMEN.boudreau1997_2','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1507_35_Boudreau_2')
-plot_fields_sedgem_2d('1507_36_Archeretal2009_OMEN.boudreau1997_3','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1507_36_Boudreau_3')
+%plot_fields_sedgem_2d('1507_36_Archeretal2009_OMEN.boudreau1997_3','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1507_36_Boudreau_3')
 %plot_fields_sedgem_2d('1507_37_Archeretal2009_OMEN.boudreau1997_4','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1507_37_Boudreau_4')
-plot_fields_sedgem_2d('1507_38_Archeretal2009_OMEN.boudreau1997_5','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1507_38_Boudreau_5')
-plot_fields_sedgem_2d('1507_39_Archeretal2009_OMEN.boudreau1997_8','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1507_39_Boudreau_8')
+%plot_fields_sedgem_2d('1507_38_Archeretal2009_OMEN.boudreau1997_5','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1507_38_Boudreau_5')
+%plot_fields_sedgem_2d('1507_39_Archeretal2009_OMEN.boudreau1997_8','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1507_39_Boudreau_8')
 %plot_fields_sedgem_2d('1507_40_Archeretal2009_OMEN.boudreau1997_10','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1507_40_Boudreau_10')
-plot_fields_sedgem_2d('1507_42_Archeretal2009_OMEN.boudreau1997_50','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1507_42_Boudreau_50')
+%plot_fields_sedgem_2d('1507_41_Archeretal2009_OMEN.boudreau1997_25_fromRestart','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1507_41_Boudreau_25')
+%plot_fields_sedgem_2d('1507_42_Archeretal2009_OMEN.boudreau1997_50','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1507_42_Boudreau_50')
 %plot_fields_sedgem_2d('1507_43_Archeretal2009_OMEN.boudreau1997_100','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1507_43_Boudreau_100')
 
 % plot_fields_sedgem_2d('','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-5.0,5.0,20,'','','1507_02_Boudreau_3')
