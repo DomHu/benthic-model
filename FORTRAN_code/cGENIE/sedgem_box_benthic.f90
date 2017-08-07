@@ -281,8 +281,8 @@ CONTAINS
         ! Check for no detrital flux -> Remineralize everything manually
         if(loc_new_sed(is_det) .LE. const_real_nullsmall)then
             !!! Remineralize everything manually
-            !            print*,'no detrital flux !!!!!!'
-            !            print*,'dum_i, dum_j, dum_D = ', dum_i, dum_j, dum_D
+!                        print*,'no detrital flux !!!!!!'
+!                        print*,'dum_D = ', dum_D
             !            print*,'loc_sed_burial_NEW =', loc_sed_burial
             !            print*,'1/(1-por)*loc_new_sed(is_det) = ', 1/(1-por)*loc_new_sed(is_det)
 
@@ -310,24 +310,24 @@ CONTAINS
 
             ! CHECK new burial rate for lower than detrital flux!
             if(loc_sed_burial .LE. 1/(1-por)*loc_new_sed(is_det))then
-                !            print*,''
-                !            print*,'OMEN burial < detrital !!!!!!!!!!!!!!!!!!!!!!!!!!'
-                !            print*,'dum_D = ', dum_D
+!                            print*,''
+!                            print*,'OMEN burial < detrital !!!!!!!!!!!!!!!!!!!!!!!!!!'
+!                            print*,'dum_D = ', dum_D
                 !            print*,'loc_new_sed_vol_OLD =', loc_new_sed_vol
-                !            print*,'loc_sed_burial_NEW =', loc_sed_burial
-                !            print*,'1/(1-por)*loc_new_sed(is_det) = ', 1/(1-por)*loc_new_sed(is_det)
+!                            print*,'loc_sed_burial_NEW =', loc_sed_burial
+!                            print*,'1/(1-por)*loc_new_sed(is_det) = ', 1/(1-por)*loc_new_sed(is_det)
                 loc_sed_burial = 1/(1-por)*loc_new_sed(is_det)      ! set burial flux as detrital flux
             end if
 
             ! CHECK if still lower than 5.0e-4, than cut there, as OMEN produces positive O2 SWI-fluxes
-            if(loc_sed_burial .LE. 4.0e-4)then
+            if(loc_sed_burial .LE. 5.0e-4)then
                 !                print*,''
-                !                print*,'OMEN burial < 5.0e-4 !!!!!!!!!!!!!!!!!!!!!!!!!!'
+!                                print*,'OMEN burial < 5.0e-4 !!!!!!!!!!!!!!!!!!!!!!!!!!'
                 !                print*,'dum_D = ', dum_D
                 !                print*,'loc_new_sed_vol_OLD =', loc_new_sed_vol
                 !                print*,'loc_sed_burial_NEW before cut=', loc_sed_burial
                 !                print*,'1/(1-por)*loc_new_sed(is_det) = ', 1/(1-por)*loc_new_sed(is_det)
-                loc_sed_burial = 4.0e-4
+                loc_sed_burial = 5.0e-4
             end if
 
             ! DH TODO: some of initialize should be called just once, not for every grid point

@@ -22,6 +22,10 @@ k2scaling = PK2SCALING;
 %run_and_plot_OMEN_with_GENIE_data(exp_1,'','frac_of_aerobic_Cox','',0.0,0.0,0,'',1.0,0.0,80.0,20,'','','',6, k_parametr, k2scaling)
 %run_and_plot_OMEN_with_GENIE_data(exp_1,'','frac_of_aerobic_Cox_upper_xcm','',0.0,0.0,0,'',1.0,0.0,80.0,20,'','','',19, k_parametr, k2scaling)
 %run_and_plot_OMEN_with_GENIE_data(exp_1,'','Total_Cox_rat','',0.0,0.0,0,'',1e-6,0.0,400.0,20,'','','',3, k_parametr, k2scaling)
-run_and_plot_OMEN_with_GENIE_data(exp_1,'','Total_Cox_rate upper 5cm_till_300','',0.0,0.0,0,'',1e-6,0.0,300.0,20,'','','',18, k_parametr, k2scaling)
+%run_and_plot_OMEN_with_GENIE_data(exp_1,'','Total_Cox_rate upper 5cm_till_300','',0.0,0.0,0,'',1e-6,0.0,300.0,20,'','','',18, k_parametr, k2scaling)
 %run_and_plot_OMEN_with_GENIE_data(exp_1,'','TOC wtpc at 100cm','',0.0,0.0,0,'',1.0,0.0,1.0,10,'','','',8, k_parametr, k2scaling)
+%run_and_plot_OMEN_with_GENIE_data(exp_1,'','O2_SWI-flux_until50','',0.0,0.0,0,'',1e-6,0.0,-50.0,20,'','','',11, k_parametr, k2scaling)
+%run_and_plot_OMEN_with_GENIE_data(exp_1,'','SO4_SWI-flux_until10','',0.0,0.0,0,'',1e-6,0.0,-10.0,20,'','','',12, k_parametr, k2scaling)
+%run_and_plot_OMEN_with_GENIE_data(exp_1,'','H2S_SWI-flux_until10','',0.0,0.0,0,'',1e-6,0.0,10.0,20,'','','',13, k_parametr, k2scaling)
+run_and_plot_OMEN_with_GENIE_data(exp_1,'','PO4_SWI-flux_until10','',0.0,0.0,0,'',1e-6,0.0,10.0,20,'','','',14, k_parametr, k2scaling)
 end

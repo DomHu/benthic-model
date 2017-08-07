@@ -272,11 +272,17 @@ CONTAINS
                 ! NOTE: adjust 'new' sed to be the preserved fraction, and set dissolved sed flux to zero,
                 !       the latter change needed becasue the Huelse et al. [2016] sed model calculates the dissolved fluxes itself
                 if (is == is_POP) then
-                   loc_new_sed(is_POP) = loc_sed_pres_fracP*loc_new_sed(is_POP)
+                   if (ctrl_sed_huelse2017_remin_POP) then
+                      loc_dis_sed(is) = loc_new_sed(is)
+                      loc_exe_ocn(io_PO4) = 0.0
+                   else
+                      loc_new_sed(is) = loc_sed_pres_fracP*loc_new_sed(is)
+                      loc_dis_sed(is) = 0.0
+                   end if
                 else
                    loc_new_sed(is) = loc_sed_pres_fracC*loc_new_sed(is)
+                   loc_dis_sed(is) = 0.0
                 end if
-                loc_dis_sed(is) = 0.0
              end if
           end if
        end DO
@@ -1489,11 +1495,17 @@ CONTAINS
                 ! NOTE: adjust 'new' sed to be the preserved fraction, and set dissolved sed flux to zero,
                 !       the latter change needed becasue the Huelse et al. [2016] sed model calculates the dissolved fluxes itself
                 if (is == is_POP) then
-                   loc_new_sed(is_POP) = loc_sed_pres_fracP*loc_new_sed(is_POP)
+                   if (ctrl_sed_huelse2017_remin_POP) then
+                      loc_dis_sed(is) = loc_new_sed(is)
+                      loc_exe_ocn(io_PO4) = 0.0
+                   else
+                      loc_new_sed(is) = loc_sed_pres_fracP*loc_new_sed(is)
+                      loc_dis_sed(is) = 0.0
+                   end if
                 else
                    loc_new_sed(is) = loc_sed_pres_fracC*loc_new_sed(is)
+                   loc_dis_sed(is) = 0.0
                 end if
-                loc_dis_sed(is) = 0.0
              end if
           end if
        end DO

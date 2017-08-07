@@ -375,8 +375,9 @@ In addition, OMEN-SED exists as a stand-alone version implemented in MATLAB and 
 The source code of both, the Fortran and the MATLAB stand-alone version, as well as instructions for executing OMEN-SED and for plotting model results are available as a supplement to this paper.
 %>>>
 \marginnote{\textbf{SA}: maybe include some examples and test figures in supplement?}[-1cm]%<<<
-The following section provides a detailed description of OMEN-SED. Tables \ref{table:reactions_processes} and \ref{table:Reaction_Network} summarise the biogeochemical reaction network and Tables \ref{table:sed-charac_transport-parameters} 
-and \ref{table:reaction_parameters} provide a glossary of model parameters along with their respective units.
+The following section provides a detailed description of OMEN-SED and the fundamental equations underlying the model are highlighted. 
+Tables \ref{table:reactions_processes} and \ref{table:Reaction_Network} summarise the biogeochemical reaction network and Tables \ref{table:sed-charac_transport-parameters} 
+and \ref{table:reaction_parameters} provide a glossary of model parameters along with their respective units. 
 
 \subsection {General Model Approach} \label{subsec:GeneralModelApproach}
 In OMEN-SED, the calculation of benthic uptake, recycling and burial fluxes is generally based on the vertically resolved conservation equation for solid and dissolved species in porous media 
@@ -477,21 +478,21 @@ This simplification has been used previously by \citet{gypens_simple_2008} for n
 reoxidation mainly occurs within a thin layer at the oxic/anoxic interface \citep{soetaert_model_1996}. 
 The general reaction-transport equation of OMEN-SED is thus given by:
 \begin{empheq}[box={\mybluebox[5pt]}]{equation}
-  \frac{\partial C_i}{\partial t} = 0 = \frac{D_i}{1+K_i}\frac{\partial^2C_i }{\partial z^2} - w\frac{\partial C_i }{\partial z} - \frac{1}{1+K_i} \left( k\cdot (C_i - \tilde{C}) + \sum_j \alpha_j \exp(-\beta_j z) - Q \right) \label{eq:generalODE}
+  \frac{\partial C_i}{\partial t} = 0 = \frac{D_i}{1+K_i}\frac{\partial^2C_i }{\partial z^2} - w\frac{\partial C_i }{\partial z} - \frac{1}{1+K_i} \left(  \sum_j \alpha_j \exp(-\beta_j z) + \sum_l k_l \cdot C_i - \sum_m Q_m \right) \label{eq:generalODE}
 \end{empheq}
 % \begin{equation} 
 %  \boxed{\frac{\partial C_i}{\partial t} = 0 = D_i\frac{\partial^2C_i }{\partial z^2} - w\frac{\partial C_i }{\partial z} - k\cdot C_i - \sum_j \alpha_j \exp(-\beta_j z) + Q} \label{eq:generalODE_orig}
 %  \end{equation}
 where $1/\beta_j$ can be interpreted as the length scale and $\alpha_j$ as the relative importance (or the magnitude at $z = 0$) of reaction $j$ \citep{boudreau1997diagenetic}, 
-$k$ is a generic first order reaction rate constant, $\tilde{C}$ is an equilibrium or asymptotic concentration of $C$ and $Q$ is a zeroth-order (or constant) reaction rate.
+$k_l$ are generic first order reaction rate constants and $Q_m$ are zeroth-order (or constant) reaction rates.
 
 The analytical solution of Eq. (\ref{eq:generalODE}) is of the general form:
 \begin{align}
- C_i(z) &= A \exp(az) + B  \exp(bz) + \sum_j \frac{\alpha_j}{D \beta_j^2-w\beta_j-k}\cdot \exp(-\beta_j z) + \frac{Q}{k} \label{eq:ODE_general_solution_generalapproach}
+ C_i(z) &= A \exp(az) + B  \exp(bz) + \sum_j \frac{\alpha_j}{D \beta_j^2-w\beta_j- \sum_l k_l}\cdot \exp(-\beta_j z) + \frac{\sum_m Q_m}{\sum_l k_l} \label{eq:ODE_general_solution_generalapproach}
 \end{align}
 with 
 \begin{equation} 
- a = \frac{w - \sqrt{w^2+4\cdot D\cdot k}}{2\cdot D}, \quad b = \frac{w + \sqrt{w^2+4\cdot D\cdot k}}{2\cdot D}
+ a = \frac{w - \sqrt{w^2+4\cdot D\cdot \sum_l k_l}}{2\cdot D}, \quad b = \frac{w + \sqrt{w^2+4\cdot D\cdot \sum_l k_l}}{2\cdot D}
 \end{equation}
 where $A$ and $B$ are integration constants that can be determined by applying a set of internal boundary conditions (see Section \ref{subsec:Determine_IC}).
 % %>>>
@@ -612,7 +613,7 @@ The oxygen penetration depth $z_{\mathrm{ox}}$ marks the lower boundary and is d
 Therefore, OMEN-SED applies a Dirichlet boundary condition $\chem{O_2}(z_{\mathrm{ox}})=0$. In addition, a flux boundary is applied that implicitly accounts for the oxygen consumption by the partial oxidation 
 of $\chem{NH_4}$ and $\chem{H_2S}$ diffusing into the oxic zone from below (BC 4.2, Table \ref{Tab:BC_O2}). It is assumed that respective fractions ($\gamma_{\chem{NH_4}}$ and $\gamma_{\chem{H_2S}}$) are directly reoxidised 
 at the oxic/anoxic interface and the remaining fraction escapes reoxidation. OMEN-SED iteratively solves for $z_{\mathrm{ox}}$ by first testing if there is oxygen left at $z_\infty$ (i.e. $\chem{O_2}(z_\infty) > 0$) and, otherwise, by finding the root for the flux 
-boundary condition 4.2 (Table \ref{Tab:BC_O2}). If $z_{\mathrm{ox}}=z_\infty$,  a zero flux boundary condition is applied as lower boundary condition. 
+boundary condition 4.2 (Table \ref{Tab:BC_O2}). If $z_{\mathrm{ox}}=z_\infty$,  a zero diffusive flux boundary condition is applied as lower boundary condition. 
 %>>>
 \marginnote{\textbf{DH}: Edited explanation of finding $z_{ox}$}[-1.5cm]%<<<
 
@@ -737,9 +738,9 @@ Integration of Eq. (\ref{eq:SO4_ODE1_L1}) - (\ref{eq:H2S_ODE1_L3}) yields the an
 OMEN-SED assumes known concentrations at the sediment-water interface and continuity across the bioturbation depth and the nitrate penetration depth. 
 The reoxidation of reduced \chem{H_2S} to \chem{SO_4} is accounted for implicitly via the oxic-anoxic boundary condition for both species, while reduction of \chem{SO_4} and the associated production of \chem{H_2S} via AOM 
 is accounted for through the respective boundary conditions at $z_\chem{SO_4}$. In case $z_{\chem{SO_4}}<z_\infty$, OMEN-SED assumes zero sulfate concentration at $z_{\chem{SO_4}}$ and its diffusive flux must equal the amount of 
-methane produced below (with a methane to carbon ratio of \chem{MC}); or, in case $z_{\chem{SO_4}}=z_\infty$, a zero flux condition for sulfate is considered. 
+methane produced below (with a methane to carbon ratio of \chem{MC}); or, in case $z_{\chem{SO_4}}=z_\infty$, a zero diffusive flux condition for sulfate is considered. 
 OMEN-SED iteratively solves for $z_{\chem{SO_4}}$ by first testing if there is sulfate left at $z_\infty$ (i.e. $\chem{SO_4}(z_\infty) > 0$) and, otherwise, by finding the root for the flux 
-boundary condition 8.2 (Table \ref{Tab:BC_SO4+H2S}). At the lower boundary $z_\infty$ zero flux of \chem{H_2S} is considered. 
+boundary condition 8.2 (Table \ref{Tab:BC_SO4+H2S}). At the lower boundary $z_\infty$ zero diffusive flux of \chem{H_2S} is considered. 
 
 
 \begin{table}[tbp]
@@ -901,7 +902,7 @@ The conservation equations for \chem{DIC} are thus given by:
 \end{align}
 where $D_\chem{\chem{DIC}}$ denotes the diffusion coefficient for \chem{DIC} which depends on the bioturbation status of the respective geochemical zone. 
 Integration of Eq. (\ref{eq:DIC_ODE1_L1}) and (\ref{eq:DIC_ODE1_L2}) yields the analytical solution and Table \ref{Tab:BC_DIC} summarises the boundary conditions applied in OMEN-SED. 
-A Dirichlet condition is applied at the sediment-water interface. In addition, the model assumes a zero flux through the lower boundary $z_\infty$ and continuity across the bottom of the bioturbated zone, as well as the sulfate penetration depth. An additional flux boundary condition at $z_{\chem{SO_4}}$, implicitly accounts for DIC production through anaerobic oxidation of methane  (Table \ref{Tab:BC_DIC} Eq. 5).
+A Dirichlet condition is applied at the sediment-water interface. In addition, the model assumes a zero diffsive flux through the lower boundary $z_\infty$ and continuity across the bottom of the bioturbated zone, as well as the sulfate penetration depth. An additional flux boundary condition at $z_{\chem{SO_4}}$, implicitly accounts for DIC production through anaerobic oxidation of methane  (Table \ref{Tab:BC_DIC} Eq. 5).
 
 \begin{table}[tbp]
 \caption{Boundary conditions for \chem{DIC}. For the boundaries we define:  $z^-_{\_\_} := \lim_{h\to0} (z_{\_\_}-h)$ and $z^+_{\_\_} := \lim_{h\to0} (z_{\_\_}+h)$.}
@@ -955,7 +956,7 @@ Integration of Eq. (\ref{eq:ALK_ODE1_L1}) - (\ref{eq:ALK_ODE1_L4}) yields the an
 A Dirichlet boundary condition is applied at the sediment-water interface. The decrease of alkalinity due to oxidation of reduced species produced in the anoxic zones 
 (with stoichiometry $\chem{ALK}^\mathrm{NIT}$ and $\chem{ALK}^\mathrm{H_2S}$) is implicitly taken into account through the flux boundary condition at $z_{\mathrm{ox}}$ (Table \ref{Tab:BC_ALK} Eq. 5). 
 Furthermore, the oxidation of methane by sulfate reduction increases alkalinity with stoichiometry $\chem{ALK}^\mathrm{AOM}$ which is accounted for through the flux boundary condition at $z_{\chem{SO_4}}$ (Table \ref{Tab:BC_ALK} Eq. 9). 
-At the lower boundary $z_\infty$ a zero flux condition is applied. 
+At the lower boundary $z_\infty$ a zero diffusive flux condition is applied. 
 
 \begin{table}[tbp]
 \caption{Boundary conditions for alkalinity. For the boundaries we define:  $z^-_{\_\_} := \lim_{h\to0} (z_{\_\_}-h)$ and $z^+_{\_\_} := \lim_{h\to0} (z_{\_\_}+h)$.}
@@ -1190,7 +1191,7 @@ $D_{\chem{ALK}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 7.93 &Diffusion c
 \end{table}
 
 
-\subsubsection {Reaction Parameters and Stoichiometries}
+\subsubsection {Stoichiometries and reaction parameters}
 %The parameters relating to organic matter %The overall reactions implemented in OMEN-SED are listed in Table \ref{table:reactions_processes}. 
 \textbf{Sandra: difficult to find a structure, I'd adapt to the order in the table and groups -as much as possible- according to chemical species, Also ALL parameters must be described and justified}.
 \textbf{Let me take care of this section:} 
@@ -1259,12 +1260,12 @@ $\chem{ALK}^\mathrm{AOM}$ & mol/mol & $2$ & ALK from AOM\\
 %$DICC^{II}$ & $mol/mol$ & 0.5 & DIC to carbon ratio\\
 %& & & for methanogenesis\\[0.5ex]
 \multicolumn{4}{l}{\textbf{Secondary reaction parameters}}\\
-$\gamma_{\chem{NH_4}}$ & - & 0.9 & fraction of \chem{NH_4} that is oxidised\\
-& & & in oxic zone\\
+$\gamma_{\chem{NH_4}}$ & - & 0.9 & fraction of \chem{NH_4} that is nitrified\\
+%& & & in oxic zone\\
 $\gamma_{\chem{H_2S}}$ & - & 0.95 & fraction of \chem{H_2S} that is oxidised\\
-& & & in oxic zone\\
+%& & & in oxic zone\\
 $\gamma_{\chem{CH_4}}$ & - & 0.99 & fraction of \chem{CH_4} that is oxidised\\
-& & & at $z_{\chem{SO_4}}$\\
+%& & & at $z_{\chem{SO_4}}$\\
 \multicolumn{4}{l}{\textbf{P related parameters}}\\
 $k_s$ & yr$^{-1}$ & \textcolor{red}{1.0} & Rate constant for \chem{PO_4} sorption\\
 $k_m$ & yr$^{-1}$ & \textcolor{red}{0.02} & Rate constant for Fe-bound P release\\
@@ -1846,7 +1847,7 @@ the oxygen penetration depth has been shown to increase exponentially with SFD t
 
 \begin{figure}[htbp]
 \begin{center}
-	\includegraphics[width=0.5\textwidth]{figures/OMEN-GENIE-Exp/0_1707_INVARIANT_SED_PROPS.pdf}
+	\includegraphics[width=1.0\textwidth]{figures/OMEN-GENIE-Exp/0_1707_INVARIANT_SED_PROPS_AND_FLUXES.pdf}
 	\caption{Sediment characteristics related to POC degradation and oxygen consumption for the globally invariant ``best-fit'' paramaterisation 
 	(experiment A, $k_2= 0.005,\ k_1 = 3 \cdot k_2$).
 	Total \chem{POC_{degr}} rate and fraction of aerobic \chem{POC_{degr}} are the respective values for the first 5cm in the sediments. 

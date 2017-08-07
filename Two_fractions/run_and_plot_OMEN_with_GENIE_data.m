@@ -1,4 +1,4 @@
-function [STATM] = run_and_plot_OMEN_with_GENIE_data(PEXP1,PEXP2,PVAR1,PVAR2,PT1,PT2,PIK,PMASK,PCSCALE,PCMIN,PCMAX,PCN,PDATA,POPT,PNAME, POUTVAR)
+function [STATM] = run_and_plot_OMEN_with_GENIE_data(PEXP1,PEXP2,PVAR1,PVAR2,PT1,PT2,PIK,PMASK,PCSCALE,PCMIN,PCMAX,PCN,PDATA,POPT,PNAME, POUTVAR, PKPARAM, PK2SCALING)
 %
 %   *******************************************************************   %
 %   *** sedgem 2-D (LON-LAT) DATA PLOTTING ****************************   %
@@ -76,12 +76,26 @@ function [STATM] = run_and_plot_OMEN_with_GENIE_data(PEXP1,PEXP2,PVAR1,PVAR2,PT1
 %   --> 14: SWI-flux PO4
 %   --> 15: SWI-flux DIC
 %   --> 16: SWI-flux ALK       
+%   --> 17: mean OM wt% in upper x cm
+%   PKPARAM [STRING] (e.g., 'boudreau1997')
+%   --> the string for the k parameterisation scheme
+%   -->  options are 
+%   -->  'boudreau1997'
+%   -->  'tromp1995'
+%   -->  'stolpovsky2016'
+%   -->  'boudreau1997fPOC'
+%   -->  'invariant' here, global values must be specified in
+%         benthic_test.OMEN_with_GENIE_input(...)
+%   --> PK2SCALING [REAL] scaling factor for calculating k2 = PK2SCALING * k1
 %
 %   Example
-%           run_and_plot_OMEN_with_GENIE_data('0804_13_worjh2_closed_No_PO4_Full_OMEN_k_Tromp','','oxygen penetration depth','',0.0,0.0,0,'',1.0,0.0,10.0,20,'','','',1)
+%       1)  run_and_plot_OMEN_with_GENIE_data('0804_13_worjh2_closed_No_PO4_Full_OMEN_k_Tromp','','oxygen penetration depth','',0.0,0.0,0,'',1.0,0.0,10.0,20,'','','',1)
 %           will plot the oxygen penetration depth (zox),
 %           between 0 and 10 cm in 20 contour intervals
-%
+%       2) run_and_plot_OMEN_with_GENIE_data('1404_02_worjh2_closed_with_PO4_Full_OMEN_zbio_k_0.01','','frac_of_aerobic_Cox','',0.0,0.0,0,'',1.0,0.0,80.0,10,'','','',6)
+%       3) run_and_plot_OMEN_with_GENIE_data('1404_02_worjh2_closed_with_PO4_Full_OMEN_zbio_k_0.01','','Total_Cox_rate','',0.0,0.0,0,'',1e-6,0.0,400.0,10,'','','',3)
+%       4) run_and_plot_OMEN_with_GENIE_data('1404_02_worjh2_closed_with_PO4_Full_OMEN_zbio_k_0.01','','TOC wtpc at 100cm','',0.0,0.0,0,'',1.0,0.0,5.0,10,'','','',8)
+%       5) run_and_plot_OMEN_with_GENIE_data(exp_1,'','Mean OM wt% in upper 10cm','',0.0,0.0,0,'',1.0,0.0,5.0,10,'','','',17, k_parametr)
 %   *******************************************************************   %
 
 % *********************************************************************** %
@@ -129,33 +143,46 @@ con_max = PCMAX;
 con_n = PCN;
 overlaydataid = PDATA;
 altfilename = PNAME;
-plotvar= POUTVAR;
-
+plotvar = POUTVAR;
+k_parametr = PKPARAM;
+k2scaling = PK2SCALING;
 % DOM: data needed from GENIE:
 Nitrogen=false;
-data_fsed_POC='fsed_POC  ';   % "mol cm-2 yr-1"
+data_fsed_POC='fsed_POC      ';
 %dataid_1=strtrim(data_fsed_POC);
-data_ocn_O2='ocn_O2    ';
-data_ocnNO3='ocn_NO3   ';
-data_ocn_NH4='ocn_NH4   ';
-data_ocn_SO4='ocn_SO4   ';
-data_ocn_H2S='ocn_H2S   ';
-data_ocn_PO4='ocn_PO4   ';
-data_ocn_ALK='ocn_ALK   ';
-data_ocn_DIC='ocn_DIC   ';
+data_ocn_O2='ocn_O2        ';
+data_ocn_NO3='ocn_NO3       ';
+data_ocn_NH4='ocn_NH4       ';
+data_ocn_SO4='ocn_SO4       ';
+data_ocn_H2S='ocn_H2S       ';
+data_ocn_PO4='ocn_PO4       ';
+data_ocn_ALK='ocn_ALK       ';
+data_ocn_DIC='ocn_DIC       ';
+data_burial_rate_OMEN='misc_OMEN_bur ';
+% now use actual burial flux from previous time-step (also saved as netcdf now)
+% substitute last data_GENIE from below (data_fburial_POC='fsed_POC) with
+% this value
 
-data_fsed_CaCO3='fsed_CaCO3';   % "mol cm-2 yr-1"
-data_fsed_det='fsed_det  ';     % "mol cm-2 yr-1"
-data_fsed_ash='fsed_ash  ';     % "mol cm-2 yr-1"
-data_is_POC_frac2='';           % Dom: need this as netcdf!
+% This is sedimentation flux
+data_fburial_CaCO3='fsed_CaCO3    ';
+data_fburial_det='fsed_det      ';
+data_fburial_ash='fsed_ash      ';
+% rather use the preservation flux: (units = "mol cm-2 yr-1")
+%data_fburial_CaCO3='fburial_CaCO3 ';
+% data_fburial_det='fburial_det   ';
+data_fburial_POC='fsed_POC      ';
+% data_fburial_ash='fburial_ash   ';
 
-data_ben_temp='ocn_temp  ';
-data_depth='grid_topo ';
+data_ben_temp='ocn_temp      ';
+data_depth='grid_topo     ';
+data_is_frac2='fsed_POC_frac2';
 
 if(Nitrogen)
-    data_GENIE = [data_fsed_POC; data_ocn_O2; data_ocn_NO3; data_ocn_NH4; data_ocn_SO4; data_ocn_H2S; data_ocn_PO4; data_ocn_DIC; data_ocn_ALK; data_fsed_CaCO3; data_fsed_det; data_fsed_ash; data_ben_temp; data_depth];
+    data_GENIE = [data_fsed_POC; data_ocn_O2; data_ocn_NO3; data_ocn_NH4; data_ocn_SO4; data_ocn_H2S; data_ocn_PO4; data_ocn_DIC; data_ocn_ALK; data_fburial_CaCO3; data_fburial_det; data_fburial_ash; data_ben_temp; data_depth; data_is_frac2; data_burial_rate_OMEN];
+%    data_GENIE = [data_fsed_POC; data_ocn_O2; data_ocn_NO3; data_ocn_NH4; data_ocn_SO4; data_ocn_H2S; data_ocn_PO4; data_ocn_DIC; data_ocn_ALK; data_fburial_CaCO3; data_fburial_det; data_fburial_ash; data_ben_temp; data_depth; data_is_frac2; data_burial_rate_OMEN];
 else
-    data_GENIE =[data_fsed_POC; data_ocn_O2; data_ocn_SO4; data_ocn_H2S; data_ocn_PO4; data_ocn_DIC; data_ocn_ALK; data_fsed_CaCO3; data_fsed_det; data_fsed_ash; data_ben_temp; data_depth];
+    data_GENIE =[data_fsed_POC; data_ocn_O2; data_ocn_SO4; data_ocn_H2S; data_ocn_PO4; data_ocn_DIC; data_ocn_ALK; data_fburial_CaCO3; data_fburial_det; data_fburial_ash; data_ben_temp; data_depth; data_is_frac2; data_burial_rate_OMEN];
+%    data_GENIE =[data_fsed_POC; data_ocn_O2; data_ocn_SO4; data_ocn_H2S; data_ocn_PO4; data_ocn_DIC; data_ocn_ALK; data_fburial_CaCO3; data_fburial_det; data_fburial_ash; data_ben_temp; data_depth; data_is_frac2; data_burial_rate_OMEN];
 end
 n_data_GENIE = size(data_GENIE,1);
 
@@ -487,7 +514,7 @@ for i = 1:imax,
                 bc=zm(j,i,:);
                 i
                 j
-                test=benthic_test.OMEN_with_GENIE_input(bc, Nitrogen);
+                test=benthic_test.OMEN_with_GENIE_input(bc, Nitrogen, k_parametr, k2scaling);
 %   -->  1: zox
 %   -->  2: zSO4
 %   -->  3: depth integrated total OM oxidation rate (Cox total)
@@ -504,6 +531,7 @@ for i = 1:imax,
 %   --> 14: SWI-flux PO4
 %   --> 15: SWI-flux DIC
 %   --> 16: SWI-flux ALK
+%   --> 17: mean OM concentration in upper x cm
 
                 switch plotvar
                 case 1
@@ -538,8 +566,15 @@ for i = 1:imax,
                     OMEN_result(j,i) = test.flxswiDIC;
                 case 16
                     OMEN_result(j,i) = test.flxswiALK;
-                otherwise
-%                    export_fig([filename '.' str_date '.eps'], '-eps', '-nocrop');
+                 case 17
+                    OMEN_result(j,i) = test.Mean_OM;
+                case 18
+                    OMEN_result(j,i) = test.Cox_rate_total_xcm;
+                 case 19
+                    OMEN_result(j,i) = test.Cox_perc_aerobic_xcm;                   
+               	otherwise
+                    error('Error. Unknown OMEN output specified.')
+
                 end
                 
 %                OMEN_results(j,i,1) = OMEN_zox;
@@ -555,7 +590,6 @@ end
 nmax = n;
 
 %%%%% plot zox vs depth
-
 if (plotvar==1)
     zox = OMEN_result(:)';
     wdepth=zm(:,:,end)';
@@ -1078,7 +1112,7 @@ end
 %
 set(gcf,'CurrentAxes',fh(1));
 if (plot_format_old == 'y')
-    print('-dpsc2', [filename '.' str_date '.ps']);
+    print('-dpsc2', [filename '.' str_date '_20_colors.ps']);
 else
     switch plot_format
         case 'png'
