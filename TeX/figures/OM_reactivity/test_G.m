@@ -144,14 +144,15 @@ set(0,'DefaultAxesFontSize',16)
 figure
 plot(log10(k), F, 'k')
 hold on
-plot(log10(k), FF(2,:), 'k-.')
-plot(log10(k), FF(10,:), 'k--')
-plot(log10(k), FF(1000,:), 'k.')
-hleg=legend('t = 0 years','t < 1 year','t ~ 10 years','t ~ 1000 years')
+plot(log10(k), FF(2,:), 'k--')
+%plot(log10(k), FF(6,:), 'k--')
+plot(log10(k), FF(100,:), 'k--')
+plot(log10(k), FF(1000,:), 'k--')
+hleg=legend('t = 0 years','t < 1 year','t ~ 500 years','t ~ 5000 years')
 set(hleg,'Location','NorthWest');
 hold off
 
-print('-depsc', 'OM_degradation_rate_distribution_400m_0808');
+print('-depsc', 'OM_degradation_rate_distribution_400m_0908');
 
 % figure
 % plot(agetest)

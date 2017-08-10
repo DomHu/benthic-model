@@ -592,13 +592,14 @@ CONTAINS
                     if(calc_ALK)then
                         if(ocn_select(io_ALK))then
                             call sub_huelseetal2016_zALK(dum_swiconc_ALK, loc_ALK_swiflux)
-                        !                print*,'OMEN loc_ALK_swiflux = ', loc_ALK_swiflux
+                        !                print*,'OMEN calc ALK:', loc_ALK_swiflux
                         !                loc_ALK_swiflux = 2.0*loc_H2S_swiflux + loc_new_sed(is_POC)*conv_POC_cm3_mol*16/106 !NC1
                         !                print*,'CALC loc_ALK_swiflux = ', loc_ALK_swiflux
                         else
                             ! If not selected nothing needs to be done
                         end if
                     else    ! use ALK hack
+!                        print*,'ALK HACK '
                         loc_ALK_swiflux = 2.0*loc_H2S_swiflux + loc_new_sed(is_POC)*conv_POC_cm3_mol*ALKROX/SD  !16/106 !NC1
                     end if      ! calc_ALK
 

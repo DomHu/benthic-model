@@ -7,8 +7,8 @@ plot_mean = false;
 
 % set experiment 
 exp_1 = './cgenie_output/EXAMPLE.worjh2.Archeretal2009.SPIN1';
-exp_2 = './cgenie_output/1507_43_Archeretal2009_OMEN.boudreau1997_100';
-exp_3 = './cgenie_output/1707_41_Archeretal2009_OMEN.boudreau1997_25_233years';
+exp_2 = './cgenie_output/1707_07_Archeretal2009_OMEN.inv_k2_0.005_k1_0.015_ord_3';
+exp_3 = './cgenie_output/1507_34_Archeretal2009_OMEN.boudreau1997_k_depthdep';
 % %%%% load other data
 
 REF_sed_O2_exp_1 = load(fullfile(exp_1,'/biogem/biogem_series_ocn_O2.res'),'ascii');
@@ -67,7 +67,7 @@ else    % total (mol)
     ylabel('SO_4 (mol)');
 end
 xlabel('yrs ');
-hleg=legend('Abiotic - with OMEN', 'Biotic - k=0.1, no 2nd redox', 'Biotic - k=1.0, no 2nd redox'); 
+hleg=legend('Archer SPIN - No OMEN', 'With OMEN - Invariant', 'With OMEN Boudreau depth dependent'); 
 set(hleg,'FontSize',4);
 set(hleg,'Location','SouthEast');
 
@@ -131,7 +131,7 @@ xlabel('yrs ');
 if(plot_mean)  % mean (mol/kg)
     print('-depsc', 'cgenie_output/0_PLOTS/plots_1002/3_MEAN-time-series_NO_2redox_1002_5Exp');
 else
-    print('-depsc', 'cgenie_output/1707_CHECK_CRASH');
+    print('-depsc', 'cgenie_output/00_PLOTS/1707_Timeseries_SPIN_and_OMEN');
 end
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% atm O2 and CO2
