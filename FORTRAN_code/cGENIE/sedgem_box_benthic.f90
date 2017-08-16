@@ -281,8 +281,9 @@ CONTAINS
         ! Check for no detrital flux -> Remineralize everything manually
         if(loc_new_sed(is_det) .LE. const_real_nullsmall)then
             !!! Remineralize everything manually
-!                        print*,'no detrital flux !!!!!!'
-!                        print*,'dum_D = ', dum_D
+!                        print*,' '
+!                        print*,'no detrital/burial flux !!!!!!', loc_sed_burial
+!                        print*,'dum_D, loc_fPOC ', dum_D, loc_fPOC
             !            print*,'loc_sed_burial_NEW =', loc_sed_burial
             !            print*,'1/(1-por)*loc_new_sed(is_det) = ', 1/(1-por)*loc_new_sed(is_det)
 
@@ -313,21 +314,21 @@ CONTAINS
 !                            print*,''
 !                            print*,'OMEN burial < detrital !!!!!!!!!!!!!!!!!!!!!!!!!!'
 !                            print*,'dum_D = ', dum_D
-                !            print*,'loc_new_sed_vol_OLD =', loc_new_sed_vol
-!                            print*,'loc_sed_burial_NEW =', loc_sed_burial
+!                !            print*,'loc_new_sed_vol_OLD =', loc_new_sed_vol
+!                            print*,'loc_sed_burial =', loc_sed_burial
 !                            print*,'1/(1-por)*loc_new_sed(is_det) = ', 1/(1-por)*loc_new_sed(is_det)
                 loc_sed_burial = 1/(1-por)*loc_new_sed(is_det)      ! set burial flux as detrital flux
             end if
 
             ! CHECK if still lower than 5.0e-4, than cut there, as OMEN produces positive O2 SWI-fluxes
-            if(loc_sed_burial .LE. 5.0e-4)then
+            if(loc_sed_burial .LE. 4.0e-4)then
                 !                print*,''
 !                                print*,'OMEN burial < 5.0e-4 !!!!!!!!!!!!!!!!!!!!!!!!!!'
                 !                print*,'dum_D = ', dum_D
                 !                print*,'loc_new_sed_vol_OLD =', loc_new_sed_vol
                 !                print*,'loc_sed_burial_NEW before cut=', loc_sed_burial
                 !                print*,'1/(1-por)*loc_new_sed(is_det) = ', 1/(1-por)*loc_new_sed(is_det)
-                loc_sed_burial = 5.0e-4
+                loc_sed_burial = 4.0e-4
             end if
 
             ! DH TODO: some of initialize should be called just once, not for every grid point
@@ -339,7 +340,7 @@ CONTAINS
             loc_POC1_flux_swi = conv_POC_cm3_mol*(1-dum_is_POC_frac2)*loc_fPOC
             loc_POC2_flux_swi = conv_POC_cm3_mol*dum_is_POC_frac2*loc_fPOC
 
-            ! make the k1 - k2 relation depth dependent:
+!            ! make the k1 - k2 relation depth dependent:
 !            if(dum_D .LE. 1000.0)then
 !                par_sed_huelse2017_k2_order = 2.0
 !            elseif (dum_D .LE. 2000.0)then
@@ -524,9 +525,10 @@ CONTAINS
                             print*,' '
                             print*,'---------- loc_O2_swiflux positiv ----------', loc_O2_swiflux
                             print*,'dum_i, dum_j, dum_D', dum_i, dum_j, dum_D
-                            print*,'loc_new_sed_vol_OLD =', loc_new_sed_vol
+                            print*,'sedimentation flux =', loc_new_sed_vol
                             print*,'loc_sed_burial_NEW =', loc_sed_burial
                             print*,'1/(1-por)*loc_new_sed(is_det) = ', 1/(1-por)*loc_new_sed(is_det)
+                        !    loc_O2_swiflux = 0.0
                         !                    !                STOP
                         end if
                     end if
@@ -568,14 +570,12 @@ CONTAINS
                     end if
 
                     if(ocn_select(io_PO4))then
-                        !               PO4 hack
-                        !                loc_PO4_swiflux = loc_new_sed(is_POP)*conv_POC_cm3_mol
-                        call sub_huelseetal2016_zPO4_M(dum_swiconc_PO4, loc_PO4_swiflux, dum_swiflux_M, loc_M_swiflux)
-                    !                print*,' '
-                    !                print*,'OMEN loc_PO4_swiflux = ', loc_PO4_swiflux
+                        !          normal PO4 calculation
+                    !    call sub_huelseetal2016_zPO4_M(dum_swiconc_PO4, loc_PO4_swiflux, dum_swiflux_M, loc_M_swiflux)
                         ! 30/11/2016: remineralise all POC and calculate PO4 return flux
                     !               PO4 hack
-                    !                loc_PO4_swiflux = loc_fPOC*conv_POC_cm3_mol*1/106
+                        loc_PO4_swiflux = loc_fPOC*conv_POC_cm3_mol*1/106
+!                        print*,'other OMEN loc_PO4_swiflux = ', loc_PO4_swiflux
                     else
                         ! If not selected nothing needs to be done
                     end if
@@ -615,6 +615,17 @@ CONTAINS
         !            print*,'.'
         !        end if
         
+!        if(loc_O2_swiflux > 0.0)then
+!            print*,' '
+!            print*,'---------- loc_O2_swiflux positiv ----------'
+!            print*,'loc_O2_swiflux ', loc_O2_swiflux
+!            print*,'loc_SO4_swiflux ', loc_SO4_swiflux
+!            print*,'loc_H2S_swiflux ', loc_H2S_swiflux
+!            print*,'loc_ALK_swiflux ', loc_ALK_swiflux
+!            print*,'dum_i, dum_j, dum_D', dum_i, dum_j, dum_D
+!        end if
+
+
         ! Now pass back the values to the global field
         dum_new_swifluxes(io_O2) = loc_O2_swiflux                                   ! Dom TODO convert mol*cm^-2 yr^-1 (SEDIMENT) -> mol yr^-1 (GENIE)
         if(ocn_select(io_NO3))then
@@ -860,12 +871,12 @@ CONTAINS
         KPO4_ox = 200.0   ! 0.0                 ! Adsorption coefficient in oxic layer (-)
         KPO4_anox = 1.3   ! 0.0                ! Adsorption coefficient in anoxic layer (-)
         !       WAS BEFORE:
-        ksPO4 = 1.0       ! 0.0            ! Rate constant for kinetic P sorption (1/yr)
-        kmPO4 = 2.2e-6*24*365  ! 0.0                 ! Rate constant for Fe-bound P release upon Fe oxide reduction
-        kaPO4 = 10.0      ! 0.0             ! Rate constant for authigenic P formation (1/yr)
-        PO4s = 1.0e-9     ! 0.0               ! Equilibrium concentration for P sorption (mol/cm3)
-        PO4a = 3.7e-9     ! 0.0              ! Equilibrium concentration for authigenic P formation (mol/cm3)
-        Minf = 1.99e-10    ! 0.0                ! asymptotic concentration for Fe-bound P (mol/cm3)
+        ksPO4 = 0.0  !1.0       ! 0.0  !          ! Rate constant for kinetic P sorption (1/yr)
+        kmPO4 = 0.0  !2.2e-6*24*365  ! 0.0                 ! Rate constant for Fe-bound P release upon Fe oxide reduction
+        kaPO4 = 0.0  !10.0      ! 0.0             ! Rate constant for authigenic P formation (1/yr)
+        PO4s = 0.0  !1.0e-9     ! 0.0               ! Equilibrium concentration for P sorption (mol/cm3)
+        PO4a = 0.0  !3.7e-9     ! 0.0              ! Equilibrium concentration for authigenic P formation (mol/cm3)
+        Minf = 0.0  !1.99e-10    ! 0.0                ! asymptotic concentration for Fe-bound P (mol/cm3)
 
         !        kmPO4 = 0.05  ! 0.0                 ! Rate constant for Fe-bound P release upon Fe oxide reduction
         !        kaPO4 = 0.37      ! 0.0             ! Rate constant for authigenic P formation (1/yr)

@@ -6,9 +6,9 @@ clear all;
 plot_mean = false;
 
 % set experiment 
-exp_1 = './cgenie_output/EXAMPLE.worjh2.Archeretal2009.SPIN1';
-exp_2 = './cgenie_output/1707_07_Archeretal2009_OMEN.inv_k2_0.005_k1_0.015_ord_3';
-exp_3 = './cgenie_output/1507_34_Archeretal2009_OMEN.boudreau1997_k_depthdep';
+exp_1 = './cgenie_output/0606_01_EXAMPLE.worjh2.Archeretal2009.SPIN1';
+exp_2 = './cgenie_output/1507_34_Archeretal2009_OMEN.boudreau1997_k_depthdep';
+exp_3 = './cgenie_output/1508_02_Archeretal2009_OMEN.boudreau1997_k_depthdep_PO4remin_OPEN_5000';
 % %%%% load other data
 
 REF_sed_O2_exp_1 = load(fullfile(exp_1,'/biogem/biogem_series_ocn_O2.res'),'ascii');
@@ -67,7 +67,7 @@ else    % total (mol)
     ylabel('SO_4 (mol)');
 end
 xlabel('yrs ');
-hleg=legend('Archer SPIN - No OMEN', 'With OMEN - Invariant', 'With OMEN Boudreau depth dependent'); 
+hleg=legend('0606-01 Archer SPIN - No OMEN', '1507-34 OMEN Boudreau depth dependent', '1508-02 OMEN Boudreau depth dep - No PO4'); 
 set(hleg,'FontSize',4);
 set(hleg,'Location','SouthEast');
 
@@ -131,27 +131,21 @@ xlabel('yrs ');
 if(plot_mean)  % mean (mol/kg)
     print('-depsc', 'cgenie_output/0_PLOTS/plots_1002/3_MEAN-time-series_NO_2redox_1002_5Exp');
 else
-    print('-depsc', 'cgenie_output/00_PLOTS/1707_Timeseries_SPIN_and_OMEN');
+    print('-depsc', 'cgenie_output/00_PLOTS/1508_Timeseries_SPIN_and_OMEN_NoPO4');
 end
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% atm O2 and CO2
 % %%%% load other data
 % REF experiments
-if(false)
+if(true)
 
-REF_sed_pCO2_allremin = load(fullfile(exp_1,'/biogem/biogem_series_atm_pCO2.res'),'ascii');
-REF_sed_pCO2_smallerk = load(fullfile(exp_2,'/biogem/biogem_series_atm_pCO2.res'),'ascii');
-REF_sed_pCO2_NoOMEN = load(fullfile(exp_3,'/biogem/biogem_series_atm_pCO2.res'),'ascii');
-REF_sed_pCO2_SPIN = load(fullfile(exp_4,'/biogem/biogem_series_atm_pCO2.res'),'ascii');
-REF_sed_pCO2_Exp_5 = load(fullfile(exp_5,'/biogem/biogem_series_atm_pCO2.res'),'ascii');
-% REF_sed_pCO2_smallerk_DISS_HACK = load(fullfile(exp_6,'/biogem/biogem_series_atm_pCO2.res'),'ascii');
+REF_sed_pCO2_exp1 = load(fullfile(exp_1,'/biogem/biogem_series_atm_pCO2.res'),'ascii');
+REF_sed_pCO2_exp2 = load(fullfile(exp_2,'/biogem/biogem_series_atm_pCO2.res'),'ascii');
+REF_sed_pCO2_exp3 = load(fullfile(exp_3,'/biogem/biogem_series_atm_pCO2.res'),'ascii');
 
-REF_sed_pO2_allremin = load(fullfile(exp_1,'/biogem/biogem_series_atm_pO2.res'),'ascii');
-REF_sed_pO2_smallerk = load(fullfile(exp_2,'/biogem/biogem_series_atm_pO2.res'),'ascii');
-REF_sed_pO2_NoOMEN = load(fullfile(exp_3,'/biogem/biogem_series_atm_pO2.res'),'ascii');
-REF_sed_pO2_SPIN = load(fullfile(exp_4,'/biogem/biogem_series_atm_pO2.res'),'ascii');
-REF_sed_pO2_Exp_5 = load(fullfile(exp_1,'/biogem/biogem_series_atm_pO2.res'),'ascii');
-% REF_sed_pO2_smallerk_DISS_HACK = load(fullfile(exp_2,'/biogem/biogem_series_atm_pO2.res'),'ascii');
+REF_sed_pO2_exp1 = load(fullfile(exp_1,'/biogem/biogem_series_atm_pO2.res'),'ascii');
+REF_sed_pO2_exp2 = load(fullfile(exp_2,'/biogem/biogem_series_atm_pO2.res'),'ascii');
+REF_sed_pO2_exp3 = load(fullfile(exp_3,'/biogem/biogem_series_atm_pO2.res'),'ascii');
 
 % 
 % % with fake sediments
@@ -162,32 +156,32 @@ REF_sed_pO2_Exp_5 = load(fullfile(exp_1,'/biogem/biogem_series_atm_pO2.res'),'as
 % SED_ALL_BURIAL = load('./cgenie_output/EXAMPLE101.p0093k.PO4Fe_S36x36.SPIN_2P4CO2_REF-SED_O2_rest_all_buried_1201/biogem/biogem_series_ocn_ALK.res','ascii');
 % SED_ALL_BURIAL_10 = load('./cgenie_output/EXAMPLE101.p0093k.PO4Fe_S36x36.SPIN_2P4CO2_REF-SED_O2_rest_all_buried_10_1201/biogem/biogem_series_ocn_ALK.res','ascii');
 
-set(0,'defaultLineLineWidth', 1)
-set(0,'DefaultAxesFontSize',8)
+set(0,'defaultLineLineWidth', 2)
+set(0,'DefaultAxesFontSize',12)
 
 figure
 grid on
 hold on
 subplot(2, 1,1)
 %plot(REF_sed_pCO2(:,1),REF_sed_pCO2(:,3)*1e+6,'b',REF_sed_pCO2_smallerk(:,1),REF_sed_pCO2_smallerk(:,3)*1e+6,'r' ); 
-plot(REF_sed_pCO2_SPIN(:,1),REF_sed_pCO2_SPIN(:,3)*1e+6,'k', REF_sed_pCO2_NoOMEN(:,1),REF_sed_pCO2_NoOMEN(:,3)*1e+6,'g:', REF_sed_pCO2_allremin(:,1),REF_sed_pCO2_allremin(:,3)*1e+6,'b-.',REF_sed_pCO2_smallerk(:,1),REF_sed_pCO2_smallerk(:,3)*1e+6,'r-.',REF_sed_pCO2_Exp_5(:,1),REF_sed_pCO2_Exp_5(:,3)*1e+6,'m:'); 
+plot(REF_sed_pCO2_exp1(:,1),REF_sed_pCO2_exp1(:,3)*1e+6,'b', REF_sed_pCO2_exp2(:,1),REF_sed_pCO2_exp2(:,3)*1e+6,'r--', REF_sed_pCO2_exp3(:,1),REF_sed_pCO2_exp3(:,3)*1e+6,'g:'); 
 %plot(REF_sed_pCO2_allremin(:,1),REF_sed_pCO2_allremin(:,3)*1e+6,'b',REF_sed_pCO2_smallerk(:,1),REF_sed_pCO2_smallerk(:,3)*1e+6,'r',REF_sed_pCO2_NoOMEN(:,1),REF_sed_pCO2_NoOMEN(:,3)*1e+6,'g:',REF_sed_pCO2_SPIN(:,1),REF_sed_pCO2_SPIN(:,3)*1e+6,'k:'); 
 xlabel('time (years) ');
 ylabel('global pCO2 (ppm)');
 %x = [0,5000,10000,15000,20000,25000];
 %set(gca,'XTick',x,'XTickLabel',sprintf('%5.0f|',x))
-hleg=legend( 'CLOSED: with CaCO3 - No OMEN', 'OPEN: No CaCO3, No-OMEN', 'No CaCO3, OMEN: all remin','No CaCO3, OMEN: smaller k','No CaCO3, OMEN: all remin - DISS-HACK'); 
-set(hleg,'Location','best')
+hleg=legend('0606-01 Archer SPIN - No OMEN', '1507-34 OMEN Boudreau depth dependent', '1508-02 OMEN Boudreau depth dep - No PO4'); 
+set(hleg,'Location','NorthEast')
 %title('global pCO2 (ppm)','FontSize',18);
 
 subplot(2,1,2)
 %plot(REF(:,1),REF(:,3)*1e+6,'k')
 %plot(REF_sed_pO2(:,1),REF_sed_pO2(:,3),'b',REF_sed_pO2_smallerk(:,1),REF_sed_pO2_smallerk(:,3),'r' );
-plot(REF_sed_pO2_SPIN(:,1),REF_sed_pO2_SPIN(:,3),'k', REF_sed_pO2_NoOMEN(:,1),REF_sed_pO2_NoOMEN(:,3),'g:', REF_sed_pO2_allremin(:,1),REF_sed_pO2_allremin(:,3),'b-.',REF_sed_pO2_smallerk(:,1),REF_sed_pO2_smallerk(:,3),'r-.',REF_sed_pO2_Exp_5(:,1),REF_sed_pO2_Exp_5(:,3),'m:'); 
+plot(REF_sed_pO2_exp1(:,1),REF_sed_pO2_exp1(:,3),'b',REF_sed_pO2_exp2(:,1),REF_sed_pO2_exp2(:,3),'r--', REF_sed_pO2_exp3(:,1),REF_sed_pO2_exp3(:,3),'g:'); 
 %plot(REF_sed_pO2_allremin(:,1),REF_sed_pO2_allremin(:,3),'b',REF_sed_pO2_smallerk(:,1),REF_sed_pO2_smallerk(:,3),'r',REF_sed_pO2_NoOMEN(:,1),REF_sed_pO2_NoOMEN(:,3),'g:',REF_sed_pO2_SPIN(:,1),REF_sed_pO2_SPIN(:,3),'k:'); 
 xlabel('time (years) ');
 ylabel('global pO2 (atm)');
-ylim([0.20 0.21])
+ylim([0.20 0.22])
 %ylim([0.207 0.2095])
 %x = [0,5000,10000,15000,20000,25000];
 %set(gca,'XTick',x,'XTickLabel',sprintf('%5.0f|',x))
@@ -195,6 +189,6 @@ ylim([0.20 0.21])
 % set(hleg,'Location','NorthEast')
 
 %print('-depsc', fullfile(exp_1,'/1_OUTPUT_PLOTS/0_Atmp-time-series'));
-print('-depsc', 'cgenie_output/plots0212/0_Atmp-time-series_0212');
+print('-depsc', 'cgenie_output/00_PLOTS/1508_Atmp-time-series_SPIN_and_OMEN_NoPO4');
 
 end

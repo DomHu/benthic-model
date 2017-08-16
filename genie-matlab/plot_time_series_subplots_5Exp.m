@@ -7,11 +7,11 @@ plot_mean = false;
 
 % set experiment 
 %exp_1 = './cgenie_output/2_Feb2017/1602_09_art_world__nogas_noweath_WITH2ndRedox+ALK_k_0.1_abiotic';
-exp_1 = './cgenie_output/EXAMPLE.worjh2.Archeretal2009.SPIN1';
-exp_2 = './cgenie_output/1507_34_Archeretal2009_OMEN.boudreau1997_k_depthdep';                                   
-exp_3 = './cgenie_output/1507_35_Archeretal2009_OMEN.boudreau1997_2';
-exp_4 = './cgenie_output/1507_40_Archeretal2009_OMEN.boudreau1997_10';
-exp_5 = './cgenie_output/1507_43_Archeretal2009_OMEN.boudreau1997_100';
+exp_1 = './cgenie_output/0606_01_EXAMPLE.worjh2.Archeretal2009.SPIN1';
+exp_2 = './cgenie_output/1507_34_Archeretal2009_OMEN.boudreau1997_k_depthdep';
+exp_3 = './cgenie_output/1508_02_Archeretal2009_OMEN.boudreau1997_k_depthdep_PO4remin_OPEN_5000';
+exp_4 = './cgenie_output/1608_02_Archeretal2009_OMEN.boudreau1997_k_depthdep_PO4remin_OPEN_withCaCO3_5000';
+exp_5 = './cgenie_output/1608_04_Archeretal2009_OMEN.boudreau1997_k_depthdep_PO4remin_OPEN_withCaCO3_5000';
 % %%%% load other data
 % exp_1 = './cgenie_output/01_OMEN_GENIE_PreInd_April2017/1503_06_BIOTIC_NO_OMEN_PONALK';
 % exp_2 = './cgenie_output/01_OMEN_GENIE_PreInd_April2017/1703_08_shelves_nogasweath2ndRedox_PONALK_k_0.1_INF_HACK_ALKox18';                                   
@@ -67,6 +67,8 @@ figure
 grid on
 hold on
 
+
+xlimval=10000;
 subplot(3,2,1)
 if(plot_mean) % mean (mol/kg)
     plot(REF_sed_O2_exp1(:,1),REF_sed_O2_exp1(:,3)*1e+6,'b',REF_sed_O2_exp2(:,1),REF_sed_O2_exp2(:,3)*1e+6,'r',REF_sed_O2_exp3(:,1),REF_sed_O2_exp3(:,3)*1e+6,'g--',REF_sed_O2_exp4(:,1),REF_sed_O2_exp4(:,3)*1e+6,'k:', REF_sed_O2_exp5(:,1),REF_sed_O2_exp5(:,3)*1e+6,'m:'); 
@@ -82,7 +84,7 @@ else
 end
 xlabel('yrs ');
 %hleg=legend('Abiotic - No OMEN', 'Abiotic - with OMEN', 'Biotic - all remin. k=0.1', 'Biotic - smaller k'); 
-%ylim([0 300])
+xlim([0 10000])
 %set(hleg,'FontSize',4);
 %set(hleg,'Location','best')
 
@@ -96,7 +98,8 @@ else    % total (mol)
     ylabel('SO_4 (mol)');
 end
 xlabel('yrs ');
-hleg=legend('Archer default', 'Boudreau - depth dep.', 'Boudreau - kord 2', 'Boudreau - kord 10', 'Boudreau - kord 100'); 
+xlim([0 xlimval])
+hleg=legend('0606-01 Archer SPIN - No OMEN', '1507-34 OMEN Boudreau depth dependent', '1508-02 OMEN Boudreau depth dep - No PO4','1608-01 as green + CaCO3 restore from Boudreau SPIN','1608-01 as green + CaCO3 restore from No-OMEN SPIN'); 
 set(hleg,'FontSize',6);
 set(hleg,'Location','SouthEast');
 
@@ -109,6 +112,7 @@ else % total (mol)
     ylabel('H_2S (mol)');
 end
 xlabel('yrs ');
+xlim([0 xlimval])
 %hleg=legend('small k', 'higher k'); 
 %set(hleg,'Location','SouthEast')
 
@@ -121,6 +125,7 @@ else % total (mol)
     ylabel('PO_4 (mol)');
 end
 xlabel('yrs ');
+xlim([0 xlimval])
 %ylim([2.15 2.17])
 % hleg=legend('small k', 'higher k', 'SPIN no Corg'); 
 % set(hleg,'Location','NorthEast')
@@ -134,6 +139,7 @@ else
     ylabel('ALK (mol)');
 end
 xlabel('yrs ');
+xlim([0 xlimval])
 %hleg=legend('small k', 'higher k'); 
 %set(hleg,'FontSize',10)
 %set(hleg,'Location','SouthEast')
@@ -148,6 +154,7 @@ else
     ylabel('DIC (mol)');
 end
 xlabel('yrs ');
+xlim([0 xlimval])
 % hleg=legend('small k', 'higher k', 'SPIN no Corg'); 
 % set(hleg,'Location','SouthEast')
 
@@ -160,7 +167,7 @@ xlabel('yrs ');
 if(plot_mean)  % mean (mol/kg)
     print('-depsc', 'cgenie_output/000_FOR_GMD_V1507_1707_20kyr/TIMESERIES/1507_Boudreau_1_mean');
 else
-    print('-depsc', 'cgenie_output/000_FOR_GMD_V1507_1707_20kyr/TIMESERIES/1507_Boudreau_1');
+    print('-depsc', 'cgenie_output/00_PLOTS/1608_Timeseries_SPIN_and_OMEN_NoPO4_withCaCO3restore');
 end
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% atm O2 and CO2
