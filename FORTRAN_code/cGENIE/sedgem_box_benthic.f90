@@ -322,12 +322,12 @@ CONTAINS
 
             ! CHECK if still lower than 5.0e-4, than cut there, as OMEN produces positive O2 SWI-fluxes
             if(loc_sed_burial .LE. 4.0e-4)then
-                !                print*,''
-!                                print*,'OMEN burial < 5.0e-4 !!!!!!!!!!!!!!!!!!!!!!!!!!'
-                !                print*,'dum_D = ', dum_D
+!                                print*,''
+!                                print*,'OMEN burial < 4.0e-4 !!!!!!!!!!!!!!!!!!!!!!!!!!'
+!                                print*,'dum_D = ', dum_D
                 !                print*,'loc_new_sed_vol_OLD =', loc_new_sed_vol
-                !                print*,'loc_sed_burial_NEW before cut=', loc_sed_burial
-                !                print*,'1/(1-por)*loc_new_sed(is_det) = ', 1/(1-por)*loc_new_sed(is_det)
+!                                print*,'loc_sed_burial_NEW before cut=', loc_sed_burial
+!                                print*,'1/(1-por)*loc_new_sed(is_det) = ', 1/(1-por)*loc_new_sed(is_det)
                 loc_sed_burial = 4.0e-4
             end if
 
@@ -340,20 +340,22 @@ CONTAINS
             loc_POC1_flux_swi = conv_POC_cm3_mol*(1-dum_is_POC_frac2)*loc_fPOC
             loc_POC2_flux_swi = conv_POC_cm3_mol*dum_is_POC_frac2*loc_fPOC
 
-!            ! make the k1 - k2 relation depth dependent:
-!            if(dum_D .LE. 1000.0)then
-!                par_sed_huelse2017_k2_order = 2.0
-!            elseif (dum_D .LE. 2000.0)then
-!                par_sed_huelse2017_k2_order = 5.0
-!            elseif (dum_D .LE. 3000.0)then
-!                par_sed_huelse2017_k2_order = 10.0
-!            !elseif (dum_D .LE. 4000.0)then
-!            !    par_sed_huelse2017_k2_order = 50.0
-!            !elseif (dum_D .LE. 5000.0)then
-!            !    par_sed_huelse2017_k2_order = 100.0
-!            else
-!                par_sed_huelse2017_k2_order = 25.0
-!            end if
+            ! make the k1 - k2 relation depth dependent:
+            if(dum_D .LE. 1000.0)then
+                par_sed_huelse2017_k2_order = 2.0
+            elseif (dum_D .LE. 2000.0)then
+                par_sed_huelse2017_k2_order = 5.0
+            elseif (dum_D .LE. 3000.0)then
+                par_sed_huelse2017_k2_order = 10.0
+        !                print*,' '
+        !                print*,' below 3000'
+            !elseif (dum_D .LE. 4000.0)then
+            !    par_sed_huelse2017_k2_order = 50.0
+            !elseif (dum_D .LE. 5000.0)then
+            !    par_sed_huelse2017_k2_order = 100.0
+            else
+                par_sed_huelse2017_k2_order = 25.0
+            end if
 
             ! use oxic degradation rates
             select case (par_sed_huelse2017_kscheme)
@@ -362,6 +364,7 @@ CONTAINS
                     loc_k_apparent = 0.38*w**0.59
                     k1=loc_k_apparent/((1-dum_is_POC_frac2)+dum_is_POC_frac2/par_sed_huelse2017_k2_order)
                     k2=k1/par_sed_huelse2017_k2_order
+!                    print*,' '
 !                    print*,'boudreau1997 oxic dum_D, k2_order, k1, k2 =', dum_D, par_sed_huelse2017_k2_order, k1, k2
                 case ('tromp1995')
                     ! use parameterisation of Tromp et al. 1995:
@@ -481,9 +484,10 @@ CONTAINS
                 ! CHECK IF TOC preservation results in insane values, i.e. everything remineralized
                 ! Then calculate SWI-fluxes "manually"
                 if(dum_sed_pres_fracC .NE. dum_sed_pres_fracC)then
-                    !                print*,'2. dum_sed_pres_fracC inf (A21 insane) ', dum_sed_pres_fracC, dum_D
+                    !                print*,'A21 insane ', dum_sed_pres_fracC, dum_D
+                    !                print*,'par_sed_huelse2017_k2_order ', par_sed_huelse2017_k2_order
                     !                print*,'dum_D, dum_i, dum_j', dum_D, dum_i, dum_j
-                    !                print*,' '
+                    !                print*,'loc_sed_burial', loc_sed_burial
                 
                     dum_sed_pres_fracC = 0.0        ! sed TOC preservation to zero
                     loc_O2_swiflux = conv_POC_cm3_mol*loc_fPOC*(-OC/SD)
@@ -528,7 +532,7 @@ CONTAINS
                             print*,'sedimentation flux =', loc_new_sed_vol
                             print*,'loc_sed_burial_NEW =', loc_sed_burial
                             print*,'1/(1-por)*loc_new_sed(is_det) = ', 1/(1-por)*loc_new_sed(is_det)
-                        !    loc_O2_swiflux = 0.0
+                            loc_O2_swiflux = 0.0
                         !                    !                STOP
                         end if
                     end if
@@ -571,7 +575,7 @@ CONTAINS
 
                     if(ocn_select(io_PO4))then
                         !          normal PO4 calculation
-                    !    call sub_huelseetal2016_zPO4_M(dum_swiconc_PO4, loc_PO4_swiflux, dum_swiflux_M, loc_M_swiflux)
+!                        call sub_huelseetal2016_zPO4_M(dum_swiconc_PO4, loc_PO4_swiflux, dum_swiflux_M, loc_M_swiflux)
                         ! 30/11/2016: remineralise all POC and calculate PO4 return flux
                     !               PO4 hack
                         loc_PO4_swiflux = loc_fPOC*conv_POC_cm3_mol*1/106
@@ -871,12 +875,12 @@ CONTAINS
         KPO4_ox = 200.0   ! 0.0                 ! Adsorption coefficient in oxic layer (-)
         KPO4_anox = 1.3   ! 0.0                ! Adsorption coefficient in anoxic layer (-)
         !       WAS BEFORE:
-        ksPO4 = 0.0  !1.0       ! 0.0  !          ! Rate constant for kinetic P sorption (1/yr)
-        kmPO4 = 0.0  !2.2e-6*24*365  ! 0.0                 ! Rate constant for Fe-bound P release upon Fe oxide reduction
-        kaPO4 = 0.0  !10.0      ! 0.0             ! Rate constant for authigenic P formation (1/yr)
-        PO4s = 0.0  !1.0e-9     ! 0.0               ! Equilibrium concentration for P sorption (mol/cm3)
-        PO4a = 0.0  !3.7e-9     ! 0.0              ! Equilibrium concentration for authigenic P formation (mol/cm3)
-        Minf = 0.0  !1.99e-10    ! 0.0                ! asymptotic concentration for Fe-bound P (mol/cm3)
+        ksPO4 = 1.0       ! 0.0  !          ! Rate constant for kinetic P sorption (1/yr)
+        kmPO4 = 2.2e-6*24*365  ! 0.0                 ! Rate constant for Fe-bound P release upon Fe oxide reduction
+        kaPO4 = 10.0      ! 0.0             ! Rate constant for authigenic P formation (1/yr)
+        PO4s = 1.0e-9     ! 0.0               ! Equilibrium concentration for P sorption (mol/cm3)
+        PO4a = 3.7e-9     ! 0.0              ! Equilibrium concentration for authigenic P formation (mol/cm3)
+        Minf = 1.99e-10    ! 0.0                ! asymptotic concentration for Fe-bound P (mol/cm3)
 
         !        kmPO4 = 0.05  ! 0.0                 ! Rate constant for Fe-bound P release upon Fe oxide reduction
         !        kaPO4 = 0.37      ! 0.0             ! Rate constant for authigenic P formation (1/yr)

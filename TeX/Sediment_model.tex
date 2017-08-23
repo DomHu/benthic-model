@@ -192,7 +192,7 @@ to the water column or buried for a longer period of time in the deeper sediment
 Most biogeochemical cycles and reactions in this part of marine sediments can be related either directly or indirectly to the degradation of organic matter \citep[][]{arndt_quantifying_2013}. 
 Oxygen and nitrate for instance, the most powerful electron acceptors, are consumed in the course of the degradation of organic matter, resulting in the release of ammonium and phosphorus to the pore water. 
 As such, degradation of OM in the sediments can profoundly affect the oxygen and nutrient inventory of the ocean and thus primary productivity \citep{van_cappellen_benthic_1994, lenton_redfield_2000}. 
-Furthermore, organic matter degradation releases metabolic \chem{CO_2} to the pore water, causing it to have a lower pH and provoking the dissolution of \chem{CaCO_3} \citep{emerson_carbon_1981}.
+Furthermore, organic matter degradation releases metabolic \chem{CO_2} to the pore water, causing it to have a lower pH and provoking the dissolution of calcium carbonate \chem{CaCO_3} \citep{emerson_carbon_1981}.
 
 % DH: more facts on sediments
 %Furthermore, the sedimenst form an important sink for organic phosphorus and nitrogen. 
@@ -332,8 +332,9 @@ the redox dependent P release from marine sediments and its implications for pri
 
 \textbf{Solution presented here:}\\
 Analytical approaches with distinct biogeochemical zones were implemented and used in the seventies and eighties to describe observed pore water profiles 
-\citep[e.g.][]{vanderborght_vertical_1975, vanderborght_kinetic_1977, billen1982idealized, goloway_diagenetic_1982} and later for inclusion into global Earth system models \citep{tromp_global_1995}. 
-However, in addition to the oxic zone these models only describe one anoxic zone, either a denitrification \citep{vanderborght_vertical_1975, vanderborght_kinetic_1977, billen1982idealized, goloway_diagenetic_1982} 
+\citep[e.g.][]{vanderborght_vertical_1975, vanderborght_kinetic_1977, billen1982idealized, goloway_diagenetic_1982} and later for inclusion into 1-D ecosystem models \citep[e.g.][]{ruardij_benthic_1995} and 
+global Earth system models \citep{tromp_global_1995}. 
+However, alongside the oxic zone these models only describe one anoxic zone explicitly, either a denitrification \citep{vanderborght_vertical_1975, vanderborght_kinetic_1977, billen1982idealized, goloway_diagenetic_1982, ruardij_benthic_1995} 
 or a sulfate reduction zone \citep{tromp_global_1995}. 
 Furthermore, the approaches of \citet{vanderborght_vertical_1975}, \citet{goloway_diagenetic_1982} and \citet{tromp_global_1995} do not explicitly model the produced reduced 
 species (i.e. \chem{NH_4} and \chem{H_2S}, respectively). In addition, the model of \citet{tromp_global_1995} ignores reoxidation of \chem{H_2S} produced during sulfate reduction. 
@@ -457,7 +458,7 @@ the sediment into 1) an oxic zone delineated by the oxygen penetration depth $z_
 3) a sulfate reduction zone situated between $z_{\chem{NO_3}}$ and the sulfate penetration depth $z_{\chem{SO_4}}$; and 4) a methanogenic zone situated below $z_{\chem{SO_4}}$ (Fig. \ref{fig:Sediment_layers}).  
 In each of these zones Eq. (\ref{eq:Eq_generaldiagenetic}) is applied with depth invariant parameters. Yet, parameter values may differ across zones. 
 The biogeochemical zones are linked by stating continuity in both concentrations and fluxes at the dynamic, internal boundaries 
-($z_b \in \{z_{\mathrm{bio}}, z_{\mathrm{ox}}, z_{\chem{NO_3}}, z_{\chem{SO_4}} \}$). These boundaries are dynamic because their depth varies in response to changing ocean 
+\citep[$z_b \in \{z_{\mathrm{bio}}, z_{\mathrm{ox}}, z_{\chem{NO_3}}, z_{\chem{SO_4}} \}$, compare e.g.][]{billen1982idealized, ruardij_benthic_1995}. These boundaries are dynamic because their depth varies in response to changing ocean 
 boundary conditions and forcings (see Section \ref{subsec:GBCM} for details). Furthermore, the maximum bioturbation depth is not restricted to a specific biogeochemical zone, 
 hence OMEN-SED allows bioturbation to occur in the anoxic zones of the sediment (here all zones $z > z_{\mathrm{ox}}$ combined). 
 In addition, the formulation of the reaction term in Eq. (\ref{eq:Eq_generaldiagenetic}) varies between zones and encapsulates the most pertinent reaction 
@@ -585,9 +586,10 @@ The conservation equation for oxygen is given by: \textbf{SA: I'd show the POC s
 \frac{\partial \chem{O_2}^{II}}{\partial t} &=0 \overset{\ref{eq:GS_OM2}}{=} D^{II}_{\chem{ \chem{O_2}}}\frac{\partial^2  \chem{O_2} }{\partial z^2} - w\frac{\partial  \chem{O_2}}{\partial z} - \frac{1-\phi}{\phi}\sum_i k_i \cdot [ \chem{O_2C} + 2 \gamma_{\chem{NH_4}} \chem{NC_i} ]\cdot \bigl\lgroup A_{2i}\cdot exp(a_{2i} z)  \bigr\rgroup\notag
 \end{align}
 where $D^I_{\chem{ \chem{O_2}}}$ and $D^{II}_{\chem{ \chem{O_2}}}$ denote the \chem{O_2} diffusion coefficient for the bioturbated and non-bioturbated zone, respectively. 
-The term $\frac{1-\phi}{\phi}$ accounts for the volume conversion from solid to dissolved phase and \chem{NC_i} is the nitrogen to carbon ratio in OM. \textbf{SA: explain all terms}\\
- %>>>
-\marginnote{\textbf{DH}: Other terms are explained earlier in \ref{subsubsec:O2} or \ref{subsubsec:OM}}[-0.5cm]%<<<
+The term $\frac{1-\phi}{\phi}$ accounts for the volume conversion from solid to dissolved phase and \chem{NC_i} is the nitrogen to carbon ratio in OM. 
+%\textbf{SA: explain all terms}\\
+% %>>>
+%\marginnote{\textbf{DH}: Other terms are explained earlier in \ref{subsubsec:O2} or \ref{subsubsec:OM}}[-0.5cm]%<<<
 Integration yields the following analytical solution for each zone: 
 \begin{align}
 \intertext{I Bioturbated zone ($z\leq z_{\mathrm{bio}}$):}
@@ -667,8 +669,8 @@ where $D_\chem{NO_3}$ and $D_{\chem{NH_4}}$ denote the diffusion coefficients fo
 Integration of Eq. (\ref{eq:NO3_ODE1_L1}) - (\ref{eq:NH4_ODE1_L3}) yields the analytical solutions, which are not further developed here but follow the procedure outlined in Section \ref{subsubsec:O2} for oxygen 
 (also see Section \ref{subsec:GBCM} for more details on how to find the analytical solution). Table \ref{Tab:BC_NO3+NH4} summarises the boundary conditions applied in OMEN-SED to solve Eq. (\ref{eq:NO3_ODE1_L1}) - (\ref{eq:NH4_ODE1_L3}) 
 and to find the $a-priori$ unknown nitrate penetration depth, $z_\chem{NO_3}$. 
-The model assumes known bottom water concentrations for both \chem{NO_3} and \chem{NH_4}, the complete consumption of nitrate at the nitrate penetration depth (in case  $z_{\chem{NO_3}} < z_\infty$) and no change in nitrate and ammonium 
-flux at $z_\infty$. In addition, concentration and diffusive flux continuity across $z_{\mathrm{bio}}$ and $z_{\mathrm{ox}}$ is considered for \chem{NO_3} and \chem{NH_4}. 
+The model assumes known bottom water concentrations for both \chem{NO_3} and \chem{NH_4}, the complete consumption of nitrate at the nitrate penetration depth (in case  $z_{\chem{NO_3}} < z_\infty$) and no change in %nitrate and 
+ammonium flux at $z_\infty$. In addition, concentration and diffusive flux continuity across $z_{\mathrm{bio}}$ and $z_{\mathrm{ox}}$ is considered for \chem{NO_3} and \chem{NH_4}. 
 Furthermore, the reoxidation of upward-diffusing reduced ammonium is accounted for in the oxic-anoxic boundary condition for nitrate and ammonium. 
 OMEN-SED iteratively solves for $z_{\chem{NO_3}}$ by first testing if there is nitrate left at $z_\infty$ (i.e. $\chem{NO_3}(z_\infty) > 0$) and, otherwise, by finding the root for the flux 
 boundary condition 6.2 (Table \ref{Tab:BC_NO3+NH4}).
@@ -885,12 +887,11 @@ $z=z_{\infty}$& asymptotic concentration & 10) $\chem{FeP}(z_\infty)=\chem{FeP}_
 
 
 \subsubsection{Dissolved Inorganic Carbon (DIC)}\label{subsubsec:DIC}
-%>>>
-\marginnote{\textbf{SA}: need to say something about carbonates here}[+1cm]%<<<
-%>>>
 OMEN-SED accounts for the production of dissolved inorganic carbon (\chem{DIC}) through organic matter degradation, as well as methane oxidation. 
 Organic matter degradation produces dissolved inorganic carbon with a stoichiometric \chem{DIC:C} ratio of 1:2 in the methanic zone and 1:1 in the rest of the sediment column (\chem{DICC^{II}} and \chem{DICC^{I}} respectively). 
 \chem{DIC} production through methane oxidation is implicitly taken into account through the boundary condition at $z_{\chem{SO_4}}$. 
+A mechanistic description of \chem{DIC} production from \chem{CaCO_3} dissolution %is in coastal marine significantly smaller than its production from OM degradation \citep{krumins_dissolved_2013} and 
+would lead to significant mathematical problems and is therefore not included in the current version of OMEN-SED. 
 The conservation equations for \chem{DIC} are thus given by:
 \begin{align}
 \intertext{1. Oxic, nitrogenous and sulfidic zone ($z \leq z_{\chem{SO_4}}$)}
@@ -934,9 +935,9 @@ where different equations describe the biogeochemical processes using variable s
 Above $z_{\mathrm{ox}}$, the combined effects of \chem{NH_4} and \chem{P} release due to aerobic OM degradation increases alkalinity according to $\chem{ALK}^\mathrm{OX}$ whereas nitrification decreases alkalinity with stoichiometry 
 $\chem{ALK}^\mathrm{NIT}$. 
 In the remaining three zones anaerobic OM degradation generally results in an increase in alkalinity, with the exact magnitude depending on the nature of the terminal electron acceptor used 
-(i.e. $\chem{ALK}^\mathrm{DEN}$, $\chem{ALK}^\mathrm{SUL}$, $\chem{ALK}^\mathrm{MET}$). In addition, the effect of secondary redox reactions, such as nitrification, sulfide and methane oxidation are implicitly accounted for in the 
-boundary conditions. 
-
+(i.e. $\chem{ALK}^\mathrm{DEN}$, $\chem{ALK}^\mathrm{SUL}$, $\chem{ALK}^\mathrm{MET}$). In addition, the effect of secondary redox reactions, such as nitrification, sulfide and methane oxidation are implicitly accounted for in the boundary conditions. 
+Again, a mechanistic description of \chem{ALK} production from \chem{CaCO_3} dissolution %is in coastal marine sediments the second largest source of ALK after OM degradation via sulfate reduction \citep{krumins_dissolved_2013} 
+would lead to significant mathematical problems and is therefore not included in the current version of OMEN-SED. 
 In OMEN-SED, the conservation equations for alkalinity are thus given by:
 \begin{align}
  \intertext{1. Oxic zone ($z \leq z_{\chem{ox}}$)} 

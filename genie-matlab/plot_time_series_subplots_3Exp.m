@@ -6,9 +6,9 @@ clear all;
 plot_mean = false;
 
 % set experiment 
-exp_1 = './cgenie_output/0606_01_EXAMPLE.worjh2.Archeretal2009.SPIN1';
-exp_2 = './cgenie_output/1507_34_Archeretal2009_OMEN.boudreau1997_k_depthdep';
-exp_3 = './cgenie_output/1508_02_Archeretal2009_OMEN.boudreau1997_k_depthdep_PO4remin_OPEN_5000';
+exp_1 = './cgenie_output/0606_01_EXAMPLE.worjh2.Archeretal2009.SPIN1';                                   
+exp_2 = './cgenie_output/1608_04_Archeretal2009_OMEN.boudreau1997_k_depthdep_PO4remin_OPEN_withCaCO3_5000';
+exp_3 = './cgenie_output/1908_01_Archeretal2009_OMEN.boudreau1997_k_depthdep_PO4remin_OPEN_withCaCO3noOMEN_30kyrs';
 % %%%% load other data
 
 REF_sed_O2_exp_1 = load(fullfile(exp_1,'/biogem/biogem_series_ocn_O2.res'),'ascii');
@@ -35,8 +35,8 @@ REF_sed_DIC_exp_1 = load(fullfile(exp_1,'/biogem/biogem_series_ocn_DIC.res'),'as
 REF_sed_DIC_exp_2 = load(fullfile(exp_2,'/biogem/biogem_series_ocn_DIC.res'),'ascii');
 REF_sed_DIC_exp_3 = load(fullfile(exp_3,'/biogem/biogem_series_ocn_DIC.res'),'ascii');
 
-set(0,'defaultLineLineWidth', 1)
-set(0,'DefaultAxesFontSize',8)
+set(0,'defaultLineLineWidth', 2)
+set(0,'DefaultAxesFontSize',10)
 
 figure
 grid on
@@ -67,7 +67,7 @@ else    % total (mol)
     ylabel('SO_4 (mol)');
 end
 xlabel('yrs ');
-hleg=legend('0606-01 Archer SPIN - No OMEN', '1507-34 OMEN Boudreau depth dependent', '1508-02 OMEN Boudreau depth dep - No PO4'); 
+hleg=legend('0606-01 Archer SPIN - No OMEN', '1608-04 with OMEN depth-dep from No-OMEN restart', '1908-01 with OMEN Boudr depth-dep from cold with CaCO3'); 
 set(hleg,'FontSize',4);
 set(hleg,'Location','SouthEast');
 
@@ -131,13 +131,13 @@ xlabel('yrs ');
 if(plot_mean)  % mean (mol/kg)
     print('-depsc', 'cgenie_output/0_PLOTS/plots_1002/3_MEAN-time-series_NO_2redox_1002_5Exp');
 else
-    print('-depsc', 'cgenie_output/00_PLOTS/1508_Timeseries_SPIN_and_OMEN_NoPO4');
+    print('-depsc', 'cgenie_output/000_FOR_GMD_V1608_1908/1908_Timeseries_SPIN_and_OMEN_NoPO4_from_COLD');
 end
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% atm O2 and CO2
 % %%%% load other data
 % REF experiments
-if(true)
+if(false)
 
 REF_sed_pCO2_exp1 = load(fullfile(exp_1,'/biogem/biogem_series_atm_pCO2.res'),'ascii');
 REF_sed_pCO2_exp2 = load(fullfile(exp_2,'/biogem/biogem_series_atm_pCO2.res'),'ascii');
