@@ -7,13 +7,13 @@ plot_mean = false;
 
 % set experiment 
 %exp_1 = './cgenie_output/DOM_TEST_artifical_world_abiotic_nogastransf_noweathering_NoOMEN_0401';
-exp_1 = './cgenie_output/EXAMPLE.worjh2.Archeretal2009.SPIN1';                                   
-exp_2 = './cgenie_output/1507_36_Archeretal2009_OMEN.boudreau1997_3';
-exp_3 = './cgenie_output/1507_37_Archeretal2009_OMEN.boudreau1997_4';
-exp_4 = './cgenie_output/1507_38_Archeretal2009_OMEN.boudreau1997_5';
-exp_5 = './cgenie_output/1507_41_Archeretal2009_OMEN.boudreau1997_25_fromRestart';
-exp_6 = './cgenie_output/1507_42_Archeretal2009_OMEN.boudreau1997_50';
-exp_7 = './cgenie_output/01_OMEN_GENIE_PreInd_April2017/2804_05_worjh2_closed_with_PO4_Full_OMEN_zbio_wMiddelb_k_Stolpovsky_oxic_anoxic';
+exp_1 = './cgenie_output/0606_02_EXAMPLE.worjh2.Archeretal2009.SPIN1_fastsinking';                                   
+exp_2 = './cgenie_output/2408_01_EXAMPLE.worjh2.Archeretal2009.SPIN1_fastsinking_ALLsolidfields_ClosedCaCO3';
+exp_3 = './cgenie_output/2408_02_EXAMPLE.worjh2.Archeretal2009.SPIN1_fastsinking_CaCO3solidfields_ClosedCaCO3';
+exp_4 = './cgenie_output/2408_03_Archeretal2009_OMEN.inv_k2_0.005_k1_0.015_ord_3_ALLsolidfields_ClosedCaCO3';
+exp_5 = './cgenie_output/2408_04_Archeretal2009_OMEN.inv_k2_0.005_k1_0.015_ord_3_CaCO3solidfields_ClosedCaCO3';
+exp_6 = './cgenie_output/2408_05_Archeretal2009_OMEN.boudreau1997_k_depthdep_Allsolidfields_ClosedCaCO3';
+exp_7 = './cgenie_output/2408_06_Archeretal2009_OMEN.boudreau1997_k_depthdep_CaCO3solidfields_ClosedCaCO3';
 % %%%% load other data
 
 REF_sed_O2_exp1 = load(fullfile(exp_1,'/biogem/biogem_series_ocn_O2.res'),'ascii');
@@ -107,7 +107,7 @@ else    % total (mol)
     ylabel('SO_4 (mol)');
 end
 xlabel('yrs ');
-hleg=legend('Archer default', 'Boudreau - kord 3', 'Boudreau - kord 4', 'Boudreau - kord 5', 'Boudreau - kord 25', 'Boudreau - kord 50'); 
+hleg=legend('0606-02 Archer SPIN - No OMEN - fast sinking', '2408-01 Archer SPIN - No OMEN - fast sinking - All solid fields', '2408-02 Archer SPIN - No OMEN - fast sinking - CaCO3 solid field', '2408-03 with OMEN - All solid fields - invariant k1 = 0.015', '2408-04 with OMEN - CaCO3 solid fields - invariant k1 = 0.015', '2408-05  with OMEN - All solid fields - Boudreau depth', '2408-06  with OMEN - CaCO3 solid fields - Boudreau depth'); 
 % hleg=legend('No OMEN', 'Tromp: k1 + k2 ~ w', 'Tromp: k1 ~ w', 'Boudreau: k1 + k2 ~ w', 'Boudreau: k1 ~ w', 'Stolpovsky: k1 ~ w', 'Boudreau: k1 ~ fPOC'); 
 set(hleg,'FontSize',6);
 set(hleg,'Location','SouthEast');
@@ -196,7 +196,7 @@ xlabel('yrs ');
 if(plot_mean)  % mean (mol/kg)
     print('-depsc', 'cgenie_output/000_FOR_GMD_V1507_1707_20kyr/TIMESERIES/1707_invariant_1_MEAN');
 else
-    print('-depsc', 'cgenie_output/000_FOR_GMD_V1507_1707_20kyr/TIMESERIES/1707_invariant_1');
+    print('-depsc', 'cgenie_output/000_FOR_GMD_V1608_1908/2408_Timeseries_SPIN_and_OMEN_NoPO4_with_solid_fields_ALLExps');
 end
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% atm O2 and CO2

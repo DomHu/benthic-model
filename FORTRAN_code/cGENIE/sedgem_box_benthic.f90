@@ -484,7 +484,7 @@ CONTAINS
                 ! CHECK IF TOC preservation results in insane values, i.e. everything remineralized
                 ! Then calculate SWI-fluxes "manually"
                 if(dum_sed_pres_fracC .NE. dum_sed_pres_fracC)then
-                    !                print*,'A21 insane ', dum_sed_pres_fracC, dum_D
+!                    print*,'A21 insane ', dum_sed_pres_fracC, dum_D
                     !                print*,'par_sed_huelse2017_k2_order ', par_sed_huelse2017_k2_order
                     !                print*,'dum_D, dum_i, dum_j', dum_D, dum_i, dum_j
                     !                print*,'loc_sed_burial', loc_sed_burial
