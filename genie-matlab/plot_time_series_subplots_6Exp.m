@@ -17,12 +17,12 @@ plot_mean = false;
 % exp_6 = './cgenie_output/02_OMEN_GENIE_GMD/2103_05_worjh2_nogas_noweather_open_k_4.0';
 % %%%% load other data
 % 8 level ocean
-exp_1 = './cgenie_output/EXAMPLE.worjh2.Archeretal2009.SPIN1';                                   
-exp_2 = './cgenie_output/1707_26_Archeretal2009_OMEN.inv_k2_0.007_k1_0.014_ord_2';
-exp_3 = './cgenie_output/1707_27_Archeretal2009_OMEN.inv_k2_0.007_k1_0.021_ord_3';
-exp_4 = './cgenie_output/1707_28_Archeretal2009_OMEN.inv_k2_0.007_k1_0.028_ord_4';
-exp_5 = './cgenie_output/1707_29_Archeretal2009_OMEN.inv_k2_0.007_k1_0.035_ord_5';
-exp_6 = './cgenie_output/1707_30_Archeretal2009_OMEN.inv_k2_0.007_k1_0.07_ord_10';
+exp_1 = './cgenie_output/0606_02_EXAMPLE.worjh2.Archeretal2009.SPIN1_fastsinking';                                   
+exp_2 = './cgenie_output/2908_21_Archeretal2009_OMEN.inv_k2_0.006_k1_0.0066_ord_1.1';
+exp_3 = './cgenie_output/2908_22_Archeretal2009_OMEN.inv_k2_0.006_k1_0.0072_ord_1.2';
+exp_4 = './cgenie_output/2908_23_Archeretal2009_OMEN.inv_k2_0.006_k1_0.009_ord_1.5';
+exp_5 = './cgenie_output/2908_24_Archeretal2009_OMEN.inv_k2_0.006_k1_0.0108_ord_1.8';
+exp_6 = './cgenie_output/2908_25_Archeretal2009_OMEN.inv_k2_0.006_k1_0.012_ord_2';
 
 REF_sed_O2_exp1 = load(fullfile(exp_1,'/biogem/biogem_series_ocn_O2.res'),'ascii');
 REF_sed_O2_exp2 = load(fullfile(exp_2,'/biogem/biogem_series_ocn_O2.res'),'ascii');
@@ -108,7 +108,7 @@ else    % total (mol)
     ylabel('SO_4 (mol)');
 end
 xlabel('yrs ');
-hleg=legend('Archer default', 'Invariant - kord 2', 'Invariant - kord 3', 'Invariant - kord 4', 'Invariant - kord 5', 'Invariant - kord 10'); 
+hleg=legend('0606-02 Archer SPIN - No OMEN - fast sinking', '2908- 1+x*5 1.1', '2908-2+x*5 1.2', '2908-3+x*5 1.5', '2908-4+x*5 1.8', '2908-5+x*5 2.0'); 
 set(hleg,'FontSize',6);
 set(hleg,'Location','SouthEast');
 
@@ -172,7 +172,7 @@ xlabel('yrs ');
 if(plot_mean)  % mean (mol/kg)
     print('-depsc', 'cgenie_output/000_FOR_GMD_V1507_1707_20kyr/TIMESERIES/1507_Boudreau_2_mean');
 else
-    print('-depsc', 'cgenie_output/000_FOR_GMD_V1507_1707_20kyr/TIMESERIES/1707_invariant_007');
+    print('-depsc', 'cgenie_output/000_FOR_GMD_V2808/2908_Timeseries_SPIN_and_OMEN_NoPO4_with_ANDYsolid_fields_Invariant_k2_006');
 end
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% atm O2 and CO2

@@ -987,52 +987,52 @@ hold off;
 %
 % *** CREATE COLOR BAR ************************************************** %
 
-% if (~((data_only == 'y') && (data_siteonly == 'y')))
-%     %
-%     set(gcf,'CurrentAxes',fh(3));
-%     hold on;
-%     %
-%     set(gca,'XTick',[],'YTick',[]);
-%     axis([0 1 0 con_n+2]);
-%     % draw and label color bar rectangles
-%     % draw and label start triangle
-%     c = 1;
-%     h = fill([0.1 0.2 0.3],[c c-1.0 c],cmap(c,:));
-%     if isempty(contour_file),
-%         str = [num2str(con_min + (c-1)*(con_max-con_min)/con_n)];
-%     else
-%         str = num2str(contour_data(c));
-%     end
-%     textsize = 2+round(80/con_n);
-%     if textsize > 10, textsize = 10; end
-%     text(0.40,c,str,'FontName','Arial','FontSize',textsize);
-%     set(h,'LineWidth',0.5);
-%     set(h,'EdgeColor','k');
-%     % draw and label bars
-%     for c = 2:con_n+1,
-%         h = fill([0.1 0.1 0.3 0.3],[c-1.0 c c c-1.0],cmap(c,:));
-%         if isempty(contour_file),
-%             str = [num2str(con_min + (c-1)*(con_max-con_min)/con_n)];
-%         else
-%             str = num2str(contour_data(c));
-%         end
-%         textsize = 2+round(80/con_n);
-%         if textsize > 10, textsize = 10; end
-%         text(0.40,c,str,'FontName','Arial','FontSize',textsize);
-%         set(h,'LineWidth',0.5);
-%         set(h,'EdgeColor','k');
-%     end
-%     % draw end triangle
-%     c = con_n+2;
-%     h = fill([0.1 0.2 0.3],[c-1.0 c c-1.0],cmap(c,:));
-%     set(h,'LineWidth',0.5);
-%     set(h,'EdgeColor','k');
-%     %
-%     hold off;
-%     %
-%     hold off;
-%     %
-% end
+if (~((data_only == 'y') && (data_siteonly == 'y')))
+    %
+    set(gcf,'CurrentAxes',fh(3));
+    hold on;
+    %
+    set(gca,'XTick',[],'YTick',[]);
+    axis([0 1 0 con_n+2]);
+    % draw and label color bar rectangles
+    % draw and label start triangle
+    c = 1;
+    h = fill([0.1 0.2 0.3],[c c-1.0 c],cmap(c,:));
+    if isempty(contour_file),
+        str = [num2str(con_min + (c-1)*(con_max-con_min)/con_n)];
+    else
+        str = num2str(contour_data(c));
+    end
+    textsize = 2+round(80/con_n);
+    if textsize > 10, textsize = 10; end
+    text(0.40,c,str,'FontName','Arial','FontSize',textsize);
+    set(h,'LineWidth',0.5);
+    set(h,'EdgeColor','k');
+    % draw and label bars
+    for c = 2:con_n+1,
+        h = fill([0.1 0.1 0.3 0.3],[c-1.0 c c c-1.0],cmap(c,:));
+        if isempty(contour_file),
+            str = [num2str(con_min + (c-1)*(con_max-con_min)/con_n)];
+        else
+            str = num2str(contour_data(c));
+        end
+        textsize = 2+round(80/con_n);
+        if textsize > 10, textsize = 10; end
+        text(0.40,c,str,'FontName','Arial','FontSize',textsize);
+        set(h,'LineWidth',0.5);
+        set(h,'EdgeColor','k');
+    end
+    % draw end triangle
+    c = con_n+2;
+    h = fill([0.1 0.2 0.3],[c-1.0 c c-1.0],cmap(c,:));
+    set(h,'LineWidth',0.5);
+    set(h,'EdgeColor','k');
+    %
+    hold off;
+    %
+    hold off;
+    %
+end
 %
 % *** PRINT PLOT ******************************************************** %
 %

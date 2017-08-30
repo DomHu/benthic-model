@@ -198,6 +198,7 @@ CONTAINS
         real::loc_ALK_swiflux                                       ! SWI return fluxes of ALK [mol/(cm^2 yr)]
         real::loc_mixed_layer
         real::loc_k_apparent
+        real::loc_POM_S_H2S_swiflux                                 ! SWI return flux related to H2S in sulphurised POC
         logical::loc_sed_pres_insane                                ! true if integration constants are too high -> calculate SWI-flux manually
         
         ! parameters for temperature dependent rate constants (as in John et al. 2014)
@@ -222,6 +223,8 @@ CONTAINS
         loc_ALK_swiflux = 0.0
         loc_M_swiflux = 0.0
         
+        loc_POM_S_H2S_swiflux = 0.0
+
         por = 0.85                                                  ! porosity (-) defined as: porewater_vol./(solid_sed_vol.+porewater_vol.)
         loc_BW_O2_anoxia = 5.0e-9                                   ! set to 5.0 nanomol/cm^3
         loc_mixed_layer = 5.0                                      ! mixed layer depth, to compare wt% with observations
@@ -341,21 +344,21 @@ CONTAINS
             loc_POC2_flux_swi = conv_POC_cm3_mol*dum_is_POC_frac2*loc_fPOC
 
             ! make the k1 - k2 relation depth dependent:
-            if(dum_D .LE. 1000.0)then
-                par_sed_huelse2017_k2_order = 2.0
-            elseif (dum_D .LE. 2000.0)then
-                par_sed_huelse2017_k2_order = 5.0
-            elseif (dum_D .LE. 3000.0)then
-                par_sed_huelse2017_k2_order = 10.0
-        !                print*,' '
-        !                print*,' below 3000'
-            !elseif (dum_D .LE. 4000.0)then
-            !    par_sed_huelse2017_k2_order = 50.0
-            !elseif (dum_D .LE. 5000.0)then
-            !    par_sed_huelse2017_k2_order = 100.0
-            else
-                par_sed_huelse2017_k2_order = 25.0
-            end if
+!            if(dum_D .LE. 1000.0)then
+!                par_sed_huelse2017_k2_order = 5.0
+!            elseif (dum_D .LE. 2000.0)then
+!                par_sed_huelse2017_k2_order = 8.0
+!            elseif (dum_D .LE. 3000.0)then
+!                par_sed_huelse2017_k2_order = 12.0
+!        !                print*,' '
+!        !                print*,' below 3000'
+!            !elseif (dum_D .LE. 4000.0)then
+!            !    par_sed_huelse2017_k2_order = 50.0
+!            !elseif (dum_D .LE. 5000.0)then
+!            !    par_sed_huelse2017_k2_order = 100.0
+!            else
+!                par_sed_huelse2017_k2_order = 25.0
+!            end if
 
             ! use oxic degradation rates
             select case (par_sed_huelse2017_kscheme)
@@ -569,6 +572,18 @@ CONTAINS
                         !                    loc_H2S_swiflux = loc_new_sed(is_POC)*conv_POC_cm3_mol*(138.0/212.0)
                         call sub_huelseetal2016_zH2S(dum_swiconc_H2S, loc_H2S_swiflux)
                     !                    print*,'OMEN loc_H2S_swiflux = ', loc_H2S_swiflux
+                    ! Now check for H2S in sulphurised OM which is given back to BIOGEM (in 1:1 ratio)
+                    ! in order to conserve S balance
+                        if(loc_new_sed(is_POM_S) .GE. const_real_nullsmall)then
+!                            print*,' '
+!                            print*,'loc_new_sed(is_POM_S), const_real_nullsmall ', loc_new_sed(is_POM_S), const_real_nullsmall
+!                            print*,'conv_POC_cm3_mol ', conv_POC_cm3_mol
+!                            print*,'OLD loc_H2S_swiflux ', loc_H2S_swiflux
+                            loc_POM_S_H2S_swiflux = loc_new_sed(is_POM_S)*conv_POC_cm3_mol*1.0
+                            loc_H2S_swiflux = loc_H2S_swiflux + loc_POM_S_H2S_swiflux
+!                            print*,'NEW loc_H2S_swiflux ', loc_H2S_swiflux
+                        end if
+
                     else
                         ! If not selected nothing needs to be done
                     end if
@@ -2081,8 +2096,8 @@ CONTAINS
 
         ! Calculate SO4 consumption below zso4, by organic matter and indirectly via methane oxidation
 
-        print*,' '
-        print*,'..... START FUN_calcFSO4'
+!        print*,' '
+!        print*,'..... START FUN_calcFSO4'
 
         tmpreac1    = MC*gammaCH4
         tmpreac2    = MC*gammaCH4

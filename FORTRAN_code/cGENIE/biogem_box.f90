@@ -3984,12 +3984,14 @@ CONTAINS
        ! NOTE: the concentration that dum_bio_part represents is actually spread across multiple cells during each time step
        !       i.e., in any cell, this density of material in effect exists only for a fraction of that time-step
        !       => normalize by the fraction of time spent in that cell during the time-step (== residence time / time-step)
-       print*, 'oxidationanalogue '
        loc_H2S_scavenging = dum_dt_scav*par_bio_remin_kH2StoSO4*loc_H2S*(dum_dt_scav/dum_dtyr)*loc_part_den_POCl
        loc_H2S_scavenging = min(loc_H2S_scavenging,loc_part_den_POCl,loc_H2S)
+!       print*, 'oxidationanalogue '
+!       print*, 'loc_H2S, loc_H2S_scavenging', loc_H2S, loc_H2S_scavenging
     CASE ('complete')
        loc_H2S_scavenging = min(loc_part_den_POCl,loc_H2S)
     case default
+!        print*, 'No sulphurization '
        loc_H2S_scavenging = 0.0
     end select
     ! implement scavenging
