@@ -2115,8 +2115,8 @@ CONTAINS
     ! OXIDIZE NH4
     ! -------------------------------------------------------- !
     ! look for some NH4 and see if it can be oxidized (using O2; if there is any!)
-    ! 2NH4+ + 3O2 -> 2NO2- + 4H+ + 2H2O
     ! 2NH4+ + 2O2 -> N2O + 2H+ + 3H2O
+    ! (2NH4+ + 3O2 -> 2NO2- + 4H+ + 2H2O)
     DO k=n_k,dum_k1,-1
        loc_O2 = ocn(io_O2,dum_i,dum_j,k)
        loc_NH4 = ocn(io_NH4,dum_i,dum_j,k)
@@ -2341,7 +2341,7 @@ CONTAINS
     ! -------------------------------------------------------- !
     ! DEFINE LOCAL VARIABLES
     ! -------------------------------------------------------- !
-    integer::l,io,k
+    integer::l,io,k,id
     real::loc_O2,loc_H2S,loc_r34S
     real::loc_H2S_oxidation_const,loc_H2S_oxidation
     real,dimension(n_ocn,n_k)::loc_bio_remin
@@ -2414,9 +2414,20 @@ CONTAINS
        io = conv_iselected_io(l)
        bio_remin(io,dum_i,dum_j,:) = bio_remin(io,dum_i,dum_j,:) + loc_bio_remin(io,:)
     end do
-
-    ! record diagnostics (mol kg-1)
+    ! -------------------------------------------------------- !
+    ! DIAGNOSTICS
+    ! -------------------------------------------------------- !
+    ! -------------------------------------------------------- ! record diagnostics (mol kg-1) OLD
     diag_geochem(idiag_geochem_dH2S,dum_i,dum_j,:) = loc_bio_remin(io_H2S,:)
+    ! -------------------------------------------------------- ! record diagnostics (mol kg-1)
+    id = fun_find_str_i('H2StoSO4_dH2S',string_diag_redox)
+    diag_redox(id,dum_i,dum_j,:) = loc_bio_remin(io_H2S,:)
+    id = fun_find_str_i('H2StoSO4_dSO4',string_diag_redox)
+    diag_redox(id,dum_i,dum_j,:) = loc_bio_remin(io_SO4,:)
+    id = fun_find_str_i('H2StoSO4_dO2',string_diag_redox)
+    diag_redox(id,dum_i,dum_j,:) = loc_bio_remin(io_O2,:)
+    id = fun_find_str_i('H2StoSO4_dALK',string_diag_redox)
+    diag_redox(id,dum_i,dum_j,:) = loc_bio_remin(io_ALK,:) 
     ! -------------------------------------------------------- !
     ! END
     ! -------------------------------------------------------- !
@@ -2431,7 +2442,7 @@ CONTAINS
     INTEGER,INTENT(in)::dum_i,dum_j,dum_k1
     real,intent(in)::dum_dtyr
     ! local variables
-    integer::l,io,k
+    integer::l,io,k,id
     real::loc_potO2cap
     real::loc_CH4
     real::loc_r13C,loc_r14C
@@ -2485,16 +2496,31 @@ CONTAINS
           end if
        end if
     end DO
-
-    ! *** WRITE DATA ***
+    ! -------------------------------------------------------- !
+    ! WRITE GLOBAL ARRAY DATA
+    ! -------------------------------------------------------- !
     ! write ocean tracer remineralization field (global array)
     DO l=3,n_l_ocn
        io = conv_iselected_io(l)
        bio_remin(io,dum_i,dum_j,:) = bio_remin(io,dum_i,dum_j,:) + loc_bio_remin(io,:)
     end do
-    ! record diagnostics (mol kg-1)
+    ! -------------------------------------------------------- !
+    ! DIAGNOSTICS
+    ! -------------------------------------------------------- !
+    ! -------------------------------------------------------- ! record diagnostics (mol kg-1) OLD
     diag_geochem(idiag_geochem_dCH4,dum_i,dum_j,:) = -loc_bio_remin(io_CH4,:)
-
+    ! -------------------------------------------------------- ! record diagnostics (mol kg-1)
+    id = fun_find_str_i('CH4toDIC_dCH4',string_diag_redox)
+    diag_redox(id,dum_i,dum_j,:) = loc_bio_remin(io_CH4,:)
+    id = fun_find_str_i('CH4toDIC_dCO2',string_diag_redox)
+    diag_redox(id,dum_i,dum_j,:) = loc_bio_remin(io_DIC,:)
+    id = fun_find_str_i('CH4toDIC_dO2',string_diag_redox)
+    diag_redox(id,dum_i,dum_j,:) = loc_bio_remin(io_O2,:)
+    id = fun_find_str_i('CH4toDIC_dALK',string_diag_redox)
+    diag_redox(id,dum_i,dum_j,:) = loc_bio_remin(io_ALK,:)
+    ! -------------------------------------------------------- !
+    ! END
+    ! -------------------------------------------------------- !
   end SUBROUTINE sub_calc_bio_remin_oxidize_CH4
   ! ****************************************************************************************************************************** !
 
@@ -2505,7 +2531,7 @@ CONTAINS
     INTEGER,INTENT(in)::dum_i,dum_j,dum_k1
     real,intent(in)::dum_dtyr
     ! local variables
-    integer::l,io,k
+    integer::l,io,k,id
     real::loc_potO2cap
     real::loc_CH4,loc_DIC,loc_HCO3
     real::loc_r13C,loc_r14C
@@ -2568,16 +2594,33 @@ CONTAINS
             end if
        end if
     end DO
-
-    ! *** WRITE DATA ***
+    ! -------------------------------------------------------- !
+    ! WRITE GLOBAL ARRAY DATA
+    ! -------------------------------------------------------- !
     ! write ocean tracer remineralization field (global array)
     DO l=3,n_l_ocn
        io = conv_iselected_io(l)
        bio_remin(io,dum_i,dum_j,:) = bio_remin(io,dum_i,dum_j,:) + loc_bio_remin(io,:)
     end do
-    ! record diagnostics (mol kg-1)
+    ! -------------------------------------------------------- !
+    ! DIAGNOSTICS
+    ! -------------------------------------------------------- !
+    ! -------------------------------------------------------- ! record diagnostics (mol kg-1) OLD
     diag_geochem(idiag_geochem_dCH4_AOM,dum_i,dum_j,:) = -loc_bio_remin(io_CH4,:)
-
+    ! -------------------------------------------------------- ! record diagnostics (mol kg-1)
+    id = fun_find_str_i('CH4toDICaom_dCH4',string_diag_redox)
+    diag_redox(id,dum_i,dum_j,:) = loc_bio_remin(io_CH4,:)
+    id = fun_find_str_i('CH4toDICaom_dCO2',string_diag_redox)
+    diag_redox(id,dum_i,dum_j,:) = loc_bio_remin(io_DIC,:)
+    id = fun_find_str_i('CH4toDICaom_dH2S',string_diag_redox)
+    diag_redox(id,dum_i,dum_j,:) = loc_bio_remin(io_H2S,:)
+    id = fun_find_str_i('CH4toDICaom_dSO4',string_diag_redox)
+    diag_redox(id,dum_i,dum_j,:) = loc_bio_remin(io_SO4,:)
+    id = fun_find_str_i('CH4toDICaom_dALK',string_diag_redox)
+    diag_redox(id,dum_i,dum_j,:) = loc_bio_remin(io_ALK,:)
+    ! -------------------------------------------------------- !
+    ! END
+    ! -------------------------------------------------------- !
   end SUBROUTINE sub_calc_bio_remin_oxidize_CH4_AOM
   ! ****************************************************************************************************************************** !
 
@@ -2592,7 +2635,7 @@ CONTAINS
     ! -------------------------------------------------------- !
     ! DEFINE LOCAL VARIABLES
     ! -------------------------------------------------------- !
-    integer::l,io,k
+    integer::l,io,k,id
     real::loc_O2,loc_I
     real::loc_I_oxidation_const,loc_I_oxidation
     real,dimension(n_ocn,n_k)::loc_bio_remin
@@ -2649,6 +2692,16 @@ CONTAINS
        bio_remin(io,dum_i,dum_j,:) = bio_remin(io,dum_i,dum_j,:) + loc_bio_remin(io,:)
     end do
     ! -------------------------------------------------------- !
+    ! DIAGNOSTICS
+    ! -------------------------------------------------------- !
+    ! -------------------------------------------------------- ! record diagnostics (mol kg-1)
+    id = fun_find_str_i('ItoIO3_dI',string_diag_redox)
+    diag_redox(id,dum_i,dum_j,:) = loc_bio_remin(io_I,:)
+    id = fun_find_str_i('ItoIO3_dIO3',string_diag_redox)
+    diag_redox(id,dum_i,dum_j,:) = loc_bio_remin(io_IO3,:)
+    id = fun_find_str_i('ItoIO3_dO2',string_diag_redox)
+    diag_redox(id,dum_i,dum_j,:) = loc_bio_remin(io_O2,:)
+    ! -------------------------------------------------------- !
     ! END
     ! -------------------------------------------------------- !
   end SUBROUTINE sub_calc_bio_remin_oxidize_I
@@ -2668,7 +2721,7 @@ CONTAINS
     ! -------------------------------------------------------- !
     ! DEFINE LOCAL VARIABLES
     ! -------------------------------------------------------- !
-    integer::l,io,k
+    integer::l,io,k,id
     real::loc_O2,loc_IO3
     real::loc_IO3_reduction_const,loc_IO3_reduction
     real,dimension(n_ocn,n_k)::loc_bio_remin
@@ -2719,6 +2772,16 @@ CONTAINS
        io = conv_iselected_io(l)
        bio_remin(io,dum_i,dum_j,:) = bio_remin(io,dum_i,dum_j,:) + loc_bio_remin(io,:)
     end do
+    ! -------------------------------------------------------- !
+    ! DIAGNOSTICS
+    ! -------------------------------------------------------- !
+    ! -------------------------------------------------------- ! record diagnostics (mol kg-1)
+    id = fun_find_str_i('IO3toI_dI',string_diag_redox)
+    diag_redox(id,dum_i,dum_j,:) = loc_bio_remin(io_I,:)
+    id = fun_find_str_i('IO3toI_dIO3',string_diag_redox)
+    diag_redox(id,dum_i,dum_j,:) = loc_bio_remin(io_IO3,:)
+    id = fun_find_str_i('IO3toI_dO2',string_diag_redox)
+    diag_redox(id,dum_i,dum_j,:) = loc_bio_remin(io_O2,:)
     ! -------------------------------------------------------- !
     ! END
     ! -------------------------------------------------------- !
@@ -2922,15 +2985,17 @@ CONTAINS
     type(fieldocn),INTENT(inout)::dum_vbio_remin                        !
     real,intent(in)::dum_dtyr                                           !
     ! local variables                                                   !
-    integer::l,io,is,k                                                  !
+    integer::l,io,is,k,id                                                  !
     integer::lo,ls                                                      !
     integer::loc_m,loc_tot_m                                            !
+    real::tmp_bio_remin
     real::loc_bio_remin_DOMratio,loc_bio_remin_RDOMratio                !
     real::loc_intI                                                      ! local integrated insolation
     real,dimension(n_l_ocn,n_k)::loc_vbio_remin                         !
     real,dimension(n_sed,n_k)::loc_bio_part                             !
     integer::loc_i,loc_j,loc_k1
     real,dimension(n_l_ocn,n_l_sed)::loc_conv_ls_lo                       !
+    CHARACTER(len=31)::loc_string     ! 
 
     ! *** INITIALIZE VARIABLES ***
     ! set local grid point (i,j) information
@@ -3024,7 +3089,13 @@ CONTAINS
           do loc_m=1,loc_tot_m
              lo = conv_ls_lo_i(loc_m,ls)
              if (lo > 0) then
-                loc_vbio_remin(lo,k) = loc_vbio_remin(lo,k) + loc_conv_ls_lo(lo,ls)*loc_bio_part(l2is(ls),k)
+                tmp_bio_remin = loc_conv_ls_lo(lo,ls)*loc_bio_part(l2is(ls),k)
+                loc_vbio_remin(lo,k) = loc_vbio_remin(lo,k) + tmp_bio_remin
+                         if (ctrl_bio_remin_redox_save) then
+                            loc_string = trim(string_sed(l2is(ls)))//'_d'//trim(string_ocn(l2io(lo)))
+                            id = fun_find_str_i(trim(loc_string),string_diag_redox)
+                            diag_redox(id,loc_i,loc_j,k) = diag_redox(id,loc_i,loc_j,k) + tmp_bio_remin
+                         end if
              end if
           end do
        end DO
@@ -3051,12 +3122,14 @@ CONTAINS
     ! local variables
     integer::l,is
     integer::lo,ls                                                      !
+    integer::id
     INTEGER::k,kk,loc_bio_remin_min_k,loc_klim
     integer::loc_k1
-    integer::loc_tot_m
+    integer::loc_m,loc_tot_m
     real,dimension(1:3)::loc_FeFELL
     real::loc_T,loc_SiO2                                                !
-    real::loc_Si_eq,loc_u                                               !
+    real::loc_Si_eq,loc_u   
+    real::tmp_bio_remin    !
     real::loc_bio_remin_dD
     real::loc_bio_remin_max_D                                         !
     real::loc_bio_remin_layerratio
@@ -3081,7 +3154,6 @@ CONTAINS
     real,dimension(n_l_ocn,n_l_sed)::loc_conv_ls_lo                       !
 
     integer::dum_i,dum_j
-    integer::loc_m
 
     real,dimension(1:n_l_sed,1:n_k)::loc_bio_part_TMP
     real,dimension(1:n_l_sed,1:n_k)::loc_bio_part_OLD
@@ -3089,6 +3161,8 @@ CONTAINS
     real,dimension(1:n_l_ocn,1:n_k)::loc_bio_remin
     real,dimension(1:n_l_sed,1:n_k)::loc_bio_settle
     real,dimension(1:n_l_sed)::loc_bio_part_remin
+        
+    CHARACTER(len=31)::loc_string     ! 
 
     ! ### USER-DEFINABLE OPTIONS ################################################################################################# !
     ! NOTE: settings not included in the run-time configuration files for clarity
@@ -3503,7 +3577,13 @@ CONTAINS
                    do loc_m=1,loc_tot_m
                       lo = conv_ls_lo_i(loc_m,ls)
                       if (lo > 0) then
-                         loc_bio_remin(lo,kk) = loc_bio_remin(lo,kk) + loc_conv_ls_lo(lo,ls)*loc_bio_part_remin(ls)
+                         tmp_bio_remin = loc_conv_ls_lo(lo,ls)*loc_bio_part_remin(ls)
+                         loc_bio_remin(lo,kk) = loc_bio_remin(lo,kk) + tmp_bio_remin
+                         if (ctrl_bio_remin_redox_save) then
+                            loc_string = trim(string_sed(l2is(ls)))//'_d'//trim(string_ocn(l2io(lo)))
+                            id = fun_find_str_i(trim(loc_string),string_diag_redox)
+                            diag_redox(id,dum_i,dum_j,kk) = diag_redox(id,dum_i,dum_j,kk) + tmp_bio_remin
+                         end if
                       end if
                    end do
                 end DO

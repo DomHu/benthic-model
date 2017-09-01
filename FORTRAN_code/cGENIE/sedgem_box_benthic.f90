@@ -575,13 +575,13 @@ CONTAINS
                     ! Now check for H2S in sulphurised OM which is given back to BIOGEM (in 1:1 ratio)
                     ! in order to conserve S balance
                         if(loc_new_sed(is_POM_S) .GE. const_real_nullsmall)then
-!                            print*,' '
-!                            print*,'loc_new_sed(is_POM_S), const_real_nullsmall ', loc_new_sed(is_POM_S), const_real_nullsmall
-!                            print*,'conv_POC_cm3_mol ', conv_POC_cm3_mol
-!                            print*,'OLD loc_H2S_swiflux ', loc_H2S_swiflux
+                        !     print*,' '
+                        !     print*,'loc_new_sed(is_POM_S)', loc_new_sed(is_POM_S)
+                        !    print*,'conv_POC_cm3_mol ', conv_POC_cm3_mol
+                        !     print*,'OLD loc_H2S_swiflux ', loc_H2S_swiflux
                             loc_POM_S_H2S_swiflux = loc_new_sed(is_POM_S)*conv_POC_cm3_mol*1.0
                             loc_H2S_swiflux = loc_H2S_swiflux + loc_POM_S_H2S_swiflux
-!                            print*,'NEW loc_H2S_swiflux ', loc_H2S_swiflux
+                        !    print*,'NEW loc_H2S_swiflux ', loc_H2S_swiflux
                         end if
 
                     else
