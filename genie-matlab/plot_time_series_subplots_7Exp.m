@@ -11,9 +11,9 @@ exp_1 = './cgenie_output/0606_02_EXAMPLE.worjh2.Archeretal2009.SPIN1_fastsinking
 exp_2 = './cgenie_output/2908_26_Archeretal2009_OMEN.boudreau1997_k_2_Allsolidfields';
 exp_3 = './cgenie_output/2908_27_Archeretal2009_OMEN.boudreau1997_k_5_Allsolidfields';
 exp_4 = './cgenie_output/2908_28_Archeretal2009_OMEN.boudreau1997_k_8_Allsolidfields';
-exp_5 = './cgenie_output/2908_29_Archeretal2009_OMEN.boudreau1997_k_10_Allsolidfields';
-exp_6 = './cgenie_output/2908_30_Archeretal2009_OMEN.boudreau1997_k_15_Allsolidfields';
-exp_7 = './cgenie_output/2908_32_Archeretal2009_OMEN.boudreau1997_k_25_Allsolidfields';
+exp_5 = './cgenie_output/2908_32_Archeretal2009_OMEN.boudreau1997_k_25_Allsolidfields';
+exp_6 = './cgenie_output/2908_33_Archeretal2009_OMEN.boudreau1997_k_12_Allsolidfields';
+exp_7 = './cgenie_output/2908_34_Archeretal2009_OMEN.boudreau1997_DEPTH_DEP_Allsolidfields';
 % %%%% load other data
 
 REF_sed_O2_exp1 = load(fullfile(exp_1,'/biogem/biogem_series_ocn_O2.res'),'ascii');
@@ -91,7 +91,7 @@ else
      ylabel('O_2 (mol)');
 end
 xlabel('yrs ');
-xlim([0 10000])
+% xlim([0 10000])
 
 subplot(3,2,2)
 if(plot_mean)  % mean (mol/kg)
@@ -108,8 +108,8 @@ else    % total (mol)
     ylabel('SO_4 (mol)');
 end
 xlabel('yrs ');
-xlim([0 10000])
-hleg=legend('0606-02 Archer SPIN - No OMEN - fast sinking', '2908-26 Boudreau 2', '2908-27 Boudreau 5', '2908-28 Boudreau 8', '2908-29 Boudreau 10', '2908-30 Boudreau 15', '2908-32 Boudreau 25'); 
+% xlim([0 10000])
+hleg=legend('0606-02 Archer SPIN - No OMEN - fast sinking', '2908-26 Boudreau 2', '2908-27 Boudreau 5', '2908-28 Boudreau 8', '2908-32 Boudreau 25', '2908-33 Boudreau 12', '2908-34 Boudreau Depth dep'); 
 % hleg=legend('No OMEN', 'Tromp: k1 + k2 ~ w', 'Tromp: k1 ~ w', 'Boudreau: k1 + k2 ~ w', 'Boudreau: k1 ~ w', 'Stolpovsky: k1 ~ w', 'Boudreau: k1 ~ fPOC'); 
 set(hleg,'FontSize',6);
 set(hleg,'Location','SouthEast');
@@ -129,7 +129,7 @@ else % total (mol)
     ylabel('H_2S (mol)');
 end
 xlabel('yrs ');
-xlim([0 10000])
+% xlim([0 10000])
 %hleg=legend('small k', 'higher k'); 
 %set(hleg,'Location','SouthEast')
 
@@ -148,7 +148,7 @@ else % total (mol)
     ylabel('PO_4 (mol)');
 end
 xlabel('yrs ');
-xlim([0 10000])
+% xlim([0 10000])
 %ylim([2.15 2.17])
 % hleg=legend('small k', 'higher k', 'SPIN no Corg'); 
 % set(hleg,'Location','NorthEast')
@@ -168,7 +168,7 @@ else
     ylabel('ALK (mol)');
 end
 xlabel('yrs ');
-xlim([0 10000])
+% xlim([0 10000])
 %hleg=legend('small k', 'higher k'); 
 %set(hleg,'FontSize',10)
 %set(hleg,'Location','SouthEast')
@@ -189,7 +189,7 @@ else
     ylabel('DIC (mol)');
 end
 xlabel('yrs ');
-xlim([0 10000])
+% xlim([0 10000])
 % hleg=legend('small k', 'higher k', 'SPIN no Corg'); 
 % set(hleg,'Location','SouthEast')
 

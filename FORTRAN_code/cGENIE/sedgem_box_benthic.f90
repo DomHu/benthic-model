@@ -574,15 +574,15 @@ CONTAINS
                     !                    print*,'OMEN loc_H2S_swiflux = ', loc_H2S_swiflux
                     ! Now check for H2S in sulphurised OM which is given back to BIOGEM (in 1:1 ratio)
                     ! in order to conserve S balance
-                        if(loc_new_sed(is_POM_S) .GE. const_real_nullsmall)then
-                        !     print*,' '
-                        !     print*,'loc_new_sed(is_POM_S)', loc_new_sed(is_POM_S)
-                        !    print*,'conv_POC_cm3_mol ', conv_POC_cm3_mol
-                        !     print*,'OLD loc_H2S_swiflux ', loc_H2S_swiflux
-                            loc_POM_S_H2S_swiflux = loc_new_sed(is_POM_S)*conv_POC_cm3_mol*1.0
-                            loc_H2S_swiflux = loc_H2S_swiflux + loc_POM_S_H2S_swiflux
-                        !    print*,'NEW loc_H2S_swiflux ', loc_H2S_swiflux
-                        end if
+!                        if(loc_new_sed(is_POM_S) .GE. const_real_nullsmall)then
+!                        !     print*,' '
+!                        !     print*,'loc_new_sed(is_POM_S)', loc_new_sed(is_POM_S)
+!                        !    print*,'conv_POC_cm3_mol ', conv_POC_cm3_mol
+!                        !     print*,'OLD loc_H2S_swiflux ', loc_H2S_swiflux
+!                            loc_POM_S_H2S_swiflux = loc_new_sed(is_POM_S)*conv_POC_cm3_mol*1.0
+!                            loc_H2S_swiflux = loc_H2S_swiflux + loc_POM_S_H2S_swiflux
+!                        !    print*,'NEW loc_H2S_swiflux ', loc_H2S_swiflux
+!                        end if
 
                     else
                         ! If not selected nothing needs to be done
@@ -614,6 +614,17 @@ CONTAINS
                         !                print*,'OMEN calc ALK:', loc_ALK_swiflux
                         !                loc_ALK_swiflux = 2.0*loc_H2S_swiflux + loc_new_sed(is_POC)*conv_POC_cm3_mol*16/106 !NC1
                         !                print*,'CALC loc_ALK_swiflux = ', loc_ALK_swiflux
+                        if(loc_new_sed(is_POM_S) .GE. const_real_nullsmall)then
+!                             print*,' '
+                        !     print*,'loc_new_sed(is_POM_S)', loc_new_sed(is_POM_S)
+                        !    print*,'conv_POC_cm3_mol ', conv_POC_cm3_mol
+!                            print*,'OLD loc_ALK_swiflux ', loc_ALK_swiflux
+                            loc_POM_S_H2S_swiflux = loc_new_sed(is_POM_S)*conv_POC_cm3_mol*1.0
+                            loc_ALK_swiflux = loc_ALK_swiflux - 2*loc_POM_S_H2S_swiflux
+!                            print*,'loc_POM_S_H2S_swiflux ', loc_POM_S_H2S_swiflux
+!                            print*,'NEW loc_ALK_swiflux ', loc_ALK_swiflux
+                        end if
+
                         else
                             ! If not selected nothing needs to be done
                         end if
