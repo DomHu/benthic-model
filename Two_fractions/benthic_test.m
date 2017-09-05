@@ -492,11 +492,11 @@ classdef benthic_test
                 	% use parameterisation of Boudreau 1997 dependent on sediment accumulation rate (w)
                     loc_k_apparent = 0.38*res.bsd.w^0.59;
                     if(res.bsd.wdepth < 1000)
-                        k2scaling=2.0;
-                    elseif(res.bsd.wdepth < 2000)
                         k2scaling=5.0;
+                    elseif(res.bsd.wdepth < 2000)
+                        k2scaling=8.0;
                     elseif(res.bsd.wdepth < 3000)
-                        k2scaling=10.0;
+                        k2scaling=12.0;
                     %elseif(res.bsd.wdepth < 4000)
                     %    k2scaling=50.0;
                     %elseif(res.bsd.wdepth < 5000)
@@ -515,7 +515,7 @@ classdef benthic_test
                 case 'boudreau1997fPOC'
                     OMEN_result(j,i) = test.Cox_rate_total;
                	case 'invariant'
-                    res.zTOC.k1=3*0.005;
+                    res.zTOC.k1=0.0065;
                     res.zTOC.k2=0.005;
                otherwise
                     error('Error. Unknown k parameterization.')

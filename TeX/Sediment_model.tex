@@ -1680,6 +1680,7 @@ Depending on the overlying biogeochemical ocean model, processes can be included
 As nitrogen is not modelled explicitly in the employed cGENIE configuration, related stoichiometries in OMEN-SED are set to zero (i.e. \chem{NC_i}, $\chem{ALK}^\mathrm{NIT}$ and $\chem{ALK}^\mathrm{DEN}$). 
 cGENIE, however, implicitly includes the effects of \chem{NH_4} release and its complete nitrification on alkalinity but neglects the impact of P release. Therefore, alkalinity 
 stoichiometries from aerobic degradation and sulfate reduction are changed to $\chem{ALK}^\mathrm{OX} = -16/106$ and $\chem{ALK}^\mathrm{SUL} = 122/106$, respectively (compare to default in Table \ref{table:reaction_parameters}).
+\textcolor{red}{Change stoichiometries in stand-alone section (see Email Pierre) and ad here how we change them when coupled to cGENIE!}
 
 Several biogeochemical tracers and parameters are transferred from SEDGEM to OMEN-SED and have to be converted into the required units. 
 Bottom water concentrations of solutes are converted from mol\,kg$^{-1}$ to mol\,cm$^{-3}$ and the depositional flux of POC (\chem{POC_{flux}}) is converted from cm$^{3}$\,cm$^{-2}$\,yr$^{-1}$ 
@@ -1781,10 +1782,12 @@ the triangles). The regression line (and the corresponding R$^2$-value) is calcu
 \end{center}
 \end{figure}
 
+\textcolor{red}{TODO Andy: Section describing the prescribed fields of solids (i.e. detrital, opal, \chem{CaCO_3}) to the sediments!}
+
 To parameterise the reactivity of organic matter in OMEN-SED two different approaches are compared. First, globally invariant degradation rate constants $k_1$ and $k_2$ are assumed. 
 By providing two pools of POC from the water-column characterised by different degradation rate constants, cGENIE accounts for the decrease in mean POC reactivity with water-depth. 
-The rate constants for the more refractory OM pool, $k_2$, is systematically varied between 0.0045 and 0.007 year$^{-1}$ and the more labile OM component, described by $k_1$, is assumed to degrade $x \in \{2, 3, 4, 5, 10\}$ times faster, respectively. 
-However, altough accounting for the decrease in mean POC reactivity with seafloor depth, this approach does not take into account the change in organic matter reactivity types caused by different burial velocities and thus time scales in the sediments 
+The rate constants for the more refractory OM pool, $k_2$, is systematically varied between 0.004 and 0.006 year$^{-1}$ and the more labile OM component, described by $k_1$, is assumed to degrade $x \in \{1.1, 1.2, 1.3, 1.5, 2\}$ times faster, respectively. 
+However, although accounting for the decrease in mean POC reactivity with seafloor depth, this approach does not take into account the change in organic matter reactivity types caused by different burial velocities and thus time scales in the sediments 
 (Fig. \ref{fig:OM_reactivity}). 
 Therefore, the second approach uses the empirical relationship proposed by \citet{boudreau1997diagenetic}, 
 which relates the apparent OM degradation rate constant in the upper sediments to the burial velocity, $w$ (cm year$^{-1}$, see also Section \ref{subsec:globalhypsometry}):
@@ -1797,9 +1800,9 @@ The following assumptions are made in order to calculate the two degradation rat
   k_\mathrm{app} &= f_1 \cdot k_1 + f_2 \cdot k_2 \label{boudreau_assumption1}\\
   k_1 &= x \cdot k_2					\label{boudreau_assumption2}
 \end{align}
-where $x$ describes the relation between $k_1$ and $k_2$ and is subject to sensitivity experiments (with values of $x \in \{2, 3, 4, 5, 10, 25, 50, 100\}$). 
+where $x$ describes the relation between $k_1$ and $k_2$ and is subject to sensitivity experiments (with values of $x \in \{2, 5, 8, 10, 12, 15, 20, 25\}$). 
 As the fractions of labile and refractory OM reaching the sediments ($f_1, f_2$) is known from cGENIE, $k_1$ and $k_2$ can be calculaed independently for each grid-cell. 
-All simulations presented here are run for 20,000 years to steady-state and OMEN-SED is called for each grid-cell in every time step, feeding back the resulting SWI-fluxes and the 
+All simulations presented here are run for 10,000 years to steady-state from a 20,000 year cGENIE spin-up without OMEN-SED. The new model OMEN-SED is called for each grid-cell in every time step, feeding back the resulting SWI-fluxes and the 
 fraction of POC preserved in the sediments to cGENIE. 
 
 \subsubsection{Results}\label{subsubsec:couplingresultscrossplots}
@@ -1817,15 +1820,20 @@ fraction of POC preserved in the sediments to cGENIE.
 %First, the degradation rate constants are parameterised on model intrinsic information only using the globally invariant approach. By providing two pools of POC from the water-column characterised by different degradation rate constants, cGENIE accounts 
 %for the decrease in bulk POC degradability with water-depth. 
 %Therefore, the imposed depth dependent relation of the degradation rate constants presented in Figure \ref{fig:OMEN_GENIE_Boudreau_results} could also be regarded as double-accounting. 
-Figure \ref{fig:OMEN_GENIE_invariant_results} presents results for the globally invariant degradation rate experiments, where $k_2$ is systematically varied between 0.0045 and 0.007 year$^{-1}$ and 
-the more labile OM component, $k_1$, is assumed to degrade $x \in \{2, 3, 4, 5, 10\}$ times faster, respectively. 
+Figure \ref{fig:OMEN_GENIE_invariant_results} presents results for the globally invariant degradation rate experiments. 
+%, where $k_2$ is systematically varied between 0.004 and 0.006 year$^{-1}$ and the more labile OM component, $k_1$, is assumed to degrade $x \in \{2, 3, 4, 5, 10\}$ times faster, respectively. 
 In general, using globally invariant degradation rate constants 5 of the 6 bin-classes are located closer to the 1:1 line as in the experiments using the \citet{boudreau1997diagenetic} relation (Fig. \ref{fig:OMEN_GENIE_Boudreau_results}). 
 Also the slope of some regression lines is close to 1.0 
-(e.g. $(k_2, x) \in \{ (0.0045, 3),  (0.005, 3), (0.0055, 3), (0.0065, 2), (0.007, 2)\}$), indicating that the simpler parameterisation captures the rate of change in modeled and observed POC wt\% for the bin-classes rather well. 
+(e.g. $(k_2, x) \in \{ (0.004, 1.5),  (0.0045, 1.3), (0.005, 1.2), (0.005, 1.3), (0.0055, 1.1), (0.0055, 1.2), (0.006, 1.1)\}$), indicating that the simpler parameterisation captures the rate of change in modeled and observed POC wt\% for the bin-classes 
+rather well. 
 The shallowest bin-class (between 0 and 1000m) represents an exception, as OMEN-SED tends to overestimate POC preservation for this depth class. However, this could also be related to the regridding of the original POC distribution 
 pattern of \citep{seiter_organic_2004} on to the SEDGEM grid, as some data grid-cells with higher POC wt\% on the continental margin are lost due to the restricted SEDGEM resolution (compare Section \ref{subsec:Parameterising_OM_rate_const}). 
-Overall, using this parameterisation a relationship where the labile POC fraction degrades 2 or 3 times faster than the refractory fraction fits the 
-\citet{seiter_organic_2004} data better than a larger spread between both POC pools (i.e. $x \in \{4, 5, 10\}$).
+Overall, using this parameterisation a relationship where the labile POC fraction degrades not more than 1.5 times faster than the refractory fraction fits the 
+\citet{seiter_organic_2004} data better than a larger spread between both POC pools (i.e. $x > 2.0$). 
+\textcolor{red}{Say something about, that this can potentially be explained as the observations represent OM concentrations in the upper 5cm of the sediments where the range of reactivities to be considered is smaller than 
+deeper down in the sediments... Fig. \ref{fig:OM_reactivity}??? Therefore, degradation rate constants are not very different.}
+%This can potentially be explained as the observations represent organic matter concentrations in the upper 5cm of the sediments 
+
 
 \begin{figure}[htbp]
 \begin{center}
@@ -1841,20 +1849,20 @@ Overall, using this parameterisation a relationship where the labile POC fractio
 Next the relationship of \citet{boudreau1997diagenetic} and the assumptions of Eq. (\ref{boudreau_assumption1}) and (\ref{boudreau_assumption2}) are used to calculate $k_1$ 
 and $k_2$. In Figure \ref{fig:OMEN_GENIE_Boudreau_results} (A-H) the relation between the two degradation rate constants (Eq. (\ref{boudreau_assumption2})) is changed globally, thus independent of the seafloor depth. 
 The crossplots show that it is not possible to achieve a solution where all bin-classes fall onto, or close to, the 1:1 line. Also, the slope of the regression lines are generally much larger or smaller than 1.0 
-(with the exception of Figures \ref{fig:OMEN_GENIE_Boudreau_results}C+D), indicating that the rate of change in modeled and observed POC wt\% for the bin-classes is different. 
+(with the exception of Figure \ref{fig:OMEN_GENIE_Boudreau_results}C), indicating that the rate of change in modeled and observed POC wt\% for the bin-classes is different. 
 The R$^2$ values are strictly monotonically increasing for increasing $x$ because a depth-dependency is artificially imposed for the modelled POC wt\% through the relation between $k_1$ and $k_2$. 
-When looking at the individual bin-classes it can be seen that shallow ocean depths are better represented by smaller differences between $k_1$ and $k_2$ (e.g. $k_1 = 2 \cdot k_2$ for SFD < 1000m, Figure \ref{fig:OMEN_GENIE_Boudreau_results}A),
-and the deep ocean by a larger spread (e.g. $k_1 = 25 \cdot k_2$ for SFD > 3000m, Figure \ref{fig:OMEN_GENIE_Boudreau_results}F). 
+When looking at the individual bin-classes it can be seen that shallow ocean depths are better represented by smaller differences between $k_1$ and $k_2$ (e.g. $k_1 = 5 \cdot k_2$ for SFD < 1000m, Figure \ref{fig:OMEN_GENIE_Boudreau_results}B),
+and the deep ocean by a larger spread (e.g. $k_1 = 25 \cdot k_2$ for SFD > 3000m, Figure \ref{fig:OMEN_GENIE_Boudreau_results}H). 
 These results reflect the preferential degradation of more reactive organic matter types \citep{wakeham_compositions_1997, lee_composition_2000} and thus the change in the distribution functions of OM reactive types for different OM ages (Fig. \ref{fig:OM_reactivity}C). 
 In the shallow ocean bulk POC consists of fresher organic matter types and is therefore generally more reactive (i.e. higher $k_\mathrm{app}$ due to higher $w$ in the model) as in the deep ocean. In addition, OM at 5cm sediment depth in the deep ocean 
 is generally older as in the shallow ocean due to lower advection rates, therefore more reactive types are affected by degradation and a larger spread between k-values is needed to capture these dynamics (compare Fig. \ref{fig:OM_reactivity}C). 
 % In a greatly simplified way, this can be interpreted as bulk POC in the shallow ocean being more reactive (i.e. higher $k_\mathrm{app}$) and consisting of fresher organic matter types, therefore the degradation rate constants of the 
 % two pools are more similar (i.e. $k_2 < k_1$). In the deeper ocean, bulk POC is generally less reactive (i.e. lower $k_\mathrm{app}$) and due to the preferential degradation of more reactive organic matter types in the water-column 
 % \citep{wakeham_compositions_1997, lee_composition_2000} the refractory POC pool can be considered as being several orders of magnitude less reactive compared to the labile POC pool (i.e. $k_2 \ll k_1$). 
-We use these observations to create a depth dependent relationship between the two degradation rate constants, where $x$ in Eq. (\ref{boudreau_assumption2}) takes values of $x=2$ for SFD < 1000m, $x=5$ for 1000m $\leq$ SFD < 2000m, 
-$x=10$ for 2000m $\leq$ SFD < 3000m and $x=25$ for SFD $\geq$ 3000m for the 6 SFD bin-classes, respectively. 
-In this depth dependent model all bin-classes are close to the 1:1 line and the resulting regression model accounts for 91\% of the variance of the modeled POC wt\% around the observed mean of the bin-classes (Figure \ref{fig:OMEN_GENIE_Boudreau_results}I). 
-However, the slope of the regression line (0.786) indicates that the rate of change in modeled POC wt\% for the bin-classes is smaller than in the observed POC wt\%.
+We use these observations to create a depth dependent relationship between the two degradation rate constants, where $x$ in Eq. (\ref{boudreau_assumption2}) takes values of $x=5$ for SFD < 1000m, $x=8$ for 1000m $\leq$ SFD < 2000m, 
+$x=12$ for 2000m $\leq$ SFD < 3000m and $x=25$ for SFD $\geq$ 3000m for the 6 SFD bin-classes, respectively. 
+In this depth dependent model all bin-classes are close to the 1:1 line and the resulting regression model accounts for 92.6\% of the variance of the modeled POC wt\% around the observed mean of the bin-classes (Figure \ref{fig:OMEN_GENIE_Boudreau_results}I). 
+Furthermore, the slope of the regression line (0.9662) indicates that the rate of change in modeled and observed POC wt\% for the bin-classes is comparable.
 %>>>
 \marginnote{\textbf{DH}: more statistics, e.g. p-value don't make much sense right?}[-1cm]%<<<
 
@@ -1863,7 +1871,7 @@ However, the slope of the regression line (0.786) indicates that the rate of cha
 
 \begin{figure}[htbp]
 \begin{center}
-	\includegraphics[width=1.0\textwidth]{figures/OMEN-GENIE-Exp/0_1507_1707_COMPARE_INVARIANT_BOUDREAU_POC.pdf}
+	\includegraphics[width=1.0\textwidth]{figures/OMEN-GENIE-Exp/0_2908_COMPARE_INVARIANT_BOUDREAU_POC.pdf}
 %	\includegraphics[width=1.0\textwidth]{figures/OMEN-GENIE-Exp/0_1507_1707_COMPARE_INVARIANT_BOUDREAU_noANOMALY.pdf}
 	\caption{Mean POC concentrations in the upper 5cm of the sediments (\chem{POC_{5cm}}) from the coupled OMEN-cGENIE model using representative parameterisations \citep[invariant and after][]{boudreau1997diagenetic} 
 	for the OM degradation rate constants ($k_1$, $k_2$, compare Section \ref{subsec:Parameterising_OM_rate_const}). 
@@ -1874,9 +1882,10 @@ However, the slope of the regression line (0.786) indicates that the rate of cha
 \end{center}
 \end{figure}
 
+\textcolor{red}{DH: include Fig. \ref{fig:OMEN_GENIE_invariant_and_Boudreau}? As not much difference \& do we learn anything?} 
 Figure \ref{fig:OMEN_GENIE_invariant_and_Boudreau} compares mean POC concentrations in the upper 5cm of the sediments (\chem{POC_{5cm}}) from two 
-globally invariant degradation rate constant approaches (experiments A and B, i.e. $(k_2, x) \in \{(0.005, 3), (0.007, 10)\}$) 
-with two approaches using the relation of \citet{boudreau1997diagenetic} (experiments C and D, with $k_2 = k_1/5$ and the depth dependent parameterisation). 
+globally invariant degradation rate constant approaches (experiments A and B, i.e. $(k_2, x) \in \{(0.005, 1.3), (0.006, 2.0)\}$) 
+with two approaches using the relation of \citet{boudreau1997diagenetic} (experiments C and D, with $k_1 = 8 \times k_2$ and the depth dependent parameterisation). 
 Within the globally invariant approaches of Figure \ref{fig:OMEN_GENIE_invariant_results} the depth bin-classes for experiment A fall closest to the 
 1:1 line whereas experiment B is the parameterisation with the smallest POC preservation. 
 %\textcolor{red}{Maybe use $(k_2, x) = (0.0045, 2)$ instead of $(k_2, x) = (0.007, 10)$, as we hopefully see more OM preservation and larger differences in Fig. \ref{fig:OMEN_GENIE_invariant_and_Boudreau}}
@@ -1891,14 +1900,14 @@ sediments \citep{palastanga_long_term_2011}.
  
 
 \subsection{Modelled fluxes and sediment characteristics}
-For the globally invariant experiment A ($(k_2, x) = (0.005, 3)$) modelled SWI-fluxes and sediment characteristics are shown in Figure \ref{fig:OMEN_GENIE_best_fit_invariant}.
+For the globally invariant experiment A ($(k_2, x) = (0.005, 1.3)$) modelled SWI-fluxes and sediment characteristics are shown in Figure \ref{fig:OMEN_GENIE_best_fit_invariant}.
 Modelled total POC degradation (\chem{POC_{degr}}) rates in the upper sediments decrease from the shelves to the deep sea by up to 2 orders of magnitude (Fig. \ref{fig:OMEN_GENIE_best_fit_invariant}B). 
 This is in agreement with data from the literature \citep[e.g.][]{middelburg_organic_1993, middelburg_empirical_1997} and other model results 
 \citep[e.g.][]{thullner_global_scale_2009} which indicate that the highest degradation rates in marine sediments are found in the coastal ocean (SFD < 200m). 
-Oxygen fluxes into the sediments (Fig. \ref{fig:OMEN_GENIE_best_fit_invariant}C) range from 0.0 for the deep ocean and sites without OM deposition until 242.3 $\mu$mol cm$^{-2}$yr$^{-1}$ for the shallow ocean with the highest POC degradation rates. 
-Influx of \chem{SO_4}  into the sediments is rather low (between 0.0 and 52.5 $\mu$mol cm$^{-2}$yr$^{-1}$) because in OMEN-SED 95\% of produced \chem{H_2S} is reoxidised to \chem{SO_4}, therefore sulfate reduction is mainly driven by in situ sulfide oxidation. 
+Oxygen fluxes into the sediments (Fig. \ref{fig:OMEN_GENIE_best_fit_invariant}C) range from 0.0 for the deep ocean and sites without OM deposition until 269.55 $\mu$mol cm$^{-2}$yr$^{-1}$ for the shallow ocean with the highest POC degradation rates. 
+Influx of \chem{SO_4}  into the sediments is rather low (between 0.0 and 23.9 $\mu$mol cm$^{-2}$yr$^{-1}$) because in OMEN-SED 95\% of produced \chem{H_2S} is reoxidised to \chem{SO_4}, therefore sulfate reduction is mainly driven by in situ sulfide oxidation. 
 However, in general the coupled model fluxes fall well within the range predicted by the stand-alone global hypsometry experiments (Section \ref{subsec:globalhypsometry}). 
-In accordance with the total POC degradation rates the release of \chem{PO_4} shows a maximum value of 7.5 nanomol cm$^{-2}$yr$^{-1}$ at the shelves (Fig. \ref{fig:OMEN_GENIE_best_fit_invariant}D). 
+In accordance with the total POC degradation rates the release of \chem{PO_4} shows a maximum value of 7.62 nanomol cm$^{-2}$yr$^{-1}$ at the shelves (Fig. \ref{fig:OMEN_GENIE_best_fit_invariant}D). 
 The relative contribution of aerobic POC degradation in the upper sediments increases from the shelves to the deep sea (Fig. \ref{fig:OMEN_GENIE_best_fit_invariant}G) 
 which is also consistent with estimates from %the literature \citep[e.g.][]{middelburg_empirical_1997} as well as other model results. 
 \citet{thullner_global_scale_2009} who found that oxygen is responsible for less than 10\% of \chem{POC_{degr}} at 100m SFD and for more 
@@ -1911,9 +1920,8 @@ the oxygen penetration depth has been shown to increase exponentially with SFD t
 
 \begin{figure}[htbp]
 \begin{center}
-	\includegraphics[width=1.0\textwidth]{figures/OMEN-GENIE-Exp/0_1707_INVARIANT_SED_PROPS_AND_FLUXES_0808_LINES.pdf}
-	\caption{Sediment characteristics related to POC degradation and oxygen consumption for the globally invariant ``best-fit'' paramaterisation 
-	(experiment A, $k_2= 0.005,\ k_1 = 3 \cdot k_2$).
+	\includegraphics[width=1.0\textwidth]{figures/OMEN-GENIE-Exp/0_2908_INVARIANT_SED_PROPS_AND_FLUXES_0808_LINES.pdf}
+	\caption{Sediment characteristics related to POC degradation and oxygen consumption for the globally invariant paramaterisation with $k_2= 0.005,\ k_1 = 1.3 \cdot k_2$ (Exp. A).
 	Total \chem{POC_{degr}} rate and fraction of aerobic \chem{POC_{degr}} are the respective values for the first 5cm in the sediments. 
 	%Results of OMEN-cGENIE coupling using the OM degradation rate constants which produce the best fit to the \citet{seiter_organic_2004} 	observations (i.e. $k_1 = 0.015,\ k_2 = 0.005$). 
 	%All results shown are sediment characteristics calculated with OMEN-SED. 
