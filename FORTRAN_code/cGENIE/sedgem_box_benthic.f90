@@ -324,14 +324,14 @@ CONTAINS
             end if
 
             ! CHECK if still lower than 5.0e-4, than cut there, as OMEN produces positive O2 SWI-fluxes
-            if(loc_sed_burial .LE. 4.0e-4)then
+            if(loc_sed_burial .LE. 5.0e-4)then
 !                                print*,''
-!                                print*,'OMEN burial < 4.0e-4 !!!!!!!!!!!!!!!!!!!!!!!!!!'
+!                                print*,'OMEN burial < 5.0e-4 !!!!!!!!!!!!!!!!!!!!!!!!!!'
 !                                print*,'dum_D = ', dum_D
                 !                print*,'loc_new_sed_vol_OLD =', loc_new_sed_vol
 !                                print*,'loc_sed_burial_NEW before cut=', loc_sed_burial
 !                                print*,'1/(1-por)*loc_new_sed(is_det) = ', 1/(1-por)*loc_new_sed(is_det)
-                loc_sed_burial = 4.0e-4
+                loc_sed_burial = 5.0e-4
             end if
 
             ! DH TODO: some of initialize should be called just once, not for every grid point
@@ -481,6 +481,11 @@ CONTAINS
                 loc_ALK_swiflux = 0.0
             else
                 !!!! OLD version: TOC concentration:  call sub_huelseetal2016_zTOC(loc_POC1_wtpct_swi, loc_POC2_wtpct_swi, dum_sed_pres_fracC)
+
+                if(dum_swiconc_O2 .LE. loc_BW_O2_anoxia)then
+                    ! decrease bioturbation depth
+                    zbio = 0.01
+                end if
 
                 call sub_huelseetal2016_zTOC(dum_D, loc_POC1_flux_swi, loc_POC2_flux_swi, dum_sed_pres_fracC, loc_sed_pres_insane)
             
