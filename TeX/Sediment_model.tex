@@ -1189,17 +1189,12 @@ $D_{\chem{ALK}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 7.93 &Diffusion c
 
 \subsubsection {Stoichiometries and reaction parameters}\label{subsubsec:Stoich_reaction_params}
 %The parameters relating to organic matter %The overall reactions implemented in OMEN-SED are listed in Table \ref{table:reactions_processes}. 
-%>>>
-\marginnote{\textbf{@SA}: Could you please double check this section!?}[-0cm]%<<<
-%>>>
 The first-order organic matter degradation constants of compound class $i$, $k_i$ (yr$^{-1}$), are assumed invariant along the sediment column and therefore independent of the nature 
 of the terminal electron acceptor. The rate constants can be altered manually to fit observed sediment profiles (compare Section \ref{subsec:SedProfiles}) or related to a master variable 
 provided by a coupled Earth system model (e.g. sedimentation rate, compare Section \ref{subsec:Parameterising_OM_rate_const}). 
 The partitioning of the bulk OM pool into reactivity classes ($f_i$) is also done manually in the stand-alone version or is provided by the ESM. 
 Organic matter degradation releases N, P and DIC to the pore water using Redfield molar ratios \citep{redfield1963influence} and consumes TEA with specific stoichiometries (\chem{O_2C}, \chem{NO_3C}, \chem{SO_4C}) as summarised in Table \ref{table:reaction_parameters}. 
-%>>>
-\marginnote{\textbf{@SA}: more info on TEA and ALK stoichiometries?}[-0cm]%<<<
-%>>>
+Table \ref{table:Reaction_Network} in the appendix provides a list of reactions and their stoichiometries as implemented in OMEN-SED. 
 The effect of OM degradation and secondary redox reactions on total alkalinity is also accounted for via reaction specific stoichiometries representing the release of \chem{NH_4}, \chem{H_2S} and P and is based on \citet[][]{jourabchi_quantitative_2005}. 
 %Based on \citet{jourabchi_quantitative_2005} we assume that aerobic organic matter degradation increases alkalinity by 1 mole per mole ammonium released and decreases alkalinity by 2 mole per mole P released \citep{}.
 The secondary redox parameters (i.e. $\gamma_{\chem{NH_4}}$, $\gamma_{\chem{H_2S}}$, $\gamma_{\chem{CH_4}}$), accounting for the fraction of reduced substances that are reoxidised, would be ideally parameterised for instance in relation to bottom water 
@@ -2104,7 +2099,7 @@ AOM & $\chem{CH_4 + CO_2 + SO_4^{2-}} \rightarrow \chem{2HCO_3^- + H_2S}$\\
 & Adsorption reactions and mineral precipitation\\
 \hline
 \chem{NH_4} adsorption & $\chem{NH_4^+} \xrightarrow{\mathrm{K_{NH_4}}} \chem{NH_4^+(ads)}$\\
-\chem{P} ad-/desorption \textcolor{red}{???} & $\chem{PO_4^{2-}} \xrightarrow{\mathrm{K_{PO_4}^{I, II}}} \chem{PO_4^{2-}(ads)}; \qquad\quad \chem{HPO_4^{2-}} \xrightarrow{\mathrm{k_s}} \mathrm{Fe-bound\ P} \xrightarrow{\mathrm{k_m}} \chem{HPO_4^{2-}} $\\
+\chem{P} ad-/desorption \textcolor{red}{???} & $\chem{PO_4^{2-}} \xrightarrow{\mathrm{K_{PO_4}^{I, II}}} \chem{PO_4^{2-}(ads)}; \qquad\quad \chem{PO_4^{2-}} \xrightarrow{\mathrm{k_s}} \mathrm{Fe-bound\ P} \xrightarrow{\mathrm{k_m}} \chem{PO_4^{2-}} $\\
 \chem{CFA} precipitation & $\chem{PO_4^{2-}} \xrightarrow{\mathrm{k_a}} \chem{CFA}$ \\
 \hline\hline
 % inserts double horizontal lines
