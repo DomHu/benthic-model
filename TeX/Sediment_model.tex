@@ -1876,7 +1876,7 @@ sediments \citep{palastanga_long_term_2011}.
 \begin{center}
 	\includegraphics[width=0.8\textwidth]{figures/OMEN-GENIE-Exp/0_2908_BOUDREAU_DEPTH_DEP_POC.pdf}
 %	\includegraphics[width=1.0\textwidth]{figures/OMEN-GENIE-Exp/0_1507_1707_COMPARE_INVARIANT_BOUDREAU_noANOMALY.pdf}
-	\caption{Mean POC concentrations in the upper 5cm of the sediments (\chem{POC_{5cm}}) using the invariant model ($k_2 = 0.005$, $k_1 = 1.3\cdot k_2$) and the depth dependent parameterisation $k_2 = x(\mathrm{SFD}) \cdot k_1$ adapted from \citet{boudreau1997diagenetic}. 
+	\caption{Mean POC concentrations in the upper 5cm of the sediments (\chem{POC_{5cm}}) using the invariant model ($k_2 = 0.005$, $k_1 = 1.3\cdot k_2$) and the depth dependent parameterisation $k_1 = x(\mathrm{SFD}) \cdot k_2$ adapted from \citet{boudreau1997diagenetic}. 
 	A+B: Crossplots as shown before in Fig. \ref{fig:OMEN_GENIE_invariant_results} and \ref{fig:OMEN_GENIE_Boudreau_results}. 
 	C+D: Histograms of the residuals of modelled minus observed \chem{POC_{5cm}}. 
 	E+F: \chem{POC_{5cm}} as calculated with OMEN-SED. 
@@ -1911,24 +1911,25 @@ For the globally invariant experiment A ($(k_2, x) = (0.005, 1.3)$) modelled SWI
 Modelled total POC degradation (\chem{POC_{degr}}) rates in the upper sediments decrease from the shelves to the deep sea by up to 2 orders of magnitude (Fig. \ref{fig:OMEN_GENIE_best_fit_invariant}B). 
 This is in agreement with data from the literature \citep[e.g.][]{middelburg_organic_1993, middelburg_empirical_1997} and other model results 
 \citep[e.g.][]{thullner_global_scale_2009} which indicate that the highest degradation rates in marine sediments are found in the coastal ocean (SFD < 200m). 
-Oxygen fluxes into the sediments (Fig. \ref{fig:OMEN_GENIE_best_fit_invariant}C) range from 0.0 for the deep ocean and sites without OM deposition until 269.55 $\mu$mol cm$^{-2}$yr$^{-1}$ for the shallow ocean with the highest POC degradation rates. 
+Oxygen fluxes into the sediments (Fig. \ref{fig:OMEN_GENIE_best_fit_invariant}C) range from 0.0 for the deep ocean and sites without OM deposition to values of about 300 $\mu$mol cm$^{-2}$yr$^{-1}$ for the shallow ocean with the highest POC degradation rates. 
 Influx of \chem{SO_4}  into the sediments is rather low (between 0.0 and 23.9 $\mu$mol cm$^{-2}$yr$^{-1}$) because in OMEN-SED 95\% of produced \chem{H_2S} is reoxidised to \chem{SO_4}, therefore sulfate reduction is mainly driven by in situ sulfide oxidation. 
-However, in general the coupled model fluxes fall well within the range predicted by the stand-alone global hypsometry experiments (Section \ref{subsec:globalhypsometry}). 
-In accordance with the total POC degradation rates the release of \chem{PO_4} shows a maximum value of 7.62 nanomol cm$^{-2}$yr$^{-1}$ at the shelves (Fig. \ref{fig:OMEN_GENIE_best_fit_invariant}D). 
+However, in general the coupled model fluxes fall well within the ranges predicted by the stand-alone global hypsometry experiments (\chem{O_2} between 0.0 and 800 $\mu$mol cm$^{-2}$yr$^{-1}$ and \chem{SO_4} between 0.0 and about 300 $\mu$mol cm$^{-2}$yr$^{-1}$, 
+compare Section \ref{subsec:globalhypsometry}). 
+In accordance with the total POC degradation rates the release of \chem{PO_4} shows a maximum value of 8.12 nmol cm$^{-2}$yr$^{-1}$ on the shelves (Fig. \ref{fig:OMEN_GENIE_best_fit_invariant}D). 
 The relative contribution of aerobic POC degradation in the upper sediments increases from the shelves to the deep sea (Fig. \ref{fig:OMEN_GENIE_best_fit_invariant}G) 
 which is also consistent with estimates from %the literature \citep[e.g.][]{middelburg_empirical_1997} as well as other model results. 
 \citet{thullner_global_scale_2009} who found that oxygen is responsible for less than 10\% of \chem{POC_{degr}} at 100m SFD and for more 
 than 80\% in the deep sea. 
 The oxygen penetration depth in OMEN-SED increases from below 1cm at the shelves to more than 10cm in the deep ocean (Fig. \ref{fig:OMEN_GENIE_best_fit_invariant}H).
-Small oxygen penetration depths of a few millimetres are typical for bioturbated sediments at the coastal ocean \citep[e.g.][]{wenzhofer_benthic_2002} and 
-the oxygen penetration depth has been shown to increase exponentially with SFD to more than 10cm in the deep sea \citep{glud_oxygen_2008}. 
+Small oxygen penetration depths of a few millimetres are typical for bioturbated sediments in the coastal ocean \citep[e.g.][]{wenzhofer_benthic_2002} and 
+the oxygen penetration depth has been shown to increase exponentially with SFD to more than 10cm in the deep sea \citep{meile_global_2003, glud_oxygen_2008}. 
 
 
 
 \begin{figure}[htbp]
 \begin{center}
-	\includegraphics[width=1.0\textwidth]{figures/OMEN-GENIE-Exp/0_2908_INVARIANT_SED_PROPS_AND_FLUXES_0808_LINES.pdf}
-	\caption{Sediment characteristics related to POC degradation and oxygen consumption for the globally invariant paramaterisation with $k_2= 0.005,\ k_1 = 1.3 \cdot k_2$ (Exp. A).
+	\includegraphics[width=1.0\textwidth]{figures/OMEN-GENIE-Exp/0_2908_Boudreau_Depth_SED_PROPS_AND_FLUXES_1009_LINES.pdf}
+	\caption{Sediment characteristics related to POC degradation and oxygen consumption for the depth dependent paramaterisation after \citet{boudreau1997diagenetic} with $k_1 = x(\mathrm{SFD}) \cdot k_2$.
 	Total \chem{POC_{degr}} rate and fraction of aerobic \chem{POC_{degr}} are the respective values for the first 5cm in the sediments. 
 	%Results of OMEN-cGENIE coupling using the OM degradation rate constants which produce the best fit to the \citet{seiter_organic_2004} 	observations (i.e. $k_1 = 0.015,\ k_2 = 0.005$). 
 	%All results shown are sediment characteristics calculated with OMEN-SED. 
