@@ -18,11 +18,11 @@ plot_mean = false;
 % %%%% load other data
 % 8 level ocean
 exp_1 = './cgenie_output/0606_02_EXAMPLE.worjh2.Archeretal2009.SPIN1_fastsinking';                                   
-exp_2 = './cgenie_output/2908_09_Archeretal2009_OMEN.inv_k2_0.0045_k1_0.00585_ord_1.3';
-exp_3 = './cgenie_output/2908_11_Archeretal2009_OMEN.inv_k2_0.005_k1_0.0055_ord_1.1';
-exp_4 = './cgenie_output/2908_15_Archeretal2009_OMEN.inv_k2_0.005_k1_0.01_ord_2';
-exp_5 = './cgenie_output/2908_22_Archeretal2009_OMEN.inv_k2_0.006_k1_0.0072_ord_1.2';
-exp_6 = './cgenie_output/2908_23_Archeretal2009_OMEN.inv_k2_0.006_k1_0.009_ord_1.5';
+exp_2 = './cgenie_output/2908_14_Archeretal2009_OMEN.inv_k2_0.005_k1_0.0065_ord_1.3';
+exp_3 = './cgenie_output/1309_00_EXAMPLE.worjh2.Archeretal2009.SPIN1_fastsinking';
+exp_4 = './cgenie_output/1309_01_Archeretal2009_OMEN.inv_k2_0.005_k1_0.0065_ord_1.3_NO_PO4_CLOSED';
+exp_5 = './cgenie_output/1309_02_Archeretal2009_OMEN.inv_k2_0.005_k1_0.0065_ord_1.3_withPO4_Mflux_CLOSED';
+exp_6 = './cgenie_output/1309_03_Archeretal2009_OMEN.inv_k2_0.005_k1_0.0065_ord_1.3_withPO4_Mconc_CLOSED';
 
 REF_sed_O2_exp1 = load(fullfile(exp_1,'/biogem/biogem_series_ocn_O2.res'),'ascii');
 REF_sed_O2_exp2 = load(fullfile(exp_2,'/biogem/biogem_series_ocn_O2.res'),'ascii');
@@ -108,7 +108,7 @@ else    % total (mol)
     ylabel('SO_4 (mol)');
 end
 xlabel('yrs ');
-hleg=legend('0606-02 Archer SPIN - No OMEN - fast sinking', '2908-09', '2908-11', '2908-15', '2908-22', '2908-23'); 
+hleg=legend('0606-02 Archer SPIN - No OMEN - fast sinking', '2908-14 OMEN No PO4 dynamics', '1309-00 No OMEN as 0606-02', '1309-01 with OMEN - No PO4', '1309-02 with OMEN - with PO4 M flux', '1309-03 with OMEN - with PO4 M conc.'); 
 set(hleg,'FontSize',6);
 set(hleg,'Location','SouthEast');
 
@@ -172,7 +172,7 @@ xlabel('yrs ');
 if(plot_mean)  % mean (mol/kg)
     print('-depsc', 'cgenie_output/000_FOR_GMD_V1507_1707_20kyr/TIMESERIES/1507_Boudreau_2_mean');
 else
-    print('-depsc', 'cgenie_output/000_FOR_GMD_V2808/2908_Timeseries_SPIN_and_OMEN_NoPO4_with_ANDYsolid_fields_Invariant_10kyr_2');
+    print('-depsc', 'cgenie_output/000_1309_PO4dynamics/1309_Timeseries_SPIN_and_OMEN_NoPO4_with_ANDYsolid_fields_Invariant_10kyr_2');
 end
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% atm O2 and CO2

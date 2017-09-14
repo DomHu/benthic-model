@@ -16,18 +16,18 @@ classdef benthic_test
             % see caption for Fig 1.2 - two equal TOC fractions 0.02 0.2 2
             swi.C01_nonbio= 1.0*1e-2/12*bsd.rho_sed; % adjusted Test 2+4:          %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
             swi.C02_nonbio= 1.0*1e-2/12*bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;          %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-            swi.Fnonbio1 = 0.0E-006; %swi.C01_nonbio*(1-bsd.por)*bsd.w;    % [mol/(cm2 yr)] according non-bioturbated flux
-            swi.Fnonbio2 = 0.0E-006; %swi.C02_nonbio*(1-bsd.por)*bsd.w;
+            swi.Fnonbio1 = swi.C01_nonbio*(1-bsd.por)*bsd.w;    % 0.0E-006; %[mol/(cm2 yr)] according non-bioturbated flux
+            swi.Fnonbio2 = swi.C02_nonbio*(1-bsd.por)*bsd.w;    %0.0E-006; 
             swi.C01 = swi.C01_nonbio; %0.0;  % resulting bioturbated SWI-concentration, to be calculated in benthic_zTOC.m
             swi.C02 = swi.C02_nonbio; %0.0;
-            swi.O20=0.0E-009; %150.0E-009;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
+            swi.O20=150.0E-009; %150.0E-009;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
             swi.NO30=40.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
             swi.Nitrogen=true;
             swi.NH40=0.0e-9;                                                %NH4 concentration at SWI (mol/cm^3)
             swi.SO40=2.8E-005;                                            %SO4 concentration at SWI (mol/cm^3)
             swi.H2S0=0.0; %2.0E-012;         %was 0.0e-9                            %H2S concentration at SWI (mol/cm^3)
             swi.PO40=40.0e-9; %0.06e-8; % Dom was 1e-9;    % Sandra played with 3e-9                                              %PO4 concentration at SWI (mol/cm^3)
-            swi.Mflux0=0.0; %365*0.2e-10; % Sandra played with 10e-9; ;   % = 7.3e-9    %flux of M to the sediment (mol/(cm2*yr))   TODO/CHECK: good value+right conversion? is from Slomp et al. 1996        
+            swi.Mflux0=365*0.2e-10*1/(1-bsd.por)*1/bsd.w; % <-this is a concentration from FLUX input: 365*0.2e-10;    Sandra played with 10e-9; ;   % = 7.3e-9    %flux of M to the sediment (mol/(cm2*yr))   TODO/CHECK: good value+right conversion? is from Slomp et al. 1996        
             swi.DIC0=2.4E-006;                                             %DIC concentration at SWI (mol/cm^3)
             swi.ALK0=2.4E-006;                                             %ALK concentration at SWI (mol/cm^3)
             swi.S0=35;                                                      %Salinity at SWI

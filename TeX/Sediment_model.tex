@@ -1856,6 +1856,19 @@ is generally older as in the shallow ocean due to lower burial rates, therefore 
 % \citep{wakeham_compositions_1997, lee_composition_2000} the refractory POC pool can be considered as being several orders of magnitude less reactive compared to the labile POC pool (i.e. $k_2 \ll k_1$). 
 
 
+\begin{figure}[htbp]
+\begin{center}
+	\includegraphics[width=0.8\textwidth]{figures/OMEN-GENIE-Exp/0_2908_BOUDREAU_DEPTH_DEP_POC.pdf}
+%	\includegraphics[width=1.0\textwidth]{figures/OMEN-GENIE-Exp/0_1507_1707_COMPARE_INVARIANT_BOUDREAU_noANOMALY.pdf}
+	\caption{Mean POC concentrations in the upper 5cm of the sediments (\chem{POC_{5cm}}) using the invariant model ($k_2 = 0.005$, $k_1 = 1.3\cdot k_2$) and the depth dependent parameterisation $k_1 = x(\mathrm{SFD}) \cdot k_2$ adapted from \citet{boudreau1997diagenetic}. 
+	A+B: Crossplots as shown before in Fig. \ref{fig:OMEN_GENIE_invariant_results} and \ref{fig:OMEN_GENIE_Boudreau_results}. 
+	C+D: Histograms of the residuals of modelled minus observed \chem{POC_{5cm}}. 
+	E+F: \chem{POC_{5cm}} as calculated with OMEN-SED. 
+	G+H: Difference map of \chem{POC_{5cm}} as calculated with OMEN-SED and interpolated data from \citet{seiter_organic_2004}.
+	}\label{fig:OMEN_GENIE_Boudreau_depth}
+\end{center}
+\end{figure}
+
 We use these observations to create a depth dependent relationship between the two degradation rate constants, where $x$ in Eq. (\ref{boudreau_assumption2}) is a function of SFD and takes values of $x=5$ for SFD < 1000m, $x=8$ for 1000m $\leq$ SFD < 2000m, 
 $x=12$ for 2000m $\leq$ SFD < 3000m and $x=25$ for SFD $\geq$ 3000m for the 6 SFD bin-classes, respectively. 
 In this depth dependent approach all bin-classes are close to the 1:1 line and the resulting regression model accounts for 92.6\% of the variance of the modeled POC wt\% around the observed mean of the bin-classes (Figure \ref{fig:OMEN_GENIE_Boudreau_depth}A). 
@@ -1872,18 +1885,6 @@ In general, implementing lower, anaerobic degradation rate constants when bottom
 sediments \citep{palastanga_long_term_2011}. 
 
 
-\begin{figure}[htbp]
-\begin{center}
-	\includegraphics[width=0.8\textwidth]{figures/OMEN-GENIE-Exp/0_2908_BOUDREAU_DEPTH_DEP_POC.pdf}
-%	\includegraphics[width=1.0\textwidth]{figures/OMEN-GENIE-Exp/0_1507_1707_COMPARE_INVARIANT_BOUDREAU_noANOMALY.pdf}
-	\caption{Mean POC concentrations in the upper 5cm of the sediments (\chem{POC_{5cm}}) using the invariant model ($k_2 = 0.005$, $k_1 = 1.3\cdot k_2$) and the depth dependent parameterisation $k_1 = x(\mathrm{SFD}) \cdot k_2$ adapted from \citet{boudreau1997diagenetic}. 
-	A+B: Crossplots as shown before in Fig. \ref{fig:OMEN_GENIE_invariant_results} and \ref{fig:OMEN_GENIE_Boudreau_results}. 
-	C+D: Histograms of the residuals of modelled minus observed \chem{POC_{5cm}}. 
-	E+F: \chem{POC_{5cm}} as calculated with OMEN-SED. 
-	G+H: Difference map of \chem{POC_{5cm}} as calculated with OMEN-SED and interpolated data from \citet{seiter_organic_2004}.
-	}\label{fig:OMEN_GENIE_Boudreau_depth}
-\end{center}
-\end{figure}
 % Histogram:
 % Data: [1x3215 double]
 % DEPTH DEPENDENT
@@ -1920,10 +1921,14 @@ The relative contribution of aerobic POC degradation in the upper sediments incr
 which is also consistent with estimates from %the literature \citep[e.g.][]{middelburg_empirical_1997} as well as other model results. 
 \citet{thullner_global_scale_2009} who found that oxygen is responsible for less than 10\% of \chem{POC_{degr}} at 100m SFD and for more 
 than 80\% in the deep sea. 
-The oxygen penetration depth in OMEN-SED increases from below 1cm at the shelves to more than 10cm in the deep ocean (Fig. \ref{fig:OMEN_GENIE_best_fit_invariant}H).
+The oxygen penetration depth in OMEN-SED increases from values below 1cm at the shelves to more than 10cm in the deep ocean (Fig. \ref{fig:OMEN_GENIE_best_fit_invariant}H 
+and \ref{fig:OMEN_GENIE_Boudreau_depthdep_zox_vs_SFD}).
 Small oxygen penetration depths of a few millimetres are typical for bioturbated sediments in the coastal ocean \citep[e.g.][]{wenzhofer_benthic_2002} and 
 the oxygen penetration depth has been shown to increase exponentially with SFD to more than 10cm in the deep sea \citep{meile_global_2003, glud_oxygen_2008}. 
+\citet{fischer_oxygen_2009} even found cores along a transect in the South Pacific gyre being oxygenated over their entire length (up to 8m) which is consistent 
+with our model results (not shown). \textcolor{red}{TODO: write one more sentence here}
 
+Comparing with observations compiled by \citet{meile_global_2003} in Fig. \ref{fig:OMEN_GENIE_Boudreau_depthdep_zox_vs_SFD}
 
 
 \begin{figure}[htbp]
@@ -1934,6 +1939,18 @@ the oxygen penetration depth has been shown to increase exponentially with SFD t
 	%Results of OMEN-cGENIE coupling using the OM degradation rate constants which produce the best fit to the \citet{seiter_organic_2004} 	observations (i.e. $k_1 = 0.015,\ k_2 = 0.005$). 
 	%All results shown are sediment characteristics calculated with OMEN-SED. 
 	}\label{fig:OMEN_GENIE_best_fit_invariant}
+\end{center}
+\end{figure}
+
+
+\begin{figure}[htbp]
+\begin{center}
+	\includegraphics[width=0.6\textwidth]{figures/OMEN-GENIE-Exp/2908_34_Boudreau_depthdep_zox_vs_SFD.pdf}
+	\caption{Seafloor depth versus \chem{O_2} penetration depth for the depth dependent paramaterisation after \citet{boudreau1997diagenetic} with $k_1 = x(\mathrm{SFD}) \cdot k_2$. 
+	Diamonds represent the observations compiled by \citet{meile_global_2003}. 
+	Circles are the mean model results for the 6 SFD bin-classes (with standard deviations). 
+	Grid-cells where the entire sediment column is oxic (i.e. $z_{\mathrm{ox}} = 100$) are not considered to calculate the statistics. 
+	}\label{fig:OMEN_GENIE_Boudreau_depthdep_zox_vs_SFD}
 \end{center}
 \end{figure}
 
