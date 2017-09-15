@@ -622,11 +622,11 @@ CONTAINS
 
                     if(ocn_select(io_PO4))then
                         !           PO4 hack
-!                        loc_PO4_swiflux = loc_fPOC*conv_POC_cm3_mol*1/106
+                        loc_PO4_swiflux = loc_fPOC*conv_POC_cm3_mol*1/106
 !                        print*,' '
 !                        print*,'Hack OMEN loc_PO4_swiflux = ', loc_PO4_swiflux
                         !          normal PO4 calculation
-                        call sub_huelseetal2016_zPO4_M(dum_swiconc_PO4, loc_PO4_swiflux, dum_swiflux_M, loc_M_swiflux)
+!                        call sub_huelseetal2016_zPO4_M(dum_swiconc_PO4, loc_PO4_swiflux, dum_swiflux_M, loc_M_swiflux)
 !                        print*,'CALC OMEN loc_PO4_swiflux = ', loc_PO4_swiflux
                         ! 30/11/2016: remineralise all POC and calculate PO4 return flux
                     else
