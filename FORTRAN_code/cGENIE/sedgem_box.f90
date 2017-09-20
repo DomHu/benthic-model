@@ -75,7 +75,8 @@ CONTAINS
     real::loc_frac_CaCO3                                       ! 
     real::loc_frac_CaCO3_top                                   ! 
     real::loc_fPOC,loc_sed_pres_fracC,loc_sed_pres_fracP       ! 
-    real::loc_sed_mean_OM                                      ! mean OM wt% in upper mixed layer (5cm at the moment)
+    real::loc_sed_mean_OM_top                                  ! mean OM wt% in upper mixed layer (5cm at the moment)
+    real::loc_sed_mean_OM_bot                                  ! 
     real::loc_sed_dis_frac_max                                 ! maximum fraction that can be remineralized
     REAL,DIMENSION(n_sed)::loc_new_sed                         ! new (sedimenting) top layer material
     REAL,DIMENSION(n_sed)::loc_dis_sed                         ! remineralized top layer material
@@ -92,7 +93,8 @@ CONTAINS
     loc_exe_ocn(:) = 0.0
     loc_sed_pres_fracC = 0.0
     loc_sed_pres_fracP = 0.0
-    loc_sed_mean_OM = 0.0
+    loc_sed_mean_OM_top = 0.0
+    loc_sed_mean_OM_bot = 0.0
     ! initialize relevant location in global sediment dissolution results array
     sed_fdis(:,dum_i,dum_j) = 0.0
     ! initialize flags recording growing or shrinking of sediment stack (i.e., new layers being added or removed, respectively)
@@ -242,13 +244,10 @@ CONTAINS
     case ('huelse2016')
        ! Huelse et al. [2016]
        ! NOTE: 'new sed' is not adjusted within sub_huelseetal2016_main and eneds modifying externally
-!       CALL sub_huelseetal2016_main( &
-!            & dum_dtyr,dum_D,loc_new_sed(:),sed_fsed(is_POC_frac2,dum_i,dum_j),dum_sfcsumocn(:), &
-!            & loc_sed_pres_fracC,loc_sed_pres_fracP,loc_exe_ocn(:),loc_sed_mean_OM &
-!            & )
        CALL sub_huelseetal2016_main( &
-            & dum_i,dum_j,dum_dtyr,dum_D,sed_OM_bur(dum_i,dum_j),loc_new_sed(:),sed_fsed(is_POC_frac2,dum_i,dum_j),dum_sfcsumocn(:), &
-            & loc_sed_pres_fracC,loc_sed_pres_fracP,loc_exe_ocn(:),loc_sed_mean_OM &
+            & dum_i,dum_j,dum_dtyr,dum_D,sed_diag(idiag_OMEN_bur,dum_i,dum_j), &
+            & loc_new_sed(:),sed_fsed(is_POC_frac2,dum_i,dum_j),dum_sfcsumocn(:), &
+            & loc_sed_pres_fracC,loc_sed_pres_fracP,loc_exe_ocn(:),loc_sed_mean_OM_top, loc_sed_mean_OM_bot &
             & )
        ! set fractional flux of POC available for CaCO3 diagenesis
        loc_sed_diagen_fCorg = (1.0 - loc_sed_pres_fracC)*loc_new_sed(is_POC)
@@ -283,13 +282,16 @@ CONTAINS
                    loc_new_sed(is) = loc_sed_pres_fracC*loc_new_sed(is)
                    loc_dis_sed(is) = 0.0
                 end if
+                ! hack to create appropriate burial output
+                sed_fsed(is,dum_i,dum_j) = loc_new_sed(is)
              end if
           end if
        end DO
        ! correct dissovled flux units (mol cm-2 per year -> mol cm-2 per time-step) and set output array
        sedocn_fnet(:,dum_i,dum_j) = sedocn_fnet(:,dum_i,dum_j) + dum_dtyr*loc_exe_ocn(:)
-       ! set OM output data array values
-       sed_OM_wtpct(dum_i,dum_j) = loc_sed_mean_OM
+       ! set OMEN output data array values
+       sed_diag(idiag_OMEN_wtpct_top,dum_i,dum_j) = loc_sed_mean_OM_top
+       sed_diag(idiag_OMEN_wtpct_bot,dum_i,dum_j) = loc_sed_mean_OM_bot
     case default
        DO l=1,n_l_sed
           is = conv_iselected_is(l)
@@ -363,6 +365,8 @@ CONTAINS
                & )
        end if
        error_Archer = .FALSE.
+    case ('ALL')
+       ! 100% preservation (nothing needed doing!)
     case default
        DO l=1,n_l_sed
           is = conv_iselected_is(l)
@@ -422,6 +426,8 @@ CONTAINS
             & loc_new_sed(:),         &
             & sed_top(:,dum_i,dum_j)  &
             & )
+    case ('ALL')
+       ! 100% preservation (nothing needed doing!)
     case default
        DO l=1,n_l_sed
           is = conv_iselected_is(l)
@@ -491,7 +497,7 @@ CONTAINS
             & )
     END IF
     ! set OMEN output data array values
-    sed_OM_bur(dum_i,dum_j) = (loc_new_sed_vol - loc_dis_sed_vol)
+    sed_diag(idiag_OMEN_bur,dum_i,dum_j) = (loc_new_sed_vol - loc_dis_sed_vol)
    
     IF (ctrl_misc_debug3) print*,'(d) update sediment stack'
     ! *** (d) update sediment stack
@@ -1329,7 +1335,8 @@ CONTAINS
     real::loc_frac_CaCO3                                       ! 
     real::loc_frac_CaCO3_top                                   ! 
     real::loc_fPOC,loc_sed_pres_fracC,loc_sed_pres_fracP       ! 
-    real::loc_sed_mean_OM                                      ! mean OM wt% in upper mixed layer (5cm at the moment)
+    real::loc_sed_mean_OM_top                                  ! mean OM wt% in upper mixed layer (5cm at the moment)
+    real::loc_sed_mean_OM_bot                                  ! 
     real::loc_sed_dis_frac_max                                 ! maximum fraction that can be remineralized
     REAL,DIMENSION(n_sed)::loc_new_sed                         ! new (sedimenting) top layer material
     REAL,DIMENSION(n_sed)::loc_dis_sed                         ! remineralized top layer material
@@ -1348,7 +1355,8 @@ CONTAINS
     loc_exe_ocn(:) = 0.0
     loc_sed_pres_fracC = 0.0
     loc_sed_pres_fracP = 0.0
-    loc_sed_mean_OM = 0.0
+    loc_sed_mean_OM_top = 0.0
+    loc_sed_mean_OM_bot = 0.0
     ! initialize relevant location in global sediment dissolution results array
     sed_fdis(:,dum_i,dum_j) = 0.0
 
@@ -1467,13 +1475,10 @@ CONTAINS
     case ('huelse2016')
        ! Huelse et al. [2016]
        ! NOTE: 'new sed' is not adjusted within sub_huelseetal2016_main and eneds modifying externally
-!       CALL sub_huelseetal2016_main( &
-!            & dum_dtyr,dum_D,loc_new_sed(:),sed_fsed(is_POC_frac2,dum_i,dum_j),dum_sfcsumocn(:), &
-!            & loc_sed_pres_fracC,loc_sed_pres_fracP,loc_exe_ocn(:),loc_sed_mean_OM &
-!            & )
        CALL sub_huelseetal2016_main( &
-            & dum_i,dum_j,dum_dtyr,dum_D,sed_OM_bur(dum_i,dum_j),loc_new_sed(:),sed_fsed(is_POC_frac2,dum_i,dum_j),dum_sfcsumocn(:), &
-            & loc_sed_pres_fracC,loc_sed_pres_fracP,loc_exe_ocn(:),loc_sed_mean_OM &
+            & dum_i,dum_j,dum_dtyr,dum_D,sed_diag(idiag_OMEN_bur,dum_i,dum_j), &
+            & loc_new_sed(:),sed_fsed(is_POC_frac2,dum_i,dum_j),dum_sfcsumocn(:), &
+            & loc_sed_pres_fracC,loc_sed_pres_fracP,loc_exe_ocn(:),loc_sed_mean_OM_top, loc_sed_mean_OM_bot &
             & )
        ! calculate the return rain flux back to ocean
        ! NOTE: diagenetic function calculates all (dissolved) exchange fluxes
@@ -1506,13 +1511,16 @@ CONTAINS
                    loc_new_sed(is) = loc_sed_pres_fracC*loc_new_sed(is)
                    loc_dis_sed(is) = 0.0
                 end if
+                ! hack to create appropriate burial output
+                sed_fsed(is,dum_i,dum_j) = loc_new_sed(is)
              end if
           end if
        end DO
        ! correct dissovled flux units (mol cm-2 per year -> mol cm-2 per time-step) and set output array
        sedocn_fnet(:,dum_i,dum_j) = sedocn_fnet(:,dum_i,dum_j) + dum_dtyr*loc_exe_ocn(:)
-       ! set OM output data array values
-       sed_OM_wtpct(dum_i,dum_j) = loc_sed_mean_OM
+       ! set OMEN output data array values
+       sed_diag(idiag_OMEN_wtpct_top,dum_i,dum_j) = loc_sed_mean_OM_top
+       sed_diag(idiag_OMEN_wtpct_bot,dum_i,dum_j) = loc_sed_mean_OM_bot
     case default
        DO l=1,n_l_sed
           is = conv_iselected_is(l)
@@ -1534,6 +1542,10 @@ CONTAINS
        end DO
     end select
     ! *** diagenesis - CaCO3 dissolution ***
+    select case (par_sed_diagen_CaCO3opt)
+    case ('ALL')
+       ! 100% preservation (nothing needed doing!)
+    case default
     DO l=1,n_l_sed
        is = conv_iselected_is(l)
           if ( &
@@ -1552,7 +1564,12 @@ CONTAINS
           end if
        end if
     end DO
+    end select
     ! *** diagenesis - opal dissolution ***
+    select case (par_sed_diagen_opalopt)
+    case ('ALL')
+       ! 100% preservation (nothing needed doing!)
+    case default
     DO l=1,n_l_sed
        is = conv_iselected_is(l)
           if ( &
@@ -1570,8 +1587,8 @@ CONTAINS
              loc_dis_sed(is) = loc_new_sed(is)
           end if
        end if
-    end DO
-    
+    end DO    
+    end select
     
     IF (ctrl_misc_debug4) print*,'*** diagenesis - calculate total solids dissolved ***'
     ! *** diagenesis - calculate total solids dissolved ***
@@ -1591,7 +1608,7 @@ CONTAINS
             & )
     END IF
     ! set OMEN output data array values
-    sed_OM_bur(dum_i,dum_j) = (loc_new_sed_vol - loc_dis_sed_vol)
+    sed_diag(idiag_OMEN_bur,dum_i,dum_j) = (loc_new_sed_vol - loc_dis_sed_vol)
     
     ! *** ADD PRESCRIBED CORG BURIAL **********************************************************************************************
     ! 

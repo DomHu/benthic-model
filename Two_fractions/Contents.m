@@ -1,6 +1,7 @@
-% BENTHIC-MODEL-2308-SD20150406
-%
-% Examples:
+% OMEN-SED 1.0 BENTHIC-MODEL Stand-alone matlab code
+% Hülse et al (2017) GMD paper
+% 
+% Contents of this directory:
 %
 % Calculate a single sediment column with default parameters
 %

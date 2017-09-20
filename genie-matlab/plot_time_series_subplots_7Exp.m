@@ -8,12 +8,12 @@ plot_mean = false;
 % set experiment 
 %exp_1 = './cgenie_output/DOM_TEST_artifical_world_abiotic_nogastransf_noweathering_NoOMEN_0401';
 exp_1 = './cgenie_output/0606_02_EXAMPLE.worjh2.Archeretal2009.SPIN1_fastsinking';                                   
-exp_2 = './cgenie_output/2908_26_Archeretal2009_OMEN.boudreau1997_k_2_Allsolidfields';
-exp_3 = './cgenie_output/2908_27_Archeretal2009_OMEN.boudreau1997_k_5_Allsolidfields';
-exp_4 = './cgenie_output/2908_28_Archeretal2009_OMEN.boudreau1997_k_8_Allsolidfields';
-exp_5 = './cgenie_output/2908_32_Archeretal2009_OMEN.boudreau1997_k_25_Allsolidfields';
-exp_6 = './cgenie_output/2908_33_Archeretal2009_OMEN.boudreau1997_k_12_Allsolidfields';
-exp_7 = './cgenie_output/2908_34_Archeretal2009_OMEN.boudreau1997_DEPTH_DEP_Allsolidfields';
+exp_2 = './cgenie_output/2908_14_Archeretal2009_OMEN.inv_k2_0.005_k1_0.0065_ord_1.3';
+exp_3 = './cgenie_output/1309_00_EXAMPLE.worjh2.Archeretal2009.SPIN1_fastsinking';
+exp_4 = './cgenie_output/1309_01_Archeretal2009_OMEN.inv_k2_0.005_k1_0.0065_ord_1.3_NO_PO4_CLOSED';
+exp_5 = './cgenie_output/1409_01_Archeretal2009_OMEN.inv_k2_0.005_k1_0.0065_ord_1.3_withPO4_Mflux_CLOSED';
+exp_6 = './cgenie_output/1409_02_Archeretal2009_OMEN.inv_k2_0.005_k1_0.0065_ord_1.3_withPO4_Mconc_CLOSED';
+exp_7 = './cgenie_output/1409_03_Archeretal2009_OMEN.inv_k2_0.005_k1_0.0065_ord_1.3_withPO4_Mconc_CLOSED_withFeS2weather';
 % %%%% load other data
 
 REF_sed_O2_exp1 = load(fullfile(exp_1,'/biogem/biogem_series_ocn_O2.res'),'ascii');
@@ -109,7 +109,7 @@ else    % total (mol)
 end
 xlabel('yrs ');
 % xlim([0 10000])
-hleg=legend('0606-02 Archer SPIN - No OMEN - fast sinking', '2908-26 Boudreau 2', '2908-27 Boudreau 5', '2908-28 Boudreau 8', '2908-32 Boudreau 25', '2908-33 Boudreau 12', '2908-34 Boudreau Depth dep'); 
+hleg=legend('0606-02 Archer SPIN - No OMEN - fast sinking - CLOSED', '2908-14 OMEN (fields) No PO4 dynamics - OPEN', '1309-00 No OMEN as 0606-02 - CLOSED', '1309-01 with OMEN - No PO4 - CLOSED', '1409-01 with OMEN - with PO4 M flux - CLOSED', '1409-02 with OMEN - with PO4 M conc. - CLOSED', '1409-03 with OMEN PO4 Mconc + FeS2 weather - CLOSED'); 
 % hleg=legend('No OMEN', 'Tromp: k1 + k2 ~ w', 'Tromp: k1 ~ w', 'Boudreau: k1 + k2 ~ w', 'Boudreau: k1 ~ w', 'Stolpovsky: k1 ~ w', 'Boudreau: k1 ~ fPOC'); 
 set(hleg,'FontSize',6);
 set(hleg,'Location','SouthEast');
@@ -202,7 +202,7 @@ xlabel('yrs ');
 if(plot_mean)  % mean (mol/kg)
     print('-depsc', 'cgenie_output/000_FOR_GMD_V1507_1707_20kyr/TIMESERIES/1707_invariant_1_MEAN');
 else
-    print('-depsc', 'cgenie_output/000_FOR_GMD_V2808/2908_Timeseries_SPIN_and_OMEN_NoPO4_with_ANDYsolid_fields_Boudreau_2');
+     print('-depsc', 'cgenie_output/000_1309_PO4dynamics/1409_Timeseries_SPIN_and_OMEN_withPO4_No-ANDYsolid_fields_Invariant_10kyr_ALL-EXP');
 end
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% atm O2 and CO2

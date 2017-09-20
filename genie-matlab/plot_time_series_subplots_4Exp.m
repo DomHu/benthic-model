@@ -6,10 +6,10 @@ clear all;
 plot_mean = false;
 
 % set experiment 
-exp_1 = './cgenie_output/0606_02_EXAMPLE.worjh2.Archeretal2009.SPIN1_fastsinking';                                   
-exp_2 = './cgenie_output/2508_03_EXAMPLE.worjh2.Archeretal2009.SPIN1_fastsinking_ALLsolidfields_ClosedCaCO3_pyyyforcing_20kyrs';
-exp_3 = './cgenie_output/2508_05_Archeretal2009_OMEN.inv_k2_0.005_k1_0.015_ord_3_ALLsolidfields_ClosedCaCO3_pyyyforcing_20kyrs';
-exp_4 = './cgenie_output/2508_08_Archeretal2009_OMEN.boudreau1997_k_depthdep_Allsolidfields_ClosedCaCO3_pyyyforcing_20kyrs';
+exp_1 = './cgenie_output/1309_00_EXAMPLE.worjh2.Archeretal2009.SPIN1_fastsinking';
+exp_2 = './cgenie_output/1309_01_Archeretal2009_OMEN.inv_k2_0.005_k1_0.0065_ord_1.3_NO_PO4_CLOSED';
+exp_3 = './cgenie_output/1409_02_Archeretal2009_OMEN.inv_k2_0.005_k1_0.0065_ord_1.3_withPO4_Mconc_CLOSED';
+exp_4 = './cgenie_output/1409_03_Archeretal2009_OMEN.inv_k2_0.005_k1_0.0065_ord_1.3_withPO4_Mconc_CLOSED_withFeS2weather';
 % exp_2 = './cgenie_output/2308_07_EXAMPLE.worjh2.Archeretal2009.SPIN1_fastsinking_solidfields_ClosedCaCO3';
 % exp_3 = './cgenie_output/2308_09_Archeretal2009_OMEN.inv_k2_0.005_k1_0.015_ord_3_solidfields_ClosedCaCO3';
 % exp_4 = './cgenie_output/2308_11_Archeretal2009_OMEN.boudreau1997_k_depthdep_solidfields_ClosedCaCO3';
@@ -83,9 +83,9 @@ else    % total (mol)
 end
 xlabel('yrs ');
 % xlim([0 10000])
-hleg=legend('0606-02 Archer SPIN - No OMEN - fast sinking', '2508-03 Archer SPIN - No OMEN - fast sinking - All solid fields', '2508-05 with OMEN - All solid fields - invariant k1 = 0.015', '2508-08  with OMEN - All solid fields - Boudreau depth'); 
+hleg=legend('1309-00 No OMEN - CLOSED', '1309-01 with OMEN - No PO4 - CLOSED', '1409-02 with OMEN - with PO4 - CLOSED', '1409-03 with OMEN - with PO4 + FeS2 weather - CLOSED'); 
 %hleg=legend('0606-02 Archer SPIN - No OMEN - fast sinking', '2308-07 Archer SPIN - No OMEN - fast sinking - solid fields closedCaCO3', '2308-09 with OMEN - solid fields - invariant k1 = 0.015 closedCaCO3', '2308-11  with OMEN - solid fields - Boudreau depth closedCaCO3'); 
-set(hleg,'FontSize',4);
+set(hleg,'FontSize',8);
 set(hleg,'Location','SouthEast');
 
 subplot(4,2,3)
@@ -135,7 +135,7 @@ if(plot_mean)  % mean (mol/kg)
     plot(REF_sed_DIC_exp1(:,1),REF_sed_DIC_exp1(:,3)*1e+6,'b',REF_sed_DIC_exp2(:,1),REF_sed_DIC_exp2(:,3)*1e+6,'r--', REF_sed_DIC_exp3(:,1),REF_sed_DIC_exp3(:,3)*1e+6,'g--',REF_sed_DIC_exp4(:,1),REF_sed_DIC_exp4(:,3)*1e+6,'k:'); 
     ylabel('DIC (\mumol kg^{-1})');
 else
-	plot(REF_sed_DIC_exp1(:,1),REF_sed_DIC_exp1(:,2),'b',REF_sed_DIC_exp2(:,1),REF_sed_DIC_exp2(:,2),'ro', REF_sed_DIC_exp3(:,1),REF_sed_DIC_exp3(:,2),'g--', REF_sed_DIC_exp3(:,1),REF_sed_DIC_exp3(:,2),'g--',REF_sed_DIC_exp4(:,1),REF_sed_DIC_exp4(:,2),'k:');
+	plot(REF_sed_DIC_exp1(:,1),REF_sed_DIC_exp1(:,2),'b',REF_sed_DIC_exp2(:,1),REF_sed_DIC_exp2(:,2),'r-', REF_sed_DIC_exp3(:,1),REF_sed_DIC_exp3(:,2),'g--', REF_sed_DIC_exp3(:,1),REF_sed_DIC_exp3(:,2),'g--',REF_sed_DIC_exp4(:,1),REF_sed_DIC_exp4(:,2),'k:');
     ylabel('DIC (mol)');
 end
 xlabel('yrs ');
@@ -148,7 +148,7 @@ if(plot_mean)  % mean (mol/kg)
     plot(REF_sed_DIC_exp1(:,1),REF_sed_DIC_exp1(:,3)*1e+6,'b',REF_sed_DIC_exp2(:,1),REF_sed_DIC_exp2(:,3)*1e+6,'r--', REF_sed_DIC_exp3(:,1),REF_sed_DIC_exp3(:,3)*1e+6,'g--',REF_sed_DIC_exp4(:,1),REF_sed_DIC_exp4(:,3)*1e+6,'k:'); 
     ylabel('Ca (\mumol kg^{-1})');
 else
-	plot(REF_sed_Ca_exp1(:,1),REF_sed_Ca_exp1(:,2),'b',REF_sed_Ca_exp2(:,1),REF_sed_Ca_exp2(:,2),'ro', REF_sed_Ca_exp3(:,1),REF_sed_Ca_exp3(:,2),'g--', REF_sed_Ca_exp3(:,1),REF_sed_Ca_exp3(:,2),'g--',REF_sed_Ca_exp4(:,1),REF_sed_Ca_exp4(:,2),'k:');
+	plot(REF_sed_Ca_exp1(:,1),REF_sed_Ca_exp1(:,2),'b',REF_sed_Ca_exp2(:,1),REF_sed_Ca_exp2(:,2),'r-', REF_sed_Ca_exp3(:,1),REF_sed_Ca_exp3(:,2),'g--', REF_sed_Ca_exp3(:,1),REF_sed_Ca_exp3(:,2),'g--',REF_sed_Ca_exp4(:,1),REF_sed_Ca_exp4(:,2),'k:');
     ylabel('Ca (mol)');
 end
 xlabel('yrs ');
@@ -165,7 +165,7 @@ xlabel('yrs ');
 if(plot_mean)  % mean (mol/kg)
     print('-depsc', 'cgenie_output/0_PLOTS/0606_Archer_Boudreau/0606_ArcherExp_also_withBoudreau_k');
 else
-    print('-depsc', 'cgenie_output/000_FOR_GMD_V1608_1908/2508_Timeseries_SPIN_and_OMEN_NoPO4_with_ALLsolid_fieldsANDY');
+     print('-depsc', 'cgenie_output/000_1309_PO4dynamics/1409_Timeseries_SPIN_and_OMEN_withPO4_No-ANDYsolid_fields_Invariant_10kyr');
 %    print('-depsc', 'cgenie_output/000_FOR_GMD_V1608_1908/2308_Timeseries_SPIN_and_OMEN_NoPO4_with_solid_fields_ClosedCaCO3');
 end
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% atm O2 and CO2

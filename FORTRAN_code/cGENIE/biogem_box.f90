@@ -2996,6 +2996,9 @@ CONTAINS
     integer::loc_i,loc_j,loc_k1
     real,dimension(n_l_ocn,n_l_sed)::loc_conv_ls_lo                       !
     CHARACTER(len=31)::loc_string     ! 
+    
+    real,DIMENSION(:,:),ALLOCATABLE::loc_diag_redox
+    allocate(loc_diag_redox(n_diag_redox,n_k),STAT=alloc_error)
 
     ! *** INITIALIZE VARIABLES ***
     ! set local grid point (i,j) information
@@ -3006,6 +3009,8 @@ CONTAINS
     loc_vbio_remin(:,:)     = 0.0
     loc_bio_part(:,:)       = 0.0
     loc_conv_ls_lo(:,:)   = 0.0
+    !
+    if (ctrl_bio_remin_redox_save) loc_diag_redox(:,:) = 0.0
 
     ! *** REMINERALIZE DISSOLVED ORGANIC MATTER ***
     ! NOTE: the new algorithm converts the fraction of DOM marked to be remineralized first into POM before applying the
@@ -3092,9 +3097,9 @@ CONTAINS
                 tmp_bio_remin = loc_conv_ls_lo(lo,ls)*loc_bio_part(l2is(ls),k)
                 loc_vbio_remin(lo,k) = loc_vbio_remin(lo,k) + tmp_bio_remin
                          if (ctrl_bio_remin_redox_save) then
-                            loc_string = trim(string_sed(l2is(ls)))//'_d'//trim(string_ocn(l2io(lo)))
+                            loc_string = 'reminD_'//trim(string_sed(l2is(ls)))//'_d'//trim(string_ocn(l2io(lo)))
                             id = fun_find_str_i(trim(loc_string),string_diag_redox)
-                            diag_redox(id,loc_i,loc_j,k) = diag_redox(id,loc_i,loc_j,k) + tmp_bio_remin
+                            loc_diag_redox(id,k) = tmp_bio_remin
                          end if
              end if
           end do
@@ -3105,6 +3110,11 @@ CONTAINS
     ! *** WRITE GLOBAL ARRAY DATA ***
     ! write ocean tracer remineralization field (global array)
     dum_vbio_remin%mk(:,:) = loc_vbio_remin(:,:)
+    !
+    if (ctrl_bio_remin_redox_save) diag_redox(:,loc_i,loc_j,:) = diag_redox(:,loc_i,loc_j,:) + loc_diag_redox(:,:)
+    
+    ! 
+    DEALLOCATE(loc_diag_redox,STAT=alloc_error)
 
   end SUBROUTINE sub_box_remin_DOM
   ! ****************************************************************************************************************************** !
@@ -3163,6 +3173,9 @@ CONTAINS
     real,dimension(1:n_l_sed)::loc_bio_part_remin
         
     CHARACTER(len=31)::loc_string     ! 
+        
+    real,DIMENSION(:,:),ALLOCATABLE::loc_diag_redox
+    allocate(loc_diag_redox(n_diag_redox,n_k),STAT=alloc_error)
 
     ! ### USER-DEFINABLE OPTIONS ################################################################################################# !
     ! NOTE: settings not included in the run-time configuration files for clarity
@@ -3211,6 +3224,8 @@ CONTAINS
     end if
     ! local remin transformation arrays
     loc_conv_ls_lo(:,:)   = 0.0
+    !
+    if (ctrl_bio_remin_redox_save) loc_diag_redox(:,:) = 0.0
 
     ! >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     ! *** k WATER-COLUMN LOOP START ***
@@ -3580,9 +3595,9 @@ CONTAINS
                          tmp_bio_remin = loc_conv_ls_lo(lo,ls)*loc_bio_part_remin(ls)
                          loc_bio_remin(lo,kk) = loc_bio_remin(lo,kk) + tmp_bio_remin
                          if (ctrl_bio_remin_redox_save) then
-                            loc_string = trim(string_sed(l2is(ls)))//'_d'//trim(string_ocn(l2io(lo)))
+                            loc_string = 'reminP_'//trim(string_sed(l2is(ls)))//'_d'//trim(string_ocn(l2io(lo)))
                             id = fun_find_str_i(trim(loc_string),string_diag_redox)
-                            diag_redox(id,dum_i,dum_j,kk) = diag_redox(id,dum_i,dum_j,kk) + tmp_bio_remin
+                            loc_diag_redox(id,kk) = loc_diag_redox(id,kk) + tmp_bio_remin
                          end if
                       end if
                    end do
@@ -3706,11 +3721,16 @@ CONTAINS
     dum_vbio_part%mk(:,:) = loc_bio_part(:,:)
     ! write ocean tracer remineralization field (global array)
     dum_vbio_remin%mk(:,:) = dum_vbio_remin%mk(:,:) + loc_bio_remin(:,:)
+    ! remin diagnostics
+    if (ctrl_bio_remin_redox_save) diag_redox(:,dum_i,dum_j,:) = diag_redox(:,dum_i,dum_j,:) + loc_diag_redox(:,:)
 
     DO l=1,n_l_sed
        is = conv_iselected_is(l)
        bio_settle(is,dum_i,dum_j,:) = loc_bio_settle(l,:)
     end do
+    
+    ! 
+    DEALLOCATE(loc_diag_redox,STAT=alloc_error)
 
   END SUBROUTINE sub_box_remin_part
   ! ****************************************************************************************************************************** !
@@ -4068,6 +4088,15 @@ CONTAINS
        loc_H2S_scavenging = min(loc_H2S_scavenging,loc_part_den_POCl,loc_H2S)
 !       print*, 'oxidationanalogue '
 !       print*, 'loc_H2S, loc_H2S_scavenging', loc_H2S, loc_H2S_scavenging
+    CASE ('kinetic')
+ !       print*, 'kinetic '
+ !       print*, 'par_bio_remin_kH2StoPOMS ', par_bio_remin_kH2StoPOMS
+       ! use rate constant from Dale et al. 2009 k = 0.2 M-1 yr-1
+       ! NOTE: the concentration that dum_bio_part represents is actually spread across multiple cells during each time step
+       !       i.e., in any cell, this density of material in effect exists only for a fraction of that time-step
+       !       => normalize by the fraction of time spent in that cell during the time-step (== residence time / time-step)
+       loc_H2S_scavenging = dum_dt_scav*par_bio_remin_kH2StoPOMS*loc_H2S*(dum_dt_scav/dum_dtyr)*loc_part_den_POCl
+       loc_H2S_scavenging = min(loc_H2S_scavenging,loc_part_den_POCl,loc_H2S)
     CASE ('complete')
        loc_H2S_scavenging = min(loc_part_den_POCl,loc_H2S)
     case default

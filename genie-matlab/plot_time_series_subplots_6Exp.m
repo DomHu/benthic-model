@@ -108,7 +108,7 @@ else    % total (mol)
     ylabel('SO_4 (mol)');
 end
 xlabel('yrs ');
-hleg=legend('0606-02 Archer SPIN - No OMEN - fast sinking', '2908-14 OMEN No PO4 dynamics', '1309-00 No OMEN as 0606-02', '1309-01 with OMEN - No PO4', '1309-02 with OMEN - with PO4 M flux', '1309-03 with OMEN - with PO4 M conc.'); 
+hleg=legend('0606-02 Archer SPIN - No OMEN - fast sinking', '2908-14 OMEN No PO4 dynamics OPEN', '1309-00 No OMEN as 0606-02', '1309-01 with OMEN - No PO4', '1309-02 with OMEN - with PO4 M flux', '1309-03 with OMEN - with PO4 M conc.'); 
 set(hleg,'FontSize',6);
 set(hleg,'Location','SouthEast');
 

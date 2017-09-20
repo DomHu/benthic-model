@@ -6,7 +6,7 @@ clear all;
 plot_mean = false;
 
 % set experiment 
-exp_1 = './cgenie_output/0706_worjh2_OMEN.boudreau1997_50_fromrestart';
+exp_1 = './cgenie_output/1809_03_Archeretal2009_OMEN.inv_k2_0.005_k1_0.0065_ord_1.3_diagPO4_NoPO4';
 exp_2 = './cgenie_output/0706_worjh2_OMEN.boudreau1997_100_fromrestart';
 % %%%% load other data
 
