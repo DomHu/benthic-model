@@ -4086,11 +4086,11 @@ CONTAINS
        !       => normalize by the fraction of time spent in that cell during the time-step (== residence time / time-step)
        loc_H2S_scavenging = dum_dt_scav*par_bio_remin_kH2StoSO4*loc_H2S*(dum_dt_scav/dum_dtyr)*loc_part_den_POCl
        loc_H2S_scavenging = min(loc_H2S_scavenging,loc_part_den_POCl,loc_H2S)
-!       print*, 'oxidationanalogue '
+!       print*, 'oxidationanalogue, par_bio_remin_kH2StoSO4 ', par_bio_remin_kH2StoSO4
 !       print*, 'loc_H2S, loc_H2S_scavenging', loc_H2S, loc_H2S_scavenging
     CASE ('kinetic')
- !       print*, 'kinetic '
- !       print*, 'par_bio_remin_kH2StoPOMS ', par_bio_remin_kH2StoPOMS
+!        print*, 'kinetic '
+!        print*, 'par_bio_remin_kH2StoPOMS ', par_bio_remin_kH2StoPOMS
        ! use rate constant from Dale et al. 2009 k = 0.2 M-1 yr-1
        ! NOTE: the concentration that dum_bio_part represents is actually spread across multiple cells during each time step
        !       i.e., in any cell, this density of material in effect exists only for a fraction of that time-step

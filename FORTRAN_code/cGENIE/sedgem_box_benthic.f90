@@ -423,9 +423,10 @@ CONTAINS
                 case default
                     ! globally invariant k1 and k2 as set in par_sed_huelse2017_k1, par_sed_huelse2017_k2
                     k1=par_sed_huelse2017_k1
-                    k2=k1/par_sed_huelse2017_k2_order
+                    k2=0.005
+!                    k2=k1/par_sed_huelse2017_k2_order
 !                                print*,' '
-!                                print*,'default degradation: k1, k2 =', k1, k2
+!                                print*,'oxic default degradation: k1, k2 =', k1, k2
                     ! make the k1 - k2 relation depth dependent:
             !                if(dum_D .LE. 2000.0)then
             !                    loc_k_apparent = par_sed_huelse2017_k1
@@ -448,7 +449,7 @@ CONTAINS
             !                        end if
             end select
             ! DOMINIK don't use anoxic rate, as too much preserved
-            if(.false.)then
+            if(.true.)then
                 ! if anoxic, decrease zbio and use anoxic degradation rate
                 if(dum_swiconc_O2 .LE. loc_BW_O2_anoxia)then
                     ! decrease bioturbation depth
@@ -480,7 +481,9 @@ CONTAINS
                         case default
                             ! globally invariant k1 and k2 as set in par_sed_huelse2017_k1, par_sed_huelse2017_k2
                             k1=par_sed_huelse2017_k1
-                            k2=par_sed_huelse2017_k2
+                            k2=k1/par_sed_huelse2017_k2_order
+!                           print*,' '
+!                          print*,'anoxic default degradation: k1, k2 =', k1, k2
                     ! MIN anoxic from Arndt et al. 2013
                     !            k1=6.0e-7;
                     !            k2=1.25e-8;
@@ -632,7 +635,7 @@ CONTAINS
                     !                        print*,' '
                     !                        print*,'Hack OMEN loc_PO4_swiflux = ', loc_PO4_swiflux
                         !          normal PO4 calculation
-                    !                        call sub_huelseetal2016_zPO4_M(dum_swiconc_PO4, loc_PO4_swiflux, dum_swiflux_M, loc_M_swiflux)
+!                        call sub_huelseetal2016_zPO4_M(dum_swiconc_PO4, loc_PO4_swiflux, dum_swiflux_M, loc_M_swiflux)
                     !                        print*,'CALC OMEN loc_PO4_swiflux = ', loc_PO4_swiflux
                         ! 30/11/2016: remineralise all POC and calculate PO4 return flux
                     else
