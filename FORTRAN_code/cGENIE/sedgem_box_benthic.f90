@@ -871,7 +871,7 @@ CONTAINS
         ALKRSUL= ((X_C+Y_N)/X_C)*SD !           ! Sulfate reduction explicit: ((X_C+Y_N-2*Z_P)/X_C)*SD !
         ALKRH2S= -2.0                           ! H2S oxydation
         !        ALKRH2S= 0.0       ! no secondary redox!
-        ALKRMET= ((Y_N-2*Z_P)/X_C)*SD   !0.0    ! Methanogenesis
+        ALKRMET= ((Y_N)/X_C)*SD   !0.0    ! Methanogenesis explicitly: ((Y_N-2*Z_P)/X_C)*SD
         ALKRAOM= 2.0     !0.0                   ! AOM
         
         ! ORGANIC MATTER
