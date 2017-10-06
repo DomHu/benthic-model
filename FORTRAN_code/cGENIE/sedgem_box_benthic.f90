@@ -72,7 +72,7 @@ MODULE sedgem_box_benthic
 
     ! ORGANIC MATTER
     real DC1, DC2                           !TOC diffusion coefficient (cm2/yr)
-!    real C, C1, C2
+    !    real C, C1, C2
     real k1                                 !TOC degradation rate constnat (1/yr)
     real k2                                 !TOC degradation rate constant (1/yr)
 
@@ -337,9 +337,9 @@ CONTAINS
 
             ! CHECK if still lower than 5.0e-4, than cut there, as OMEN produces positive O2 SWI-fluxes
             if(loc_sed_burial .LE. 5.0e-4)then
-                !                                print*,''
-                !                                print*,'OMEN burial < 5.0e-4 !!!!!!!!!!!!!!!!!!!!!!!!!!'
-                !                                print*,'dum_D = ', dum_D
+!                                                print*,''
+!                                                print*,'OMEN burial < 5.0e-4 !!!!!!!!!!!!!!!!!!!!!!!!!!'
+!                                                print*,'dum_i, dum_j, dum_D', dum_i, dum_j, dum_D
                 !                print*,'loc_new_sed_vol_OLD =', loc_new_sed_vol
                 !                                print*,'loc_sed_burial_NEW before cut=', loc_sed_burial
                 !                                print*,'1/(1-por)*loc_new_sed(is_det) = ', 1/(1-por)*loc_new_sed(is_det)
@@ -424,9 +424,9 @@ CONTAINS
                     ! globally invariant k1 and k2 as set in par_sed_huelse2017_k1, par_sed_huelse2017_k2
                     k1=par_sed_huelse2017_k1
                     k2=0.005
-!                    k2=k1/par_sed_huelse2017_k2_order
-!                                print*,' '
-!                                print*,'oxic default degradation: k1, k2 =', k1, k2
+            !                    k2=k1/par_sed_huelse2017_k2_order
+            !                                print*,' '
+            !                                print*,'oxic default degradation: k1, k2 =', k1, k2
                     ! make the k1 - k2 relation depth dependent:
             !                if(dum_D .LE. 2000.0)then
             !                    loc_k_apparent = par_sed_huelse2017_k1
@@ -482,8 +482,8 @@ CONTAINS
                             ! globally invariant k1 and k2 as set in par_sed_huelse2017_k1, par_sed_huelse2017_k2
                             k1=par_sed_huelse2017_k1
                             k2=k1/par_sed_huelse2017_k2_order
-!                           print*,' '
-!                          print*,'anoxic default degradation: k1, k2 =', k1, k2
+                    !                           print*,' '
+                    !                          print*,'anoxic default degradation: k1, k2 =', k1, k2
                     ! MIN anoxic from Arndt et al. 2013
                     !            k1=6.0e-7;
                     !            k2=1.25e-8;
@@ -501,7 +501,7 @@ CONTAINS
 
             ! Check for no POC deposited -> nothing preserved
             if(loc_POC1_flux_swi .LE. const_real_nullsmall .AND. loc_POC2_flux_swi .LE. const_real_nullsmall  .AND. loc_POC3_flux_swi .LE. const_real_nullsmall)then
-                !            print*,'no POC deposited  dum_D ', dum_D
+                !            print*,'no POC deposited  dum_D ', dum_D, dum_i, dum_j
                 !            print*,' grid point (i,j) ', dum_i, dum_j
                 !            print*,' '
                 dum_sed_pres_fracC = 0.0
@@ -526,9 +526,14 @@ CONTAINS
             
                 ! CHECK IF TOC preservation results in insane values, i.e. everything remineralized
                 ! Then calculate SWI-fluxes "manually"
-                if(dum_sed_pres_fracC .NE. dum_sed_pres_fracC)then
-                    !                    print*,'A21 insane ', dum_sed_pres_fracC, dum_D
-                    !                print*,'par_sed_huelse2017_k2_order ', par_sed_huelse2017_k2_order
+!                if(dum_sed_pres_fracC .LE. 0.0)then
+!                    print*,' '
+!                    print*,'!!!!!!!! NEGATIVE POC preservation ', dum_sed_pres_fracC
+!                    print*,'dum_D, dum_i, dum_j', dum_D, dum_i, dum_j
+!                end if
+                if((dum_sed_pres_fracC .NE. dum_sed_pres_fracC) .OR. (dum_sed_pres_fracC .LE. 0.0) .OR. (dum_sed_pres_fracC > 1.0))then
+!                    print*,' '
+!                    print*,'weird dum_sed_pres_fracC ', dum_sed_pres_fracC, dum_D, dum_i, dum_j
                     !                print*,'dum_D, dum_i, dum_j', dum_D, dum_i, dum_j
                     !                print*,'loc_sed_burial', loc_sed_burial
                 
@@ -594,7 +599,18 @@ CONTAINS
                             !               Hack
                             !                    loc_SO4_swiflux = loc_new_sed(is_POC)*conv_POC_cm3_mol*(-138.0/212.0)
                             call sub_huelseetal2016_zSO4(dum_swiconc_SO4, loc_SO4_swiflux)
-                        !                    print*,'OMEN loc_SO4_swiflux = ', loc_SO4_swiflux
+                            !                    print*,'OMEN loc_SO4_swiflux = ', loc_SO4_swiflux
+                            if(loc_SO4_swiflux > 0.0)then
+                                print*,' '
+                                print*,'---------- loc_SO4_swiflux positiv ----------', loc_SO4_swiflux
+                                print*,'dum_i, dum_j, dum_D', dum_i, dum_j, dum_D
+                                print*,'sedimentation flux =', loc_new_sed_vol
+                                print*,'loc_sed_burial_NEW =', loc_sed_burial
+                                print*,'1/(1-por)*loc_new_sed(is_det) = ', 1/(1-por)*loc_new_sed(is_det)
+                                loc_SO4_swiflux = 0.0
+                            !                    !                STOP
+                            end if
+
                         else
                             zso4 = zno3
                         end if
@@ -630,14 +646,13 @@ CONTAINS
                     end if
 
                     if(ocn_select(io_PO4))then
-                        !           PO4 hack
+                        !           PO4 hack: remineralise all POC and calculate PO4 return flux
                         loc_PO4_swiflux = loc_fPOC*conv_POC_cm3_mol*1/106
-                    !                        print*,' '
-                    !                        print*,'Hack OMEN loc_PO4_swiflux = ', loc_PO4_swiflux
+                        !                        print*,' '
+                        !                        print*,'Hack OMEN loc_PO4_swiflux = ', loc_PO4_swiflux
                         !          normal PO4 calculation
 !                        call sub_huelseetal2016_zPO4_M(dum_swiconc_PO4, loc_PO4_swiflux, dum_swiflux_M, loc_M_swiflux)
                     !                        print*,'CALC OMEN loc_PO4_swiflux = ', loc_PO4_swiflux
-                        ! 30/11/2016: remineralise all POC and calculate PO4 return flux
                     else
                         ! If not selected nothing needs to be done
                     end if
@@ -871,7 +886,7 @@ CONTAINS
         ALKRSUL= ((X_C+Y_N)/X_C)*SD !           ! Sulfate reduction explicit: ((X_C+Y_N-2*Z_P)/X_C)*SD !
         ALKRH2S= -2.0                           ! H2S oxydation
         !        ALKRH2S= 0.0       ! no secondary redox!
-        ALKRMET= ((Y_N)/X_C)*SD   !0.0    ! Methanogenesis explicitly: ((Y_N-2*Z_P)/X_C)*SD
+        ALKRMET= -((Y_N)/X_C)*SD   !0.0    ! Methanogenesis explicitly: ((Y_N-2*Z_P)/X_C)*SD
         ALKRAOM= 2.0     !0.0                   ! AOM
         
         ! ORGANIC MATTER
@@ -1720,7 +1735,7 @@ CONTAINS
                 zL=1e-10
                 tol=1e-16
                 zso4 = FUN_zbrent(FUN_zSO4, max(zno3,zL), zinf, tol)
-            !        print*,'$$$$$$$$$$$$$4   CALCULATE zso4 = ', zso4
+            !                print*,'CALCULATE zso4 = ', zso4
             END IF
         !    print*,'bctype, zso4 ', bctype, zso4
         END IF !(zno3 == zinf)

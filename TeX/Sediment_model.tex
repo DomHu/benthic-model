@@ -1156,7 +1156,7 @@ Values for $D^T_i$ and $D^0_i$ are summarised in Table \ref{table:sed-charac_tra
 % title of Table
 \centering
 % used for centering table
-\begin{tabular}{l c c l}
+\begin{tabular}{l r r l}
 % centered columns (6 columns)
 \hline\hline
 %inserts double horizontal lines
@@ -1509,26 +1509,26 @@ and \chem{O_2} profiles). For phosphorus the equilibrium concentration for authi
 % Note: Constant concentrations at all sites for \chem{SO_4} ($28000 \mu$mol cm$^{-3}$) and \chem{H_2S} (0.0 $\mu$mol cm$^{-3}$).}
 \centering
 % used for centering table
-\begin{tabular}{l c c c c c c c c} 
+\begin{tabular}{l r r r r r r r r} 
 % centered columns (15 columns)
 \hline\hline
 \multicolumn{8}{l}{\textbf{Sediment characteristics:}}\\
-Depth & Temp. & $z_{\mathrm{bio}}$ & $D_{\mathrm{bio}}$  & \chem{POC_1} & \chem{POC_2} & \chem{k_1} & \chem{k_2}\\
- (m) & ($^{\circ}$C) & (cm) & (cm$^2$yr$^{-1}$) &(wt\%) & (wt\%) & (yr$^{-1}$) & (yr$^{-1}$)\\
+Depth & Temp. & $z_{\mathrm{bio}}$ & $D_{\mathrm{bio}}$  & \chem{POC_1} & \chem{POC_2} & \chem{k_1} & \chem{k_2} & \chem{PO_4^a} \\
+ (m) & ($^{\circ}$C) & (cm) & (cm$^2$yr$^{-1}$) &(wt\%) & (wt\%) & (yr$^{-1}$) & (yr$^{-1}$)& (nmol cm$^{-3}$)\\
 \hline
-108 & 12.5 & 1.0 & 0.02 & 2.64 & 1.8 & 0.65 & $1.0e^{-5}$ \\
-585 & 5.85 & 0.01 & 0.02 & 2.0 & 3.5 & 0.2 & $8.0e^{-4}$\\
-2213 & 3.2 & 10.0 & 0.17 & 0.45 & 0.5 & 0.1 & $4.0e^{-4}$\\
-4298 & 2.5 & 4.2 & 0.18 & 0.83 & 1.2 & 0.052 & $1e^{-5}$\\
+108 & 12.50 & 1.00 & 0.02 & 2.64 & 1.8 & 0.650 & $1.0e^{-5}$ & 15.0 \\
+585 & 5.85 & 0.01 & 0.02 & 2.00 & 3.5 & 0.200 & $8.0e^{-4}$& 90.0\\
+2213 & 3.20 & 10.00 & 0.17 & 0.45 & 0.5 & 0.100 & $4.0e^{-4}$& 5.0\\
+4298 & 2.50 & 4.20 & 0.18 & 0.83 & 1.2 & 0.052 & $1.0e^{-5}$& 5.0\\
 \hline\hline
 \multicolumn{8}{l}{\textbf{Bottom water concentrations of solutes} (all in nmol cm$^{-3}$):}\\
-Depth & \chem{O_2} & \chem{NO_3} & \chem{SO_4} & \chem{NH_4} & \chem{H_2S} & \chem{PO_4} & \chem{PO_4^a} & \chem{Alkalinity}\\
+Depth & \chem{O_2} & \chem{NO_3} & \chem{SO_4} & \chem{NH_4} & \chem{H_2S} & \chem{PO_4} & \chem{Alkalinity}\\
 %(m) & ($\frac{\mu mol}{cm^3}$) &  ($\frac{\mu mol}{cm^3}$) &  ($\frac{\mu mol}{cm^3}$) &  ($\frac{\mu mol}{cm^3}$) &  ($\frac{\mu mol}{cm^3}$)  &   ($\frac{\mu mol}{cm^3}$) &   ($\frac{\mu mol}{cm^3}$) \\
 \hline
-108 & 210 & 9.6 & 28,000 & 0.4 & 0.0 & 0.0 & 15.0 & 2,400\\
-585 & 10 & 25.0 & 28,000 & 0.0 & 0.0 & 50.0 & 90.0 & 2,480\\
-2213 & 250 & 25.0 & 28,000 & 0.6 & 0.0 & 0.0 & 5.0 & 2,400\\
-4298 & 243 & 30.1 & 28,000 & 0.22 & 0.0 & 0.0 & 5.0 & 2,400\\
+108 & 210.0 & 9.6 & 28,000 & 0.40 & 0.0 & 0.0 & 2,400\\
+585 & 10.0 & 25.0 & 28,000 & 0.00 & 0.0 & 50.0  & 2,480\\
+2213 & 250.0 & 25.0 & 28,000 & 0.60 & 0.0 & 0.0  & 2,400\\
+4298 & 243.0 & 30.1 & 28,000 & 0.22 & 0.0 & 0.0  & 2,400\\
 % inserts double horizontal lines
 \end{tabular}
 \label{table:Profiles_BC}
@@ -1691,7 +1691,8 @@ A finer grid (72$\times$72) is used for the sediments \citep[see Fig. \ref{fig:T
 Depending on the configuration of the overlying biogeochemical ocean model, processes can be included or excluded in OMEN-SED and assumed stoichiometric factors need to be matched between models to ensure preservation of mass. 
 As nitrogen is not modelled explicitly in the employed cGENIE configuration, \chem{NC_i}, $\chem{ALK}^\mathrm{NIT}$ and $\chem{ALK}^\mathrm{DEN}$ in OMEN-SED are set to zero. 
 cGENIE, however, implicitly includes the effects of \chem{NH_4} release and its complete nitrification on alkalinity but neglects the impact of P release. Therefore, alkalinity 
-stoichiometries for aerobic degradation and sulfate reduction are changed to $\chem{ALK}^\mathrm{OX} = -16/106$ and $\chem{ALK}^\mathrm{SUL} = 122/106$, respectively (compare to default in Table \ref{table:reaction_parameters}).
+stoichiometries for aerobic degradation, sulfate reduction and methanogenesis are changed to $\chem{ALK}^\mathrm{OX} = -16/106$, $\chem{ALK}^\mathrm{SUL} = 122/106$ and $\chem{ALK}^\mathrm{MET} = -16/106$, respectively 
+(compare to default in Table \ref{table:reaction_parameters}).
 
 Various biogeochemical tracers and parameters are transferred from SEDGEM to OMEN-SED (see Fig. \ref{fig:OMEN-GENIE-coupling}) and are converted into the required units. 
 Bottom water concentrations of solutes are converted from mol\,kg$^{-1}$ to mol\,cm$^{-3}$ and the depositional flux of POC (\chem{POC_{flux}}) is converted from cm$^{3}$\,cm$^{-2}$\,yr$^{-1}$ 
@@ -1728,7 +1729,7 @@ using the stand-alone MATLAB version of OMEN-SED.
 
 \begin{figure}[htbp]
 \begin{center}
-	\includegraphics[width=0.9\textwidth]{figures/OM_reactivity/OM_degradation_0808_updated.pdf}
+	\includegraphics[width=1.0\textwidth]{figures/OM_reactivity/OM_degradation_0808_updated.pdf}
 	\caption{Idealised relationship of organic matter decomposition during remineralisation in the water column and the sediments. 
 	\textbf{A+B - Upper panels:} Water column development of the two organic matter fractions as represented in cGENIE for two ocean depths 
 	(red: labile OM with degradation length scale of 589m; green: refractory OM which is unreactive in the water column). The values are normalised to OM export at 100m. 
@@ -2073,11 +2074,11 @@ However, the model presented here, despite being more complete than previous ana
 the general applicability of the model. One of the most important simplifications is assuming steady-state. 
 When coupled to an Earth system model this assumption is only valid if the relevant variability in boundary conditions and fluxes is generally longer than the characteristic timescales of the reaction-transport processes. 
 In that case the sediment column can be described by a series of pseudo steady-states as it is done in OMEN-SED. Consequently, the model can be used for investigating the long term effects of changes in boundary conditions such as input of OM 
-or bottom water oxidation state on degradation and burial dynamics, for instance during OAEs. 
-\textcolor{red}{Also mention the secondary redox parameters $\gamma$ here. They are influential for the model output and hence should be formally tuned to a database of SWI-fluxes and/or be parameterised depending on a master variable like seafloor depth or 
-oxygenation state.}
+or bottom water oxidation state on degradation and burial dynamics, for instance during OAEs. Yet, OMEN-SED is not able to predict the system response to short-term or seasonal variations of boundary conditions. 
 
-Yet, OMEN-SED is not able to predict the system response to short-term or seasonal variations of boundary conditions. 
+\textcolor{red}{Sandra please check the secondary redox parameter discussion here. Probably need some more info in the Parameter Section \ref{subsubsec:Stoich_reaction_params}!?} 
+The secondary redox parameters ($\gamma_{NH_4}$, $\gamma_{H_2S}$ and $\gamma_{CH_4}$), governing the fraction of reduced substances being reoxidised in the sediments, are influential for the model output (see Section \ref{subsec:SA}) and not 
+well defined or constrained. Hence, they should be formally tuned to a database of SWI-fluxes and/or be parameterised depending on a master variable for instance describing the oxygenation state of the seafloor. 
 Furthermore, the separation of the sediment column into distinct biogeochemical zones and the resulting lack of overlap in degradation pathways may cause distorted organic matter degradation rates for the different TEAs. 
 In more complex models an overlap is allowed and the inhibition of a particular pathway by energetically more favourable oxidants is represented by an inhibition function with a half-saturation constant 
 \citep[see e.g.][]{boudreau_method--lines_1996, meysman_reactive_2003, aguilera_knowledge-based_2005}.
@@ -2105,6 +2106,7 @@ In addition the depth invariant porosity limits the correct calculation of the s
 
 
 \conclusions  %% \conclusions[modified heading if necessary]
+\textcolor{red}{Andy didn't read. As seemed to be to long and repretion of previous discussion. He says, shorten by 25\%.}\\
 In this paper we have described and tested a new, analytical early diagenetic model resolving organic matter cycling and associated biogeochemical dynamics called OMEN-SED. 
 Our new model is the first analytical model to explicitly represent oxic degradation, denitrification, sulfate reduction and implicitly methanogenesis, 
 as well as the reoxidation of reduced substances produced during organic matter degradation. Pore water tracers include \chem{O_2}, \chem{NO_3}, \chem{NH_4}, \chem{SO_4}, \chem{H_2S}, \chem{DIC} and \chem{ALK} and the solid phase includes 
@@ -2135,9 +2137,24 @@ as a supplementary package together with a ReadMe file,
 where hardware and software requirements, source code files
 and model output file management are fully described.
 
+
+
+\begin{acknowledgements}
+We thank Claire Reimers and Filip Meysman for supplying the dataset from the Santa Barbara Basin, as well as Martin Thullner and Jack Middelburg for making the BRNS results and observations 
+included in Section \ref{subsec:globalhypsometry} available. We are also grateful to Andy Dale for providing the global flux database used in Section \ref{subsec:SA} and 
+acknowledge the British Oceanographic Data Centre for the OMEXDIA dataset used in Section \ref{subsec:SedProfiles}.
+We are also grateful to Francesca Pianosi for helpful insights into sensitivity analysis. 
+DH is supported by a graduate teaching studentship by the University of Bristol. SA is supported by funding from
+the European Unions Horizon 2020 research and innovation programme under the Marie Sk\l{}odowska-Curie grant agreement no.
+643052 (C-CASCADES). AR acknowledge funding from the EU grant ERC-2013-CoG-617313. 
+\textcolor{red}{TODO: add for Stuart and Pierre!}
+\end{acknowledgements}
+
+\pagebreak
+
 \appendix
 \section{Reaction Network}    %% Appendix A
-\begin{sidewaystable}[tbp]
+\begin{sidewaystable}[hbp]
 \caption{Primary pathways of organic matter degradation, secondary redox reactions and stoichiometries implemented in the reaction network.}
 % title of Table
 \centering
@@ -2174,6 +2191,9 @@ AOM & $\chem{CH_4 + CO_2 + SO_4^{2-}} \rightarrow \chem{2HCO_3^- + H_2S}$\\
 % is used to refer this table in the text
 \end{sidewaystable}
 
+
+\pagebreak
+
 \section{Sensitivity Analysis} 
 
 
@@ -2187,21 +2207,9 @@ AOM & $\chem{CH_4 + CO_2 + SO_4^{2-}} \rightarrow \chem{2HCO_3^- + H_2S}$\\
 \end{figure}
 
 
-\subsection{}                               %% Appendix A1, A2, etc.
 
 
 
-
-\begin{acknowledgements}
-We thank Claire Reimers and Filip Meysman for supplying the dataset from the Santa Barbara Basin, as well as Martin Thullner and Jack Middelburg for making the BRNS results and observations 
-included in Section \ref{subsec:globalhypsometry} available. We are also grateful to Andy Dale for providing the global flux database used in Section \ref{subsec:SA} and 
-acknowledge BODC for the OMEXDIA dataset (check CD!).
-We are also grateful to Francesca Pianosi for helpful insights into sensitivity analysis. 
-DH is supported by a graduate teaching studentship by the University of Bristol. SA is supported by funding from
-the European Unions Horizon 2020 research and innovation programme under the Marie Sk\l{}odowska-Curie grant agreement no.
-643052 (C-CASCADES). AR acknowledge funding from the EU grant ERC-2013-CoG-617313. 
-\textcolor{red}{TODO: add for Stuart and Pierre!}
-\end{acknowledgements}
 
 
 %% REFERENCES
