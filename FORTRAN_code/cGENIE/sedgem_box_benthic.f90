@@ -247,7 +247,7 @@ CONTAINS
         loc_par_bio_remin_POC_Ea2 = 80000.0
 
         !           print*,' '
-        !                print*,'---------- IN OMEN MAIN ----------- '
+!                        print*,'---------- IN OMEN MAIN ----------- '
         !        print*,'dum_D = ', dum_D
         ! initialize BW concentrations 
         !   THE FOLLOWING VALUES WILL BE PASSED DOWN FROM GENIE
@@ -271,7 +271,7 @@ CONTAINS
         dum_swiconc_DIC = dum_sfcsumocn(io_DIC)*1e-3
         dum_swiconc_ALK = dum_sfcsumocn(io_ALK)*1e-3
 
-        !        print*,'dum_i, dum_j, dum_D ', dum_i, dum_j, dum_D
+!        print*,'dum_i, dum_j, dum_D ', dum_i, dum_j, dum_D
 
         ! calculate wt% of mol from POC flux (both fractions)
         ! NOTE: the units of the Corg flux are in (cm3 cm-2 yr-1)
@@ -483,7 +483,7 @@ CONTAINS
                             k1=par_sed_huelse2017_k1
                             k2=k1/par_sed_huelse2017_k2_order
                     !                           print*,' '
-                    !                          print*,'anoxic default degradation: k1, k2 =', k1, k2
+!                            print*,'anoxic default degradation: k1, k2 =', k1, k2
                     ! MIN anoxic from Arndt et al. 2013
                     !            k1=6.0e-7;
                     !            k2=1.25e-8;
@@ -673,10 +673,9 @@ CONTAINS
                             !                loc_ALK_swiflux = 2.0*loc_H2S_swiflux + loc_new_sed(is_POC)*conv_POC_cm3_mol*16/106 !NC1
                             !                print*,'CALC loc_ALK_swiflux = ', loc_ALK_swiflux
                             if(loc_new_sed(is_POM_S) .GE. const_real_nullsmall)then
-                                !                             print*,' '
-                                !     print*,'loc_new_sed(is_POM_S)', loc_new_sed(is_POM_S)
-                                !    print*,'conv_POC_cm3_mol ', conv_POC_cm3_mol
-                                !                            print*,'OLD loc_ALK_swiflux ', loc_ALK_swiflux
+!                                print*,' '
+!                                print*,'loc_new_sed(is_POM_S)', loc_new_sed(is_POM_S)
+                                 !                            print*,'OLD loc_ALK_swiflux ', loc_ALK_swiflux
                                 loc_POM_S_H2S_swiflux = loc_new_sed(is_POM_S)*conv_POC_cm3_mol*1.0
                                 loc_ALK_swiflux = loc_ALK_swiflux - 2*loc_POM_S_H2S_swiflux
                             !                            print*,'loc_POM_S_H2S_swiflux ', loc_POM_S_H2S_swiflux

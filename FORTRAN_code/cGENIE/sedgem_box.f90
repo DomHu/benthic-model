@@ -283,7 +283,8 @@ CONTAINS
                    loc_dis_sed(is) = 0.0
                 end if
                 ! hack to create appropriate burial output
-                sed_fsed(is,dum_i,dum_j) = loc_new_sed(is)
+                ! NOTE: ensure correct units ...
+                sed_fsed(is,dum_i,dum_j) = loc_new_sed(is)/conv_sed_mol_cm3(is)
              end if
           end if
        end DO
@@ -1512,7 +1513,8 @@ CONTAINS
                    loc_dis_sed(is) = 0.0
                 end if
                 ! hack to create appropriate burial output
-                sed_fsed(is,dum_i,dum_j) = loc_new_sed(is)
+                ! NOTE: ensure correct units ...
+                sed_fsed(is,dum_i,dum_j) = loc_new_sed(is)/conv_sed_mol_cm3(is)
              end if
           end if
        end DO

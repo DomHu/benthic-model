@@ -731,12 +731,12 @@ classdef benthic_test
                 res.Cox_perc_aerobic_xcm = 0.0;
                 
             else % USE OMEN-SED
-                
+                % check lower than detrital
                 if(res.bsd.w<=bc(9))
                     res.bsd.w=bc(9);
                 end
-                if(res.bsd.w<=4.0e-4)
-                    res.bsd.w=4.0e-4;
+                if(res.bsd.w<=5.0e-4)
+                    res.bsd.w=5.0e-4;
                 end
                 %bottom water concentrations
                 swi.T = bc(11); %20.0;                         %temperature (degree C)
@@ -814,6 +814,7 @@ classdef benthic_test
                 % if anoxic, decrease zbio and use anoxic degradation rate
                 if(swi.O20 < 5.0e-9 )
                     res.bsd.zbio=0.01;
+                    res.zTOC.k2 = res.zTOC.k1/650;
                     %                 switch k_parametr
                     %                     case 'boudreau1997'
                     %                         % use parameterisation of Boudreau 1997 dependent on sediment accumulation rate (w)
