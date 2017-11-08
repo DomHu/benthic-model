@@ -169,7 +169,7 @@ to optimise the fit of simulated benthic OM contents to global observations.
 We find simulated sediment characteristics of the coupled model framework, such as OM degradation rates, oxygen penetration depths and sediment-water interface fluxes
 are generally in good agreement with observations and in line with what one would expect on a global scale. 
 Coupled to an Earth system model, OMEN-SED is thus a powerful tool that will not only help elucidate the role of benthic-pelagic exchange processes in the evolution and, in particular, the termination of a wide range of climate events, 
-but will also allows a direct comparison of model output with the sedimentary record - the most important climate archive on Earth.
+but will also allow a direct comparison of model output with the sedimentary record - the most important climate archive on Earth.
 \end{abstract}
 
 %\newpage
@@ -1681,7 +1681,7 @@ reconciling modelled and observed values provided that bottom water conditions a
 	\end{center}
 \end{figure}
 In a final step, we couple OMEN-SED to the carbon-centric version of the ``GENIE'' Earth system model \citep[cGENIE,][]{ridgwell_marine_2007} in order to illustrate how a fully coupled ocean-sediment system can be 
-configure and applied. We start by providing a brief description of cGENIE and the coupling procedure (Fig. \ref{fig:OMEN-GENIE-coupling}). 
+configured and applied. We start by providing a brief description of cGENIE and the coupling procedure (Fig. \ref{fig:OMEN-GENIE-coupling}). 
 
 cGENIE is a model of Intermediate Complexity based on the efficient climate model ``C-GOLDSTEIN''  of \citet{edwards_uncertainties_2005}, featuring a frictional-geostrophic 3D-ocean circulation model coupled to a fast 
 Energy-Moisture Balance 2D-atmosphere together with a dynamic-thermodynamic sea-ice component. 
@@ -1689,6 +1689,10 @@ The version of cGENIE used here includes the marine geochemical cycling of carbo
 preservation of carbonates in deep-sea sediments \citep[SEDGEM,][]{ridgwell_regulation_2007} and terrestrial weathering \citep{colbourn_rock_2013}. 
 The ocean model is implemented on a 36$\times$36 equal-area horizontal grid with 16 vertical levels using the pre-industrial continental configuration and bathymetry as in \citet{archer_atmospheric_2009}. 
 A finer grid (72$\times$72) is used for the sediments \citep[see Fig. \ref{fig:TOC_Obs_regridded}C and ][]{ridgwell_regulation_2007} and OMEN-SED is called by SEDGEM for each wet ocean grid point. 
+In our model setup prescribed fields of detrital, opal and \chem{CaCO_3} fluxes to the sediment surface are used. These constant fields have been re-gridded from observations reported in \citet{archer_data-driven_1996} 
+and serve two purposes. First, the run time of the model is minimized as steady-state conditions are reached earlier. Second, constant flux fields ensure that model results with different organic matter 
+degradation rate constants in OMEN-SED are comparable and not influenced by changes in \chem{CaCO_3} preservation in the sediments and thus a change in sediment accumulation rate. 
+
 %In contrast to \citet{archer_atmospheric_2009} the same grid resolution (36$\times$36) is used for the sediment geochemistry model SEDGEM. 
 Depending on the configuration of the overlying biogeochemical ocean model, processes can be included or excluded in OMEN-SED and stoichiometric factors (Tab. \ref{table:reaction_parameters}) need to be matched between models 
 to ensure preservation of mass. As nitrogen is not modelled explicitly in the employed cGENIE configuration, \chem{NC_i}, $\chem{ALK}^\mathrm{NIT}$ and $\chem{ALK}^\mathrm{DEN}$ in OMEN-SED are set to zero. 
@@ -1799,7 +1803,7 @@ the triangles). The regression line (and the corresponding R$^2$-value) is calcu
 \end{center}
 \end{figure}
 
-\textcolor{red}{TODO Andy: Section describing the prescribed fields of solids (i.e. detrital, opal, \chem{CaCO_3}) to the sediments!}
+%\textcolor{red}{TODO Andy: Section describing the prescribed fields of solids (i.e. detrital, opal, \chem{CaCO_3}) to the sediments!}
 
 To parameterise the reactivity of organic matter in OMEN-SED two different schemes are tested and compared. First, spatially uniform degradation rate constants $k_1$ and $k_2$ are assumed. 
 By simulating two different pools of POC in the water-column characterised by different degradation length scales \citep{ridgwell_marine_2007}, cGENIE implicitly accounts for the decrease in mean POC reactivity with water-depth. 
@@ -2096,7 +2100,7 @@ the main SWI-flux features, but have also highlighted that slightly lower $\gamm
 \conclusions  %% \conclusions[modified heading if necessary]
 Here, we have described in detail and tested OMEN-SED, a new, analytical early diagenetic model resolving organic matter cycling and associated biogeochemical dynamics. OMEN-SED has been explictely designed for the coupling to 
 EMICs and combines biogeochemical complexity with computational efficiency. It is the first analytical diagenetic model to explicitly represent oxic degradation, denitrification, sulfate reduction and implicitly methanogenesis, 
-as well as the reoxidation of reduced substances, adsorption/desorption, as well as mineral precipitation//dissolution. Explicitly resolved pore water species include \chem{O_2}, \chem{NO_3}, \chem{NH_4}, \chem{SO_4}, \chem{H_2S}, \chem{DIC} 
+as well as the reoxidation of reduced substances, adsorption/desorption, as well as mineral precipitation/dissolution. Explicitly resolved pore water species include \chem{O_2}, \chem{NO_3}, \chem{NH_4}, \chem{SO_4}, \chem{H_2S}, \chem{DIC} 
 and \chem{ALK} and the solid phase includes two degradable fractions of organic matter, Fe-bound P and authigenic Ca-P minerals.
 
 An extensive sensitive analysis, based on the density-based PAWN method \citep{pianosi_simple_2015} emphasizes the importance of OM degradation rate parameters ($k_i$, $f_i$) and thus highlights the need for the development of 
@@ -2117,14 +2121,14 @@ and model output file management are fully described.
 % We thank Claire Reimers and Filip Meysman for supplying the dataset from the Santa Barbara Basin, as well as Martin Thullner and Jack Middelburg for making the BRNS results and observations 
 % included in Section \ref{subsec:globalhypsometry} available. We are also grateful to Andy Dale for providing the global flux database used in Section \ref{subsec:SA} and 
 % acknowledge the British Oceanographic Data Centre for the OMEXDIA dataset used in Section \ref{subsec:SedProfiles}.
-We thank Claire Reimers, Filip Meysman, Martin Thullner, Jack Middelburg, Andy Dale and the British Oceanographic Data Centre for supplying the datasets and model results used in 
-Sections \ref{subsec:SA}, \ref{subsec:SedProfiles} and  \ref{subsec:globalhypsometry}.
+We thank Claire Reimers, Filip Meysman, Martin Thullner, Jack Middelburg, Andy Dale, Christof Meile and the British Oceanographic Data Centre for supplying the datasets and model results used in 
+Sections \ref{subsec:SA}, \ref{subsec:SedProfiles} and  \ref{subsec:globalhypsometry}. 
 We are also grateful to Francesca Pianosi for helpful insights into sensitivity analysis. 
-DH was supported by a graduate teaching studentship by the University of Bristol. SA acknowledges funding from the UK Natural Environmental Research Council (NERC) grant no. NE/I021322/1 and 
-SD from the grants NERC JET (NE/N018508/1) and NERC BETR (NE/P013651/1).
-SA and PR are supported by funding from the European Unions Horizon 2020 research and innovation programme under the Marie Sk\l{}odowska-Curie grant agreement no. 643052 (C-CASCADES). 
-AR acknowledge funding from the EU grant ERC-2013-CoG-617313. 
-\textcolor{red}{TODO: Andy and me iMUDS grant???}
+DH was supported by a graduate teaching studentship by the University of Bristol and a Heising–Simons Foundation award. SA acknowledges funding from the UK Natural Environmental Research Council (NERC) grant no. NE/I021322/1 and 
+SD from the grants NERC JET (NE/N018508/1) and NERC BETR (NE/P013651/1). 
+SA and PR were supported by funding from the European Unions Horizon 2020 research and innovation programme under the Marie Sk\l{}odowska-Curie grant agreement no. 643052 (C-CASCADES). 
+AR was supported by a Heising–Simons Foundation award, and by EU grant ERC-2013-CoG-617313. 
+%AR acknowledge funding from the EU grant ERC-2013-CoG-617313. 
 \end{acknowledgements}
 
 \pagebreak
