@@ -102,7 +102,7 @@
 
 %\linenumbers
 
-\title{OMEN-SED 0.9: A novel, numerically efficient organic matter sediment diagenesis module for coupling to Earth System Models}
+\title{OMEN-SED 0.9: A novel, numerically efficient organic matter sediment diagenesis module for coupling to Earth system models}
 
 
 % \Author[affil]{given_name}{surname}
@@ -147,12 +147,6 @@
 \begin{abstract}
 We present the first version of OMEN-SED (Organic Matter ENabled SEDiment model), a new, one-dimensional analytical early diagenetic model resolving organic matter cycling and 
 associated biogeochemical dynamics in marine sediments designed to be coupled to Earth system models. 
-% Most biogeochemical cycles and reactions in the surface sediments can be related either directly or indirectly to the degradation of organic matter (OM). 
-% Despite its fundamental importance for global biogeochemical cycling, %an appropriate Earth system model of the coupled atmosphere-ocean-sediment system which is able to model all 
-% %relevant processes and feedbacks over geological time-scales currently does not exist. The major problem is the high computational cost of simulating 
-% %the essential redox reactions in marine sediments which are important to calculate burial of organic matter and benthic recycling fluxes of chemical compounds. 
-% in most Earth system models sediment-water dynamics are  either neglected or treated in a very simplistic way. To provide a more realistic description of OM 
-% degradation and nutrient cycles in marine sediments we have developed OMEN-SED, a new, one-dimensional, numerically efficient reactive transport model. 
 OMEN-SED explicitly describes organic matter (\chem{OM}) cycling as well as associated dynamics of the most important terminal electron acceptors 
 (i.e. \chem{O_2} , \chem{NO_3}, \chem{SO_4}) and methane (\chem{CH_4}), related reduced substances (\chem{NH_4}, \chem{H_2S}), macronutrients (\chem{PO_4}) 
 and associated pore water quantities (\chem{ALK}, \chem{DIC}). Its reaction network accounts for the most important primary and secondary redox reactions, equilibrium reactions, mineral dissolution and precipitation, 
@@ -160,11 +154,13 @@ as well as adsorption and desorption processes associated with OM dynamics that 
 a representation of the formation and burial of Fe-bound P and authigenic Ca-P minerals. 
 Thus, OMEN-SED is able to capture the main features of diagenetic dynamics in marine sediments and, therefore, offers similar predictive abilities than a complex, numerical diagenetic model. 
 Yet, its computational efficiency allows its coupling to global Earth system models and therefore the investigation of coupled global biogeochemical dynamics over a wide range of climate relevant timescales. 
-This paper provides a detailed description of the new sediment 
-model, as well as an extensive sensitivity analysis using a novel method which considers the entire cumulative distribution functions of the model outputs. 
-In addition, OMEN-SED's performance is evaluated through comprehensive comparisons with observations and results from a more complex numerical model. 
+This paper provides a detailed description of the new sediment model, an extensive sensitivity analysis, % using a novel method which considers the entire cumulative distribution functions of the model outputs. 
+as well as an evaluation of OMEN-SED's performance through comprehensive comparisons with observations and results from a more complex numerical model. 
+% This paper provides a detailed description of the new sediment 
+% model, as well as an extensive sensitivity analysis using a novel method which considers the entire cumulative distribution functions of the model outputs. 
+% In addition, OMEN-SED's performance is evaluated through comprehensive comparisons with observations and results from a more complex numerical model. 
 We find solid phase and dissolved pore water profiles for different ocean depths are reproduced with good accuracy and simulated terminal electron acceptor fluxes fall well 
-within the range of globally observed fluxes. Finally, we illustrate its application in an Earth system model framework by coupling OMEN-SED to the Earth system model cGENIE and tune the organic matter degradation rate constants 
+within the range of globally observed fluxes. Finally, we illustrate its application in an Earth system model framework by coupling OMEN-SED to the Earth system model cGENIE and tune the OM degradation rate constants 
 to optimise the fit of simulated benthic OM contents to global observations. 
 We find simulated sediment characteristics of the coupled model framework, such as OM degradation rates, oxygen penetration depths and sediment-water interface fluxes
 are generally in good agreement with observations and in line with what one would expect on a global scale. 
@@ -175,7 +171,7 @@ but will also allow a direct comparison of model output with the sedimentary rec
 \newpage
 
 % \tableofcontents
-% 
+%  
 % \newpage
 
 
@@ -540,7 +536,7 @@ Integration of equations \eqref{eq:ODE_OC} yields the following general solution
 \end{align}
 where
 \begin{equation} 
- a_{1i} = \frac{w - \sqrt{w^2+4\cdot D_{\chem{POC}_i}\cdot k_i}}{2\cdot D_{\chem{POC}_i}}, \quad b_{1i} = \frac{w + \sqrt{w^2+4\cdot D_{\chem{POC}_i}\cdot k_i}}{\cdot 2D_{\chem{POC}_i}}, \quad a_{2i} = -\frac{k_i}{w}
+ a_{1i} = \frac{w - \sqrt{w^2+4\cdot D_{\chem{POC}_i}\cdot k_i}}{2\cdot D_{\chem{POC}_i}}, \quad b_{1i} = \frac{w + \sqrt{w^2+4\cdot D_{\chem{POC}_i}\cdot k_i}}{2\cdot D_{\chem{POC}_i}}, \quad a_{2i} = -\frac{k_i}{w}
 \end{equation}
 Determining the integration constants ($A_{1,i},\ B_{1,i},\ A_{2,i}$) requires the definition of a set of boundary conditions (Table \ref{Tab:BC_OM}). 
 For organic matter, OMEN-SED applies a known concentration/flux at the sediment-water interface and assumes continuity across the bottom of the bioturbated zone, $z_{\mathrm{bio}}$. 
@@ -2123,10 +2119,14 @@ sediment organic matter contents. Coupled to EMICs or higher resolution Earth sy
 or future carbon cycle or climate perturbations over various timescales. 
 
 \section {Code Availability}
-The OMEN-SED source code (Fortran and Matlab) related to this article is provided
-as a supplementary package together with a ReadMe file, where hardware and software requirements, source code files
-and model output file management are fully described.
+The commented OMEN-SED source code (FORTRAN and MATLAB) is provided as a supplement to this article and is also available for download on the 
+web (https://github.com/DomHu/OMEN-SED.git). 
+A ReadMe file for the stand-alone MATLAB version of OMEN-SED describes the source code files and includes instructions for executing the model and plotting the 
+results.
 
+% The commented OMEN-SED source code (Fortran and MATLAB) related to this article is provided
+% as a supplementary package together with a ReadMe file, where hardware and software requirements, source code files
+% and model output file management are fully described.
 
 
 \begin{acknowledgements}
@@ -2193,7 +2193,7 @@ AOM & $\chem{CH_4 + CO_2 + SO_4^{2-}} \rightarrow \chem{2HCO_3^- + H_2S}$\\
 \begin{figure}[htbp]
 \begin{center}
 	\includegraphics[width=1.0\textwidth]{figures/SA/0_SIndex_4000m_ALL_combined.pdf}
-	\caption{\textcolor{red}{Move to Appendix} Box plot of parameter sensitivities for the calculated SWI-fluxes for the 4000m oxic condition. 
+	\caption{Box plot of parameter sensitivities for the calculated SWI-fluxes for the 4000m oxic condition. 
 	Average sensitivities (black lines) and 90\% confidence intervals using $N=11200$ model evaluations and $Nboot = 100$ bootstrap resamples.}
 	\label{fig:SA_O2+NO3}
 	\end{center}

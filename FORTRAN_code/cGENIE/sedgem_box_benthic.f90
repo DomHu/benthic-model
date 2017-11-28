@@ -247,8 +247,8 @@ CONTAINS
         loc_par_bio_remin_POC_Ea2 = 80000.0
 
         !           print*,' '
-!                        print*,'---------- IN OMEN MAIN ----------- '
-        !        print*,'dum_D = ', dum_D
+        !           print*,'---------- IN OMEN MAIN ----------- '
+        !           print*,'dum_D = ', dum_D
         ! initialize BW concentrations 
         !   THE FOLLOWING VALUES WILL BE PASSED DOWN FROM GENIE
         ! *****************************************************************

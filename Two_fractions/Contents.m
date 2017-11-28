@@ -1,5 +1,5 @@
-% OMEN-SED 1.0 BENTHIC-MODEL Stand-alone matlab code
-% Hülse et al (2017) GMD paper
+% OMEN-SED 0.9 BENTHIC-MODEL Stand-alone matlab code
+% Hülse et al. (2017) GMD paper
 % 
 % Contents of this directory:
 %

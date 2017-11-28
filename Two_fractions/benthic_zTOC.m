@@ -9,8 +9,8 @@ classdef benthic_zTOC < handle
     properties
         DC1;                                % TOC diffusion coefficient (cm2/yr)
         
-        k1= 1.0;                            % TOC degradation rate constnat (1/yr)
-        k2= 1.0;                            % TOC degradation rate constant (1/yr)
+        k1= 0.2;                            % TOC degradation rate constnat (1/yr)
+        k2= 0.0001;                            % TOC degradation rate constant (1/yr)
         
     end
     

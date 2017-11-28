@@ -1,0 +1,756 @@
+\begin{thebibliography}{}
+
+\bibitem[Aguilera et~al., 2005]{aguilera_knowledge-based_2005}
+Aguilera, D.~R., Jourabchi, P., Spiteri, C., and Regnier, P. (2005).
+\newblock A knowledge-based reactive transport approach for the simulation of
+  biogeochemical dynamics in {Earth} systems.
+\newblock {\em Geochemistry, Geophysics, Geosystems}, 6(7).
+
+\bibitem[Aller, 1984]{aller_importance_1984}
+Aller, R.~C. (1984).
+\newblock The importance of relict burrow structures and burrow irrigation in
+  controlling sedimentary solute distributions.
+\newblock {\em Geochimica et Cosmochimica Acta}, 48(10):1929--1934.
+
+\bibitem[Aller, 1988]{aller1988benthic}
+Aller, R.~C. (1988).
+\newblock Benthic fauna and biogeochemical processes in marine sediments: the
+  role of burrow structures.
+\newblock In Blackburn, T. and Sorensen, J., editors, {\em Nitrogen cycling in
+  coastal marine environments}, pages 301--338. Scope, Chichester.
+
+\bibitem[Archer, 1996]{archer_data-driven_1996}
+Archer, D. (1996).
+\newblock A data-driven model of the global calcite lysocline.
+\newblock {\em Global Biogeochemical Cycles}, 10(3):511--526.
+
+\bibitem[Archer and Devol, 1992]{archer_benthic_1992}
+Archer, D. and Devol, A. (1992).
+\newblock Benthic oxygen fluxes on the {Washington} shelf and slope: {A}
+  comparison of in situ microelectrode and chamber flux measurements.
+\newblock {\em Limnology and Oceanography}, 37(3):614--629.
+
+\bibitem[Archer et~al., 2009]{archer_atmospheric_2009}
+Archer, D., Eby, M., Brovkin, V., Ridgwell, A., Cao, L., Mikolajewicz, U.,
+  Caldeira, K., Matsumoto, K., Munhoven, G., Montenegro, A., and Tokos, K.
+  (2009).
+\newblock Atmospheric {Lifetime} of {Fossil} {Fuel} {Carbon} {Dioxide}.
+\newblock {\em Annual Review of Earth and Planetary Sciences}, 37(1):117--134.
+
+\bibitem[Archer and Maier-Reimer, 1994]{archer_effect_1994}
+Archer, D. and Maier-Reimer, E. (1994).
+\newblock Effect of {Deep}-{Sea} {Sedimentary} {Calcite} {Preservation} on
+  {Atmospheric} {Co}2 {Concentration}.
+\newblock {\em Nature}, 367(6460):260--263.
+\newblock 00506 WOS:A1994MR49400052.
+
+\bibitem[Archer et~al., 2000]{archer_what_2000}
+Archer, D., Winguth, A., Lea, D., and Mahowald, N. (2000).
+\newblock What caused the glacial/interglacial atmospheric {pCO}2 cycles?
+\newblock {\em Reviews of Geophysics}, 38(2):159--189.
+\newblock 00414.
+
+\bibitem[Archer et~al., 2002]{archer_model_2002}
+Archer, D.~E., Morford, J.~L., and Emerson, S.~R. (2002).
+\newblock A model of suboxic sedimentary diagenesis suitable for automatic
+  tuning and gridded global domains.
+\newblock {\em Global Biogeochemical Cycles}, 16(1):17--1.
+
+\bibitem[Arndt et~al., 2013]{arndt_quantifying_2013}
+Arndt, S., Jørgensen, B., LaRowe, D., Middelburg, J., Pancost, R., and
+  Regnier, P. (2013).
+\newblock Quantifying the degradation of organic matter in marine sediments: A
+  review and synthesis.
+\newblock {\em Earth-Science Reviews}, 123:53--86.
+
+\bibitem[Arndt and Regnier, 2007]{arndt_model_2007}
+Arndt, S. and Regnier, P. (2007).
+\newblock A model for the benthic-pelagic coupling of silica in estuarine
+  ecosystems: sensitivity analysis and system scale simulation.
+\newblock {\em Biogeosciences Discussions}, 4(2):747--796.
+
+\bibitem[Arthur et~al., 1988]{arthur_geochemical_1988}
+Arthur, M.~A., Dean, W.~E., and Pratt, L.~M. (1988).
+\newblock Geochemical and climatic effects of increased marine organic carbon
+  burial at the {Cenomanian}/{Turonian} boundary.
+\newblock {\em Nature}, 335(6192):714--717.
+
+\bibitem[Berner, 1964]{berner_idealized_1964}
+Berner, R.~A. (1964).
+\newblock An idealized model of dissolved sulfate distribution in recent
+  sediments.
+\newblock {\em Geochimica et Cosmochimica Acta}, 28(9):1497--1503.
+
+\bibitem[Berner, 1980]{berner_early_1980}
+Berner, R.~A. (1980).
+\newblock {\em Early Diagenesis: A Theoretical Approach}.
+\newblock Princeton University Press.
+
+\bibitem[Berner, 1991]{berner:91}
+Berner, R.~A. (1991).
+\newblock A model for atmospheric {CO$_2$} over {P}hanerozoic time.
+\newblock 291(4):339--376.
+
+\bibitem[Berner, 2004]{berner_phanerozoic_2004}
+Berner, R.~A. (2004).
+\newblock {\em The {Phanerozoic} {Carbon} {Cycle}: {CO}2 and {O}2}.
+\newblock Oxford University Press.
+\newblock 00000.
+
+\bibitem[Billen, 1982]{billen1982idealized}
+Billen, G. (1982).
+\newblock An idealized model of nitrogen recycling in marine sediments.
+\newblock {\em American journal of Science}, 282(4):512--541.
+
+\bibitem[Bohlen et~al., 2012]{bohlen_simple_2012}
+Bohlen, L., Dale, A.~W., and Wallmann, K. (2012).
+\newblock Simple transfer functions for calculating benthic fixed nitrogen
+  losses and {C}:{N}:{P} regeneration ratios in global biogeochemical models.
+\newblock {\em Global Biogeochemical Cycles}, 26(3):GB3029.
+
+\bibitem[Boudreau, 1984]{boudreau_equivalence_1984}
+Boudreau, B.~P. (1984).
+\newblock On the equivalence of nonlocal and radial-diffusion models for
+  porewater irrigation.
+\newblock {\em Journal of Marine Research}, 42(3):731--735.
+
+\bibitem[Boudreau, 1986]{boudreau_mathematics_1986}
+Boudreau, B.~P. (1986).
+\newblock Mathematics of tracer mixing in sediments; {I},
+  {Spatially}-dependent, diffusive mixing.
+\newblock {\em American Journal of Science}, 286(3):161--198.
+
+\bibitem[Boudreau, 1991]{boudreau_modelling_1991}
+Boudreau, B.~P. (1991).
+\newblock Modelling the sulfide-oxygen reaction and associated {pH} gradients
+  in porewaters.
+\newblock {\em Geochimica et Cosmochimica Acta}, 55(1):145--159.
+
+\bibitem[Boudreau, 1996]{boudreau_method--lines_1996}
+Boudreau, B.~P. (1996).
+\newblock A method-of-lines code for carbon and nutrient diagenesis in aquatic
+  sediments.
+\newblock {\em Computers \& Geosciences}, 22(5):479--496.
+
+\bibitem[Boudreau, 1997]{boudreau1997diagenetic}
+Boudreau, B.~P. (1997).
+\newblock {\em Diagenetic models and their implementation}, volume 505.
+\newblock Springer Berlin.
+
+\bibitem[Boudreau, 1998]{boudreau_mean_1998}
+Boudreau, B.~P. (1998).
+\newblock Mean mixed depth of sediments: {The} wherefore and the why.
+\newblock {\em Limnology and Oceanography}, 43(3):524--526.
+
+\bibitem[Boudreau et~al., 2008]{boudreau_comment_2008}
+Boudreau, B.~P., Arnosti, C., Jørgensen, B.~B., and Canfield, D.~E. (2008).
+\newblock Comment on "{Physical} {Model} for the {Decay} and {Preservation} of
+  {Marine} {Organic} {Carbon}".
+\newblock {\em Science}, 319(5870):1616--1616.
+
+\bibitem[Boudreau et~al., 1998]{boudreau_comparative_1998}
+Boudreau, B.~P., Mucci, A., Sundby, B., Luther, G.~W., and Silverberg, N.
+  (1998).
+\newblock Comparative diagenesis at three sites on the {Canadian} continental
+  margin.
+\newblock {\em Journal of Marine Research}, 56(6):1259--1284.
+
+\bibitem[Boudreau and Ruddick, 1991]{boudreau_reactive_1991}
+Boudreau, B.~P. and Ruddick, B.~R. (1991).
+\newblock On a reactive continuum representation of organic matter diagenesis.
+\newblock {\em American Journal of Science}, 291(5):507--538.
+
+\bibitem[Boudreau and Westrich, 1984]{boudreau_dependence_1984}
+Boudreau, B.~P. and Westrich, J.~T. (1984).
+\newblock The dependence of bacterial sulfate reduction on sulfate
+  concentration in marine sediments.
+\newblock {\em Geochimica et Cosmochimica Acta}, 48(12):2503--2516.
+
+\bibitem[Broecker, 1982]{broecker_ocean_1982}
+Broecker, W.~S. (1982).
+\newblock Ocean chemistry during glacial time.
+\newblock {\em Geochimica et Cosmochimica Acta}, 46(10):1689--1705.
+
+\bibitem[Burdige, 2006]{burdige2006geochemistry}
+Burdige, D.~J. (2006).
+\newblock {\em Geochemistry of marine sediments}, volume 398.
+\newblock Princeton University Press Princeton.
+
+\bibitem[Burdige, 2007]{burdige_preservation_2007}
+Burdige, D.~J. (2007).
+\newblock Preservation of {O}rganic {M}atter in {M}arine {S}ediments:
+  {C}ontrols, {M}echanisms, and an {I}mbalance in {S}ediment {O}rganic {C}arbon
+  {B}udgets?
+\newblock {\em Chemical Reviews}, 107(2):467--485.
+
+\bibitem[Burwicz et~al., 2011]{burwicz_estimation_2011}
+Burwicz, E.~B., Rüpke, L.~H., and Wallmann, K. (2011).
+\newblock Estimation of the global amount of submarine gas hydrates formed via
+  microbial methane formation based on numerical reaction-transport modeling
+  and a novel parameterization of {Holocene} sedimentation.
+\newblock {\em Geochimica et Cosmochimica Acta}, 75(16):4562--4576.
+
+\bibitem[Canfield et~al., 2005]{canfield_aquatic_2005}
+Canfield, D.~E., Kristensen, E., and Thamdrup, B. (2005).
+\newblock {\em Aquatic {Geomicrobiology}}.
+\newblock Gulf Professional Publishing.
+
+\bibitem[Colbourn et~al., 2013]{colbourn_rock_2013}
+Colbourn, G., Ridgwell, A., and Lenton, T.~M. (2013).
+\newblock The {Rock} {Geochemical} {Model} ({RokGeM}) v0.9.
+\newblock {\em Geosci. Model Dev.}, 6(5):1543--1573.
+
+\bibitem[Conkright et~al., 2002]{conkright2002world}
+Conkright, M.~E., Locarnini, R.~A., Garcia, H.~E., O'Brien, T.~D., Boyer,
+  T.~P., Stephens, C., and Antonov, J.~I. (2002).
+\newblock {\em World Ocean Atlas 2001: Objective analyses, data statistics, and
+  figures: CD-ROM documentation}.
+\newblock US Department of Commerce, National Oceanic and Atmospheric
+  Administration, National Oceanographic Data Center, Ocean Climate Laboratory.
+
+\bibitem[Devol and Christensen, 1993]{devol_benthic_1993}
+Devol, A.~H. and Christensen, J.~P. (1993).
+\newblock Benthic fluxes and nitrogen cycling in sediments of the continental
+  margin of the eastern {North} {Pacific}.
+\newblock {\em Journal of Marine Research}, 51(2):345--372.
+
+\bibitem[D’Hondt et~al., 2015]{dhondt_presence_2015}
+D’Hondt, S., Inagaki, F., Zarikian, C.~A., Abrams, L.~J., Dubois, N.,
+  Engelhardt, T., Evans, H., Ferdelman, T., Gribsholt, B., Harris, R.~N.,
+  Hoppie, B.~W., Hyun, J.-H., Kallmeyer, J., Kim, J., Lynch, J.~E., McKinley,
+  C.~C., Mitsunobu, S., Morono, Y., Murray, R.~W., Pockalny, R., Sauvage, J.,
+  Shimono, T., Shiraishi, F., Smith, D.~C., Smith-Duque, C.~E., Spivack, A.~J.,
+  Steinsbu, B.~O., Suzuki, Y., Szpak, M., Toffin, L., Uramoto, G., Yamaguchi,
+  Y.~T., Zhang, G.-l., Zhang, X.-H., and Ziebis, W. (2015).
+\newblock Presence of oxygen and aerobic communities from sea floor to basement
+  in deep-sea sediments.
+\newblock {\em Nature Geoscience}, 8(4):299--304.
+
+\bibitem[Edwards and Marsh, 2005]{edwards_uncertainties_2005}
+Edwards, N.~R. and Marsh, R. (2005).
+\newblock Uncertainties due to transport-parameter sensitivity in an efficient
+  3-{D} ocean-climate model.
+\newblock {\em Climate Dynamics}, 24(4):415--433.
+
+\bibitem[Emerson and Bender, 1981]{emerson_carbon_1981}
+Emerson, S. and Bender, M.~L. (1981).
+\newblock Carbon fluxes at the sediment-water interface of the deep-sea:
+  calcium carbonate preservation.
+\newblock {\em Journal of Marine Research}, 39:139--162.
+
+\bibitem[Emerson and Hedges, 1988]{emerson_processes_1988}
+Emerson, S. and Hedges, J.~I. (1988).
+\newblock Processes controlling the organic carbon content of open ocean
+  sediments.
+\newblock {\em Paleoceanography}, 3(5):621--634.
+
+\bibitem[Emerson et~al., 1984]{emerson_sediment-water_1984}
+Emerson, S., Jahnke, R., and Heggie, D. (1984).
+\newblock Sediment-water exchange in shallow water estuarine sediments.
+\newblock {\em Journal of Marine Research}, 42(3):709--730.
+
+\bibitem[Epping et~al., 2002]{epping_oxidation_2002}
+Epping, E., van~der Zee, C., Soetaert, K., and Helder, W. (2002).
+\newblock On the oxidation and burial of organic carbon in sediments of the
+  {Iberian} margin and {Nazaré} {Canyon} ({NE} {Atlantic}).
+\newblock {\em Progress in Oceanography}, 52(2–4):399--431.
+
+\bibitem[Fischer et~al., 2009]{fischer_oxygen_2009}
+Fischer, J.~P., Ferdelman, T.~G., D'Hondt, S., Røy, H., and Wenzhöfer, F.
+  (2009).
+\newblock Oxygen penetration deep into the sediment of the {South} {Pacific}
+  gyre.
+\newblock {\em Biogeosciences}, 6(8):1467--1478.
+
+\bibitem[Glud, 2008]{glud_oxygen_2008}
+Glud, R.~N. (2008).
+\newblock Oxygen dynamics of marine sediments.
+\newblock {\em Marine Biology Research}, 4(4):243--289.
+
+\bibitem[Goloway and Bender, 1982]{goloway_diagenetic_1982}
+Goloway, F. and Bender, M. (1982).
+\newblock Diagenetic models of interstitial nitrate profiles in deep sea
+  suboxic sediments1.
+\newblock {\em Limnology and Oceanography}, 27(4):624--638.
+
+\bibitem[Goosse et~al., 2010]{goosse_description_2010}
+Goosse, H., Brovkin, V., Fichefet, T., Haarsma, R., Huybrechts, P., Jongma, J.,
+  Mouchet, A., Selten, F., Barriat, P.-Y., Campin, J.-M., Deleersnijder, E.,
+  Driesschaert, E., Goelzer, H., Janssens, I., Loutre, M.-F., Morales~Maqueda,
+  M.~A., Opsteegh, T., Mathieu, P.-P., Munhoven, G., Pettersson, E.~J.,
+  Renssen, H., Roche, D.~M., Schaeffer, M., Tartinville, B., Timmermann, A.,
+  and Weber, S.~L. (2010).
+\newblock Description of the earth system model of intermediate complexity
+  {LOVECLIM} version 1.2.
+\newblock {\em Geosci. Model Dev.}, 3(2):603--633.
+
+\bibitem[Gypens et~al., 2008]{gypens_simple_2008}
+Gypens, N., Lancelot, C., and Soetaert, K. (2008).
+\newblock Simple parameterisations for describing n and p diagenetic processes:
+  Application in the north sea.
+\newblock {\em Progress in Oceanography}, 76(1):89--110.
+
+\bibitem[Heinze et~al., 1999]{heinze_global_1999}
+Heinze, C., Maier-Reimer, E., Winguth, A. M.~E., and Archer, D. (1999).
+\newblock A global oceanic sediment model for long-term climate studies.
+\newblock {\em Global Biogeochemical Cycles}, 13(1):221--250.
+
+\bibitem[Hensen et~al., 2006]{hensen_benthic_2006}
+Hensen, C., Zabel, M., and Schulz, H.~N. (2006).
+\newblock Benthic {Cycling} of {Oxygen}, {Nitrogen} and {Phosphorus}.
+\newblock In Schulz, H.~D. and Zabel, M., editors, {\em Marine {Geochemistry}},
+  pages 207--240. Springer Berlin Heidelberg.
+
+\bibitem[H\"ulse et~al., 2017]{hulse_understanding_2017}
+H\"ulse, D., Arndt, S., Wilson, J.~D., Munhoven, G., and Ridgwell, A. (2017).
+\newblock Understanding the causes and consequences of past marine carbon
+  cycling variability through models.
+\newblock {\em Earth-Science Reviews}, 171:349--382.
+
+\bibitem[Ilyina et~al., 2013]{ilyina_global_2013}
+Ilyina, T., Six, K.~D., Segschneider, J., Maier-Reimer, E., Li, H., and
+  Núñez-Riboni, I. (2013).
+\newblock Global ocean biogeochemistry model {HAMOCC}: {Model} architecture and
+  performance as component of the {MPI}-{Earth} system model in different
+  {CMIP}5 experimental realizations.
+\newblock {\em Journal of Advances in Modeling Earth Systems}, 5(2):287--315.
+
+\bibitem[Ingall and Jahnke, 1994]{ingall_evidence_1994}
+Ingall, E. and Jahnke, R. (1994).
+\newblock Evidence for enhanced phosphorus regeneration from marine sediments
+  overlain by oxygen depleted waters.
+\newblock {\em Geochimica et Cosmochimica Acta}, 58(11):2571--2575.
+\newblock 00302.
+
+\bibitem[Jarvis et~al., 2011]{jarvis_black_2011}
+Jarvis, I., Lignum, J.~S., Gröcke, D.~R., Jenkyns, H.~C., and Pearce, M.~A.
+  (2011).
+\newblock Black shale deposition, atmospheric {CO}2 drawdown, and cooling
+  during the {Cenomanian}-{Turonian} {Oceanic} {Anoxic} {Event}.
+\newblock {\em Paleoceanography}, 26(3):n/a--n/a.
+
+\bibitem[Jenkyns, 2010]{jenkyns_geochemistry_2010}
+Jenkyns, H.~C. (2010).
+\newblock Geochemistry of oceanic anoxic events.
+\newblock {\em Geochemistry, Geophysics, Geosystems}, 11(3).
+
+\bibitem[J\o{}rgensen, 1978]{joergensen_comparison_1978_2}
+J\o{}rgensen, B.~B. (1978).
+\newblock A comparison of methods for the quantification of bacterial sulfate
+  reduction in coastal marine sediments: {II}~{C}alculation from mathematical
+  models.
+\newblock {\em Geomicrobiology Journal}, 1:29--47.
+
+\bibitem[Jourabchi et~al., 2005]{jourabchi_quantitative_2005}
+Jourabchi, P., Cappellen, P.~V., and Regnier, P. (2005).
+\newblock Quantitative interpretation of {pH} distributions in aquatic
+  sediments: {A} reaction-transport modeling approach.
+\newblock {\em American Journal of Science}, 305(9):919--956.
+
+\bibitem[Jørgensen and Kasten, 2006]{jorgensen_sulfur_2006}
+Jørgensen, B.~B. and Kasten, S. (2006).
+\newblock Sulfur {Cycling} and {Methane} {Oxidation}.
+\newblock In Schulz, P. D. H.~D. and Zabel, D.~M., editors, {\em Marine
+  {Geochemistry}}, pages 271--309. Springer Berlin Heidelberg.
+
+\bibitem[Karstensen et~al., 2008]{karstensen2008oxygen}
+Karstensen, J., Stramma, L., and Visbeck, M. (2008).
+\newblock Oxygen minimum zones in the eastern tropical atlantic and pacific
+  oceans.
+\newblock {\em Progress in Oceanography}, 77(4):331--350.
+
+\bibitem[Kolmogorov, 1933]{kolmogorov1933sulla}
+Kolmogorov, A. (1933).
+\newblock Sulla determinazione empirica di una leggi di distribuzione.
+\newblock {\em Giorn. 1st Ital. Attuari, 4}, 91.
+
+\bibitem[Krom and Berner, 1980]{krom_adsorption_1980}
+Krom, M.~D. and Berner, R.~A. (1980).
+\newblock Adsorption of phosphate in anoxic marine sediments1.
+\newblock {\em Limnology and Oceanography}, 25(5):797--806.
+
+\bibitem[Krumins et~al., 2013]{krumins_dissolved_2013}
+Krumins, V., Gehlen, M., Arndt, S., Van~Cappellen, P., and Regnier, P. (2013).
+\newblock Dissolved inorganic carbon and alkalinity fluxes from coastal marine
+  sediments: {Model} estimates for different shelf environments and sensitivity
+  to global change.
+\newblock {\em Biogeosciences}.
+
+\bibitem[Lee et~al., 2000]{lee_composition_2000}
+Lee, C., Wakeham, S.~G., and I.~Hedges, J. (2000).
+\newblock Composition and flux of particulate amino acids and chloropigments in
+  equatorial {Pacific} seawater and sediments.
+\newblock {\em Deep Sea Research Part I: Oceanographic Research Papers},
+  47(8):1535--1568.
+
+\bibitem[Lenton and Watson, 2000]{lenton_redfield_2000}
+Lenton, T.~M. and Watson, A.~J. (2000).
+\newblock Redfield revisited: 1. {Regulation} of nitrate, phosphate, and oxygen
+  in the ocean.
+\newblock {\em Global Biogeochemical Cycles}, 14(1):225--248.
+
+\bibitem[Li and Gregory, 1974]{Li_diffusion_1974}
+Li, Y.-H. and Gregory, S. (1974).
+\newblock Diffusion of ions in sea water and in deep-sea sediments.
+\newblock {\em Geochimica et Cosmochimica Acta}, 38(5):703--714.
+
+\bibitem[Longhurst et~al., 1995]{longhurst_estimate_1995}
+Longhurst, A., Sathyendranath, S., Platt, T., and Caverhill, C. (1995).
+\newblock An estimate of global primary production in the ocean from satellite
+  radiometer data.
+\newblock {\em Journal of Plankton Research}, 17(6):1245--1271.
+
+\bibitem[Mackenzie, 2005]{mackenzie_sediments_2005}
+Mackenzie, F.~T. (2005).
+\newblock {\em Sediments, {Diagenesis}, and {Sedimentary} {Rocks}: {Treatise}
+  on {Geochemistry}, {Second} {Edition}}.
+\newblock Elsevier.
+\newblock 00000.
+
+\bibitem[Meile and Van~Cappellen, 2003]{meile_global_2003}
+Meile, C. and Van~Cappellen, P. (2003).
+\newblock Global estimates of enhanced solute transport in marine sediments.
+\newblock {\em Limnology and Oceanography}, 48(2):777--786.
+
+\bibitem[Meyers, 2007]{meyers_production_2007}
+Meyers, S.~R. (2007).
+\newblock Production and preservation of organic matter: {The} significance of
+  iron.
+\newblock {\em Paleoceanography}, 22(4):PA4211.
+
+\bibitem[Meysman et~al., 2003]{meysman_reactive_2003}
+Meysman, F. J.~R., Middelburg, J.~J., Herman, P. M.~J., and Heip, C. H.~R.
+  (2003).
+\newblock Reactive transport in surface sediments. {II}. {Media}: an
+  object-oriented problem-solving environment for early diagenesis.
+\newblock {\em Computers \& Geosciences}, 29(3):301--318.
+\newblock 00067.
+
+\bibitem[Middelburg, 1989]{middelburg_simple_1989}
+Middelburg, J.~J. (1989).
+\newblock A simple rate model for organic matter decomposition in marine
+  sediments.
+\newblock {\em Geochimica et Cosmochimica Acta}, 53(7):1577--1581.
+
+\bibitem[Middelburg et~al., 1997]{middelburg_empirical_1997}
+Middelburg, J.~J., Soetaert, K., and Herman, P.~M. (1997).
+\newblock Empirical relationships for use in global diagenetic models.
+\newblock {\em Deep Sea Research Part I: Oceanographic Research Papers},
+  44(2):327--344.
+
+\bibitem[Middelburg et~al., 1996]{middelburg_denitrification_1996}
+Middelburg, J.~J., Soetaert, K., Herman, P. M.~J., and Heip, C. H.~R. (1996).
+\newblock Denitrification in marine sediments: {A} model study.
+\newblock {\em Global Biogeochemical Cycles}, 10(4):661--673.
+
+\bibitem[Middelburg et~al., 1993]{middelburg_organic_1993}
+Middelburg, J.~J., Vlug, T., Jaco, F., and van~der Nat, W.~A. (1993).
+\newblock Organic matter mineralization in marine systems.
+\newblock {\em Global and Planetary Change}, 8(1):47--58.
+
+\bibitem[Morrison et~al., 1999]{morrison1999oxygen}
+Morrison, J.~M., Codispoti, L.~A., Smith, S.~L., Wishner, K., Flagg, C.,
+  Gardner, W.~D., Gaurin, S., Naqvi, S., Manghnani, V., Prosperie, L., et~al.
+  (1999).
+\newblock The oxygen minimum zone in the arabian sea during 1995.
+\newblock {\em Deep Sea Research Part II: Topical Studies in Oceanography},
+  46(8):1903--1931.
+
+\bibitem[Mort et~al., 2007]{mort_phosphorus_2007}
+Mort, H.~P., Adatte, T., Föllmi, K.~B., Keller, G., Steinmann, P., Matera, V.,
+  Berner, Z., and Stüben, D. (2007).
+\newblock Phosphorus and the roles of productivity and nutrient recycling
+  during oceanic anoxic event 2.
+\newblock {\em Geology}, 35(6):483--486.
+\newblock 00135.
+
+\bibitem[Munhoven, 2007]{munhoven_glacialinterglacial_2007}
+Munhoven, G. (2007).
+\newblock Glacial–interglacial rain ratio changes: {Implications} for
+  atmospheric and ocean–sediment interaction.
+\newblock {\em Deep Sea Research Part II: Topical Studies in Oceanography},
+  54(5–7):722--746.
+
+\bibitem[Najjar et~al., 2007]{najjar_impact_2007}
+Najjar, R.~G., Jin, X., Louanchi, F., Aumont, O., Caldeira, K., Doney, S.~C.,
+  Dutay, J.-C., Follows, M., Gruber, N., Joos, F., Lindsay, K., Maier-Reimer,
+  E., Matear, R.~J., Matsumoto, K., Monfray, P., Mouchet, A., Orr, J.~C.,
+  Plattner, G.-K., Sarmiento, J.~L., Schlitzer, R., Slater, R.~D., Weirig,
+  M.-F., Yamanaka, Y., and Yool, A. (2007).
+\newblock Impact of circulation on export production, dissolved organic matter,
+  and dissolved oxygen in the ocean: {Results} from {Phase} {II} of the {Ocean}
+  {Carbon}-cycle {Model} {Intercomparison} {Project} ({OCMIP}-2).
+\newblock {\em Global Biogeochemical Cycles}, 21(3):GB3007.
+
+\bibitem[Palastanga et~al., 2011]{palastanga_long_term_2011}
+Palastanga, V., Slomp, C.~P., and Heinze, C. (2011).
+\newblock Long-term controls on ocean phosphorus and oxygen in a global
+  biogeochemical model.
+\newblock {\em Global Biogeochemical Cycles}, 25(3):GB3024.
+
+\bibitem[Pianosi et~al., 2016]{pianosi_sensitivity_2016}
+Pianosi, F., Beven, K., Freer, J., Hall, J.~W., Rougier, J., Stephenson, D.~B.,
+  and Wagener, T. (2016).
+\newblock Sensitivity analysis of environmental models: {A} systematic review
+  with practical workflow.
+\newblock {\em Environmental Modelling \& Software}, 79:214--232.
+
+\bibitem[Pianosi et~al., 2015]{pianosi_matlab_2015}
+Pianosi, F., Sarrazin, F., and Wagener, T. (2015).
+\newblock A {Matlab} toolbox for {Global} {Sensitivity} {Analysis}.
+\newblock {\em Environmental Modelling \& Software}, 70:80--85.
+
+\bibitem[Pianosi and Wagener, 2015]{pianosi_simple_2015}
+Pianosi, F. and Wagener, T. (2015).
+\newblock A simple and efficient method for global sensitivity analysis based
+  on cumulative distribution functions.
+\newblock {\em Environmental Modelling \& Software}, 67:1--11.
+
+\bibitem[Redfield, 1963]{redfield1963influence}
+Redfield, A.~C. (1963).
+\newblock The influence of organisms on the composition of seawater.
+\newblock {\em The sea}, 2:26--77.
+
+\bibitem[Regnier et~al., 2011]{regnier_quantitative_2011}
+Regnier, P., Dale, A.~W., Arndt, S., LaRowe, D.~E., Mogollon, J., and
+  Van~Cappellen, P. (2011).
+\newblock Quantitative analysis of anaerobic oxidation of methane ({AOM}) in
+  marine sediments: {A} modeling perspective.
+\newblock {\em Earth-Science Reviews}, 106(1):105--130.
+
+\bibitem[Reimers et~al., 1990]{reimers_seasonal_1990}
+Reimers, C.~E., Lange, C.~B., Tabak, M., and Bernhard, J.~M. (1990).
+\newblock Seasonal spillover and varve formation in the {Santa} {Barbara}
+  {Basin}, {California}.
+\newblock {\em Limnology and Oceanography}, 35(7):1577--1585.
+
+\bibitem[Reimers et~al., 1996]{reimers_porewater_1996}
+Reimers, C.~E., Ruttenberg, K.~C., Canfield, D.~E., Christiansen, M.~B., and
+  Martin, J.~B. (1996).
+\newblock Porewater {pH} and authigenic phases formed in the uppermost
+  sediments of the {Santa} {Barbara} {Basin}.
+\newblock {\em Geochimica et Cosmochimica Acta}, 60(21):4037--4057.
+
+\bibitem[Ridgwell and Hargreaves, 2007]{ridgwell_regulation_2007}
+Ridgwell, A. and Hargreaves, J.~C. (2007).
+\newblock Regulation of atmospheric {CO}2 by deep-sea sediments in an {Earth}
+  system model.
+\newblock {\em Global Biogeochemical Cycles}, 21(2):n/a--n/a.
+
+\bibitem[Ridgwell et~al., 2007]{ridgwell_marine_2007}
+Ridgwell, A., Hargreaves, J.~C., Edwards, N.~R., Annan, J.~D., Lenton, T.~M.,
+  Marsh, R., Yool, A., and Watson, A. (2007).
+\newblock Marine geochemical data assimilation in an efficient {Earth} {System}
+  {Model} of global biogeochemical cycling.
+\newblock {\em Biogeosciences}, 4(1):87--104.
+\newblock 00090.
+
+\bibitem[Ridgwell and Zeebe, 2005]{ridgwell_role_2005}
+Ridgwell, A. and Zeebe, R.~E. (2005).
+\newblock The role of the global carbonate cycle in the regulation and
+  evolution of the {Earth} system.
+\newblock {\em Earth and Planetary Science Letters}, 234(3–4):299--315.
+\newblock 00172.
+
+\bibitem[Ruardij and Van~Raaphorst, 1995]{ruardij_benthic_1995}
+Ruardij, P. and Van~Raaphorst, W. (1995).
+\newblock Benthic nutrient regeneration in the {ERSEM} ecosystem model of the
+  {North} {Sea}.
+\newblock {\em Netherlands Journal of Sea Research}, 33(3):453--483.
+
+\bibitem[Ruttenberg, 1993]{ruttenberg_reassessment_1993}
+Ruttenberg, K.~C. (1993).
+\newblock Reassessment of the oceanic residence time of phosphorus.
+\newblock {\em Chemical Geology}, 107(3):405--409.
+
+\bibitem[Schulz, 2006]{schulz_quantification_2006}
+Schulz, H.~D. (2006).
+\newblock Quantification of {Early} {Diagenesis}: {Dissolved} {Constituents} in
+  {Pore} {Water} and {Signals} in the {Solid} {Phase}.
+\newblock In Schulz, P. D. H.~D. and Zabel, D.~M., editors, {\em Marine
+  {Geochemistry}}, pages 73--124. Springer Berlin Heidelberg.
+
+\bibitem[Seiter et~al., 2004]{seiter_organic_2004}
+Seiter, K., Hensen, C., Schr\"oter, J., and Zabel, M. (2004).
+\newblock Organic carbon content in surface sediments—defining regional
+  provinces.
+\newblock {\em Deep Sea Research Part I: Oceanographic Research Papers},
+  51(12):2001--2026.
+
+\bibitem[Shaffer et~al., 2008]{shaffer_presentation_2008}
+Shaffer, G., Malskær~Olsen, S., and Pepke~Pedersen, J.~O. (2008).
+\newblock Presentation, calibration and validation of the low-order, {DCESS}
+  {Earth} {System} {Model} ({Version} 1).
+\newblock {\em Geosci. Model Dev.}, 1(1):17--51.
+\newblock 00007.
+
+\bibitem[Slomp et~al., 1998]{slomp1998role}
+Slomp, C., Malschaert, J., and Van~Raaphorst, W. (1998).
+\newblock The role of adsorption in sediment-water exchange of phosphate in
+  north sea continental margin sediments.
+\newblock {\em Limnology and Oceanography}, 43(5):832--846.
+
+\bibitem[Slomp et~al., 1996]{caroline_p_slomp_key_1996}
+Slomp, C.~P., Epping, E.~H., Helder, W., and {Van Raaphorst}, W. (1996).
+\newblock A key role for iron-bound phosphorus in authigenic apatite formation
+  in north atlantic continental platform sediments.
+\newblock {\em Journal of Marine Research}, 54(6):1179--1205.
+
+\bibitem[Smirnov, 1939]{smirnov1939estimation}
+Smirnov, N.~V. (1939).
+\newblock On the estimation of the discrepancy between empirical curves of
+  distribution for two independent samples.
+\newblock {\em Bull. Math. Univ. Moscou}, 2(2).
+
+\bibitem[Soetaert et~al., 1996]{soetaert_model_1996}
+Soetaert, K., Herman, P. M.~J., and Middelburg, J.~J. (1996).
+\newblock A model of early diagenetic processes from the shelf to abyssal
+  depths.
+\newblock {\em Geochimica et Cosmochimica Acta}, 60(6):1019--1040.
+
+\bibitem[Soetaert et~al., 2000]{soetaert_coupling_2000}
+Soetaert, K., Middelburg, J.~J., Herman, P. M.~J., and Buis, K. (2000).
+\newblock On the coupling of benthic and pelagic biogeochemical models.
+\newblock {\em Earth-Science Reviews}, 51(1–4):173--201.
+
+\bibitem[Stein et~al., 1986]{stein_accumulation_1986}
+Stein, R., Rullkötter, J., and Welte, D.~H. (1986).
+\newblock Accumulation of organic-carbon-rich sediments in the {Late}
+  {Jurassic} and {Cretaceous} {Atlantic} {Ocean} — {A} synthesis.
+\newblock {\em Chemical Geology}, 56(1–2):1--32.
+
+\bibitem[Stolpovsky et~al., 2015]{stolpovsky_toward_2015}
+Stolpovsky, K., Dale, A.~W., and Wallmann, K. (2015).
+\newblock Toward a parameterization of global-scale organic carbon
+  mineralization kinetics in surface marine sediments.
+\newblock {\em Global Biogeochemical Cycles}, 29(6):2015GB005087.
+
+\bibitem[Stumm and Morgan, 2012]{stumm_aquatic_2012}
+Stumm, W. and Morgan, J.~J. (2012).
+\newblock {\em Aquatic {Chemistry}: {Chemical} {Equilibria} and {Rates} in
+  {Natural} {Waters}}.
+\newblock John Wiley \& Sons.
+
+\bibitem[Teal et~al., 2010]{teal_global_2010}
+Teal, L., Bulling, M., Parker, E., and Solan, M. (2010).
+\newblock Global patterns of bioturbation intensity and mixed depth of marine
+  soft sediments.
+\newblock {\em Aquatic Biology}, 2(3):207--218.
+
+\bibitem[Thullner et~al., 2009]{thullner_global_scale_2009}
+Thullner, M., Dale, A.~W., and Regnier, P. (2009).
+\newblock Global-scale quantification of mineralization pathways in marine
+  sediments: {A} reaction-transport modeling approach.
+\newblock {\em Geochemistry, Geophysics, Geosystems}, 10(10).
+
+\bibitem[Thullner et~al., 2005]{thullner_modeling_2005}
+Thullner, M., Van~Cappellen, P., and Regnier, P. (2005).
+\newblock Modeling the impact of microbial activity on redox dynamics in porous
+  media.
+\newblock {\em Geochimica et Cosmochimica Acta}, 69(21):5005--5019.
+
+\bibitem[Tjiputra et~al., 2013]{tjiputra_evaluation_2013}
+Tjiputra, J.~F., Roelandt, C., Bentsen, M., Lawrence, D.~M., Lorentzen, T.,
+  Schwinger, J., Seland, {\O}., and Heinze, C. (2013).
+\newblock Evaluation of the carbon cycle components in the {Norwegian} {Earth}
+  {System} {Model} ({NorESM}).
+\newblock {\em Geosci. Model Dev.}, 6(2):301--325.
+\newblock 00057.
+
+\bibitem[Toth and Lerman, 1977]{toth_organic_1977}
+Toth, D.~J. and Lerman, A. (1977).
+\newblock Organic matter reactivity and sedimentation rates in the ocean.
+\newblock {\em American Journal of Science}, 277(4):465--485.
+
+\bibitem[Tromp et~al., 1995]{tromp_global_1995}
+Tromp, T.~K., Van~Cappellen, P., and Key, R.~M. (1995).
+\newblock A global model for the early diagenesis of organic carbon and organic
+  phosphorus in marine sediments.
+\newblock {\em Geochimica et Cosmochimica Acta}, 59(7):1259--1284.
+\newblock 00164.
+
+\bibitem[Tsandev and Slomp, 2009]{tsandev_modeling_2009}
+Tsandev, I. and Slomp, C. (2009).
+\newblock Modeling phosphorus cycling and carbon burial during {Cretaceous}
+  {Oceanic} {Anoxic} {Events}.
+\newblock {\em Earth and Planetary Science Letters}, 286(1–2):71--79.
+
+\bibitem[Ullman and Aller, 1982]{ullman_diffusion_1982}
+Ullman, W.~J. and Aller, R.~C. (1982).
+\newblock Diffusion coefficients in nearshore marine sediments.
+\newblock {\em Limnology and Oceanography}, 27(3):552--556.
+
+\bibitem[Van~Cappellen and Berner, 1988]{cappellen_mathematical_1988}
+Van~Cappellen, P. and Berner, R.~A. (1988).
+\newblock A mathematical model for the early diagenesis of phosphorus and
+  fluorine in marine sediments; apatite precipitation.
+\newblock {\em American Journal of Science}, 288(4):289--333.
+
+\bibitem[Van~Cappellen and Ingall, 1994]{van_cappellen_benthic_1994}
+Van~Cappellen, P. and Ingall, E.~D. (1994).
+\newblock Benthic phosphorus regeneration, net primary production, and ocean
+  anoxia: {A} model of the coupled marine biogeochemical cycles of carbon and
+  phosphorus.
+\newblock {\em Paleoceanography}, 9(5):677--692.
+
+\bibitem[Van~Cappellen and Wang, 1995]{van1995metal}
+Van~Cappellen, P. and Wang, Y. (1995).
+\newblock Metal cycling in surface sediments: modeling the interplay of
+  transport and reaction.
+\newblock {\em Metal contaminated aquatic sediments}, pages 21--64.
+
+\bibitem[Van~Cappellen and Wang, 1996]{cappellen_cycling_1996}
+Van~Cappellen, P. and Wang, Y. (1996).
+\newblock Cycling of iron and manganese in surface sediments; a general theory
+  for the coupled transport and reaction of carbon, oxygen, nitrogen, sulfur,
+  iron, and manganese.
+\newblock {\em American Journal of Science}, 296(3):197--243.
+
+\bibitem[van Weering et~al., 2002]{van_weering_recent_2002}
+van Weering, T. C.~E., de~Stigter, H.~C., Boer, W., and de~Haas, H. (2002).
+\newblock Recent sediment transport and accumulation on the {NW} {Iberian}
+  margin.
+\newblock {\em Progress in Oceanography}, 52(2):349--371.
+
+\bibitem[Vanderborght and Billen, 1975]{vanderborght_vertical_1975}
+Vanderborght, J.-P. and Billen, G. (1975).
+\newblock Vertical distribution of nitrate concentration in interstitial water
+  of marine sediments with nitrification and denitrification.
+\newblock {\em Limnology and Oceanography}, 20(6):953--961.
+
+\bibitem[Vanderborght et~al., 1977]{vanderborght_kinetic_1977}
+Vanderborght, J.-P., Wollas, R., and Bitten, G. (1977).
+\newblock Kinetic models of diagenesis in disturbed sediments. {Part} 2.
+  {Nitrogen} diagenesis.
+\newblock {\em Limnology and Oceanography}, 22(5):794--803.
+
+\bibitem[Wakeham et~al., 1997]{wakeham_compositions_1997}
+Wakeham, S.~G., Hedges, J.~I., Lee, C., Peterson, M.~L., and Hernes, P.~J.
+  (1997).
+\newblock Compositions and transport of lipid biomarkers through the water
+  column and surficial sediments of the equatorial {Pacific} {Ocean}.
+\newblock {\em Deep Sea Research Part II: Topical Studies in Oceanography},
+  44(9):2131--2162.
+
+\bibitem[Wang and Van~Cappellen, 1996]{wang_multicomponent_1996}
+Wang, Y. and Van~Cappellen, P. (1996).
+\newblock A multicomponent reactive transport model of early diagenesis:
+  {Application} to redox cycling in coastal marine sediments.
+\newblock {\em Geochimica et Cosmochimica Acta}, 60(16):2993--3014.
+\newblock 00283.
+
+\bibitem[Wenzh\"ofer and Glud, 2002]{wenzhofer_benthic_2002}
+Wenzh\"ofer, F. and Glud, R.~N. (2002).
+\newblock Benthic carbon mineralization in the {Atlantic}: a synthesis based on
+  in situ data from the last decade.
+\newblock {\em Deep Sea Research Part I: Oceanographic Research Papers},
+  49(7):1255--1279.
+
+\bibitem[Wolf-Gladrow et~al., 2007]{wolf-gladrow_total_2007}
+Wolf-Gladrow, D.~A., Zeebe, R.~E., Klaas, C., Körtzinger, A., and Dickson,
+  A.~G. (2007).
+\newblock Total alkalinity: {The} explicit conservative expression and its
+  application to biogeochemical processes.
+\newblock {\em Marine Chemistry}, 106(1–2):287--300.
+
+\end{thebibliography}

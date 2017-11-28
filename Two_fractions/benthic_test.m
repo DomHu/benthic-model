@@ -32,7 +32,7 @@ classdef benthic_test
             swi.Fnonbio2 = swi.C02_nonbio*(1-bsd.por)*bsd.w;    % calculate flux [mol/(cm2 yr)] according non-bioturbated flux
             swi.C01 = swi.C01_nonbio;                           % resulting bioturbated SWI-concentration, to be calculated in benthic_zTOC.m
             swi.C02 = swi.C02_nonbio;                           % resulting bioturbated SWI-concentration, to be calculated in benthic_zTOC.m
-            swi.O20=150.0E-009;                                 % O2  concentration at SWI (mol/cm^3)
+            swi.O20=300.0E-009;                                 % O2  concentration at SWI (mol/cm^3)
             swi.NO30=40.0e-9;                                   % NO3 concentration at SWI (mol/cm^3)
             swi.Nitrogen=true;                                  % calculate N (true/false)
             swi.NH40=10.0e-9;                                 	% NH4 concentration at SWI (mol/cm^3)
@@ -215,7 +215,7 @@ classdef benthic_test
                 plot([0,t(1,2)], [-res.zox,-res.zox], 'b--')
                 plot([0,t(1,2)], [-res.zno3,-res.zno3], 'g--')
                 plot([0,t(1,2)], [-res.zso4,-res.zso4], 'r--')
-                %                ylim([-50 0.0])
+                ylim([-20 0.0])
                 xlabel ('O_2 (mol/cm^3)')
                 ylabel('Depth (cm)')
                 %            title ('O2 (mol/cm^3)')
@@ -232,7 +232,7 @@ classdef benthic_test
                 plot([0,t(1,2)], [-res.zox,-res.zox], 'b--')
                 plot([0,t(1,2)], [-res.zno3,-res.zno3], 'g--')
                 plot([0,t(1,2)], [-res.zso4,-res.zso4], 'r--')
-                %                ylim([-50 0.0])
+                ylim([-20 0.0])
                 xlabel ('NO_3 (mol/cm^3)')
                 ylabel('Depth (cm)')
                 %            title ('NO3 (mol/cm^3)')
