@@ -1038,7 +1038,7 @@ end
 %
 set(gcf,'CurrentAxes',fh(1));
 if (plot_format_old == 'y')
-    print('-dpsc2', [filename '.' str_date '.eps']);
+%    print('-dpsc2', [filename '.' str_date '.eps']);
 else
     switch plot_format
         case 'png'
@@ -1089,7 +1089,7 @@ if (plot_secondary == 'y'),
         % Dom create my title:
         my_title = exp_1(33:end);
         plot_crossplotc(loc_y_data, loc_x_data,-loc_grid_topo,loc_y_label,loc_x_label,'',POPT,[filename '.CROSSPLOT'], 'y', my_title);
-        plot_crossplotc(loc_y_data, loc_x_data,-loc_grid_topo,loc_y_label,loc_x_label,'',POPT,[filename '.CROSSPLOT_ALLDATA'], 'n', my_title);
+%        plot_crossplotc(loc_y_data, loc_x_data,-loc_grid_topo,loc_y_label,loc_x_label,'',POPT,[filename '.CROSSPLOT_ALLDATA'], 'n', my_title);
 % old observations on y-axis:
 %        plot_crossplotc(loc_x_data,loc_y_data,-loc_grid_topo,loc_x_label,loc_y_label,'',POPT,[filename '.CROSSPLOT'], 'y', my_title);
        %
@@ -1097,7 +1097,7 @@ if (plot_secondary == 'y'),
     %
     % *** SAVE DATA (cross-plot relationships) ************************** %
     %
-    if ( ~isempty(dataid_2) || (~isempty(overlaydataid) && (data_only == 'n')) ), fprint_1Dn_d([loc_x_data loc_y_data],[filename '.CROSSPLOT.', str_date, '.res']); end
+%    if ( ~isempty(dataid_2) || (~isempty(overlaydataid) && (data_only == 'n')) ), fprint_1Dn_d([loc_x_data loc_y_data],[filename '.CROSSPLOT.', str_date, '.res']); end
     %
 end
 %

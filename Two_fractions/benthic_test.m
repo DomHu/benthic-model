@@ -812,28 +812,28 @@ classdef benthic_test
                 %        res.zTOC.k1 = 2.2*1e-5*(bc(1)*10^6)^2.1;
                 
                 % if anoxic, decrease zbio and use anoxic degradation rate
-                if(swi.O20 < 5.0e-9 )
-                    res.bsd.zbio=0.01;
-                    res.zTOC.k2 = res.zTOC.k1/650;
-                    %                 switch k_parametr
-                    %                     case 'boudreau1997'
-                    %                         % use parameterisation of Boudreau 1997 dependent on sediment accumulation rate (w)
-                    %                         % which is actually Toth and Lerman (1977) - as no anoxic rate in Boudreau 1997:
-                    %                         loc_k_apparent = 0.04*res.bsd.w^2;
-                    %                         res.zTOC.k1=loc_k_apparent/(f1+f2/100);
-                    %                         res.zTOC.k2=res.zTOC.k1/100;
-                    %                     case 'tromp1995'
-                    %                         OMEN_result(j,i) = test.zso4;
-                    %                     case 'stolpovsky2016'
-                    %                         OMEN_result(j,i) = test.Cox_rate_total;
-                    %                     case 'boudreau1997fPOC'
-                    %                         OMEN_result(j,i) = test.Cox_rate_total;
-                    %                     case 'invariant'
-                    %                         OMEN_result(j,i) = test.Cox_rate_total;
-                    %                    otherwise
-                    %                     error('Error. Unknown k parameterization.')
-                    %                 end
-                end
+% %                 if(swi.O20 < 5.0e-9 )
+% %                     res.bsd.zbio=0.01;
+% %                     res.zTOC.k2 = res.zTOC.k1/650;
+% %                     %                 switch k_parametr
+% %                     %                     case 'boudreau1997'
+% %                     %                         % use parameterisation of Boudreau 1997 dependent on sediment accumulation rate (w)
+% %                     %                         % which is actually Toth and Lerman (1977) - as no anoxic rate in Boudreau 1997:
+% %                     %                         loc_k_apparent = 0.04*res.bsd.w^2;
+% %                     %                         res.zTOC.k1=loc_k_apparent/(f1+f2/100);
+% %                     %                         res.zTOC.k2=res.zTOC.k1/100;
+% %                     %                     case 'tromp1995'
+% %                     %                         OMEN_result(j,i) = test.zso4;
+% %                     %                     case 'stolpovsky2016'
+% %                     %                         OMEN_result(j,i) = test.Cox_rate_total;
+% %                     %                     case 'boudreau1997fPOC'
+% %                     %                         OMEN_result(j,i) = test.Cox_rate_total;
+% %                     %                     case 'invariant'
+% %                     %                         OMEN_result(j,i) = test.Cox_rate_total;
+% %                     %                    otherwise
+% %                     %                     error('Error. Unknown k parameterization.')
+% %                     %                 end
+% %                 end
                 
                 %            res.zTOC.k2 = res.zTOC.k1/100;
                 

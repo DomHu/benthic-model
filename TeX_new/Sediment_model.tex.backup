@@ -181,7 +181,7 @@ Marine surface sediments are key components in the Earth system. They host the l
 recycle nutrients, and represent the most important geochemical archive used for deciphering past changes of biogeochemical cycles and climate  \citep[e.g.][]{berner:91, archer_effect_1994, ridgwell_role_2005, arndt_quantifying_2013}. 
 Physical and chemical processes in sediments (i.e. diagenetic processes) depend on the water column and vice versa: Diagenesis is controlled by the external supply of solid material 
 (e.g. organic matter, calcium carbonate, opal) from the water column and is affected by overlying bottom water concentrations of solutes. 
-At the same time, sediments impact the water column directly either by short- and long-term storage of deposited material or diagenetic processing of deposited material and transport of terminal electron acceptors (e.g. \chem{O_2}, \chem{SO_4}) into, 
+At the same time, sediments impact the water column directly either by short- and long-term storage of deposited material or diagenetic processing of deposited material and transport of terminal electron acceptors (e.g. \chem{O_2}, \chem{SO_4}) into the sediments, 
 as well as metabolic products (e.g. nutrients, \chem{DIC}) to the overlying bottom waters. 
 This so-called benthic-pelagic coupling is essential for understanding global biogeochemical cycles and climate \citep[e.g.][]{archer_effect_1994, archer_what_2000, soetaert_coupling_2000, mackenzie_sediments_2005}. 
 
@@ -296,7 +296,7 @@ However, due to their computational efficiency, both representations are often u
 % This approach thus ignores the vertical extent of the sediments and the temporary storage of dissolved species \citep{soetaert_coupling_2000}. Yet, it is computationally efficient and 
 % allows differentiating between various fractions of organic matter. Most EMICs incorporate a vertically integrated dynamic model for particulate inorganic carbon only 
 % (i.e. mainly \chem{CaCO_3}) and just a few  consider oxic-only sediment degradation of organic matter \citep{hulse_understanding_2017}. 
-Analytical diagenetic model represent the most complex description of diagenetic dynamics in Earth system models. Examples of global ESMs employing a vertically resolved diagenetic model are NorESM \citep{tjiputra_evaluation_2013} and 
+Analytical diagenetic models represent the most complex description of diagenetic dynamics in Earth system models. Examples of global ESMs employing a vertically resolved diagenetic model are NorESM \citep{tjiputra_evaluation_2013} and 
 HAMOCC \citep{palastanga_long_term_2011, ilyina_global_2013}, both using a version of \citet{heinze_global_1999}. None of the EMICs reviewed by \citet{hulse_understanding_2017} use such a sediment representation. 
 DCESS \citep{shaffer_presentation_2008} and MBM \citep{munhoven_glacialinterglacial_2007} are box models employing a vertically resolved diagenetic model. These analytic models account for the most important transport processes 
 (i.e advection, bioturbation and molecular diffusion) through basic parametrizations and include fewer biogeochemical reactions which are generally restricted to the upper, bioturbated 10\,cm of the sediments. 
@@ -306,7 +306,7 @@ Pore water species explicitly represented in DCESS \citep{shaffer_presentation_2
 are restricted to DIC, TA, \chem{PO_4} and \chem{O_2}. The MEDUSA model \citep{munhoven_glacialinterglacial_2007} considers \chem{CO_2}, \chem{HCO_3^-}, \chem{CO_3^{2-}} and \chem{O_2}. 
 Other species produced or consumed during OM degradation are neglected. 
 Thus, with oxygen being the only TEA explicitly modelled, the influence of reduced species is only implicitly included in the boundary conditions for \chem{O_2}. 
-A newer versions of the HAMOCC model is a notable exception, as \citet{ilyina_global_2013} include \chem{NO_3} and denitrification explicitly. Furthermore, the version of 
+A newer version of the HAMOCC model is a notable exception, as \citet{ilyina_global_2013} include \chem{NO_3} and denitrification explicitly. Furthermore, the version of 
 \citet{palastanga_long_term_2011} represents an redox-dependent explicit sedimentary phosphorus cycle. Yet, reoxidation of reduced byproducts, so-called secondary redox reactions (e.g. oxidation of \chem{NH_4}, \chem{H_2S} or \chem{CH_4}), 
 or sorption processes are not included in any of the discussed models. 
 Furthermore, these global models assume that the sedimentary organic matter pool is composed of just a single compound class which is either degraded with a globally invariant degradation rate constant 
@@ -377,7 +377,7 @@ We finally discuss potential applicabilities of OMEN-SED and critically analyse 
 %OMEN-SED is a new, one-dimensional, computationally efficient reaction-transport model is designed for the coupling to regional/global biogeochemical and Earth system models. 
 OMEN-SED is implemented as a FORTRAN version that can be easily coupled to any pelagic, biogeochemical model via the coupling routine \textsf{\textbf{OMEN\_SED\_main}}. 
 In addition, OMEN-SED exists as a stand-alone version implemented in MATLAB and the entire model can be executed on a standard personal computer in less than 0.1 seconds. 
-The source code of both, the Fortran and the MATLAB stand-alone version, as well as instructions for executing OMEN-SED and for plotting model results are available as a supplement to this paper.
+The source code of both, the FORTRAN and the MATLAB stand-alone version, as well as instructions for executing OMEN-SED and for plotting model results are available as a supplement to this paper.
 
 The following section provides a detailed description of OMEN-SED and the fundamental equations underlying the model are highlighted. 
 Tables \ref{table:reactions_processes} and \ref{table:Reaction_Network} summarise the biogeochemical reaction network and Tables \ref{table:sed-charac_transport-parameters} 
@@ -454,7 +454,7 @@ However, OMEN-SED is designed for the coupling to Earth system models and, there
 Instead, similar to early, analytical diagenetic models, a computationally efficient analytical solution of Eq. (\ref{eq:Eq_generaldiagenetic}) can be derived by 1) assuming steady state conditions (i.e.$ \frac{\partial C_i}{\partial t}=0$) 
 and 2) reducing the vertical variability in parameters and reaction rate expressions by dividing the sediment column into a number of functional 
 biogeochemical zones \citep[Fig. \ref{fig:Sediment_layers}, compare e.g. ][for similar solutions]{billen1982idealized, goloway_diagenetic_1982, ruardij_benthic_1995, tromp_global_1995, gypens_simple_2008}. 
-More specifically, OMEN-SED divides the sediment column into: I) a bioturbated and 
+More specifically, OMEN-SED follows \citet{berner_early_1980} by dividing the sediment column into: I) a bioturbated and 
 II) a non-bioturbated zone defined by an imposed, constant bioturbation depth $z_{\mathrm{bio}}$ (Fig. \ref{fig:Sediment_layers}). Furthermore, it resolves the dynamic redox stratification of marine sediments by dividing 
 the sediment into 1) an oxic zone delineated by the oxygen penetration depth $z_{\mathrm{ox}}$; 2) a denitrification (or nitrogenous) zone situated between $z_{\mathrm{ox}}$ and the nitrate penetration depth $z_{\chem{NO_3}}$;
 3) a sulfate reduction zone situated between $z_{\chem{NO_3}}$ and the sulfate penetration depth $z_{\chem{SO_4}}$; and 4) a methanogenic zone situated below $z_{\chem{SO_4}}$ (Fig. \ref{fig:Sediment_layers}).  
@@ -466,13 +466,14 @@ hence OMEN-SED allows bioturbation to occur in the anoxic zones of the sediment 
 
 The formulation of the reaction term in Eq. (\ref{eq:Eq_generaldiagenetic}) varies between zones and encapsulates the most pertinent reaction 
 processes within the respective zone (see Section \ref{subsec:ReactionNetwork}), thus simplifying the mathematical description of the reaction network while 
-retaining most of its biogeochemical complexity.
+retaining most of its biogeochemical complexity. 
+One such simplification is that the solid phase iron and manganese oxidants and its reductants are not considered in the reaction network.
 All consumption or production processes of dissolved species related to the degradation of organic matter are a function of the organic matter concentration. Because organic matter degradation is described as a first-order degradation, 
 these processes can be expressed as a series of exponential terms ($ \sum_j \alpha_j \exp(-\beta_j z)$, see Eq. (\ref{eq:generalODE})). In addition, slow adsorption/desorption and mineral precipitation 
-processes can be expressed as zero or first order (reversible) reaction ($Q$ or $k\cdot (C_i - \tilde{C})$, in Eq. (\ref{eq:generalODE})). 
+processes can be expressed as zero or first order (reversible) reaction ($Q_m$ or $k_l \cdot C_i$, in Eq. (\ref{eq:generalODE})). 
 Fast adsorption is described as an instantaneous equilibrium reaction using a constant adsorption coefficient $K_i$. 
 The reoxidation of reduced substances is accounted for implicitly by adding a (consumption/production) flux to the internal boundary conditions 
-(see Sections \ref{subsubsec:O2}, \ref{subsubsec:N} and \ref{subsubsec:S}. 
+(see Sections \ref{subsubsec:O2}, \ref{subsubsec:N} and \ref{subsubsec:S}). 
 This simplification has been used previously by \citet{gypens_simple_2008} for nitrate and ammonium and can be justified as it has been shown that the 
 reoxidation mainly occurs within a thin layer at the oxic/anoxic interface \citep{soetaert_model_1996}. 
 The general reaction-transport equation underlying OMEN-SED is thus given by:
@@ -493,7 +494,8 @@ with
 \begin{equation} 
  a = \frac{w - \sqrt{w^2+4\cdot D\cdot \sum_l k_l}}{2\cdot D}, \quad b = \frac{w + \sqrt{w^2+4\cdot D\cdot \sum_l k_l}}{2\cdot D}
 \end{equation}
-where $A$ and $B$ are integration constants that can be determined by applying a set of internal boundary conditions (see Section \ref{subsec:Determine_IC}).
+where $A$ and $B$ are integration constants that can be determined by applying a set of internal boundary conditions (see Section \ref{subsec:Determine_IC}) 
+and $D = \frac{D_i}{1+K_i}$.
 % %>>>
 % \marginnote{\textbf{DH}: Should it be $D \beta_i^2+w\beta_i-k$ in the denom. - see \citet{boudreau1997diagenetic} Exp 6-13 Eq. 6.121}[-1.5cm]%<<<
 % %>>>
@@ -894,7 +896,7 @@ The conservation equations for \chem{DIC} are thus given by:
  \intertext{2. Methanic zone ($z_{\chem{SO_4}} < z \leq z_\infty$)} 
   \frac{\partial \chem{DIC}^{II}}{\partial t} &= 0 = D_{\chem{DIC}} \frac{\partial^2\chem{DIC}^{II} }{\partial z^2} - w\frac{\partial \chem{DIC}^{II} }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i \chem{\chem{DIC}C^{II}} \cdot k_i \cdot \chem{POC}_{i}(z)\label{eq:DIC_ODE1_L2} %\qquad &\text{1. Layer ($z\leq z_{\mathrm{ox}}$)}\\
 \end{align}
-where $D_\chem{\chem{DIC}}$ denotes the diffusion coefficient for \chem{DIC} which depends on the bioturbation status of the respective geochemical zone. 
+where $D_\chem{\chem{DIC}}$ denotes the diffusion coefficient for \chem{DIC} (taking the values for $\chem{HCO_3^{-}}$ from \citet{schulz_quantification_2006}) which depends on the bioturbation status of the respective geochemical zone. 
 Integration of Eq. (\ref{eq:DIC_ODE1_L1}) and (\ref{eq:DIC_ODE1_L2}) yields the analytical solution and Table \ref{Tab:BC_DIC} summarises the boundary conditions applied in OMEN-SED. 
 A Dirichlet condition is applied at the sediment-water interface. In addition, the model assumes a zero diffusive flux through the lower boundary $z_\infty$ and continuity across the bottom of the bioturbated zone, as well as the sulfate penetration depth. An additional flux boundary condition at $z_{\chem{SO_4}}$, implicitly accounts for DIC production through anaerobic oxidation of methane  (Table \ref{Tab:BC_DIC} Eq. 5).
 
@@ -941,7 +943,7 @@ In OMEN-SED, the conservation equations for alkalinity are thus given by:
  \intertext{4. Methanic zone ($z_{\chem{SO_4}} < z \leq z_{\infty} $)} 
 \frac{\partial \chem{ALK}^{IV}}{\partial t} &= 0 = D_{\chem{ALK}} \frac{\partial^2\chem{ALK}^{IV} }{\partial z^2} - w\frac{\partial \chem{ALK}^{IV} }{\partial z} + \frac{1-\phi}{\phi} \cdot \sum_i \chem{ALK}^\mathrm{MET}\cdot k_i \cdot \chem{POC}_{i}(z)\label{eq:ALK_ODE1_L4}
 \end{align}
-where $D_\chem{\chem{ALK}}$ denotes the diffusion coefficient for alkalinity which depends on the bioturbation status of the respective geochemical zone. 
+where $D_\chem{\chem{ALK}}$ denotes the diffusion coefficient for alkalinity (taking the values for $\chem{HCO_3^{-}}$ from \citet{schulz_quantification_2006}) which depends on the bioturbation status of the respective geochemical zone. 
 Integration of Eq. (\ref{eq:ALK_ODE1_L1}) - (\ref{eq:ALK_ODE1_L4}) yields the analytical solution and Table \ref{Tab:BC_ALK} summarises the boundary conditions applied in OMEN-SED. 
 A Dirichlet boundary condition is applied at the sediment-water interface. The decrease of alkalinity due to oxidation of reduced species produced in the anoxic zones 
 (with stoichiometry $\chem{ALK}^\mathrm{NIT}$ and $\chem{ALK}^\mathrm{H_2S}$) is implicitly taken into account through the flux boundary condition at $z_{\mathrm{ox}}$ (Table \ref{Tab:BC_ALK} Eq. 5). 
@@ -1122,7 +1124,7 @@ based on observations from \citet{archer_benthic_1992} and \citet{devol_benthic_
 value of 3 at $\sim$50 m) a constant value of $f_{ir}=1$ is used in the default OMEN-SED configuration. 
 %However, here we do not consider this effect as it is difficult to constrain on geological timescales and set $f_{ir}$ to a constant value of 1 . 
 The specific molecular diffusion coefficients $D_{\mathrm{mol},i}$ are corrected for sediment porosity $\phi$, tortuosity F and are linearly interpolated for an ambient 
-temperature $T$ using zero-degree coefficients $D^0_i$ and temperature-dependent diffusion coefficients $D^T_i$ \citep[][]{soetaert_model_1996}:
+temperature $T$ (in \textcelsius) using zero-degree coefficients $D^0_i$ and temperature-dependent diffusion coefficients $D^T_i$ \citep[][]{soetaert_model_1996}:
 \begin{equation*}
  D_{\mathrm{mol},i} = (D^0_i + D^T_i \cdot T )\cdot \frac{1}{\phi\cdot F}.
 \end{equation*}
@@ -1154,21 +1156,21 @@ f$_{ir}$ & - & 1 & Irrigation factor\\
 %dispF & - & $irrF \cdot \phi^{F-1.0}$ & Dispersion factor\\
 \multicolumn{4}{l}{\textbf{Diffusion coefficients} \citep{Li_diffusion_1974, schulz_quantification_2006, gypens_simple_2008}}\\
 $D_{\chem{O_2}}^0$ & cm$^2$\,yr$^{-1}$ & 348.62 &Molecular diffusion coefficient of oxygen at 0$^\circ$C\\
-$D_{\chem{O_2}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 14.09 &Diffusion coefficient for linear temp. dependence of oxygen\\ % value was 0.0386 (changed by Nicolas 2207)
+$D_{\chem{O_2}}^T$ & cm$^2$\,yr$^{-1}$\,\textcelsius$^{-1}$ & 14.09 &Diffusion coefficient for linear temp. dependence of oxygen\\ % value was 0.0386 (changed by Nicolas 2207)
 $D_{\chem{NO_3}}^0$ & cm$^2$\,yr$^{-1}$ & 308.42 &Molecular diffusion coefficient of nitrate at 0$^\circ$C\\
-$D_{\chem{NO_3}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 12.26 &Diffusion coefficient for linear temp. dependence of nitrate\\ % value was 0.0386 (changed by Nicolas 2207)
+$D_{\chem{NO_3}}^T$ & cm$^2$\,yr$^{-1}$\,\textcelsius$^{-1}$ & 12.26 &Diffusion coefficient for linear temp. dependence of nitrate\\ % value was 0.0386 (changed by Nicolas 2207)
 $D_{\chem{NH_4}}^0$ & cm$^2$\,yr$^{-1}$ & 309.05 &Molecular diffusion coefficient of ammonium at 0$^\circ$C\\
-$D_{\chem{NH_4}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 12.26 &Diffusion coefficient for linear temp. dependence of ammonium\\ % value was 0.0386 (changed by Nicolas 2207)
+$D_{\chem{NH_4}}^T$ & cm$^2$\,yr$^{-1}$\,\textcelsius$^{-1}$ & 12.26 &Diffusion coefficient for linear temp. dependence of ammonium\\ % value was 0.0386 (changed by Nicolas 2207)
 $D_{\chem{SO_4}}^0$ & cm$^2$\,yr$^{-1}$ & 157.68 &Molecular diffusion coefficient of sulfate at 0$^\circ$C\\
-$D_{\chem{SO_4}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 7.88 &Diffusion coefficient for linear temp. dependence of sulfate\\ % value was 0.0386 (changed by Nicolas 2207)
+$D_{\chem{SO_4}}^T$ & cm$^2$\,yr$^{-1}$\,\textcelsius$^{-1}$ & 7.88 &Diffusion coefficient for linear temp. dependence of sulfate\\ % value was 0.0386 (changed by Nicolas 2207)
 $D_{\chem{H_2S}}^0$ & cm$^2$\,yr$^{-1}$ & 307.48 & Molecular diffusion coefficient of sulfide at 0$^\circ$C\\
-$D_{\chem{H_2S}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 9.64 & Diffusion coefficient for linear temp. dependence of sulfide\\ % value was 0.0386 (changed by Nicolas 2207)
+$D_{\chem{H_2S}}^T$ & cm$^2$\,yr$^{-1}$\,\textcelsius$^{-1}$ & 9.64 & Diffusion coefficient for linear temp. dependence of sulfide\\ % value was 0.0386 (changed by Nicolas 2207)
 $D_{\chem{PO_4}}^0$ & cm$^2$\,yr$^{-1}$ & 112.91 &Molecular diffusion coefficient of phosphate at 0$^\circ$C\\
-$D_{\chem{PO_4}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 5.59 &Diffusion coefficient for linear temp. dependence of phosphate\\ % value was 0.0386 (changed by Nicolas 2207)
+$D_{\chem{PO_4}}^T$ & cm$^2$\,yr$^{-1}$\,\textcelsius$^{-1}$ & 5.59 &Diffusion coefficient for linear temp. dependence of phosphate\\ % value was 0.0386 (changed by Nicolas 2207)
 $D_{\chem{DIC}}^0$ & cm$^2$\,yr$^{-1}$ & 151.69  &Molecular diffusion coefficient of DIC at 0$^\circ$C\\
-$D_{\chem{DIC}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 7.93  &Diffusion coefficient for linear temp. dependence of DIC\\ 
+$D_{\chem{DIC}}^T$ & cm$^2$\,yr$^{-1}$\,\textcelsius$^{-1}$ & 7.93  &Diffusion coefficient for linear temp. dependence of DIC\\ 
 $D_{\chem{ALK}}^0$ & cm$^2$\,yr$^{-1}$ & 151.69  &Molecular diffusion coefficient of ALK at 0$^\circ$C\\
-$D_{\chem{ALK}}^T$ & cm$^2$\,yr$^{-1}$\,${}^{\circ}$C$^{-1}$ & 7.93 &Diffusion coefficient for linear temp. dependence of ALK\\ 
+$D_{\chem{ALK}}^T$ & cm$^2$\,yr$^{-1}$\,\textcelsius$^{-1}$ & 7.93 &Diffusion coefficient for linear temp. dependence of ALK\\ 
 \multicolumn{4}{l}{Note: DIC and ALK coefficients are the values of $\chem{HCO_3^{-}}$ from \citet{schulz_quantification_2006}.}\\
 %\multicolumn{4}{l}{\citep[as in][]{martin_dissolved_1993}. Alkalinity coefficients are the mean values of \chem{NH_4} and \chem{H_2S}.}\\
 \hline\hline
@@ -1528,7 +1530,7 @@ Depth & \chem{O_2} & \chem{NO_3} & \chem{SO_4} & \chem{NH_4} & \chem{H_2S} & \ch
 
 \subsubsection{Results}
 %\subsection{Stand-alone simulation of sediment cores}\label{subsec:SedProfiles}
-Fig. \ref{fig:Sediment_profiles} compares modelled and observed sediment profiles for the Santa Barbara Basin and the Iberian margin. Results show 
+Figure \ref{fig:Sediment_profiles} compares modelled and observed sediment profiles for the Santa Barbara Basin and the Iberian margin. Results show 
 that OMEN-SED is able to capture the main diagenetic features across a range of different environments without changing model parameters (other than the 4 we tuned, i.e. $k_1$, $k_2$, $f_1$ and \chem{PO_4^a}) %(e.g. stoichiometric ratios or secondary reaction parameters) 
 to site specific conditions. 
 For the two open Iberian margin stations (108 and 2213 m) OMEN-SED fits all observations well. OMEN-SED does especially well at seafloor depth (SFD) 2213 m by reproducing the deep \chem{O_2} penetration and the subsurface maximum in \chem{NO_3} 
@@ -1669,7 +1671,7 @@ reconciling modelled and observed values provided that bottom water conditions a
 % Describe what needs to be done/checked. Compare/use as example what I did with GENIE coupling. What are the if-clauses used? Input to OMEN-SED, output of OMEN-SED. 
 \begin{figure}[tbp]
 \begin{center}
-	\includegraphics[width=0.8\textwidth]{figures/OMEN-GENIE-coupling_GRID.pdf}
+	\includegraphics[width=0.7\textwidth]{figures/OMEN-GENIE-coupling_GRID.pdf}
 	\caption{Schematic of the relationship between OMEN-SED and cGENIE. Arrows represent the information transferred between models. }
 	\label{fig:OMEN-GENIE-coupling}
 	\end{center}
@@ -1801,7 +1803,7 @@ the triangles). The regression line (and the corresponding R$^2$-value) is calcu
 
 \begin{figure}[tbp]
 \begin{center}
-	\includegraphics[width=0.75\textwidth]{figures/OMEN-GENIE-Exp/Seiter_interpol_TOCwtpc_compare_until3+GENIEgrid.pdf}
+	\includegraphics[width=0.7\textwidth]{figures/OMEN-GENIE-Exp/Seiter_interpol_TOCwtpc_compare_until3+GENIEgrid.pdf}
 	\caption{Observed distribution of sediment surface (< 5cm) POC wt\% (A, B) and cGENIE bathymetry (C). 
 	(A) Original global distribution of POC wt\% interpolated on a $1^\circ \times 1^\circ$ grid from more than 5500 individual data points 
 	\citep[compare][for the interpolation procedure]{seiter_organic_2004}. 
@@ -2117,15 +2119,20 @@ is able to reproduce observed pore water profiles across a wide range of deposit
 sediment organic matter contents. Coupled to EMICs or higher resolution Earth system models, OMEN-SED is thus well suited to examine the role of sediments in global biogeochemical cycles in response to a wide range of past 
 or future carbon cycle or climate perturbations over various timescales. 
 
-\section {Code Availability}
-The commented OMEN-SED source code (FORTRAN and MATLAB) is provided as a supplement to this article and is also available for download on the 
+ %% use this section when having only software code available
+\codeavailability{The commented OMEN-SED source code (FORTRAN and MATLAB) is provided as a supplement to this article and is also available for download on the 
 web (https://github.com/DomHu/OMEN-SED.git). 
 A ReadMe file for the stand-alone MATLAB version of OMEN-SED describes the source code files and includes instructions for executing the model and plotting the 
-results.
+results.}
 
-% The commented OMEN-SED source code (Fortran and MATLAB) related to this article is provided
-% as a supplementary package together with a ReadMe file, where hardware and software requirements, source code files
-% and model output file management are fully described.
+% \section {Code Availability}
+% The commented OMEN-SED source code (FORTRAN and MATLAB) is provided as a supplement to this article and is also available for download on the 
+% web (https://github.com/DomHu/OMEN-SED.git). 
+% A ReadMe file for the stand-alone MATLAB version of OMEN-SED describes the source code files and includes instructions for executing the model and plotting the 
+% results.
+
+ %% this section is mandatory even if you declare that no competing interests are present
+\competinginterests{The authors declare that they have no conflict of interest.}
 
 
 \begin{acknowledgements}
