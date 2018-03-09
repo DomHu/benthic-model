@@ -57,7 +57,7 @@ classdef benthic_zTOC < handle
             % Sed input flux to upper boundary, per cm^2 water column
             [res.Fswi_TOC, res.Fswi_TOC1, res.Fswi_TOC2] = obj.calcCflx(bsd.z0, bsd, swi, res);
             
-            %Flux through lower boundary zinf, per cm^2 water-column
+            % Flux through lower boundary zinf, per cm^2 water-column
             res.F_TOC1=-(1-bsd.por).*bsd.w.*rTOC.A21.*exp(rTOC.a21.*bsd.zinf);
             res.F_TOC2=-(1-bsd.por).*bsd.w.*rTOC.A22.*exp(rTOC.a22.*bsd.zinf);
             res.F_TOC=res.F_TOC1+res.F_TOC2;

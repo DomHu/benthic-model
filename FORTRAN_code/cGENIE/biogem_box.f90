@@ -335,6 +335,7 @@ CONTAINS
          & '2N2T_PN_Tdep',         &
          & '3N2T_PNFe_Tdep',       &
          & 'Payal_Cd',             &
+         & 'bio_P',                &
          & 'bio_PFe',              &
          & 'bio_PFe_OCMIP2',       &
          & 'bio_PFeSi',            &
@@ -353,7 +354,7 @@ CONTAINS
   ! ****************************************************************************************************************************** !
   ! CALCULATE BIOLOGICAL TRACER UPTAKE AT THE SURFACE OCEAN -- biologically induced (mass balance) schemes
   ! NOTE: assume complete homogenization over mixed layer
-  !       => calculate uptaked based on tracer concentrations in surface layer only
+  !       => calculate uptake based on tracer concentrations in surface layer only
   SUBROUTINE sub_calc_bio_uptake(dum_i,dum_j,dum_k1,dum_dt)
     ! dummy arguments
     INTEGER,INTENT(in)::dum_i,dum_j
@@ -414,7 +415,7 @@ CONTAINS
     loc_dPO4_2 = 0.0
     loc_dPO4_sp = 0.0
     loc_dPO4_nsp = 0.0
-    loc_frac_N2fix = 0.0
+    loc_frac_N2fix = 0.0 
     loc_bio_uptake(:,:) = 0.0
     loc_bio_part_DOM(:,:) = 0.0
     loc_bio_part_RDOM(:,:) = 0.0
@@ -429,16 +430,18 @@ CONTAINS
     !
     loc_bio_NP = bio_part_red(is_POC,is_PON,dum_i,dum_j)*bio_part_red(is_POP,is_POC,dum_i,dum_j)
 
-
     ! *** CALCULATE MIXED LAYER PROPERTIES ***
     ! NOTE: MLD is stored as a POSITIVE depth below the surface
-    ! k limit
-    DO k=n_k,1,-1
-       If (phys_ocn(ipo_Dbot,dum_i,dum_j,k) >= phys_ocnatm(ipoa_mld,dum_i,dum_j)) then
-          loc_k_mld = k
-          exit
-       end If
-    end DO
+    ! ### temp code ############################################################################################################## !
+    !DO k=n_k,1,-1
+    !   If (phys_ocn(ipo_Dbot,dum_i,dum_j,k) >= phys_ocnatm(ipoa_mld,dum_i,dum_j)) then
+    !      loc_k_mld = k
+    !      exit
+    !   end If
+    !end DO
+    ! tmp fix: set MLD to zero
+    loc_k_mld = n_k
+    ! ### temp code ############################################################################################################## !
 
     ! *** CALCULATE LOCAL NUTRIENT CONCENTRATIONS & LIMITATIONS ***
     !
@@ -452,8 +455,11 @@ CONTAINS
             & )
           loc_kPO4_sp  = loc_PO4/(loc_PO4 + par_bio_c0_PO4_sp)
           loc_kPO4_nsp = loc_PO4/(loc_PO4 + par_bio_c0_PO4_nsp)
+          diag_bio(idiag_bio_kPO4_sp,dum_i,dum_j)  = dum_dt*loc_kPO4_sp
+          diag_bio(idiag_bio_kPO4_nsp,dum_i,dum_j) = dum_dt*loc_kPO4_nsp
        case default
           loc_kPO4 = loc_PO4/(loc_PO4 + par_bio_c0_PO4)
+          diag_bio(idiag_bio_kPO4,dum_i,dum_j) = dum_dt*loc_kPO4
        end select
     else
        loc_PO4 = 0.0
@@ -461,7 +467,7 @@ CONTAINS
     if (ocn_select(io_Fe) .OR. ocn_select(io_TDFe)) then
        SELECT CASE (trim(opt_geochem_Fe))
        CASE ('hybrid')
-          ! NOTE: do not need to sum seperate tracers, as io_TDFe *is* total dissolved and assumed bioavailable Fe
+          ! NOTE: do not need to sum separate tracers, as io_TDFe *is* total dissolved and assumed bioavailable Fe
           loc_FeT = ocn(io_TDFe,dum_i,dum_j,n_k)
        CASE ('lookup_4D')
           ! NOTE: function takes inputs: temperature, [H+], TDFe, TL as a single array
@@ -479,8 +485,11 @@ CONTAINS
             & )
           loc_kFe_sp  = loc_FeT/(loc_FeT + par_bio_c0_Fe_sp)
           loc_kFe_nsp = loc_FeT/(loc_FeT + par_bio_c0_Fe_nsp)
+          diag_bio(idiag_bio_kFe_sp,dum_i,dum_j)  = dum_dt*loc_kFe_sp
+          diag_bio(idiag_bio_kFe_nsp,dum_i,dum_j) = dum_dt*loc_kFe_nsp
        case default
           loc_kFe = loc_FeT/(loc_FeT + par_bio_c0_Fe)
+          diag_bio(idiag_bio_kFe,dum_i,dum_j) = dum_dt*loc_kFe
        end select
     else
        loc_FeT = 0.0
@@ -498,8 +507,11 @@ CONTAINS
             & )
           loc_kSiO2_sp  = loc_SiO2/(loc_SiO2 + par_bio_c0_SiO2_sp)
           loc_kSiO2_nsp = 0.0
+          diag_bio(idiag_bio_kSiO2_sp,dum_i,dum_j) = dum_dt*loc_kSiO2_sp
+          diag_bio(idiag_bio_kSiO2_nsp,dum_i,dum_j) = dum_dt*loc_kSiO2_nsp
        case default
           loc_kSiO2 = loc_SiO2/(loc_SiO2 + par_bio_c0_SiO2)
+          diag_bio(idiag_bio_kSiO2,dum_i,dum_j) = dum_dt*loc_kSiO2
        end select
     else
        loc_SiO2 = 0.0
@@ -535,6 +547,7 @@ CONTAINS
        loc_kI = phys_ocnatm(ipoa_solfor,dum_i,dum_j)/phys_solar_constant
     case (                        &
          & 'Payal_Cd',            &
+         & 'bio_P',               &
          & 'bio_PFe',             &
          & 'bio_PFe_OCMIP2',      &
          & 'bio_PFeSi',           &
@@ -549,26 +562,33 @@ CONTAINS
        !            = I(0)*L*(1.0 - exp(-D/L))
        !    I(d)ave = I(0)*L*(1.0 - exp(-D/L))/D
        ! NOTE: slight deviation from OCMIP-2, as much as it is possible to understand the text in Doney et al. [2006] ... ;)
-       ! NOTE: assumes that the upermost cell depth in GENIE is approximately equal to z(crit) (production zone depth)
+       ! NOTE: assumes that the uppermost cell depth in GENIE is approximately equal to z(crit) (production zone depth)
        !       => the cell can either be wholly or partly within the mixed layer; cannot be wholly below
-       If (phys_ocn(ipo_Dbot,dum_i,dum_j,n_k) >= phys_ocnatm(ipoa_mld,dum_i,dum_j)) then
-          ! ml entirely within uppermost (surface) cell
-          loc_intI = phys_ocnatm(ipoa_fxsw,dum_i,dum_j)*par_bio_I_eL* &
-               & (1.0 - exp(-phys_ocn(ipo_Dbot,dum_i,dum_j,n_k)/par_bio_I_eL))/phys_ocn(ipo_Dbot,dum_i,dum_j,n_k)
-       else
-          ! ml deeper than uppermost (surface) cell
-          loc_intI = phys_ocnatm(ipoa_fxsw,dum_i,dum_j)*par_bio_I_eL* &
-               & (1.0 - exp(-phys_ocnatm(ipoa_mld,dum_i,dum_j)/par_bio_I_eL))/phys_ocnatm(ipoa_mld,dum_i,dum_j)
-       end If
+       ! ### temp code ########################################################################################################### !
+       !If (phys_ocn(ipo_Dbot,dum_i,dum_j,n_k) >= phys_ocnatm(ipoa_mld,dum_i,dum_j)) then
+       !   ! ml entirely within uppermost (surface) cell
+       !   loc_intI = phys_ocnatm(ipoa_fxsw,dum_i,dum_j)*par_bio_I_eL* &
+       !        & (1.0 - exp(-phys_ocn(ipo_Dbot,dum_i,dum_j,n_k)/par_bio_I_eL))/phys_ocn(ipo_Dbot,dum_i,dum_j,n_k)
+       !else
+       !   ! ml deeper than uppermost (surface) cell
+       !   loc_intI = phys_ocnatm(ipoa_fxsw,dum_i,dum_j)*par_bio_I_eL* &
+       !        & (1.0 - exp(-phys_ocnatm(ipoa_mld,dum_i,dum_j)/par_bio_I_eL))/phys_ocnatm(ipoa_mld,dum_i,dum_j)
+       !end If
+       ! assume zero MLD
+       loc_intI = phys_ocnatm(ipoa_fxsw,dum_i,dum_j)*par_bio_I_eL* &
+            & (1.0 - exp(-phys_ocn(ipo_Dbot,dum_i,dum_j,n_k)/par_bio_I_eL))/phys_ocn(ipo_Dbot,dum_i,dum_j,n_k)
+       ! ### temp code ########################################################################################################### !
        loc_kI = loc_intI/(loc_intI + par_bio_c0_I)
     case default
        loc_kI = 0.0
     end select
+    diag_bio(idiag_bio_kI,dum_i,dum_j) = dum_dt*loc_kI
     ! ############################################################################################################################ !
     ! temperature
     loc_TC = ocn(io_T,dum_i,dum_j,n_k) - const_zeroC
     SELECT CASE (par_bio_prodopt)
     case (                          &
+         & 'bio_P',                 &
          & 'bio_PFe',               &
          & 'bio_PFeSi',             &
          & 'bio_PFeSi_Ridgwell02',  &
@@ -584,6 +604,7 @@ CONTAINS
     case default
        loc_kT = 0.0
     end SELECT
+    diag_bio(idiag_bio_kT,dum_i,dum_j) = dum_dt*loc_kT
 
     ! *** CALCULATE PO4 DEPLETION ***
     ! NOTE: production is calculated as the concentration of newly-formed particulate material in the surface ocean layer
@@ -592,7 +613,7 @@ CONTAINS
     ! ### EDIT ADD AND/OR EXTEND BIOLOGICAL OPTIONS ############################################################################## !
     SELECT CASE (par_bio_prodopt)
     CASE ('NONE')
-       ! nought going on ('abiological')
+       ! 'nought going on ('abiological')
        loc_dPO4 = 0.0
     CASE ( &
          & '1N1T_PO4restore' &
@@ -663,6 +684,25 @@ CONTAINS
                & loc_kI* &
                & min(loc_kPO4,loc_kFe)* &
                & par_bio_k0_PO4
+       else
+          loc_dPO4 = 0.0
+       end if
+    CASE (         &
+         & 'bio_P' &
+         & )
+       ! structure of uptake parameterization after Doney et al. [2006]
+       ! NOTE: the scaling for MLD > the compensation depth in Doney et al. [2006] is implicitly account for
+       !       by the creation of organic matter throughout the MLD layersmax
+       !      (the explicit equivalent would be to add the term: max(1.0,phys_ocnatm(ipoa_mld,dum_i,dum_j)/par_bio_zc)
+       if (loc_PO4 > const_real_nullsmall) then
+          loc_dPO4 =                                                                                                    &
+               & dum_dt*                                                                                                &
+               & loc_ficefree*                                                                                          &
+               & loc_kT*                                                                                                &
+               & loc_kPO4*                                                                                              &
+               & loc_kI*                                                                                                &
+               & loc_PO4/                                                                                               &
+               & par_bio_tau
        else
           loc_dPO4 = 0.0
        end if
@@ -852,6 +892,7 @@ CONTAINS
     ! *** SET DOM FRACTION ******************************************************************************************************* !
     SELECT CASE (par_bio_prodopt)
     case (                        &
+         & 'bio_P',               &
          & 'bio_PFe',             &
          & 'bio_PFeSi'            &
          & )
@@ -864,6 +905,7 @@ CONTAINS
     ! *** SET RDOM FRACTION ****************************************************************************************************** !
     SELECT CASE (par_bio_prodopt)
     case (                        &
+         & 'bio_P',               &
          & 'bio_PFe',             &
          & 'bio_PFeSi'            &
          & )
@@ -948,7 +990,9 @@ CONTAINS
             & )
           if (ocn(io_SiO2,dum_i,dum_j,n_k) > const_real_nullsmall) then
              bio_part_red(is_POC,is_opal,dum_i,dum_j) = (1.0 - loc_bio_red_DOMtotal)*par_bio_red_POC_opal* &
-                  & ((par_bio_c0_Fe_sp/(loc_FeT+par_part_red_FeTmin))+1.0)
+                  & ((0.25E-9/(loc_FeT+0.125E-9))+1.0)
+             !!!bio_part_red(is_POC,is_opal,dum_i,dum_j) = (1.0 - loc_bio_red_DOMtotal)*par_bio_red_POC_opal* &
+             !!!     & ((par_bio_c0_Fe_sp/(loc_FeT+par_part_red_FeTmin))+1.0)
           else
              bio_part_red(is_POC,is_opal,dum_i,dum_j) = 0.0
           end if
@@ -984,26 +1028,42 @@ CONTAINS
           ! => weight the respective Fe:C by the contribution to total export
           !    NOTE: the respective PO4 uptake (== export) rates are used as a proxy for carbon export (assuming uniform C:P)
           if (.NOT. ctrl_bio_red_fixedFetoC) then
-             ! Ridgwell [2001]
-             if (loc_FeT > par_part_red_FeTmin) then
-                loc_bio_red_POC_POFe_sp = 1.0/ &
-                     & MIN(333000.0,15000.0 + 115623.0*(1.0E9*(loc_FeT - par_part_red_FeTmin))**(-0.65))
-                loc_bio_red_POC_POFe_nsp = 1.0/ &
-                     & MIN(333000.0,20000.0 + 31805.0*(1.0E9*(loc_FeT - par_part_red_FeTmin))**(-0.65))
+             if (ctrl_bio_red_Ridgwell2001FetoC) then
+                ! Ridgwell [2001]
+                if (loc_FeT > par_part_red_FeTmin) then
+                   loc_bio_red_POC_POFe_sp = 1.0/ &
+                        & MIN(333000.0,15000.0 + 115623.0*(1.0E9*(loc_FeT - par_part_red_FeTmin))**(-0.65))
+                   loc_bio_red_POC_POFe_nsp = 1.0/ &
+                        & MIN(333000.0,20000.0 + 31805.0*(1.0E9*(loc_FeT - par_part_red_FeTmin))**(-0.65))
+                   bio_part_red(is_POC,is_POFe,dum_i,dum_j) = &
+                        & (loc_dPO4_sp*loc_bio_red_POC_POFe_sp + loc_dPO4_nsp*loc_bio_red_POC_POFe_nsp)/loc_dPO4
+                   if (loc_dPO4 > const_real_nullsmall) then
+                       bio_part_red(is_POC,is_POFe,dum_i,dum_j) = &
+                           & (loc_dPO4_sp*loc_bio_red_POC_POFe_sp + loc_dPO4_nsp*loc_bio_red_POC_POFe_nsp)/loc_dPO4
+                   else
+                       ![default (fixed) Redfield ratio already set]
+                   end if
+                else
+                   bio_part_red(is_POC,is_POFe,dum_i,dum_j) = 1.0/333000.0
+                end if
              else
-                loc_bio_red_POC_POFe_sp = 1.0/333000.0
-                loc_bio_red_POC_POFe_nsp = 1.0/333000.0
+                ! unified scheme
+                if (loc_FeT > par_part_red_FeTmin) then
+                    bio_part_red(is_POC,is_POFe,dum_i,dum_j) = 1.0/ &
+                        & MIN(par_part_red_FetoCmax,(par_bio_FetoC_C + par_bio_FetoC_K*(1.0E9*loc_FeT)**(par_bio_FetoC_pP)))
+                else
+                   bio_part_red(is_POC,is_POFe,dum_i,dum_j) = 1.0/par_part_red_FetoCmax
+                end if
              end if
-          else
-             loc_bio_red_POC_POFe_sp = bio_part_red(is_POC,is_POFe,dum_i,dum_j)
-             loc_bio_red_POC_POFe_nsp = bio_part_red(is_POC,is_POFe,dum_i,dum_j)
-          end if
-          if (loc_dPO4 > const_real_nullsmall) then
-             bio_part_red(is_POC,is_POFe,dum_i,dum_j) = &
-                  & (loc_dPO4_sp*loc_bio_red_POC_POFe_sp + loc_dPO4_nsp*loc_bio_red_POC_POFe_nsp)/loc_dPO4
           else
              ![default (fixed) Redfield ratio already set]
           end if
+          !!!if (loc_dPO4 > const_real_nullsmall) then
+          !!!   bio_part_red(is_POC,is_POFe,dum_i,dum_j) = &
+          !!!        & (loc_dPO4_sp*loc_bio_red_POC_POFe_sp + loc_dPO4_nsp*loc_bio_red_POC_POFe_nsp)/loc_dPO4
+          !!!else
+          !!!   ![default (fixed) Redfield ratio already set]
+          !!!end if
        case default
           ! default case: single homogeneous plankton mass -- no complications! :)
           if (.NOT. ctrl_bio_red_fixedFetoC) then
@@ -1451,7 +1511,6 @@ CONTAINS
     end if
     bio_part(is_CaCO3_frac2,dum_i,dum_j,loc_k_mld:n_k) = par_bio_remin_CaCO3_frac2
     bio_part(is_opal_frac2,dum_i,dum_j,loc_k_mld:n_k)  = par_bio_remin_opal_frac2
-    
     ! set 'b' exponent in the Martin curve (if selected)
     if (par_bio_remin_fun == 'Henson2012') then
        par_bio_remin_b(dum_i,dum_j) = (0.024 * loc_TC) - 1.06
@@ -1533,7 +1592,7 @@ CONTAINS
     ! NOTE: scale productivity modifiers by time-step to get correct average
     ! ### NOTE ################################################################################################################### !
     ! need to adjust (units?) diagnostics consistent with MLD changes(?)
-    ! added *2 for nitrogen fixation diagnosistic to calculate rate in molN/kg/yr (rather than molN2/kg/yr) - Fanny (July 2010)
+    ! added *2 for nitrogen fixation diagnostic to calculate rate in molN/kg/yr (rather than molN2/kg/yr) - Fanny (July 2010)
     ! ############################################################################################################################ !
     diag_bio(idiag_bio_dPO4,dum_i,dum_j) = loc_dPO4
     SELECT CASE (par_bio_prodopt)
@@ -1542,8 +1601,6 @@ CONTAINS
          & '2N2T_PN_Tdep',   &
          & '3N2T_PNFe_Tdep'  &
          & )
-       diag_bio(idiag_bio_kT,dum_i,dum_j)         = dum_dt*loc_kT
-       diag_bio(idiag_bio_kT,dum_i,dum_j)         = dum_dt*loc_kI
        diag_bio(idiag_bio_dPO4_1,dum_i,dum_j)     = loc_dPO4_1
        diag_bio(idiag_bio_dPO4_2,dum_i,dum_j)     = loc_dPO4_2
        diag_bio(idiag_bio_N2fixation,dum_i,dum_j) = loc_bio_uptake(io_N2,n_k)*2
@@ -1552,19 +1609,15 @@ CONTAINS
          & 'bio_PFe',       &
          & 'bio_PFe_OCMIP2' &
          & )
-       diag_bio(idiag_bio_kT,dum_i,dum_j)      = dum_dt*loc_kT
-       diag_bio(idiag_bio_kI,dum_i,dum_j)      = dum_dt*loc_kI
-       diag_bio(idiag_bio_kN,dum_i,dum_j)      = dum_dt*min(loc_kPO4,loc_kFe)
+       diag_bio(idiag_bio_knut,dum_i,dum_j)    = dum_dt*min(loc_kPO4,loc_kFe)
        diag_bio(idiag_bio_DOMfrac,dum_i,dum_j) = dum_dt*loc_bio_red_DOMfrac
     case (                        &
          & 'bio_PFeSi',           &
          & 'bio_PFeSi_Ridgwell02' &
          & )
-       diag_bio(idiag_bio_kT,dum_i,dum_j)      = dum_dt*loc_kT
-       diag_bio(idiag_bio_kI,dum_i,dum_j)      = dum_dt*loc_kI
-       diag_bio(idiag_bio_kN,dum_i,dum_j)      = dum_dt*min(loc_kPO4,loc_kFe)
-       diag_bio(idiag_bio_dPO4_1,dum_i,dum_j)  = loc_dPO4_1
-       diag_bio(idiag_bio_dPO4_2,dum_i,dum_j)  = loc_dPO4_2
+       diag_bio(idiag_bio_knut,dum_i,dum_j)    = dum_dt*min(loc_kPO4,loc_kFe)
+       diag_bio(idiag_bio_dPO4_1,dum_i,dum_j)  = loc_dPO4_sp
+       diag_bio(idiag_bio_dPO4_2,dum_i,dum_j)  = loc_dPO4_nsp
        diag_bio(idiag_bio_DOMfrac,dum_i,dum_j) = dum_dt*loc_bio_red_DOMfrac
     end SELECT
     ! create pre-formed tracers
@@ -2010,8 +2063,9 @@ CONTAINS
     ! -------------------------------------------------------- !
     ! DEFINE LOCAL VARIABLES
     ! -------------------------------------------------------- !
-    integer::l,io,k
+    integer::l,io,k,id
     real::loc_O2,loc_NH4,loc_r15N
+    real::loc_potO2cap
     real::loc_NH4_oxidation
     real,dimension(n_ocn,n_k)::loc_bio_remin
     ! -------------------------------------------------------- !
@@ -2044,6 +2098,18 @@ CONTAINS
           CASE ('Ozaki')
              ! from: Ozaki et al. [EPSL ... ?]
              loc_NH4_oxidation = dum_dtyr*(18250.0/conv_m3_kg)*loc_NH4*loc_O2
+          CASE ('Fanny')
+	     ! Second order equation of enzyme kinetics which accounts for both O2 and NH4 limitations on nitrification
+             loc_potO2cap = ocn(io_O2,dum_i,dum_j,k) + bio_remin(io_O2,dum_i,dum_j,k)
+             loc_NH4_oxidation = dum_dtyr*par_nitri_mu*loc_NH4*loc_potO2cap &
+                & /(par_nitri_c0_NH4*par_nitri_c0_O2 +par_nitri_c0_O2*loc_NH4 &
+                & +par_nitri_c0_NH4*loc_potO2cap +loc_NH4*loc_potO2cap) &
+                & *min(loc_NH4,loc_potO2cap*par_bio_red_POP_PON/(-par_bio_red_POP_PO2))
+             If (loc_NH4_oxidation > min(loc_NH4,loc_potO2cap*par_bio_red_POP_PON/(-par_bio_red_POP_PO2))) then
+                loc_NH4_oxidation = min(loc_NH4,loc_potO2cap*loc_potO2cap*par_bio_red_POP_PON/(-par_bio_red_POP_PO2))
+             end if
+          CASE ('NONE')
+             loc_NH4_oxidation = 0.0
           case default
              loc_NH4_oxidation = min(0.5*loc_NH4,loc_O2)
           end select
@@ -2078,9 +2144,16 @@ CONTAINS
        io = conv_iselected_io(l)
        bio_remin(io,dum_i,dum_j,:) = bio_remin(io,dum_i,dum_j,:) + loc_bio_remin(io,:)
     end do
-    ! record diagnostics (mol kg-1)
-    diag_geochem(idiag_geochem_ammox_dNH4,dum_i,dum_j,:) = loc_bio_remin(io_NH4,:)
-    diag_geochem(idiag_geochem_ammox_dNO3,dum_i,dum_j,:) = loc_bio_remin(io_NO3,:)
+    ! -------------------------------------------------------- !
+    ! DIAGNOSTICS
+    ! -------------------------------------------------------- !
+    ! -------------------------------------------------------- ! record diagnostics (mol kg-1) OLD
+    diag_geochem(idiag_geochem_dH2S,dum_i,dum_j,:) = loc_bio_remin(io_H2S,:)
+    ! -------------------------------------------------------- ! record diagnostics (mol kg-1)
+    id = fun_find_str_i('NH4toNO3_dNH4',string_diag_redox)
+    diag_redox(id,dum_i,dum_j,:) = loc_bio_remin(io_NH4,:)
+    id = fun_find_str_i('NH4toNO3_dNO3',string_diag_redox)
+    diag_redox(id,dum_i,dum_j,:) = loc_bio_remin(io_NO3,:)
     ! -------------------------------------------------------- !
     ! END
     ! -------------------------------------------------------- !
@@ -3177,11 +3250,6 @@ CONTAINS
     real,DIMENSION(:,:),ALLOCATABLE::loc_diag_redox
     allocate(loc_diag_redox(n_diag_redox,n_k),STAT=alloc_error)
 
-    ! ### USER-DEFINABLE OPTIONS ################################################################################################# !
-    ! NOTE: settings not included in the run-time configuration files for clarity
-    par_bio_remin_opal_K = 0.019/conv_d_yr ! opal particulate base dissolution rate (d-1 -> yr-1) [Ridgwell, 2001]
-    ! ############################################################################################################################ !
-
     ! *** INITIALIZE VARIABLES ***
     !
     loc_bio_remin_POC_frac1 = 0.0
@@ -3397,13 +3465,14 @@ CONTAINS
                       IF (loc_u > const_real_one)       loc_u = 1.0
                       IF (loc_u < const_real_nullsmall) loc_u = 0.0
                       ! calculate opal fractional dissolution
-                      ! NOTE: for now, assume that both opal 'fractionas' behave identically
-                      loc_bio_remin_opal_frac1 =                                             &
-                           & loc_bio_remin_dt*par_bio_remin_opal_K*                          &
+                      ! NOTE: for now, assume that both opal 'fractions' behave identically
+                      loc_bio_remin_opal_frac1 = 1.0 - EXP(                                  &
+                           & -loc_bio_remin_dt*par_bio_remin_opal_K*                         &
                            & (1.0/0.71)*                                                     &
                            & (                                                               &
                            &   (0.16*(1.0 + (loc_T - const_zeroC)/15.0)*loc_u) +             &
                            &   (0.55*((1.0 + (loc_T - const_zeroC)/400.0)**4.0*loc_u)**9.25) &
+                           & )                                                               &
                            & )
                       if (loc_bio_remin_opal_frac1 > const_real_one) loc_bio_remin_opal_frac1 = 1.0
                       loc_bio_remin_opal_frac2 = loc_bio_remin_opal_frac1
@@ -4703,7 +4772,6 @@ CONTAINS
     !       NO3 + N2 (N2 -> NO3 during nitrogen fixation, and NO3 -> N2 during denitrification))
     !       CO2 + CH4
     !       SO4 + H2S
-    ! NOTE: ignore O2 component in oxidizing CH4->CO2 for now ...
     ! NOTE: adjust ALK for H2S (assumed created via sulphate reduction and thus ocean ALK increase)
     ! NOTE: subtract 2.0 x NH4 from O2 potential inventory to take into account virtual O2 liberation during ammoniam oxidation:
     !       NH4+ + 2O2 -> NO3- + 2H+ + H2O
@@ -4711,17 +4779,24 @@ CONTAINS
     !       2NO3- + 2H+ -> N2 + 5/2O2 + H2O <--> 5O2 + 2N2 + 2H2O -> 4NO3- + 4H+
     ! NOTE: ALK changes associayed with NO3- are taken into account in the NO3- budget
     !       => no additional/explicit ALK budgeting w.r.t either N2 or NH4 is required
+    ! NOTE: for O2 -- count only O2 in oxidized forms
+    !       => do not attempt to implicitly oxidize reduced forms and calculate the resulting O2 deficit
+    ! NOTE: for ALK -- count the charges (+vs and -ve)
+    !       (excluding PO4)
     if (ocn_select(io_CH4)) then
        fun_audit_combinetracer(io_DIC) = fun_audit_combinetracer(io_DIC) + dum_ocn(io_CH4)
-       fun_audit_combinetracer(io_O2)  = fun_audit_combinetracer(io_O2)  - 2.0*dum_ocn(io_CH4)
     end if
     fun_audit_combinetracer(io_CH4) = 0.0
     if (ocn_select(io_CH4_13C)) then
        fun_audit_combinetracer(io_DIC_13C) = fun_audit_combinetracer(io_DIC_13C) + dum_ocn(io_CH4_13C)
     end if
     fun_audit_combinetracer(io_CH4_13C) = 0.0
+    if (ocn_select(io_PO4)) then
+       fun_audit_combinetracer(io_O2)  = fun_audit_combinetracer(io_O2)  + 2.0*dum_ocn(io_PO4)
+    end if
     if (ocn_select(io_NO3)) then
        fun_audit_combinetracer(io_ALK) = fun_audit_combinetracer(io_ALK) + dum_ocn(io_NO3)
+       fun_audit_combinetracer(io_O2)  = fun_audit_combinetracer(io_O2)  + (3.0/2.0)*dum_ocn(io_NO3)
     end if
     if (ocn_select(io_N2O)) then
        fun_audit_combinetracer(io_NO3) = fun_audit_combinetracer(io_NO3) + 2.0*dum_ocn(io_N2O)
@@ -4730,12 +4805,10 @@ CONTAINS
     fun_audit_combinetracer(io_N2O) = 0.0
     if (ocn_select(io_N2)) then
        fun_audit_combinetracer(io_NO3) = fun_audit_combinetracer(io_NO3) + 2.0*dum_ocn(io_N2)
-       fun_audit_combinetracer(io_O2)  = fun_audit_combinetracer(io_O2)  - (5.0/2.0)*dum_ocn(io_N2)
     end if
     fun_audit_combinetracer(io_N2)  = 0.0
     if (ocn_select(io_NH4)) then
        fun_audit_combinetracer(io_NO3) = fun_audit_combinetracer(io_NO3) + dum_ocn(io_NH4)
-       fun_audit_combinetracer(io_O2)  = fun_audit_combinetracer(io_O2)  - 2.0*dum_ocn(io_NH4)
        fun_audit_combinetracer(io_ALK) = fun_audit_combinetracer(io_ALK) - dum_ocn(io_NH4)
     end if
     fun_audit_combinetracer(io_NH4) = 0.0

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2017.8.24)  12 JAN 2018 17:45
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2017.8.24)  14 JAN 2018 10:30
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1213,7 +1213,7 @@ f>] [54] [55] [56]
 LaTeX Warning: Float too large for page by 5.69054pt on input line 2192.
 
 [57] [58]
-<figures/SA/0_SIndex_4000m_ALL_combined.pdf, id=2094, 1565.85pt x 642.4pt>
+<figures/SA/0_SIndex_4000m_ALL_combined.pdf, id=2095, 1565.85pt x 642.4pt>
 File: figures/SA/0_SIndex_4000m_ALL_combined.pdf Graphic file (type pdf)
 
 <use figures/SA/0_SIndex_4000m_ALL_combined.pdf>
@@ -1221,7 +1221,7 @@ Package pdftex.def Info: figures/SA/0_SIndex_4000m_ALL_combined.pdf used on inp
 ut line 2202.
 (pdftex.def)             Requested size: 503.61377pt x 206.60143pt.
  [59 <./figures/SA/0_SIndex_4000m_ALL_combined.pdf>]
-<figures/OMEN-GENIE-Exp/Solid_field_mask.pdf, id=2122, 417.56pt x 224.84pt>
+<figures/OMEN-GENIE-Exp/Solid_field_mask.pdf, id=2123, 417.56pt x 224.84pt>
 File: figures/OMEN-GENIE-Exp/Solid_field_mask.pdf Graphic file (type pdf)
 
 <use figures/OMEN-GENIE-Exp/Solid_field_mask.pdf>
@@ -1239,10 +1239,10 @@ Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 2396.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 2396.
  ) 
 Here is how much of TeX's memory you used:
- 11442 strings out of 494409
- 170677 string characters out of 6164644
- 314465 words of memory out of 5000000
- 14129 multiletter control sequences out of 15000+600000
+ 11443 strings out of 494409
+ 170703 string characters out of 6164644
+ 314540 words of memory out of 5000000
+ 14130 multiletter control sequences out of 15000+600000
  54691 words of font info for 80 fonts, out of 8000000 for 9000
  376 hyphenation exceptions out of 8191
  43i,22n,40p,1318b,722s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1269,10 +1269,10 @@ f-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/share/texlive/texmf-dist/fonts
 /type1/urw/helvetic/uhvr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/t
 imes/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb
 ></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on Sediment_model.pdf (67 pages, 11938939 bytes).
+Output written on Sediment_model.pdf (67 pages, 11939024 bytes).
 PDF statistics:
- 2326 PDF objects out of 2487 (max. 8388607)
- 1977 compressed objects within 20 object streams
+ 2327 PDF objects out of 2487 (max. 8388607)
+ 1978 compressed objects within 20 object streams
  322 named destinations out of 1000 (max. 500000)
  91 words of extra memory for PDF output out of 10000 (max. 10000000)
 
