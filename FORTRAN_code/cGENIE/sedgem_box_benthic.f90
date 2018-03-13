@@ -472,7 +472,7 @@ CONTAINS
                         case ('boudreau1997')
                             ! use parameterisation of Boudreau 1997 dependent on sediment accumulation rate (w)
                             ! which is actually Toth and Lerman (1977) - as no anoxic rate in Boudreau 1997:
-                            loc_k_apparent = 0.04*w**2
+                            loc_k_apparent = 0.04*w**2.0
                             k1=loc_k_apparent/((1-dum_is_POC_frac2)+dum_is_POC_frac2/par_sed_huelse2017_k2_order)
                             k2=k1/par_sed_huelse2017_k2_order
                         !                print*,'boudreau1997 anoxic k1, k2 =', k1, k2
@@ -484,7 +484,7 @@ CONTAINS
                         case ('stolpovsky2016')
                             ! use parameterisation of Stolpovsky et al. 2015 dependent on sediment accumulation rate (w)
                             ! which is actually Toth and Lerman (1977) - as no anoxic rate in Stolpovsky et al. 2015:
-                            loc_k_apparent = 0.04*w**2
+                            loc_k_apparent = 0.04*w**2.0
                             k1=loc_k_apparent/((1-dum_is_POC_frac2)+dum_is_POC_frac2/par_sed_huelse2017_k2_order)
                             k2=k1/par_sed_huelse2017_k2_order
                         !                print*,'stolpovsky2016 anoxic k1, k2 =', k1, k2
@@ -891,22 +891,22 @@ CONTAINS
 
         KNH4 = 1.3                                          !Adsorption coefficient (same in oxic and anoxic layer) (-)
 
-        zoxgf = 0.1            ! was 0.1                             ! cm, rolloff NH4, H2S oxidation for small zox depth
+        zoxgf = 0.0            ! was 0.1                             ! cm, rolloff NH4, H2S oxidation for small zox depth
         r_zxf=0.0
 
         dispFactor=por**(tort-1.0)*irrigationFactor             ! dispersion factor (-) - Ausbreitung - type of mixing that accompanies hydrodynamic                                    ! flows -> ~builds out paths of flow
-        SD=(1-por)/por                                          ! volume factor solid->dissolved phase
+        SD=(1.0-por)/por                                          ! volume factor solid->dissolved phase
         OC= SD*(138.0/106.0)!1.0*SD                                               ! O2/C (mol/mol)
         NC1=0.0 !16.0/106.0*SD  ! 0.1509*SD                                        ! N/C first TOC fraction (mol/mol)
         NC2=0.0 !16.0/106.0*SD  !0.13333*SD                                          ! N/C second TOC fraction (mol/mol)
-        PC1=SD*1/106.0 !0.0094*SD                                          ! P/C first TOC fraction (mol/mol)
-        PC2=SD*1/106.0 !0.0094*SD                                          ! P/C second TOC fraction (mol/mol)
+        PC1=SD*1.0/106.0 !0.0094*SD                                          ! P/C first TOC fraction (mol/mol)
+        PC2=SD*1.0/106.0 !0.0094*SD                                          ! P/C second TOC fraction (mol/mol)
         SO4C=SD*(138.0/212.0)!0.5*SD                                             ! SO4/C (mol/mol)
         O2H2S=2.0                                               ! 2 mole O2 oxidize 1 mole H2S
         DICC1=1.0*SD                                           ! DIC/C until zSO4 (mol/mol)
         DICC2=0.5*SD                                           ! DIC/C below zSO4 (mol/mol)
         MC=0.5*SD                                              ! CH4/C (mol/mol)
-        NO3CR=(94.4/106)*SD                                    ! NO3 consumed by Denitrification
+        NO3CR=(94.4/106.0)*SD                                    ! NO3 consumed by Denitrification
 
         X_C=106.0                                                 ! Carbon Redfield stoichiometry
         Y_N=16.0                                                  ! Nitrogen Redfield stoichiometry
@@ -996,7 +996,7 @@ CONTAINS
         KPO4_anox = 1.3   ! 0.0                ! Adsorption coefficient in anoxic layer (-)
 
         !        dum_swiflux_M = 365*0.2e-10 ! Flux input 365*0.2e-10 flux of M to the sediment (mol/(cm2*yr))
-        dum_swiflux_M = 365*0.2e-10*1/(1-por)*1/w ! Flux converted to concentration
+        dum_swiflux_M = 365.0*0.2e-10*1/(1-por)*1/w ! Flux converted to concentration
 
         !       WAS BEFORE:
         !        ksPO4 = 1.0       ! 0.0  !          ! Rate constant for kinetic P sorption (1/yr)
@@ -2866,9 +2866,10 @@ CONTAINS
         if(zso4 .EQ. zinf)then
             zso4FALK = 0.0
         else
-            zso4FALK = ALKRAOM*gammaCH4*FUN_calcReac(zso4, zinf, SD, SD) ! MULTIPLY BY 1/POR ????
-!             print*,'zox, zno3, zso4, zinf = ', zox, zno3, zso4, zinf
-!             print*,'zso4FALK ', zso4FALK
+!          zso4FALK = ALKRAOM*gammaCH4*FUN_calcReac(zso4, zinf, SD, SD) ! Dominik was before 12.03.2018
+!             print*,'zso4FALK SD', zso4FALK
+            zso4FALK = ALKRAOM*gammaCH4*FUN_calcReac(zso4, zinf, MC, MC) ! MULTIPLY BY 1/POR ????
+!             print*,'zso4FALK MC', zso4FALK
         end if
 
         ! match solutions at zso4 - continuous concentration and flux
@@ -2898,10 +2899,11 @@ CONTAINS
         ! flux of ALK to oxic interface (from all sources of ALK below) from NH4 and H2S
 !        zoxFALK = 0.0       !no secondary redox!
         ! with implicit N alkalinity
-        zoxFALK = -1.0*gamma*FUN_calcReac(zno3, zinf, (16.0/106.0)*SD*1/(1+KNH4),(16.0/106.0)*SD*1/(1+KNH4)) &      ! was until 27.02. -1.0 before -2.0* gamma ... MULTIPLY BY 1/POR ????
-        + ALKRH2S*gammaH2S*FUN_calcReac(zno3, zso4, SO4C, SO4C)                 ! Dominik 25.02.2016
-!        zoxFALK = ALKRNIT*gamma*FUN_calcReac(zno3, zinf, NC1/(1+KNH4),NC2/(1+KNH4)) &      ! was until 27.02. -1.0 before -2.0* gamma ... MULTIPLY BY 1/POR ????
+        ! Dom 12.03.18 Don't need the -1.0 because all oxidised is accounted for in ALKSO4
+!        zoxFALK = -1.0*gamma*FUN_calcReac(zno3, zinf, (16.0/106.0)*SD*1/(1+KNH4),(16.0/106.0)*SD*1/(1+KNH4)) &      ! was until 27.02. -1.0 before -2.0* gamma ... MULTIPLY BY 1/POR ????
 !        + ALKRH2S*gammaH2S*FUN_calcReac(zno3, zso4, SO4C, SO4C)                 ! Dominik 25.02.2016
+        zoxFALK = ALKRNIT*gamma*FUN_calcReac(zno3, zinf, NC1/(1+KNH4),NC2/(1+KNH4)) &      ! was until 27.02. -1.0 before -2.0* gamma ... MULTIPLY BY 1/POR ????
+        + ALKRH2S*gammaH2S*FUN_calcReac(zno3, zso4, SO4C, SO4C)                 ! Dominik 25.02.2016
 !        zoxFALK = ALKRH2S*gammaH2S*FUN_calcReac(zno3, zso4, SO4C, SO4C)                 ! Dominik 05.02.2018 try to fix ALK (here no NH4 contribution)
         !        zoxFALK = ALKRNIT*gamma*FUN_calcReac(zno3, zinf, NC1/(1+KNH4),NC2/(1+KNH4)) &      ! MULTIPLY BY 1/POR ????
         !                  + ALKRH2S*gammaH2S*FUN_calcReac(zno3, zso4, SO4C, SO4C)                 ! Dominik 25.02.2016
