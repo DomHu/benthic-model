@@ -664,12 +664,20 @@ CONTAINS
                     end if
 
                     if(ocn_select(io_PO4))then
-                        !           PO4 hack: remineralise all POC and calculate PO4 return flux
-                        loc_PO4_swiflux = loc_fPOC*conv_POC_cm3_mol*1/106
+                        if(par_sed_huelse2017_P_cycle)then
+                            ! explicit PO4 calculation
+                            call sub_huelseetal2016_zPO4_M(dum_swiconc_PO4, loc_PO4_swiflux, dum_swiflux_M, loc_M_swiflux)
+!                            print*,'explicit OMEN loc_PO4_swiflux = ', loc_PO4_swiflux
+!                            print*,'Hack OMEN loc_PO4_swiflux     = ', loc_fPOC*conv_POC_cm3_mol*1.0/106.0
+!                            print*,' '                            
+                        else
+                            ! PO4 hack: remineralise all POC and calculate PO4 return flux
+                            loc_PO4_swiflux = loc_fPOC*conv_POC_cm3_mol*1.0/106.0
+!                            print*,'Hack OMEN loc_PO4_swiflux = ', loc_PO4_swiflux
+!                            print*,' '
+                        end if  ! par_sed_huelse2017_P_cycle                       
                         !                        print*,' '
                         !                        print*,'Hack OMEN loc_PO4_swiflux = ', loc_PO4_swiflux
-                        !          normal PO4 calculation
-!                        call sub_huelseetal2016_zPO4_M(dum_swiconc_PO4, loc_PO4_swiflux, dum_swiflux_M, loc_M_swiflux)
 !                            print*,'CALC OMEN loc_PO4_swiflux = ', loc_PO4_swiflux
                     else
                         ! If not selected nothing needs to be done
@@ -708,8 +716,9 @@ CONTAINS
                             if(loc_new_sed(is_POM_S) .GE. const_real_nullsmall)then
                                 loc_POM_S_H2S_swiflux = loc_new_sed(is_POM_S)*conv_POC_cm3_mol*1.0
                                 loc_ALK_swiflux = loc_ALK_swiflux - 2*loc_POM_S_H2S_swiflux
-                            !                            print*,'loc_POM_S_H2S_swiflux ', loc_POM_S_H2S_swiflux
-                            !                            print*,'NEW loc_ALK_swiflux ', loc_ALK_swiflux
+!                                print*,'loc_POM_S_H2S_swiflux ', loc_POM_S_H2S_swiflux
+!                                print*,'NEW loc_ALK_swiflux ', loc_ALK_swiflux
+!                                print*,' '
                             end if
 
                         else
@@ -891,7 +900,7 @@ CONTAINS
 
         KNH4 = 1.3                                          !Adsorption coefficient (same in oxic and anoxic layer) (-)
 
-        zoxgf = 0.0            ! was 0.1                             ! cm, rolloff NH4, H2S oxidation for small zox depth
+        zoxgf = 0.1            ! was 0.1                             ! cm, rolloff NH4, H2S oxidation for small zox depth
         r_zxf=0.0
 
         dispFactor=por**(tort-1.0)*irrigationFactor             ! dispersion factor (-) - Ausbreitung - type of mixing that accompanies hydrodynamic                                    ! flows -> ~builds out paths of flow
@@ -2698,7 +2707,7 @@ CONTAINS
 
         ! Preparation: for each layer, sort out solution-matching across bioturbation boundary if necessary
         ! layer 1: 0 < z < zso4, DIC produced my OM degradation
-        !    prepfg_l12(reac1,      reac2,  ktemp, zU,  zL,     D1, D2, ls_a, ls_b, ls_c, ls_d, ls_e, ls_f, ltype)
+        !    prepfg_l12(    reac1,      reac2,   ktemp, zU,  zL,   D1,    D2, ls_a, ls_b, ls_c, ls_d, ls_e, ls_f, ltype)
         call sub_prepfg_l12(reac1_dic, reac1_dic, 0.0, 0.0, zso4, DDIC1, DDIC2, ls_a1, ls_b1, ls_c1, ls_d1, ls_e1, ls_f1, ltype1)
 
         ! layer 2: zso4 < z < zinf, DIC production by OM degradation (Methanogenesis) -> different production rate
@@ -2862,7 +2871,7 @@ CONTAINS
         e4_zso4, dedz4_zso4, f4_zso4, dfdz4_zso4, g4_zso4, dgdz4_zso4)
 
         ! flux of ALK produced by AOM interface (Source of ALK)
-!        zso4FALK = 0.0      !no secondary redox!
+!!!        zso4FALK = 0.0      !no secondary redox!
         if(zso4 .EQ. zinf)then
             zso4FALK = 0.0
         else
