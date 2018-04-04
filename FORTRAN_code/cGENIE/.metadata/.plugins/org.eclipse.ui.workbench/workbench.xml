@@ -34,7 +34,7 @@
 </editorArea>
 <editor activePart="true" focus="true" id="org.eclipse.photran.ui.FortranEditor" name="sedgem_box_benthic.f90" partName="sedgem_box_benthic.f90" title="sedgem_box_benthic.f90" tooltip="/home/dh12423/Documents/GitHub/benthic-model/FORTRAN_code/cGENIE/sedgem_box_benthic.f90" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" uri="file:/home/dh12423/Documents/GitHub/benthic-model/FORTRAN_code/cGENIE/sedgem_box_benthic.f90"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="53450" selectionTopPixel="14960"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="40961" selectionTopPixel="11152"/>
 </editor>
 </editors>
 <views>
@@ -150,8 +150,17 @@
 <item historyLabel="sedgem_box_benthic.f90" index="0">
 <position info="not_deleted" x="159388" y="753"/>
 </item>
-<item active="true" historyLabel="sedgem_box_benthic.f90" index="0">
+<item historyLabel="sedgem_box_benthic.f90" index="0">
 <position info="not_deleted" x="156445" y="114"/>
+</item>
+<item historyLabel="sedgem_box_benthic.f90" index="0">
+<position info="not_deleted" x="158473" y="289"/>
+</item>
+<item historyLabel="sedgem_box_benthic.f90" index="0">
+<position info="not_deleted" x="156465" y="188"/>
+</item>
+<item active="true" historyLabel="sedgem_box_benthic.f90" index="0">
+<position info="not_deleted" x="156297" y="389"/>
 </item>
 </navigationHistory>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>

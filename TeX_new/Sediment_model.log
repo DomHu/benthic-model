@@ -1,11 +1,11 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2017.8.24)  14 JAN 2018 10:30
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2017.11.22)  27 MAR 2018 15:17
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **Sediment_model
 (./Sediment_model.tex
 LaTeX2e <2011/06/27>
-Babel <3.9h> and hyphenation patterns for 29 languages loaded.
+Babel <3.9h> and hyphenation patterns for 2 languages loaded.
 (./copernicus.cls
 Document Class: copernicus 2017/06/21 8.45 Copernicus papers
 (/usr/share/texlive/texmf-dist/tex/latex/base/fixltx2e.sty
@@ -1005,13 +1005,13 @@ LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <10> not available
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
 (Font)              scaled to size 9.49997pt on input line 378.
 
-<figures/Sediment-model-with-profiles.pdf, id=350, 662.7159pt x 531.90724pt>
+<figures/Sediment-model-with-profiles.pdf, id=350, 621.29613pt x 498.66302pt>
 File: figures/Sediment-model-with-profiles.pdf Graphic file (type pdf)
 
 <use figures/Sediment-model-with-profiles.pdf>
 Package pdftex.def Info: figures/Sediment-model-with-profiles.pdf used on input
  line 398.
-(pdftex.def)             Requested size: 402.89255pt x 323.37535pt.
+(pdftex.def)             Requested size: 402.89255pt x 323.37384pt.
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <9> not available
 (Font)              Font shape `T1/ptm/b/n' tried instead on input line 399.
  [6] [7 <./figures/Sediment-model-with-profiles.pdf>] [8]
@@ -1024,7 +1024,7 @@ Overfull \hbox (32.17537pt too wide) in paragraph at lines 592--592
 [] 
  []
 
-[11] [12] [13] [14] <figures/P-cycle.pdf, id=613, 721.99338pt x 523.07419pt>
+[11] [12] [13] [14] <figures/P-cycle.pdf, id=609, 721.99338pt x 523.07419pt>
 File: figures/P-cycle.pdf Graphic file (type pdf)
 
 <use figures/P-cycle.pdf>
@@ -1032,13 +1032,13 @@ Package pdftex.def Info: figures/P-cycle.pdf used on input line 807.
 (pdftex.def)             Requested size: 352.52809pt x 255.4067pt.
  [15] [16] [17 <./figures/P-cycle.pdf>] [18] [19]
 [20] [21]
-<figures/Boundary_Matching_zbio.pdf, id=759, 302.06451pt x 507.43175pt>
+<figures/Boundary_Matching_zbio.pdf, id=755, 283.18549pt x 475.71727pt>
 File: figures/Boundary_Matching_zbio.pdf Graphic file (type pdf)
 
 <use figures/Boundary_Matching_zbio.pdf>
 Package pdftex.def Info: figures/Boundary_Matching_zbio.pdf used on input line 
 1055.
-(pdftex.def)             Requested size: 151.08566pt x 253.80042pt.
+(pdftex.def)             Requested size: 151.08566pt x 253.813pt.
  [22] [23 <./figures/Boundary_Matching_zbio.pdf>] [24]
 LaTeX Font Info:    Try loading font information for TS1+ptm on input line 1127
 .
@@ -1046,7 +1046,7 @@ LaTeX Font Info:    Try loading font information for TS1+ptm on input line 1127
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 )
 [25] [26] [27] [28]
-<figures/SA/00_CDFs_400m_NO_3_1807.pdf, id=946, 465.74pt x 843.15pt>
+<figures/SA/00_CDFs_400m_NO_3_1807.pdf, id=941, 465.74pt x 843.15pt>
 File: figures/SA/00_CDFs_400m_NO_3_1807.pdf Graphic file (type pdf)
 
 <use figures/SA/00_CDFs_400m_NO_3_1807.pdf>
@@ -1058,7 +1058,7 @@ ne 1343.
 LaTeX Warning: Float too large for page by 16.53777pt on input line 1356.
 
 [29] [30 <./figures/SA/00_CDFs_400m_NO_3_1807.pdf>]
-<figures/SA/0_KSIndex_ALL_OUTPUT_13042017.pdf, id=1034, 529.98pt x 393.47pt>
+<figures/SA/0_KSIndex_ALL_OUTPUT_13042017.pdf, id=1029, 529.98pt x 393.47pt>
 File: figures/SA/0_KSIndex_ALL_OUTPUT_13042017.pdf Graphic file (type pdf)
 
 <use figures/SA/0_KSIndex_ALL_OUTPUT_13042017.pdf>
@@ -1066,7 +1066,7 @@ Package pdftex.def Info: figures/SA/0_KSIndex_ALL_OUTPUT_13042017.pdf used on i
 nput line 1445.
 (pdftex.def)             Requested size: 503.61377pt x 373.89642pt.
  [31] [32 <./figures/SA/0_KSIndex_ALL_OUTPUT_13042017.pdf>]
-<figures/SA/k1_vs_f1_SWIflux_COMBINED_1604.pdf, id=1083, 1373.13pt x 1043.9pt>
+<figures/SA/k1_vs_f1_SWIflux_COMBINED_1604.pdf, id=1078, 1373.13pt x 1043.9pt>
 File: figures/SA/k1_vs_f1_SWIflux_COMBINED_1604.pdf Graphic file (type pdf)
 
 <use figures/SA/k1_vs_f1_SWIflux_COMBINED_1604.pdf>
@@ -1074,7 +1074,7 @@ Package pdftex.def Info: figures/SA/k1_vs_f1_SWIflux_COMBINED_1604.pdf used on
 input line 1470.
 (pdftex.def)             Requested size: 503.61377pt x 382.86009pt.
  [33 <./figures/SA/k1_vs_f1_SWIflux_COMBINED_1604.pdf>] [34] [35]
-<figures/Profiles/0_ALL_PROFILES_COMBINED_1503.pdf, id=1202, 1537.745pt x 955.5
+<figures/Profiles/0_ALL_PROFILES_COMBINED_1503.pdf, id=1197, 1537.745pt x 955.5
 7pt>
 File: figures/Profiles/0_ALL_PROFILES_COMBINED_1503.pdf Graphic file (type pdf)
 
@@ -1090,7 +1090,7 @@ LaTeX Warning: Float too large for page by 5.69054pt on input line 1564.
 LaTeX Warning: Float too large for page by 5.69054pt on input line 1622.
 
 [36] [37 <./figures/Profiles/0_ALL_PROFILES_COMBINED_1503.pdf>] [38]
-<figures/0_OMEN_Thullner_hypsometry_fluxes_diff_NCratio.pdf, id=1430, 497.86pt 
+<figures/0_OMEN_Thullner_hypsometry_fluxes_diff_NCratio.pdf, id=1425, 497.86pt 
 x 433.62pt>
 File: figures/0_OMEN_Thullner_hypsometry_fluxes_diff_NCratio.pdf Graphic file (
 type pdf)
@@ -1099,7 +1099,7 @@ Package pdftex.def Info: figures/0_OMEN_Thullner_hypsometry_fluxes_diff_NCratio
 .pdf used on input line 1646.
 (pdftex.def)             Requested size: 402.89255pt x 350.91269pt.
 
-<figures/OMEN-GENIE-coupling_GRID.pdf, id=1444, 401.5pt x 267.39899pt>
+<figures/OMEN-GENIE-coupling_GRID.pdf, id=1439, 401.5pt x 267.39899pt>
 File: figures/OMEN-GENIE-coupling_GRID.pdf Graphic file (type pdf)
 
 <use figures/OMEN-GENIE-coupling_GRID.pdf>
@@ -1108,7 +1108,7 @@ e 1674.
 (pdftex.def)             Requested size: 352.52809pt x 234.79773pt.
  [39] [40 <./figures/0_OMEN_Thullner_hypsometry_fluxes_diff_NCratio.pdf>] [41 <
 ./figures/OMEN-GENIE-coupling_GRID.pdf>] [42]
-<figures/OM_reactivity/OM_degradation_0808_updated.pdf, id=1660, 1967.35pt x 72
+<figures/OM_reactivity/OM_degradation_0808_updated.pdf, id=1655, 1967.35pt x 72
 2.7pt>
 File: figures/OM_reactivity/OM_degradation_0808_updated.pdf Graphic file (type 
 pdf)
@@ -1119,7 +1119,7 @@ used on input line 1750.
  [43]
 [44 <./figures/OM_reactivity/OM_degradation_0808_updated.pdf>]
 <figures/OMEN-GENIE-Exp/Seiter_interpol_TOCwtpc_compare_until3+GENIEgrid.pdf, i
-d=1740, 401.5pt x 505.89pt>
+d=1735, 401.5pt x 505.89pt>
 File: figures/OMEN-GENIE-Exp/Seiter_interpol_TOCwtpc_compare_until3+GENIEgrid.p
 df Graphic file (type pdf)
 
@@ -1143,7 +1143,7 @@ OMS/cmsy/m/n/10 g$\T1/ptm/m/n/10 ).
 
 
 <figures/OMEN-GENIE-Exp/0_2908_Invariant_k_CROSSPLOT_WITH_REGRESSION_BigTriangl
-es_120118.pdf, id=1787, 2417.03pt x 1734.48pt>
+es_120118.pdf, id=1782, 2417.03pt x 1734.48pt>
 File: figures/OMEN-GENIE-Exp/0_2908_Invariant_k_CROSSPLOT_WITH_REGRESSION_BigTr
 iangles_120118.pdf Graphic file (type pdf)
 
@@ -1155,7 +1155,7 @@ TH_REGRESSION_BigTriangles_120118.pdf used on input line 1847.
  [47] [48 <./figures/OMEN-GENIE-Exp/0_2908_Invariant_k_CROSSPLOT_WITH_REGRESSIO
 N_BigTriangles_120118.pdf>]
 <figures/OMEN-GENIE-Exp/0_Boudreau_CROSSPLOTS_290817_noDEPTHDEP_BigTriangles_12
-0118.pdf, id=1837, 2172.115pt x 851.18pt>
+0118.pdf, id=1832, 2172.115pt x 851.18pt>
 File: figures/OMEN-GENIE-Exp/0_Boudreau_CROSSPLOTS_290817_noDEPTHDEP_BigTriangl
 es_120118.pdf Graphic file (type pdf)
 
@@ -1166,7 +1166,7 @@ DEPTHDEP_BigTriangles_120118.pdf used on input line 1876.
 (pdftex.def)             Requested size: 503.61377pt x 197.33882pt.
 
 <figures/OMEN-GENIE-Exp/0_2908_BOUDREAU_DEPTH_DEP_POC_BigTriangles_120118.pdf, 
-id=1857, 1138.11012pt x 1422.63771pt>
+id=1852, 1138.11012pt x 1422.63771pt>
 File: figures/OMEN-GENIE-Exp/0_2908_BOUDREAU_DEPTH_DEP_POC_BigTriangles_120118.
 pdf Graphic file (type pdf)
 
@@ -1183,7 +1183,7 @@ LaTeX Warning: Float too large for page by 2.69582pt on input line 1912.
 les_120118.pdf>] [50 <./figures/OMEN-GENIE-Exp/0_2908_BOUDREAU_DEPTH_DEP_POC_Bi
 gTriangles_120118.pdf>]
 <figures/OMEN-GENIE-Exp/0_2908_Boudreau_Depth_SED_PROPS_AND_FLUXES_1009_LINES.p
-df, id=1942, 1081.20465pt x 1337.27951pt>
+df, id=1936, 1081.20465pt x 1337.27951pt>
 File: figures/OMEN-GENIE-Exp/0_2908_Boudreau_Depth_SED_PROPS_AND_FLUXES_1009_LI
 NES.pdf Graphic file (type pdf)
 
@@ -1199,7 +1199,7 @@ LaTeX Warning: Float too large for page by 11.27345pt on input line 1965.
 [51] [52 <./figures/OMEN-GENIE-Exp/0_2908_Boudreau_Depth_SED_PROPS_AND_FLUXES_1
 009_LINES.pdf>]
 <figures/OMEN-GENIE-Exp/2908_34_Boudreau_depthdep_zox_vs_SFD_with_Glud.pdf, id=
-2020, 370.38374pt x 296.10625pt>
+2015, 370.38374pt x 296.10625pt>
 File: figures/OMEN-GENIE-Exp/2908_34_Boudreau_depthdep_zox_vs_SFD_with_Glud.pdf
  Graphic file (type pdf)
 
@@ -1213,7 +1213,7 @@ f>] [54] [55] [56]
 LaTeX Warning: Float too large for page by 5.69054pt on input line 2192.
 
 [57] [58]
-<figures/SA/0_SIndex_4000m_ALL_combined.pdf, id=2095, 1565.85pt x 642.4pt>
+<figures/SA/0_SIndex_4000m_ALL_combined.pdf, id=2090, 1565.85pt x 642.4pt>
 File: figures/SA/0_SIndex_4000m_ALL_combined.pdf Graphic file (type pdf)
 
 <use figures/SA/0_SIndex_4000m_ALL_combined.pdf>
@@ -1221,7 +1221,7 @@ Package pdftex.def Info: figures/SA/0_SIndex_4000m_ALL_combined.pdf used on inp
 ut line 2202.
 (pdftex.def)             Requested size: 503.61377pt x 206.60143pt.
  [59 <./figures/SA/0_SIndex_4000m_ALL_combined.pdf>]
-<figures/OMEN-GENIE-Exp/Solid_field_mask.pdf, id=2123, 417.56pt x 224.84pt>
+<figures/OMEN-GENIE-Exp/Solid_field_mask.pdf, id=2118, 417.56pt x 224.84pt>
 File: figures/OMEN-GENIE-Exp/Solid_field_mask.pdf Graphic file (type pdf)
 
 <use figures/OMEN-GENIE-Exp/Solid_field_mask.pdf>
@@ -1239,12 +1239,12 @@ Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 2396.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 2396.
  ) 
 Here is how much of TeX's memory you used:
- 11443 strings out of 494409
- 170703 string characters out of 6164644
- 314540 words of memory out of 5000000
- 14130 multiletter control sequences out of 15000+600000
+ 11443 strings out of 495028
+ 170703 string characters out of 6181496
+ 313186 words of memory out of 5000000
+ 14090 multiletter control sequences out of 15000+600000
  54691 words of font info for 80 fonts, out of 8000000 for 9000
- 376 hyphenation exceptions out of 8191
+ 14 hyphenation exceptions out of 8191
  43i,22n,40p,1318b,722s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
 e/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texm
@@ -1269,10 +1269,10 @@ f-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/share/texlive/texmf-dist/fonts
 /type1/urw/helvetic/uhvr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/t
 imes/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb
 ></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on Sediment_model.pdf (67 pages, 11939024 bytes).
+Output written on Sediment_model.pdf (67 pages, 11651058 bytes).
 PDF statistics:
- 2327 PDF objects out of 2487 (max. 8388607)
- 1978 compressed objects within 20 object streams
+ 2322 PDF objects out of 2487 (max. 8388607)
+ 1974 compressed objects within 20 object streams
  322 named destinations out of 1000 (max. 500000)
  91 words of extra memory for PDF output out of 10000 (max. 10000000)
 

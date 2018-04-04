@@ -14,7 +14,7 @@
    height="662.40002"
    id="svg4078"
    version="1.1"
-   inkscape:version="0.48.4 r9939"
+   inkscape:version="0.92.3 (unknown)"
    sodipodi:docname="Sediment-model-with-profiles_NEW.svg">
   <sodipodi:namedview
      inkscape:document-units="in"
@@ -23,13 +23,13 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.7366335"
-     inkscape:cx="633.5917"
-     inkscape:cy="199.86242"
+     inkscape:zoom="0.86831675"
+     inkscape:cx="417.21697"
+     inkscape:cy="215.57474"
      inkscape:current-layer="g7535"
      id="namedview4082"
      showgrid="false"
-     inkscape:window-width="1920"
+     inkscape:window-width="2048"
      inkscape:window-height="1056"
      inkscape:window-x="0"
      inkscape:window-y="24"
@@ -1359,102 +1359,96 @@
           </g>
           <text
              xml:space="preserve"
-             style="font-size:18px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#d4aa00;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:Sans Bold"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0%;font-family:'DejaVu Sans';-inkscape-font-specification:'Sans Bold';letter-spacing:0px;word-spacing:0px;fill:#d4aa00;fill-opacity:1;stroke:none"
              x="-623.60437"
              y="247.52007"
              id="text7590"
-             sodipodi:linespacing="125%"
-             transform="matrix(0,-1,1,0,0,0)"><tspan
-               style="font-size:17.78432846px"
+             transform="rotate(-90)"><tspan
+               style="font-size:17.78432846px;line-height:1.25"
                sodipodi:role="line"
                id="tspan7592"
                x="-623.60437"
                y="247.52007">oxic</tspan></text>
           <text
              xml:space="preserve"
-             style="font-size:18px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#d4aa00;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:Sans Bold"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0%;font-family:'DejaVu Sans';-inkscape-font-specification:'Sans Bold';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#d4aa00;fill-opacity:1;stroke:none"
              x="-702.76923"
              y="236.60713"
              id="text7590-3"
-             sodipodi:linespacing="125%"
-             transform="matrix(0,-1,1,0,0,0)"><tspan
-               style="font-size:17.78432846px;text-align:center;text-anchor:middle"
+             transform="rotate(-90)"><tspan
+               style="font-size:17.78432846px;line-height:1.25;text-align:center;text-anchor:middle"
                sodipodi:role="line"
                x="-702.76923"
                y="236.60713"
                id="tspan7615">nitro-</tspan><tspan
-               style="font-size:17.78432846px;text-align:center;text-anchor:middle"
+               style="font-size:17.78432846px;line-height:1.25;text-align:center;text-anchor:middle"
                sodipodi:role="line"
                x="-702.76923"
-               y="258.83752"
+               y="258.83755"
                id="tspan3367">genous</tspan></text>
           <text
              xml:space="preserve"
-             style="font-size:18px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#d4aa00;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:Sans Bold"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0%;font-family:'DejaVu Sans';-inkscape-font-specification:'Sans Bold';letter-spacing:0px;word-spacing:0px;fill:#d4aa00;fill-opacity:1;stroke:none"
              x="-853.6239"
              y="247.52007"
              id="text7590-2"
-             sodipodi:linespacing="125%"
-             transform="matrix(0,-1,1,0,0,0)"><tspan
-               style="font-size:17.78432846px"
+             transform="rotate(-90)"><tspan
+               style="font-size:17.78432846px;line-height:1.25"
                sodipodi:role="line"
                id="tspan7592-1"
                x="-853.6239"
                y="247.52007">sulfidic</tspan></text>
           <text
              xml:space="preserve"
-             style="font-size:18px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#d4aa00;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:Sans Bold"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0%;font-family:'DejaVu Sans';-inkscape-font-specification:'Sans Bold';letter-spacing:0px;word-spacing:0px;fill:#d4aa00;fill-opacity:1;stroke:none"
              x="-970.1239"
              y="247.52007"
              id="text7590-2-0"
-             sodipodi:linespacing="125%"
-             transform="matrix(0,-1,1,0,0,0)"><tspan
-               style="font-size:17.78432846px"
+             transform="rotate(-90)"><tspan
+               style="font-size:17.78432846px;line-height:1.25"
                sodipodi:role="line"
                id="tspan7592-1-8"
                x="-970.1239"
                y="247.52007">methanic</tspan></text>
           <text
-             sodipodi:linespacing="125%"
              id="text12345"
              y="605.64227"
              x="268.86517"
-             style="font-size:16px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:Sans Bold"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0%;font-family:'DejaVu Sans';-inkscape-font-specification:'Sans Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
              xml:space="preserve"><tspan
-               style="font-size:17.78432846px;fill:#ffffff"
+               style="font-size:17.78432846px;line-height:1.25;fill:#ffffff"
                id="tspan12349"
                y="605.64227"
                x="268.86517"
                sodipodi:role="line">oxygen respiration</tspan></text>
         </g>
         <text
-           sodipodi:linespacing="125%"
            id="text7283"
            y="955.2948"
            x="358.68961"
-           style="font-size:20px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:Sans Bold"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0%;font-family:'DejaVu Sans';-inkscape-font-specification:'Sans Bold';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
            xml:space="preserve"><tspan
-             style="text-align:center;text-anchor:middle"
+             style="font-size:20px;line-height:1.25;text-align:center;text-anchor:middle"
              y="955.2948"
              x="358.68961"
              id="tspan7285"
              sodipodi:role="line">Pore water</tspan><tspan
-             style="text-align:center;text-anchor:middle"
+             style="font-size:20px;line-height:1.25;text-align:center;text-anchor:middle"
              id="tspan7350"
              y="980.2948"
              x="358.68961"
              sodipodi:role="line">concentration</tspan></text>
         <text
-           sodipodi:linespacing="125%"
            id="text7287"
            y="967.7948"
            x="0.41421366"
-           style="font-size:20px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#d4aa00;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:Sans Bold"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0%;font-family:'DejaVu Sans';-inkscape-font-specification:'Sans Bold';letter-spacing:0px;word-spacing:0px;fill:#d4aa00;fill-opacity:1;stroke:none"
            xml:space="preserve"><tspan
              y="967.7948"
              x="0.41421366"
              id="tspan7289"
-             sodipodi:role="line">Zone</tspan></text>
+             sodipodi:role="line"
+             style="font-size:20px;line-height:1.25">Zone</tspan></text>
         <path
            inkscape:connector-curvature="0"
            id="path7291"
@@ -1519,78 +1513,77 @@
              inkscape:connector-curvature="0" />
         </g>
         <text
-           sodipodi:linespacing="125%"
            id="text7347"
            y="530.78247"
            x="298.168"
-           style="font-size:16px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-opacity:1;font-family:DejaVu Sans;-inkscape-font-specification:Sans Bold"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0%;font-family:'DejaVu Sans';-inkscape-font-specification:'Sans Bold';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-opacity:1"
            xml:space="preserve"><tspan
              dy="0 6.5"
              y="530.78247"
              x="298.168"
              id="tspan7349"
-             sodipodi:role="line">O<tspan
+             sodipodi:role="line"
+             style="font-size:16px;line-height:1.25">O<tspan
    id="tspan7361"
    style="font-size:12px;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-opacity:1">2</tspan></tspan></text>
         <text
-           sodipodi:linespacing="125%"
            id="text7351"
            y="586.20282"
            x="382.95837"
-           style="font-size:16px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-opacity:1;font-family:DejaVu Sans;-inkscape-font-specification:Sans Bold"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0%;font-family:'DejaVu Sans';-inkscape-font-specification:'Sans Bold';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-opacity:1"
            xml:space="preserve"><tspan
              dx="0 0"
              dy="0 0"
              y="586.20282"
              x="382.95837"
              id="tspan7353"
-             sodipodi:role="line">NO<tspan
+             sodipodi:role="line"
+             style="font-size:16px;line-height:1.25">NO<tspan
    dx="0 -3.7928932"
    dy="6.5 -13.914213"
    id="tspan7365"
    style="font-size:12px;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-opacity:1">3-</tspan></tspan></text>
         <text
-           sodipodi:linespacing="125%"
            id="text7373"
            y="589.76672"
            x="456.02081"
-           style="font-size:16px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-opacity:1;font-family:DejaVu Sans;-inkscape-font-specification:Sans Bold"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0%;font-family:'DejaVu Sans';-inkscape-font-specification:'Sans Bold';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-opacity:1"
            xml:space="preserve"><tspan
              y="589.76672"
              x="456.02081"
              id="tspan7375"
-             sodipodi:role="line">SO<tspan
+             sodipodi:role="line"
+             style="font-size:16px;line-height:1.25">SO<tspan
    dx="0 -3.9644668"
    dy="5 -13"
    id="tspan7377"
    style="font-size:12px;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-opacity:1">42-</tspan></tspan></text>
         <text
-           sodipodi:linespacing="125%"
            id="text7379"
            y="711.46014"
            x="304.87512"
-           style="font-size:16px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-opacity:1;font-family:DejaVu Sans;-inkscape-font-specification:Sans Bold"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0%;font-family:'DejaVu Sans';-inkscape-font-specification:'Sans Bold';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-opacity:1"
            xml:space="preserve"><tspan
              dy="0 0 -5"
              y="711.46014"
              x="304.87512"
              id="tspan7381"
-             sodipodi:role="line">H<tspan
+             sodipodi:role="line"
+             style="font-size:16px;line-height:1.25">H<tspan
    dy="5"
    id="tspan7383"
    style="font-size:12px;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-opacity:1">2</tspan>S</tspan></text>
         <text
-           sodipodi:linespacing="125%"
            id="text7347-7"
            y="476.61502"
            x="279.68393"
-           style="font-size:16px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-opacity:1;font-family:DejaVu Sans;-inkscape-font-specification:Sans Bold"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0%;font-family:'DejaVu Sans';-inkscape-font-specification:'Sans Bold';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-opacity:1"
            xml:space="preserve"><tspan
              y="476.61502"
              x="279.68393"
              id="tspan7349-0"
              sodipodi:role="line"
-             style="font-size:20px">concentration</tspan></text>
+             style="font-size:20px;line-height:1.25">concentration</tspan></text>
         <path
            style="fill:none;stroke:#ffff00;stroke-width:6.84030199000000039;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
            d="m 694.39742,485.09879 -0.48951,10.38193 -2.90341,13.63279 -3.94584,21.93225 -4.43192,24.64388 -4.07698,27.78995 -2.8875,14.68147 c -1.28762,6.54689 -7.66169,5.36537 -11.3964,8.38942 -4.62293,3.74321 -9.20115,7.67124 -13.61235,12.05976 -9.58396,9.53471 -19.26639,19.08702 -27.85786,30.93597 -9.0605,12.49579 -17.53515,26.42828 -24.6922,41.94704 -4.52364,9.80871 -7.80123,21.04935 -11.3385,31.91321 -4.97367,15.27539 -10.12926,30.51004 -13.87849,46.71616 -3.93873,17.02531 -8.44903,50.01107 -8.95384,52.64837 -0.73847,3.85804 -8.16082,38.03766 -8.5354,40.25431 -1.18402,7.00676 0.37615,-2.95985 -1.50616,9.9196 -0.53208,3.6407 -1.91577,15.731 -1.91577,15.731"
@@ -1604,66 +1597,61 @@
            d="M 769.65736,602.54784 49.023089,603.36218"
            style="fill:#00ff00;stroke:#00ff00;stroke-width:1.98000002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:11.88, 11.88;stroke-dashoffset:0" />
         <text
-           sodipodi:linespacing="125%"
            id="text9042"
            y="623.36218"
            x="610"
-           style="font-size:20px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#00ff00;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:Sans Bold"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0%;font-family:'DejaVu Sans';-inkscape-font-specification:'Sans Bold';letter-spacing:0px;word-spacing:0px;fill:#00ff00;fill-opacity:1;stroke:none"
            xml:space="preserve"><tspan
-             style="font-size:18px"
+             style="font-size:18px;line-height:1.25"
              y="623.36218"
              x="610"
              id="tspan9044"
              sodipodi:role="line">bioturbation</tspan></text>
         <text
-           sodipodi:linespacing="125%"
            id="text7283-5"
            y="953.66394"
            x="154.91267"
-           style="font-size:20px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:Sans Bold"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0%;font-family:'DejaVu Sans';-inkscape-font-specification:'Sans Bold';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
            xml:space="preserve"><tspan
-             style="text-align:center;text-anchor:middle"
+             style="font-size:20px;line-height:1.25;text-align:center;text-anchor:middle"
              id="tspan9067"
              y="953.66394"
              x="154.91267"
              sodipodi:role="line">Degradation</tspan><tspan
-             style="text-align:center;text-anchor:middle"
+             style="font-size:20px;line-height:1.25;text-align:center;text-anchor:middle"
              y="978.66394"
              x="154.91267"
              sodipodi:role="line"
              id="tspan3370">pathway</tspan></text>
         <text
-           sodipodi:linespacing="125%"
            id="text12351"
            y="630.37524"
            x="60.954411"
-           style="font-size:16px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:Sans Bold"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0%;font-family:'DejaVu Sans';-inkscape-font-specification:'Sans Bold';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
            xml:space="preserve"><tspan
-             style="font-size:18px"
+             style="font-size:18px;line-height:1.25"
              y="630.37524"
              x="60.954411"
              id="tspan12353"
              sodipodi:role="line">nitrate reduction</tspan></text>
         <text
-           sodipodi:linespacing="125%"
            id="text12351-9-1"
            y="741.78326"
            x="60.717106"
-           style="font-size:16px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:Sans Bold"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0%;font-family:'DejaVu Sans';-inkscape-font-specification:'Sans Bold';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
            xml:space="preserve"><tspan
-             style="font-size:18px"
+             style="font-size:18px;line-height:1.25"
              y="741.78326"
              x="60.717106"
              id="tspan12353-60-2"
              sodipodi:role="line">sulfate reduction</tspan></text>
         <text
-           sodipodi:linespacing="125%"
            id="text12351-9-1-5-8"
            y="850.07874"
            x="63.547184"
-           style="font-size:16px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:Sans Bold"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0%;font-family:'DejaVu Sans';-inkscape-font-specification:'Sans Bold';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
            xml:space="preserve"><tspan
-             style="font-size:18px"
+             style="font-size:18px;line-height:1.25"
              y="850.07874"
              x="63.547184"
              id="tspan12353-60-2-5-4"
@@ -1724,28 +1712,26 @@
            transform="translate(0,-62)" />
         <text
            xml:space="preserve"
-           style="font-size:18px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffff00;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:Sans Bold"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0%;font-family:'DejaVu Sans';-inkscape-font-specification:'Sans Bold';letter-spacing:0px;word-spacing:0px;fill:#ffff00;fill-opacity:1;stroke:none"
            x="568.16406"
            y="476.40408"
-           id="text6916"
-           sodipodi:linespacing="125%"><tspan
+           id="text6916"><tspan
              sodipodi:role="line"
              id="tspan6918"
              x="568.16406"
              y="476.40408"
-             style="font-size:20px;fill:#ffff00">wt% TOC</tspan></text>
+             style="font-size:20px;line-height:1.25;fill:#ffff00">wt% TOC</tspan></text>
         <text
            xml:space="preserve"
-           style="font-size:18px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffff00;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:Sans Bold"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0%;font-family:'DejaVu Sans';-inkscape-font-specification:'Sans Bold';letter-spacing:0px;word-spacing:0px;fill:#ffff00;fill-opacity:1;stroke:none"
            x="596.3186"
            y="381.0155"
-           id="text5710"
-           sodipodi:linespacing="125%"><tspan
+           id="text5710"><tspan
              sodipodi:role="line"
              id="tspan5712"
              x="596.3186"
              y="381.0155"
-             style="font-size:24px;fill:#ffff00">POC</tspan></text>
+             style="font-size:24px;line-height:1.25;fill:#ffff00">POC</tspan></text>
         <path
            style="stroke-linejoin:miter;marker-end:url(#Arrow1Mend-9KQ);stroke-opacity:1;marker-start:url(#Arrow1Mstart-4i);stroke:#ffff00;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-width:3.03676367000000003;fill:#ffff00"
            d="m 624.43313,393.63035 -1.4073,57.26619"
@@ -1759,33 +1745,32 @@
            inkscape:connector-curvature="0"
            sodipodi:nodetypes="cc" />
         <text
-           sodipodi:linespacing="125%"
            id="text26195-5-9-0"
            y="953.58582"
            x="618.79297"
-           style="font-size:24px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffff00;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans Bold"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0%;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans Bold';letter-spacing:0px;word-spacing:0px;fill:#ffff00;fill-opacity:1;stroke:none"
            xml:space="preserve"><tspan
-             style="font-size:20px;text-align:center;text-anchor:middle;fill:#ffff00"
+             style="font-size:20px;line-height:1.25;text-align:center;text-anchor:middle;fill:#ffff00"
              y="953.58582"
              x="618.79297"
              id="tspan26197-8-8-6"
              sodipodi:role="line">Long term burial</tspan><tspan
-             style="font-size:20px;text-align:center;text-anchor:middle;fill:#ffff00"
+             style="font-size:20px;line-height:1.25;text-align:center;text-anchor:middle;fill:#ffff00"
              y="978.58582"
              x="618.79297"
              sodipodi:role="line"
              id="tspan7695">of organic carbon</tspan></text>
         <text
-           sodipodi:linespacing="125%"
            id="text7373-7"
            y="755.67365"
            x="445.6026"
-           style="font-size:16px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-opacity:1;font-family:DejaVu Sans;-inkscape-font-specification:Sans Bold"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0%;font-family:'DejaVu Sans';-inkscape-font-specification:'Sans Bold';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-opacity:1"
            xml:space="preserve"><tspan
              y="755.67365"
              x="445.6026"
              id="tspan7375-7"
-             sodipodi:role="line">PO<tspan
+             sodipodi:role="line"
+             style="font-size:16px;line-height:1.25">PO<tspan
    dx="0 -2.8284268"
    dy="5 -12.72792"
    id="tspan7377-5"
@@ -1796,18 +1781,18 @@
            id="path7148"
            inkscape:connector-curvature="0" />
         <text
-           sodipodi:linespacing="125%"
            id="text7351-3"
            y="654.98352"
            x="371.03897"
-           style="font-size:16px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-opacity:1;font-family:DejaVu Sans;-inkscape-font-specification:Sans Bold"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0%;font-family:'DejaVu Sans';-inkscape-font-specification:'Sans Bold';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-opacity:1"
            xml:space="preserve"><tspan
              dx="0"
              dy="0"
              y="654.98352"
              x="371.03897"
              id="tspan7353-8"
-             sodipodi:role="line">NH<tspan
+             sodipodi:role="line"
+             style="font-size:16px;line-height:1.25">NH<tspan
    style="font-size:12px"
    id="tspan7174"
    dy="5.6568537 -12.72792"
@@ -1819,17 +1804,17 @@
            d="m 251.72427,779.13171 c 2.21892,6.81815 5.89684,10.88611 9.21004,14.26654 l 30.36574,27.67364 52.54372,49.07931 19.78789,19.42312"
            style="fill:none;stroke:#ffffff;stroke-width:2.83286023;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:11.3314407, 2.83286018;stroke-dashoffset:0" />
         <text
-           sodipodi:linespacing="125%"
            id="text7351-3-2"
            y="873.6239"
            x="273.91721"
-           style="font-size:16px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-opacity:1;font-family:DejaVu Sans;-inkscape-font-specification:Sans Bold"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0%;font-family:'DejaVu Sans';-inkscape-font-specification:'Sans Bold';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-opacity:1"
            xml:space="preserve"><tspan
              y="873.6239"
              x="273.91721"
              id="tspan7353-8-9"
              sodipodi:role="line"
-             dy="0 0 0 0 -5"><tspan
+             dy="0 0 0 0 -5"
+             style="font-size:16px;line-height:1.25"><tspan
    style="font-size:20px"
    id="tspan7218">[</tspan>CH<tspan
    style="font-size:12px"
@@ -1839,28 +1824,26 @@
    id="tspan7222">] </tspan></tspan></text>
         <text
            xml:space="preserve"
-           style="font-size:18px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-opacity:1;font-family:DejaVu Sans;-inkscape-font-specification:Sans Bold"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0%;font-family:'DejaVu Sans';-inkscape-font-specification:'Sans Bold';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-opacity:1"
            x="365.10123"
            y="378.90027"
-           id="text5710-7"
-           sodipodi:linespacing="125%"><tspan
+           id="text5710-7"><tspan
              sodipodi:role="line"
              x="365.10123"
              y="378.90027"
-             style="font-size:24px;text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-opacity:1"
+             style="font-size:24px;line-height:1.25;text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-opacity:1"
              id="tspan5137">solute species</tspan></text>
         <text
            xml:space="preserve"
-           style="font-size:18px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:Sans Bold"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0%;font-family:'DejaVu Sans';-inkscape-font-specification:'Sans Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
            x="3.5"
            y="380.01062"
-           id="text5710-5"
-           sodipodi:linespacing="125%"><tspan
+           id="text5710-5"><tspan
              sodipodi:role="line"
              id="tspan5712-9"
              x="3.5"
              y="380.01062"
-             style="font-size:28px">Ocean</tspan></text>
+             style="font-size:28px;line-height:1.25">Ocean</tspan></text>
         <path
            style="fill:none;stroke:#ffffff;stroke-width:3.03676367;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#Arrow1Mstart-4Q);marker-end:url(#Arrow1Mend-9K)"
            d="m 358.70365,393.63035 -1.4073,57.26619"
@@ -1879,25 +1862,23 @@
          d="m 54.521129,482.42332 725.672291,0"
          style="fill:none;stroke:#d4aa00;stroke-width:1.04225791px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
       <text
-         sodipodi:linespacing="125%"
          id="text7397"
          y="175.41638"
          x="811.30145"
-         style="font-size:12px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:Sans Bold"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0%;font-family:'DejaVu Sans';-inkscape-font-specification:'Sans Bold';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
          xml:space="preserve"><tspan
-           style="font-size:20px"
+           style="font-size:20px;line-height:1.25"
            y="175.41638"
            x="811.30145"
            id="tspan7399"
            sodipodi:role="line">z=0</tspan></text>
       <text
-         sodipodi:linespacing="125%"
          id="text7397-5"
          y="255.51836"
          x="810.92303"
-         style="font-size:12px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:Sans Bold"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0%;font-family:'DejaVu Sans';-inkscape-font-specification:'Sans Bold';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
          xml:space="preserve"><tspan
-           style="font-size:20px"
+           style="font-size:20px;line-height:1.25"
            y="255.51836"
            x="810.92303"
            id="tspan7399-8"
@@ -1905,13 +1886,12 @@
    id="tspan7422"
    style="font-size:65.00091553%;baseline-shift:sub">ox</tspan></tspan></text>
       <text
-         sodipodi:linespacing="125%"
          id="text7397-5-8"
          y="291.57947"
          x="811.11029"
-         style="font-size:12px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:Sans Bold"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0%;font-family:'DejaVu Sans';-inkscape-font-specification:'Sans Bold';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
          xml:space="preserve"><tspan
-           style="font-size:20px"
+           style="font-size:20px;line-height:1.25"
            y="291.57947"
            x="811.11029"
            id="tspan7399-8-2"
@@ -1919,13 +1899,12 @@
    id="tspan7448"
    style="font-size:65.00091553%;baseline-shift:sub">bio</tspan></tspan></text>
       <text
-         sodipodi:linespacing="125%"
          id="text7450"
          y="370.04413"
          x="811.34198"
-         style="font-size:12px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:Sans Bold"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0%;font-family:'DejaVu Sans';-inkscape-font-specification:'Sans Bold';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
          xml:space="preserve"><tspan
-           style="font-size:20px"
+           style="font-size:20px;line-height:1.25"
            y="370.04413"
            x="811.34198"
            id="tspan7452"
@@ -1934,13 +1913,12 @@
    style="font-size:65.00091553%;baseline-shift:sub">NO<tspan
    id="tspan7456">3</tspan></tspan></tspan></text>
       <text
-         sodipodi:linespacing="125%"
          id="text7450-2"
          y="486.65024"
          x="811.12299"
-         style="font-size:12px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:Sans Bold"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0%;font-family:'DejaVu Sans';-inkscape-font-specification:'Sans Bold';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
          xml:space="preserve"><tspan
-           style="font-size:20px"
+           style="font-size:20px;line-height:1.25"
            y="486.65024"
            x="811.12299"
            id="tspan7452-0"
@@ -1949,19 +1927,19 @@
    style="font-size:65.00091553%;baseline-shift:sub">SO<tspan
    id="tspan7485">4</tspan></tspan></tspan></text>
       <text
-         sodipodi:linespacing="125%"
          id="text7450-2-2"
          y="580.79877"
          x="811.75555"
-         style="font-size:12px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:Sans Bold"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:0%;font-family:'DejaVu Sans';-inkscape-font-specification:'Sans Bold';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
          xml:space="preserve"><tspan
-           style="font-size:20px"
+           style="font-size:20px;line-height:1.25"
            y="580.79877"
            x="811.75555"
            id="tspan7452-0-9"
            sodipodi:role="line">z<tspan
-   id="tspan7514"
-   style="font-size:20px;baseline-shift:sub">∞</tspan></tspan></text>
+   style="font-size:13.33333302px"
+   id="tspan4102"
+   dy="2.3033071">max</tspan></tspan></text>
     </g>
   </g>
 </svg>
