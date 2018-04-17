@@ -511,8 +511,13 @@ Redfield, A.~C. (1963).
 \newblock The influence of organisms on the composition of seawater.
 \newblock {\em The sea}, 2:26--77.
 
+\bibitem[Reeburgh, 2007]{reeburgh_oceanic_2007}
+Reeburgh, W.~S. (2007).
+\newblock Oceanic {Methane} {Biogeochemistry}.
+\newblock {\em Chemical Reviews}, 107(2):486--513.
+
 \bibitem[Regnier et~al., 2011]{regnier_quantitative_2011}
-Regnier, P., Dale, A.~W., Arndt, S., LaRowe, D.~E., Mogollon, J., and
+Regnier, P., Dale, A.~W., Arndt, S., LaRowe, D.~E., Mogollón, J., and
   Van~Cappellen, P. (2011).
 \newblock Quantitative analysis of anaerobic oxidation of methane ({AOM}) in
   marine sediments: {A} modeling perspective.
@@ -624,6 +629,13 @@ Stolpovsky, K., Dale, A.~W., and Wallmann, K. (2015).
 \newblock Toward a parameterization of global-scale organic carbon
   mineralization kinetics in surface marine sediments.
 \newblock {\em Global Biogeochemical Cycles}, 29(6):2015GB005087.
+
+\bibitem[Stolpovsky et~al., 2017]{stolpovsky_new_2017}
+Stolpovsky, K., Dale, A.~W., and Wallmann, K. (2017).
+\newblock A new look at the multi-{G} model for organic carbon degradation in
+  surface marine sediments for coupled benthic-pelagic simulations of the
+  global ocean.
+\newblock {\em Biogeosciences Discuss.}, 2017:1--26.
 
 \bibitem[Stumm and Morgan, 2012]{stumm_aquatic_2012}
 Stumm, W. and Morgan, J.~J. (2012).
