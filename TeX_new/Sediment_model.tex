@@ -541,15 +541,14 @@ where
  a_{1i} = \frac{w - \sqrt{w^2+4\cdot D_{\chem{POC}_i}\cdot k_i}}{2\cdot D_{\chem{POC}_i}}, \quad b_{1i} = \frac{w + \sqrt{w^2+4\cdot D_{\chem{POC}_i}\cdot k_i}}{2\cdot D_{\chem{POC}_i}}, \quad a_{2i} = -\frac{k_i}{w}
 \end{equation}
 Determining the integration constants ($A_{1,i},\ B_{1,i},\ A_{2,i}$) requires the definition of a set of boundary conditions (Table \ref{Tab:BC_OM}). 
-For organic matter, OMEN-SED applies a known concentration/flux at the sediment-water interface and assumes continuity across the bottom of the bioturbated zone, $z_{\mathrm{bio}}$. 
+For organic matter, OMEN-SED applies a known concentration at the sediment-water interface and assumes continuity across the bottom of the bioturbated zone, $z_{\mathrm{bio}}$. 
+When OMEN-SED is coupled to an ESM, the POC depositional flux from the coupled ocean model is converted to a concentration by solving the flux divergence equation (\ref{Eq_flux_divergence}). 
 The integration constants ($A_{1,i},\ B_{1,i},\ A_{2,i}$) are thus given by:
 \begin{align}
 B_{1i} &\overset{\mathrm{BC 1)}}{=} \chem{POC}_{0i} - A_{1i} \label{POC_IntConst_B1i}\\
 A_{2i} &\overset{\mathrm{BC 2)}}{=} \frac{A_{1i}\cdot exp(a_{1i} z_{bio}^-)+B_{1i}\cdot exp(b_{1i} z_{bio}^-)}{exp(a_{2i} z_{bio}^+)}\notag\\
 A_{1i} &\overset{\mathrm{BC 3)}}{=} - \frac{B_{1i}b_{1i}\cdot exp(b_{1i} z_{bio}^-)}{a_{1i} \cdot exp(a_{1i} z_{bio}^-)}\notag
 \end{align}
-
-
 See Section \ref{subsec:GBCM} for further details on how to find the analytical solution.
 
 \begin{table}[tbp]
@@ -1098,15 +1097,15 @@ synthesises sediment and transport parameters, while Tab. \ref{table:reaction_pa
 \subsubsection{Transport Parameters}
 The burial of sediments and pore water is directly related to the accumulation of new material on the seafloor \citep[i.e. sedimentation,][]{burdige2006geochemistry}. 
 This results in a downward advective flux of older sediment material and pore water in relation to the sediment-water interface. When coupled to an ocean model, its sedimentation flux can be readily used in OMEN-SED. 
-The stand-alone version of OMEN-SED uses the empirical global relationship between sediment accumulation rate ($w$ in cm yr$^{-1}$) and seafloor depth ($z$ in m) of \citet{middelburg_empirical_1997}: 
-\begin{equation}
- w = 3.3\cdot 10^{-0.87478367-0.00043512\cdot z}\label{eq:sedimentation_rate}.
-\end{equation}
-As an option we include the parameterisation of \citet{burwicz_estimation_2011} 
+The stand-alone version of OMEN-SED uses the empirical global relationship between sediment accumulation rate ($w$ in cm yr$^{-1}$) and seafloor depth ($z$ in m) of \citet{burwicz_estimation_2011}: 
 \begin{equation}
  w = \frac{w_1}{1 + (\frac{z}{z1})^{c1}} + \frac{w_2}{1 + (\frac{z}{z2})^{c2}}\label{eq:sedimentation_rate_Burwicz}
 \end{equation}
 with parameter values as found in the original study (i.e. $w_1=0.117$\,cm yr$^{-1}$, $w_2=0.006$\,cm yr$^{-1}$, $z1=200$\,m, $z2=4000$\,m, $c1=3$, $c2=10$).
+As an option we include the parameterisation of \citet{middelburg_empirical_1997} 
+\begin{equation}
+ w = 3.3\cdot 10^{-0.87478367-0.00043512\cdot z}\label{eq:sedimentation_rate}.
+\end{equation}
 As mentioned before (Section \ref{subsec:GeneralModelApproach}), the diffusion coefficient of species $i$ is calculated as $D_i=D_{i,0}+D_{\mathrm{bio}}=D_{\mathrm{mol},i}\cdot f_{ir}+D_{\mathrm{bio}}$ for dissolved species and $D_i=D_{\mathrm{bio}}$ for solid species. 
 The bioturbation coefficient $D_{\mathrm{bio}}$ (cm$^2$ yr$^-1$) is constant in the bioturbated zone and also follows the empirical relationship by \citet{middelburg_empirical_1997}:
 \begin{equation}
@@ -1124,7 +1123,7 @@ Several approaches exist to incorporate this into a 1-D diagenetic model, for in
 or as an enhancement factor of the molecular diffusion coefficient \citep{devol_benthic_1993, soetaert_model_1996}. In OMEN-SED the latter approach is applied and the 
 apparent ``bio-diffusion'' coefficient is calculated as $D_{i,0}=D_{\mathrm{mol},i}\cdot f_{ir}$. 
 \citet{soetaert_model_1996} derived an empirical relationship between $f_{ir}$ and seafloor depth ($f_{ir} = \mathrm{Min}\{1; 15.9\cdot z^{-0.43}\}$) 
-based on observations from \citet{archer_benthic_1992} and \citet{devol_benthic_1993} which is used here. 
+based on observations from \citet{archer_benthic_1992} and \citet{devol_benthic_1993} which is used in OMEN-SED. 
 % As this relationship just varies for depth above $\sim$623 m (with a maximum value of 3 at $\sim$50 m) a constant value of $f_{ir}=1$ is used in the default OMEN-SED configuration. 
 %However, here we do not consider this effect as it is difficult to constrain on geological timescales and set $f_{ir}$ to a constant value of 1 . 
 The specific molecular diffusion coefficients $D_{\mathrm{mol},i}$ are corrected for sediment porosity $\phi$, tortuosity F and are linearly interpolated for an ambient 
@@ -1416,10 +1415,10 @@ Depth (m) & Temp. ({}$^\circ$C)& OC (wt\%) & \chem{O_2} & \chem{NO_3} & \chem{SO
 
 \subsubsection{Results}
 %\section{Sensitivity Analysis}\label{subsec:SA}
-Fig. \ref{fig:Sensitivity_Analysis} summarises results of the sensitivity analysis as a colour map. 
+Figure \ref{fig:Sensitivity_Analysis} summarises results of the sensitivity analysis as a colour map. 
 Results indicate that generally the most significant parameters for all model outputs are the degradation rate constant for the labile OM pool ($k_1$) and the fraction of this pool to the total OM stock ($f_1$). 
 Other parameters play a minor role for the SWI-fluxes, with the exception of the secondary redox parameters (i.e. $\gamma_\chem{NH_4},\ \gamma_\chem{H_2S}$) in the oxic scenario.
-Here, \chem{NH_4}, \chem{SO_4} and \chem{H_2S} are very sensitive to changes in $\gamma_\chem{NH_4}$ and $\gamma_\chem{H_2S}$, as these parameters determine how much of the respective TEA is produced in situ via reoxidation, 
+Here, \chem{NH_4}, \chem{SO_4} and \chem{H_2S} fluxes are very sensitive to changes in $\gamma_\chem{NH_4}$ and $\gamma_\chem{H_2S}$, as these parameters determine how much of the respective TEA is produced in situ via reoxidation, 
 thus affecting the resulting SWI-fluxes. 
 For the oxic scenario, the reoxidation of \chem{H_2S} produced in the sulfidic layer also has a strong influence on alkalinity ($\gamma_\chem{H_2S}$, Table \ref{Tab:BC_ALK} Eq. 5) 
 as it decreases alkalinity by 2 moles per mole of \chem{S} oxidized ($\chem{ALK}^\mathrm{H_2S}$, Table \ref{table:reaction_parameters}). 
@@ -1503,8 +1502,8 @@ The POC and pore water profiles were manually fitted by optimizing the POC parti
 and \chem{O_2} profiles). For phosphorus the equilibrium concentration for authigenic P formation (\chem{PO_4^a}) was adjusted to fit the \chem{PO_4} concentration at $z_\mathrm{max}$. 
 
 \begin{table}[btp]
-\caption{Model boundary conditions for the simulated sediment profiles in the Santa Barbara basin (108 and 2213 m) and Iberian margin (585 and 4298 m) reported in Figure \ref{fig:Sediment_profiles}. For all sites a DIC bottom water concentration of 
-2,400 nmols cm$^{-3}$ is assumed.} 
+\caption{Boundary conditions for simulated sediment profiles at the Iberian margin (108 and 2213\,m), the Santa Barbara basin (585\,m) and the Nazar\'e Canyon (4298\,m) reported in Figure \ref{fig:Sediment_profiles}. 
+For all sites a DIC bottom water concentration of 2,400 nmols cm$^{-3}$ is assumed.} 
 % Note: Constant concentrations at all sites for \chem{SO_4} ($28000 \mu$mol cm$^{-3}$) and \chem{H_2S} (0.0 $\mu$mol cm$^{-3}$).}
 \centering
 % used for centering table
@@ -1561,7 +1560,7 @@ However, considering these generalisations and our assumption of steady-state, w
 and biology, OMEN-SED generally reproduces the observed pore water trends and hence captures the main diagenetic processes. 
 
 \begin{sidewaysfigure}[tbp]
-	\includegraphics[width=1.0\textwidth]{figures/Profiles/0_ALL_PROFILES_COMBINED_1503.pdf}
+	\includegraphics[width=1.0\textwidth]{figures/Profiles/0_ALL_PROFILES_COMBINED_1804.pdf}
 	\caption{Modelled (curves) and measured (filled dots) solid phase and dissolved pore water profiles for four different sediment cores. Note that different 
 	scales are used for different stations. The blue POC curve represents the sum of the refractory (green) and labile (red) POC fraction. The horizontal dashed lines in each panel indicate the 
 	bioturbation depth (black) and the penetration depths of oxygen (blue), nitrate (green) and sulfate (red) as calculated by OMEN-SED.}
@@ -2103,20 +2102,27 @@ than the characteristic timescales of the reaction-transport processes. As a con
 during past extreme climate events. Yet, in its current version, OMEN-SED is not able to predict the transient response of benthic process rates and fluxes to short-term or seasonal variations of boundary conditions. Yet, future versions of 
 OMEN-SED, could approximate non-steady state conditions by incorporating a time-step dependent relaxation between different steady states, similar to the schemes used in \citet{ruardij_benthic_1995} and \citet{arndt_model_2007}. 
 Such a pseudo-transient approach would enable the application of OMEN-SED to systems characterised by high-frequency fluctuations in boundary conditions, such as the coastal ocean or estuaries. 
-Second, by their very nature, analytical models do not allow for overlapping biogeochemical zones, which is a simplification. However, the energy yield dependent sequence of oxidants is generally valid \citep[e.g.][]{hensen_benthic_2006} 
-and the good agreement between OMEN-SED and the results obtained with a fully formulated numerical RTM (compare Section \ref{subsec:globalhypsometry}, allowing for overlapping TEA use) shows that this is not a critical limitation of OMEN-SED 
-- even for shallow sediments.
+% Second, by their very nature, analytical models do not allow for overlapping biogeochemical zones, which is a simplification. However, the energy yield dependent sequence of oxidants is generally valid \citep[e.g.][]{hensen_benthic_2006} 
+% and the good agreement between OMEN-SED and the results obtained with a fully formulated numerical RTM (compare Section \ref{subsec:globalhypsometry}, allowing for overlapping TEA use) shows that this is not a critical limitation of OMEN-SED 
+% - even for shallow sediments. 
+% Third, the depth invariant porosity introduces a certain error to simulation results as in reality porosity decreases with sediment depth. However, the comparison of OMEN-SED with the results of the numerically 
+% solved RTM (Section \ref{subsec:globalhypsometry}) allows evaluating to which extend simplifying assumptions (e.g. constant porosity, non-overlapping redox zones etc) affect simulation results and, thus, quantitatively test the performance of the 
+% computationally efficient OMEN-SED approach against the computationally expensive numerical approach. From this we deduce that the results are not particularly sensitive to porosity changes.
+Furthermore, by their very nature, analytical models do not allow for overlapping biogeochemical zones or depth dependent porosity, which introduces a certain error to simulation results. However, the energy yield dependent sequence of oxidants is 
+generally valid \citep[e.g.][]{hensen_benthic_2006} and the good agreement between OMEN-SED and the results obtained with a fully formulated numerical RTM (allowing for overlapping TEA use and depth dependent porosity, Section \ref{subsec:globalhypsometry}) 
+shows that these are not critical limitations of OMEN-SED - even for shallow sediments. 
 
-Third, although the model explicitly simulates DIC and alkalinity production and, thus, has the potential to predict pH profiles within the sediment, a major limitation at this stage is the lack of an explicit description for \chem{CaCO_3} 
+Although the model explicitly simulates DIC and alkalinity production and, thus, has the potential to predict pH profiles within the sediment, a major limitation at this stage is the lack of an explicit description for \chem{CaCO_3} 
 precipitation/dissolution coupled to OM decomposition, which also controls the inorganic carbon system \citep{krumins_dissolved_2013}. In addition, the current version of OMEN-SED does not yet explicitly resolve iron and manganese dynamics
 (although note, that iron is implicitly accounted for in the PO4 equation). This lack currently limits the applicability of OMEN-SED to iron- and manganese rich environments, such as coastal marine environments, upwelling regions or 
 ferruginous oceans. In addition, it also compromises the ability of OMEN-SED in predicting \chem{H_2S} fluxes in Fe-rich anoxic environments, where high iron pore water concentrations can deplete pore water \chem{H_2S} by iron-sulfide mineral 
-precipitation \citep[e.g.][]{meyers_production_2007}. Therefore, already planned future extensions of OMEN-SED include an explicit description of iron. 
+precipitation \citep[e.g.][]{meyers_production_2007}. Therefore, already planned future extensions of OMEN-SED include an explicit description of carbonate dissolution and iron. 
 
 Finally, just as all global models, the global application of OMEN-SED is complicated by the lack of an objective, global framework for biogeochemical process parameterisation. The sensitivity study presented here shows that this lack is 
-particularly critical for OM degradation rate parameters ($k_i$,$f_i$) and the $\gamma$-values describing the completeness of secondary redox reactions. A comparison between simulated OM contents and observations indicates that depth 
-dependent k-f relationships provide the best fit (Section \ref{subsubsec:couplingresultscrossplots}), confirming more theoretical considerations regarding the different time and reactivity scales that need to be considered 
-(see Section \ref{subsec:Parameterising_OM_rate_const}). With respect to $\gamma$-values, model simulations along the global hypsometry (Section \ref{subsec:globalhypsometry}) have shown that high $\gamma$-values generally capture 
+particularly critical for OM degradation rate parameters ($k_i$,$f_i$) and the $\gamma$-values describing the completeness of secondary redox reactions. A comparison between simulated OM contents and observations indicates that a depth 
+dependent k-f relationship provides the best fit (Section \ref{subsubsec:couplingresultscrossplots}). These results confirm that  reducing the continuous distribution of organic matter reactivities into two distinct reactivity classes (2G Model) 
+requires different k-f values for shallow vs deep ocean sediments because of the largely different reaction timescales involved (also see Fig. \ref{fig:OM_reactivity}).
+With respect to $\gamma$-values, model simulations along the global hypsometry (Section \ref{subsec:globalhypsometry}) have shown that high $\gamma$-values generally capture 
 the main SWI-flux features, but have also highlighted that slightly lower $\gamma$-values would result in a better fit of SWI-fluxes to observations of the shallow ocean. 
 
 \conclusions  %% \conclusions[modified heading if necessary]
@@ -2126,7 +2132,7 @@ as well as the reoxidation of reduced substances, adsorption/desorption, as well
 and \chem{ALK} and the solid phase includes two degradable fractions of organic matter, Fe-bound P and authigenic Ca-P minerals.
 
 An extensive sensitive analysis, based on the density-based PAWN method \citep{pianosi_simple_2015} emphasizes the importance of OM degradation rate parameters ($k_i$, $f_i$) and thus highlights the need for the development of 
-an objective, global framework to parameterize OM degradation rate parameters. We have shown that the performance of OMEN-SED is similar to that of a fully formulated, multi-component numerical model. The new analytical model 
+an objective, global framework to parameterize OM degradation rate parameters. We have shown that the performance of OMEN-SED at the system scale is similar to that of a fully formulated, multi-component numerical model. The new analytical model 
 is able to reproduce observed pore water profiles across a wide range of depositional environments and captures observed global patterns of SWI-fluxes, oxygen penetration depths, biogeochemical reaction rates, as well as surface 
 sediment organic matter contents. Coupled to EMICs or higher resolution Earth system models, OMEN-SED is thus well suited to examine the role of sediments in global biogeochemical cycles in response to a wide range of past 
 or future carbon cycle or climate perturbations over various timescales. 
