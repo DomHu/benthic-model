@@ -716,6 +716,7 @@ $z=z_\mathrm{max}$& zero \chem{NH_4} flux & 8)& $\frac{\partial \chem{NH_4}}{\pa
 Below the denitrification zone ($z>z_{\chem{NO_3}}$), organic matter degradation is coupled to sulfate reduction, consuming sulfate and producing hydrogen sulfide with a fixed \chem{SO_4:C} ratio (\chem{SO_4C}, Tab. \ref{table:reaction_parameters}). 
 In addition, the anaerobic oxidation of upward diffusing methane (AOM) produced below the sulfate penetration and the associated consumption of sulfate and production of sulfide; as well as the production of sulfate and 
 consumption of sulfide through sulfide oxidation are implicitly accounted for through the boundary conditions (Table \ref{Tab:BC_SO4+H2S}). 
+In the sulfidic zone a defined fraction of sulfide, $\gamma_\chem{FeS}$, can be precipitated as pyrite (in the presented simulations $\gamma_\chem{FeS} = 0.0$ as we do not want to make any assumptions about pyrite). 
 It can be safely assume that almost all \chem{CH_4} is oxidized anaerobically in the sediments \citep[e.g.][suggests up to 90\%]{reeburgh_oceanic_2007} - except for active (very localized) sites and slope failure, which can, in theory, 
 be accounted for through the $\gamma_\chem{CH_4}$ term. 
 The conservation equations for sulfate and sulfide are thus given by:
@@ -1123,7 +1124,7 @@ Several approaches exist to incorporate this into a 1-D diagenetic model, for in
 or as an enhancement factor of the molecular diffusion coefficient \citep{devol_benthic_1993, soetaert_model_1996}. In OMEN-SED the latter approach is applied and the 
 apparent ``bio-diffusion'' coefficient is calculated as $D_{i,0}=D_{\mathrm{mol},i}\cdot f_{ir}$. 
 \citet{soetaert_model_1996} derived an empirical relationship between $f_{ir}$ and seafloor depth ($f_{ir} = \mathrm{Min}\{1; 15.9\cdot z^{-0.43}\}$) 
-based on observations from \citet{archer_benthic_1992} and \citet{devol_benthic_1993} which is used in OMEN-SED. 
+based on observations from \citet{archer_benthic_1992} and \citet{devol_benthic_1993} which is used in OMEN-SED. Note that our model might not be appropriate to simulate non-accumulating permeable sands.
 % As this relationship just varies for depth above $\sim$623 m (with a maximum value of 3 at $\sim$50 m) a constant value of $f_{ir}=1$ is used in the default OMEN-SED configuration. 
 %However, here we do not consider this effect as it is difficult to constrain on geological timescales and set $f_{ir}$ to a constant value of 1 . 
 The specific molecular diffusion coefficients $D_{\mathrm{mol},i}$ are corrected for sediment porosity $\phi$, tortuosity F and are linearly interpolated for an ambient 
@@ -1202,6 +1203,7 @@ would be ideally parameterised for instance in relation to bottom water oxygen c
 \citet{gypens_simple_2008} for example expressed $\gamma_{\chem{NH_4}}$ as a function of oxygen penetration depth ($\gamma_{\chem{NH_4}} = 0.243 \cdot \mathrm{ln}(z_{\mathrm{ox}}) + 1.8479$) 
 based on a fitting exercises to a numerical model and showed that the fraction varies between 0.2 for $z_{\mathrm{ox}}=0.1$cm and 1.0 for $z_{\mathrm{ox}}>3$cm. 
 Due to mathematical constraints in OMEN-SED for finding an analytical solution to the model equations these fractions take constant values generally representing oxygenated deep sea conditions. 
+When coupled to an ESM $\gamma_{\chem{H_2S}}$ becomes dependent on the bottom water oxygenation state. That is, $\gamma_{\chem{H_2S}} = 1.0$ for oxic bottom waters and a user defined value $\gamma_{\chem{H_2S}} < 1.0$ for anoxic bottom waters. 
 % \textbf{SA: they are just build in to allow for the escape of reduced species- see Gypens et al., 2008. there are no reference but evidence that some H2S, NH4 can escape oxidation. We assume an instantaneous re-oxidation at sox, 
 % but reality is that this is a reaction-transport problem. So if reaction timescales< transport timescales (e.g. a lot of competition for O2), some NH4 escapes. so this possibility is build in if wanted, e.g. observed. 
 % This is a parameter that just comes in because of the simplifying assumption of "everything is oxidised at zox"}
@@ -1265,8 +1267,9 @@ $\chem{ALK}^\mathrm{AOM}$ & mol/mol & $2$ & ALK from AOM\\
 \multicolumn{4}{l}{\textbf{Secondary reaction parameters}}\\
 $\gamma_{\chem{NH_4}}$ & - & 0.9 & Fraction of \chem{NH_4} that is nitrified\\
 %& & & in oxic zone\\
-$\gamma_{\chem{H_2S}}$ & - & 0.95 & Fraction of \chem{H_2S} that is oxidised\\
-%& & & in oxic zone\\
+$\gamma_{\chem{H_2S}}$ & - & 1.0 & Fraction of \chem{H_2S} that is oxidised (oxic bottom waters)\\
+		       & - & 0.95 & Fraction of \chem{H_2S} that is oxidised (anoxic bottom waters)\\
+$\gamma_{\chem{FeS}}$ & - & 0.0 & Fraction of \chem{H_2S} that is precipitated as pyrite\\
 $\gamma_{\chem{CH_4}}$ & - & 0.99 & Fraction of \chem{CH_4} that is oxidised\\
 %& & & at $z_{\chem{SO_4}}$\\
 \multicolumn{4}{l}{\textbf{Adsorption coefficients} \citep[][]{wang_multicomponent_1996, slomp1998role}} \\
@@ -1700,7 +1703,7 @@ cGENIE sediment grid. This field includes detrital material plus opal (plus a mi
 from this plus measurements of coretop wt\% \chem{CaCO_3} ($C_\mathrm{wtpct}$) \citep{archer_data-driven_1996} as $\sum_\mathrm{flux} = \mathrm{NC}_\mathrm{flux} \cdot (1-\frac{C_\mathrm{wtpct}}{100})^{-1}$. 
 However, some of the \citet{archer_data-driven_1996} database $C_\mathrm{wtpct}$ values are both close to 100\% and associated with high NC$_\mathrm{flux}$, and hence would lead to unrealistically high values for $\sum_\mathrm{flux}$. 
 We therefore impose a plausibility filter, by also re-gridding coretop wt\% opal ($O_\mathrm{wtpct}$) and quartz ($Q_\mathrm{wtpct}$) and for grid points in which more than one component is reported and the sum exceeds 100 wt\%, 
-normalizing the individual components. (Note that for grid points with only a single solid component, no change is made.) We then calculate the individual solid component burial fluxes, and sum them up. 
+normalizing the individual components (for grid points with only a single solid component, no change is made). We then calculate the individual solid component burial fluxes, and sum them up. 
 To interpolate between the grid points associated with data, we iteratively average nearest (adjoining) neighbours. The distribution of the total burial flux $\sum_\mathrm{flux}$ (in g cm$^{-2}$ kyr$^{-1}$) is shown in 
 Figure \ref{fig:GENIE_sum_burial_flux} in the Appendix. 
 
@@ -1802,7 +1805,7 @@ In this section we compare modelled mean POC weight percentages (wt\%) in the up
 For our observational target we take the original POC distribution pattern in $1^\circ \times 1^\circ$ grid resolution \citep[interpolated from > 5500 measurements, compare][]{seiter_organic_2004} and transform it onto the $72\times 72$ SEDGEM grid 
 (Figure \ref{fig:TOC_Obs_regridded}). The regridding of the original POC distribution obviously affects the resolution of the data, especially for the continental margin, as some sites with higher POC wt\% are lost in the 
 regridding process (compare e.g. maximum values for the East Pacific and upwelling waters of the Namibian shelf, Figure \ref{fig:TOC_Obs_regridded}A + B). 
-The colour of the points in Figures \ref{fig:OMEN_GENIE_invariant_results} - \ref{fig:OMEN_GENIE_Boudreau_depth} %, which compare modelled and observed POC concentrations, 
+The colour of the points in Figures \ref{fig:OMEN_GENIE_Boudreau_results} - \ref{fig:OMEN_GENIE_Boudreau_depth} %, which compare modelled and observed POC concentrations, 
 indicates the seafloor depth (SFD) of the respective cGENIE grid-cell. 
 As the individual data-points are highly scattered and 
 in order to see if a certain relation between $k_1$ and $k_2$ performs better for specific ocean depths, the data-points are binned into 6 uniform depth-classes of 1000m each (respective mean POC wt\% and SFD are represented by 
@@ -1839,7 +1842,7 @@ The following assumptions are made in order to calculate the two degradation rat
   k_\mathrm{app} &= f_1 \cdot k_1 + (1-f_1) \cdot k_2 \label{boudreau_assumption1}\\
   k_1 &= x \cdot k_2					\label{boudreau_assumption2}
 \end{align}
-where $x$ describes the relation between $k_1$ and $k_2$ and is subject to sensitivity experiments (with values of $x \in \{2, 5, 8, 10, 12, 15, 20, 25\}$). 
+where $x$ describes the relation between $k_1$ and $k_2$ and is subject to sensitivity experiments (with values of $x \in \{2, 5, 8, 10, 12, 15,  $ $ 20, 25\}$). 
 Note that the differences between  $k_1$ and $k_2$ using this approach is significantly larger as in the globally uniform approach. 
 As the fractions of labile and refractory OM reaching the sediments $f_1$ is known from cGENIE, $k_1$ and $k_2$ can be calculated independently for each grid-cell. 
 
@@ -1875,7 +1878,7 @@ OMEN-SED is called for each grid-cell in every time step, feeding back the resul
 
 \begin{figure}[tbp]
 \begin{center}
-	\includegraphics[width=1.0\textwidth]{figures/OMEN-GENIE-Exp/0_Boudreau_CROSSPLOTS_290817_noDEPTHDEP_BigTriangles_120118.pdf}
+	\includegraphics[width=1.0\textwidth]{figures/OMEN-GENIE-Exp/0_Boudreau_CROSSPLOTS_290817_noDEPTHDEP_BigTriangles_120118_NoR2.pdf}
 	\caption{Crossplots comparing modelled and observed mean POC wt\% in the upper 5 cm of the sediments using the relationship of \citet{boudreau1997diagenetic} and the assumptions of Eq. (\ref{boudreau_assumption1}) and 
 	(\ref{boudreau_assumption2}) to calculate $k_1$ and $k_2$.  Data-points are binned into 6 uniform depth-classes of 1000m, each class is represented by a triangle. 
 	Grid-points with more than 4.0 POC wt\% are not shown.}
@@ -1914,8 +1917,13 @@ the deep ocean is generally older as in the shallow ocean due to lower burial ra
 
 Departing from our theoretical considerations (see discussion of Fig. \ref{fig:OM_reactivity}C), we use these observations to create a depth dependent relationship between the two degradation rate constants, where $x$ in 
 Eq. (\ref{boudreau_assumption2}) is a function of SFD and takes values of $x=5$ for SFD < 1000m, $x=8$ for 1000m $\leq$ SFD < 2000m, $x=12$ for 2000m $\leq$ SFD < 3000m and $x=25$ for SFD $\geq$ 3000m for the 6 SFD bin-classes, respectively. 
-In this depth dependent approach all bin-classes are close to the 1:1 line and the resulting regression model accounts for 92.6\% of the variance of the modelled POC wt\% around the observed mean of the bin-classes (Figure \ref{fig:OMEN_GENIE_Boudreau_depth}B). 
-Furthermore, the slope of the regression line (0.9662) indicates that the relationship between depth and observed POC wt\% for the bin-classes is well represented by the model. 
+Figure \ref{fig:OMEN_GENIE_Boudreau_depth} compares this depth dependent approach with the best model using spatially uniform degradation rate constants ($k_2 = 0.005$, $k_1 = 1.3\cdot k_2$). 
+In the depth dependent approach all bin-classes are close to the 1:1 line and %the resulting regression model accounts for 92.6\% of the variance of the modelled POC wt\% around the observed mean of the bin-classes (Figure \ref{fig:OMEN_GENIE_Boudreau_depth}B). 
+the slope of the regression line (0.9662) indicates that the relationship between depth and observed POC wt\% for the bin-classes is well represented by the model (Fig. \ref{fig:OMEN_GENIE_Boudreau_depth}A). 
+Using spatially uniform degradation rate constants 5 of the 6 bin-classes are located close to the 1:1 line (Fig. \ref{fig:OMEN_GENIE_Boudreau_depth}B), indicating that also the simpler parameterisation adequately  
+captures the relationship between between depth and observed POC wt\% by bin-class. The reason for this is that BIOGEM provides a depth dependent POC flux and partitioning between the two fractions (Fig. \ref{fig:OM_reactivity}). 
+The shallowest bin-class (between 0 and 1000m) represents an exception, as OMEN-SED tends to overestimate POC preservation for this depth class. However, this could also be related to the regridding of the original POC distribution 
+pattern of \citep{seiter_organic_2004} on to the SEDGEM grid, as some data grid-cells with higher POC wt\% on the continental margin are lost due to the restricted SEDGEM resolution (compare Section \ref{subsec:Parameterising_OM_rate_const}). 
 The histograms (Fig. \ref{fig:OMEN_GENIE_Boudreau_depth}C+D) visualize the difference between modelled and observed mean POC concentrations and demonstrate the high density of data points close to the 1:1 line. 
 % meeting the assumptions of a normal distribution
 For the depth dependent approach, 92.5\% of the cGENIE grid-cells show a difference between modelled and observed POC concentration of less than 1.0 POC wt\%; in 79.9\% of the grid-cells, the difference is less than 0.5 POC wt\% 
