@@ -792,11 +792,11 @@ classdef benthic_test
                         res.zTOC.k2=res.zTOC.k1*k2scaling;
                         
                     case 'tromp1995'
-                        OMEN_result(j,i) = test.zso4;
+%                        OMEN_result(j,i) = test.zso4;
                     case 'stolpovsky2016'
-                        OMEN_result(j,i) = test.Cox_rate_total;
+%                        OMEN_result(j,i) = test.Cox_rate_total;
                     case 'boudreau1997fPOC'
-                        OMEN_result(j,i) = test.Cox_rate_total;
+%                        OMEN_result(j,i) = test.Cox_rate_total;
                     case 'invariant'
                         res.zTOC.k1=0.0065;
                         res.zTOC.k2=0.005;
@@ -925,6 +925,17 @@ classdef benthic_test
                 % calculate mean OM concentration in upper x cm
                 
                 res.Mean_OM = 1/x * 100*12/res.bsd.rho_sed*res.zTOC.calcOM(0.0, x, 1, 1, res.bsd, res.swi, res);
+                
+                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                %%%%%%%%%%%%%%%%  MEAN PO4 concentration in bioturbated layer (10cm)  %%%%%%%%%%%%%%%%%%%%
+                calc_PO4=true;
+                if(calc_PO4)
+                    zgrid = 0:0.5:10;
+                    for i=1:length(zgrid)
+                        [PO4(i), flxPO4(i), M(i), flxM(i), e_M(i), f_M(i), p_M(i), q_M(i), g_M(i), dedz_M(i), dfdz_M(i), dpdz_M(i), dqdz_M(i), dgdz_M(i)] = res.zPO4_M.calcPO4_M(zgrid(i), res.bsd, res.swi, res);
+                    end
+                    res.Mean_PO4 = sum(PO4)/length(zgrid);
+                end
                 
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 %%%%%%%%%%%%%%%%  TEST PROFILES  %%%%%%%%%%%%%%%%%%%%

@@ -348,8 +348,8 @@ CONTAINS
                 loc_sed_burial = 1/(1-por)*loc_new_sed(is_det)      ! set burial flux as detrital flux
             end if
 
-            ! CHECK if still lower than 5.0e-4, than cut there, as OMEN produces positive O2 SWI-fluxes
-            if(loc_sed_burial .LE. 5.0e-4)then
+            ! CHECK if still lower than 4.0e-4 (5.0e-4 for OAE2), than cut there, as OMEN produces positive O2 SWI-fluxes
+            if(loc_sed_burial .LE. 4.0e-4)then
 !                                                print*,''
 !                                                print*,'OMEN burial < 5.0e-4 !!!!!!!!!!!!!!!!!!!!!!!!!!'
 !                                                print*,'dum_i, dum_j, dum_D', dum_i, dum_j, dum_D

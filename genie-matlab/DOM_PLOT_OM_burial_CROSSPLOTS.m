@@ -39,11 +39,11 @@ function DOM_PLOT_OM_burial_CROSSPLOTS()
 % plot_fields_sedgem_2d('2908_27_Archeretal2009_OMEN.boudreau1997_k_5_Allsolidfields','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-4.0,4.0,20,'','','2908_27_Boudreau_5')
 % plot_fields_sedgem_2d('2908_28_Archeretal2009_OMEN.boudreau1997_k_8_Allsolidfields','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-4.0,4.0,20,'','','2908_28_Boudreau_8')
 % plot_fields_sedgem_2d('2908_29_Archeretal2009_OMEN.boudreau1997_k_10_Allsolidfields','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-4.0,4.0,20,'','','2908_29_Boudreau_10')
-plot_fields_sedgem_2d('2908_30_Archeretal2009_OMEN.boudreau1997_k_15_Allsolidfields','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-4.0,4.0,20,'','','2908_30_Boudreau_15')
-plot_fields_sedgem_2d('2908_31_Archeretal2009_OMEN.boudreau1997_k_20_Allsolidfields','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-4.0,4.0,20,'','','2908_31_Boudreau_20')
-plot_fields_sedgem_2d('2908_32_Archeretal2009_OMEN.boudreau1997_k_25_Allsolidfields','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-4.0,4.0,20,'','','2908_32_Boudreau_25')
-plot_fields_sedgem_2d('2908_33_Archeretal2009_OMEN.boudreau1997_k_12_Allsolidfields','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-4.0,4.0,20,'','','2908_33_Boudreau_12')
-plot_fields_sedgem_2d('2908_34_Archeretal2009_OMEN.boudreau1997_DEPTH_DEP_Allsolidfields','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-4.0,4.0,20,'','','2908_34_Boudreau_Depth_dep')
+% plot_fields_sedgem_2d('2908_30_Archeretal2009_OMEN.boudreau1997_k_15_Allsolidfields','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-4.0,4.0,20,'','','00_2908_30_Boudreau_15')
+% plot_fields_sedgem_2d('2908_31_Archeretal2009_OMEN.boudreau1997_k_20_Allsolidfields','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-4.0,4.0,20,'','','2908_31_Boudreau_20')
+% plot_fields_sedgem_2d('2908_32_Archeretal2009_OMEN.boudreau1997_k_25_Allsolidfields','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-4.0,4.0,20,'','','2908_32_Boudreau_25')
+% plot_fields_sedgem_2d('2908_33_Archeretal2009_OMEN.boudreau1997_k_12_Allsolidfields','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-4.0,4.0,20,'','','2908_33_Boudreau_12')
+plot_fields_sedgem_2d('2908_34_Archeretal2009_OMEN.boudreau1997_DEPTH_DEP_Allsolidfields','0_Seiter_Observations','misc_OMEN_wtpct','TOC wtprc',0.0,0.0,0,'',1.0,-4.0,4.0,20,'','','00_2908_34_Boudreau_Depth_dep')
 % 
 
 
