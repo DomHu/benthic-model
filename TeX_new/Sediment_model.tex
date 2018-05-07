@@ -935,8 +935,8 @@ where different equations describe the biogeochemical processes using variable s
 Above $z_{\mathrm{ox}}$, the combined effects of \chem{NH_4} and \chem{P} release due to aerobic OM degradation increases alkalinity according to $\chem{ALK}^\mathrm{OX}$ whereas nitrification decreases alkalinity with stoichiometry 
 $\chem{ALK}^\mathrm{NIT}$. 
 In the remaining three zones anaerobic OM degradation generally results in an increase in alkalinity, with the exact magnitude depending on the nature of the terminal electron acceptor used 
-(i.e. $\chem{ALK}^\mathrm{DEN}$, $\chem{ALK}^\mathrm{SUL}$, $\chem{ALK}^\mathrm{MET}$). In addition, the effect of secondary redox reactions, such as nitrification, sulfide and methane oxidation are implicitly accounted for in the boundary conditions. 
-Note that the alkalinity description in the current version of OMEN-SED does not account for \chem{CaCO_3} dissolution/precipitation due to the mathematical complexity of the problem.
+(i.e. $\chem{ALK}^\mathrm{DEN}$, $\chem{ALK}^\mathrm{SUL}$, $\chem{ALK}^\mathrm{MET}$). In addition, the effect of secondary redox reactions, such as nitrification, sulfide and methane oxidation, as well as pyrite precipitation, 
+are implicitly accounted for in the boundary conditions. Note that the alkalinity description in the current version of OMEN-SED does not account for \chem{CaCO_3} dissolution/precipitation due to the mathematical complexity of the problem.
 In OMEN-SED, the conservation equations for alkalinity are thus given by:
 \begin{align}
  \intertext{1. Oxic zone ($z \leq z_{\chem{ox}}$)} 
@@ -951,8 +951,8 @@ In OMEN-SED, the conservation equations for alkalinity are thus given by:
 \end{align}
 where $D_\chem{\chem{ALK}}$ denotes the diffusion coefficient for alkalinity (taking the values for $\chem{HCO_3^{-}}$ from \citet{schulz_quantification_2006}) which depends on the bioturbation status of the respective geochemical zone. 
 Integration of Eq. (\ref{eq:ALK_ODE1_L1}) - (\ref{eq:ALK_ODE1_L4}) yields the analytical solution and Table \ref{Tab:BC_ALK} summarises the boundary conditions applied in OMEN-SED. 
-A Dirichlet boundary condition is applied at the sediment-water interface. The decrease of alkalinity due to oxidation of reduced species produced in the anoxic zones 
-(with stoichiometry $\chem{ALK}^\mathrm{NIT}$ and $\chem{ALK}^\mathrm{H_2S}$) is implicitly taken into account through the flux boundary condition at $z_{\mathrm{ox}}$ (Table \ref{Tab:BC_ALK} Eq. 5). 
+A Dirichlet boundary condition is applied at the sediment-water interface. The decrease of alkalinity due to oxidation of reduced species produced in the anoxic zones and due to the precipitation of pyrite 
+(with stoichiometry $\chem{ALK}^\mathrm{NIT}$, $\chem{ALK}^\mathrm{H_2S}$ and $\chem{ALK}^\mathrm{FeS}$) is implicitly taken into account through the flux boundary condition at $z_{\mathrm{ox}}$ (Table \ref{Tab:BC_ALK} Eq. 5). 
 Furthermore, the oxidation of methane by sulfate reduction increases alkalinity with stoichiometry $\chem{ALK}^\mathrm{AOM}$ which is accounted for through the flux boundary condition at $z_{\chem{SO_4}}$ (Table \ref{Tab:BC_ALK} Eq. 9). 
 At the lower boundary $z_\mathrm{max}$ a zero diffusive flux condition is applied. 
 
@@ -970,7 +970,10 @@ $z=z_{\mathrm{bio}}$&continuity& 2)& $\chem{ALK}(z_{\mathrm{bio}}^-)$=$\chem{ALK
                & flux & 3)& $-\left(D_{\chem{ALK},0}+D_{\mathrm{bio}}\right )\cdot \frac{\partial \chem{ALK}}{\partial z}|_{z_{\mathrm{bio}}^-}=-D_{\chem{ALK},0} \cdot \frac{\partial \chem{ALK}}{\partial z}|_{z_{\mathrm{bio}}^+}$\\
 $z=z_{\mathrm{ox}}$& continuity& 4)& $\chem{ALK}(z_{\mathrm{ox}}^-)$=$\chem{ALK}(z_{\mathrm{ox}}^+)$\\
                & flux & 5)& $-D_{\chem{ALK}} \cdot \frac{\partial \chem{ALK}}{\partial z}|_{z_{\mathrm{ox}}^-} +  F_{\chem{ALK}}(z_{\mathrm{ox}})=-D_{\chem{ALK}} \cdot \frac{\partial \chem{ALK}}{\partial z}|_{z_{\mathrm{ox}}^+}$\\
-&where: & &$\quad F_{\chem{ALK}}(z_{\mathrm{ox}})=\frac{1-\phi}{\phi} \cdot \left( \chem{ALK}^\chem{H_2S}\cdot \gamma_\chem{H_2S} \cdot (1 - \gamma_\chem{FeS}) \cdot \int_{z_{\chem{NO_3}}}^{\chem{SO_4}} \sum_i \chem{SO_4C} \cdot k_i \cdot \chem{POC}_i\ dz \right)$\\
+% &where: & &$\quad F_{\chem{ALK}}(z_{\mathrm{ox}})=\frac{1-\phi}{\phi} \cdot \left( \chem{ALK}^\chem{H_2S}\cdot \gamma_\chem{H_2S} \cdot (1 - \gamma_\chem{FeS}) \cdot \int_{z_{\chem{NO_3}}}^{\chem{SO_4}} \sum_i \chem{SO_4C} \cdot k_i \cdot \chem{POC}_i\ dz \right)$\\
+% & & &$\qquad \qquad \qquad \quad + \frac{1-\phi}{\phi} \cdot \left(\chem{ALK}^\chem{NIT} \frac{\gamma_\chem{NH_4}}{1+k_\chem{NH_4}}\int_{z_{\chem{NO_3}}}^{z_\mathrm{max}}  \sum_i \chem{NC_i} \cdot k_i \cdot \chem{POC}_i\ dz \right)$\\            
+&where: & &$\quad F_{\chem{ALK}}(z_{\mathrm{ox}})=\frac{1-\phi}{\phi} \cdot \left( \chem{ALK}^\chem{H_2S}\cdot \gamma_\chem{H_2S} \cdot (1 - \gamma_\chem{FeS}) +  \chem{ALK}^\chem{FeS}\cdot \gamma_\chem{FeS} \right)$\\ 
+& & & $\qquad \qquad \qquad \quad \cdot \left( \int_{z_{\chem{NO_3}}}^{\chem{SO_4}} \sum_i \chem{SO_4C} \cdot k_i \cdot \chem{POC}_i\ dz \right)$\\
 & & &$\qquad \qquad \qquad \quad + \frac{1-\phi}{\phi} \cdot \left(\chem{ALK}^\chem{NIT} \frac{\gamma_\chem{NH_4}}{1+k_\chem{NH_4}}\int_{z_{\chem{NO_3}}}^{z_\mathrm{max}}  \sum_i \chem{NC_i} \cdot k_i \cdot \chem{POC}_i\ dz \right)$\\            
 $z=z_{\chem{NO_3}}$&continuity& 6)& $\chem{ALK}(z_{\chem{NO_3}}^-)$=$\chem{ALK}(z_{\chem{NO_3}}^+)$\\
                & flux & 7)& $-D_{\chem{ALK}}\cdot \frac{\partial \chem{ALK}}{\partial z}|_{z_{\chem{NO_3}}^-}=-D_{\chem{ALK}} \cdot \frac{\partial \chem{ALK}}{\partial z}|_{z_{\chem{NO_3}}^+}$\\
@@ -1126,7 +1129,7 @@ Several approaches exist to incorporate this into a 1-D diagenetic model, for in
 or as an enhancement factor of the molecular diffusion coefficient \citep{devol_benthic_1993, soetaert_model_1996}. In OMEN-SED the latter approach is applied and the 
 apparent ``bio-diffusion'' coefficient is calculated as $D_{i,0}=D_{\mathrm{mol},i}\cdot f_{ir}$. 
 \citet{soetaert_model_1996} derived an empirical relationship between $f_{ir}$ and seafloor depth ($f_{ir} = \mathrm{Min}\{1; 15.9\cdot z^{-0.43}\}$) 
-based on observations from \citet{archer_benthic_1992} and \citet{devol_benthic_1993} which is used in OMEN-SED. Note that our model might not be appropriate to simulate non-accumulating permeable sands.
+based on observations from \citet{archer_benthic_1992} and \citet{devol_benthic_1993} which is used in OMEN-SED. % Note that our model might not be appropriate to simulate non-accumulating permeable sands.
 % As this relationship just varies for depth above $\sim$623 m (with a maximum value of 3 at $\sim$50 m) a constant value of $f_{ir}=1$ is used in the default OMEN-SED configuration. 
 %However, here we do not consider this effect as it is difficult to constrain on geological timescales and set $f_{ir}$ to a constant value of 1 . 
 The specific molecular diffusion coefficients $D_{\mathrm{mol},i}$ are corrected for sediment porosity $\phi$, tortuosity F and are linearly interpolated for an ambient 
@@ -1195,7 +1198,7 @@ provided by a coupled Earth system model (e.g. sedimentation rate, see Section \
 The partitioning of the bulk OM pool into reactivity classes ($f_i$) needs to be specified manually in the stand-alone version or can be provided by the ESM. 
 Organic matter degradation releases N, P and DIC to the pore water using Redfield molar ratios \citep{redfield1963influence} and consumes TEA with specific stoichiometries (\chem{O_2C}, \chem{NO_3C}, \chem{SO_4C}) as summarised in Table \ref{table:reaction_parameters}. 
 Table \ref{table:Reaction_Network} in the appendix provides a list of reactions and their stoichiometries as implemented in OMEN-SED. 
-The effect of OM degradation and secondary redox reactions on total alkalinity is also accounted for via reaction specific stoichiometries representing the release of \chem{NH_4}, \chem{H_2S} and P and is based on \citet[][]{jourabchi_quantitative_2005}. 
+The effect of OM degradation, secondary redox reactions and pyrite precipitation on total alkalinity is also accounted for via reaction specific stoichiometries representing the release of \chem{NH_4}, \chem{H_2S} and P and is based on \citet[][]{jourabchi_quantitative_2005}. 
 %Based on \citet{jourabchi_quantitative_2005} we assume that aerobic organic matter degradation increases alkalinity by 1 mole per mole ammonium released and decreases alkalinity by 2 mole per mole P released \citep{}.
 In reality, the reoxidation of reduced substances produced during OM degradation may be incomplete. Yet, in OMEN-SED we have to assume their complete, instantaneous reoxidation at $z_\mathrm{ox}$ to allow for an analytical solution. 
 In order to relax this assumption, for cases where it can be justified, we include a ``switch'' to allow part of the \chem{NH_4}, \chem{H_2S} and \chem{CH_4} flux to escape reoxidation. % in order to relax the simplifying assumption when needed. 
@@ -1263,6 +1266,7 @@ $\chem{ALK}^\mathrm{DEN}$ & mol/mol & $\frac{4x+3y-10z}{5x}=\frac{92.4}{106}$ & 
 $\chem{ALK}^\mathrm{SUL}$ & mol/mol & $\frac{x+y-2z}{x}=\frac{120}{106}$ & ALK from sulfate reduction\\
 $\chem{ALK}^\mathrm{MET}$ & mol/mol & $\frac{y-2z}{x}=\frac{14}{106}$ & ALK from methanogenesis\\
 $\chem{ALK}^\mathrm{H_2S}$ & mol/mol & $-2$ & ALK from \chem{H_2S} oxidation\\
+$\chem{ALK}^\mathrm{FeS}$ & mol/mol & $-2$ & ALK from pyrite precipitation\\
 $\chem{ALK}^\mathrm{AOM}$ & mol/mol & $2$ & ALK from AOM\\
 %$DICC^I$ & $mol/mol$ & 1 & DIC to carbon ratio\\
 %& & & until $z_{\chem{SO_4}}$\\
@@ -2123,6 +2127,8 @@ precipitation/dissolution coupled to OM decomposition, which also controls the i
 (although note, that iron is implicitly accounted for in the PO4 equation). This lack currently limits the applicability of OMEN-SED to iron- and manganese rich environments, such as coastal marine environments, upwelling regions or 
 ferruginous oceans. In addition, it also compromises the ability of OMEN-SED in predicting \chem{H_2S} fluxes in Fe-rich anoxic environments, where high iron pore water concentrations can deplete pore water \chem{H_2S} by iron-sulfide mineral 
 precipitation \citep[e.g.][]{meyers_production_2007}. Therefore, already planned future extensions of OMEN-SED include an explicit description of carbonate dissolution and iron. 
+% Another assumption in OMEN-SED is that sediments are accumulating due to deposition from the water column. Therefore, our model 
+Also note that our 1-D diffusion/bioturbation model might not be appropriate to simulate non-accumulating permeable sands of the coastal ocean.
 
 Finally, just as all global models, the global application of OMEN-SED is complicated by the lack of an objective, global framework for biogeochemical process parameterisation. The sensitivity study presented here shows that this lack is 
 particularly critical for OM degradation rate parameters ($k_i$,$f_i$) and the $\gamma$-values describing the completeness of secondary redox reactions. A comparison between simulated OM contents and observations indicates that a depth 
@@ -2207,6 +2213,7 @@ AOM & $\chem{CH_4 + CO_2 + SO_4^{2-}} \rightarrow \chem{2HCO_3^- + H_2S}$\\
 \chem{NH_4} adsorption & $\chem{NH_4^+} \xrightarrow{\mathrm{K_{NH_4}}} \chem{NH_4^+(ads)}$\\
 \chem{P} ad-/desorption & $\chem{PO_4^{2-}} \xrightarrow{\mathrm{K_{PO_4}^{I, II}}} \chem{PO_4^{2-}(ads)}; \qquad\quad \chem{PO_4^{2-}} \xrightarrow{\mathrm{k_s}} \mathrm{Fe-bound\ P} \xrightarrow{\mathrm{k_m}} \chem{PO_4^{2-}} $\\
 \chem{CFA} precipitation & $\chem{PO_4^{2-}} \xrightarrow{\mathrm{k_a}} \chem{CFA}$ \\
+pyrite precipitation & $\chem{Fe^{2+}} + \chem{HS^-} \rightarrow \chem{FeS} + \chem{H^+}$, $\chem{FeS} + \chem{H_2S} \rightarrow \chem{H_2} + \chem{FeS_2}$\\
 \hline\hline
 % inserts double horizontal lines
 \end{tabular}
