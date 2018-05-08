@@ -16,7 +16,7 @@ exp_1 = PEXP1;
 k_parametr = PKPARAM;
 k2scaling = PK2SCALING;
 
-%run_and_plot_OMEN_with_GENIE_data(exp_1,'','Mean OM wt% in upper 5cm','',0.0,0.0,0,'',1.0,0.0,3.0,20,'','','',17, k_parametr, k2scaling)
+% run_and_plot_OMEN_with_GENIE_data(exp_1,'','Mean OM wt% in upper 5cm','',0.0,0.0,0,'',1.0,0.0,3.0,20,'','','',17, k_parametr, k2scaling)
 
 % run_and_plot_OMEN_with_GENIE_data(exp_1,'','oxygen penetration depth','',0.0,0.0,0,'',1.0,0.0,10.0,20,'','','',1, k_parametr, k2scaling)
 % % %run_and_plot_OMEN_with_GENIE_data(exp_1,'','frac_of_aerobic_Cox','',0.0,0.0,0,'',1.0,0.0,80.0,20,'','','',6, k_parametr, k2scaling)
@@ -28,5 +28,7 @@ k2scaling = PK2SCALING;
 % run_and_plot_OMEN_with_GENIE_data(exp_1,'','SO4_SWI-flux_until5','',0.0,0.0,0,'',1e-6,0.0,-5.0,20,'','','',12, k_parametr, k2scaling)
 % run_and_plot_OMEN_with_GENIE_data(exp_1,'','H2S_SWI-flux_until5','',0.0,0.0,0,'',1e-6,0.0,5.0,20,'','','',13, k_parametr, k2scaling)
 % run_and_plot_OMEN_with_GENIE_data(exp_1,'','PO4_SWI-flux_until3_nanomol_Palastanga_noNaN','',0.0,0.0,0,'',1e-9,0.0,3.0,20,'','','',14, k_parametr, k2scaling)
-run_and_plot_OMEN_with_GENIE_data(exp_1,'','Mean_PO4_biot_layer','',0.0,0.0,0,'',1e-9,0.0,1,20,'','','',14, k_parametr, k2scaling)
+
+% run_and_plot_OMEN_with_GENIE_data(exp_1,'','Mean_PO4_biot_layer','',0.0,0.0,0,'',1e-9,0.0,1,20,'','','',20, k_parametr, k2scaling)
+run_and_plot_OMEN_with_GENIE_data(exp_1,'','Mean_FeP_biot_layer','',0.0,0.0,0,'',1e-5,0.0,10,20,'','','',21, k_parametr, k2scaling)
 end

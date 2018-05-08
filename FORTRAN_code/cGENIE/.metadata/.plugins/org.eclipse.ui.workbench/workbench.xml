@@ -28,13 +28,18 @@
 <folder appearance="1" expanded="2">
 <presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
 <part id="0"/>
+<part id="1"/>
 </presentation>
 </folder>
 </info>
 </editorArea>
-<editor activePart="true" focus="true" id="org.eclipse.photran.ui.FortranEditor" name="sedgem_box_benthic.f90" partName="sedgem_box_benthic.f90" title="sedgem_box_benthic.f90" tooltip="/home/dh12423/Documents/GitHub/benthic-model/FORTRAN_code/cGENIE/sedgem_box_benthic.f90" workbook="DefaultEditorWorkbook">
+<editor id="org.eclipse.photran.ui.FortranEditor" name="sedgem_box_benthic.f90" partName="sedgem_box_benthic.f90" title="sedgem_box_benthic.f90" tooltip="/home/dh12423/Documents/GitHub/benthic-model/FORTRAN_code/cGENIE/sedgem_box_benthic.f90" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" uri="file:/home/dh12423/Documents/GitHub/benthic-model/FORTRAN_code/cGENIE/sedgem_box_benthic.f90"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="21615" selectionTopPixel="5661"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="21615" selectionTopPixel="472"/>
+</editor>
+<editor activePart="true" focus="true" id="org.eclipse.photran.ui.FortranEditor" name="sedgem_box_benthic.f90" partName="sedgem_box_benthic.f90" title="sedgem_box_benthic.f90" tooltip="/home/dh12423/Documents/GitHub/benthic-model/01_GMD_submission_20112017/OMEN_code/OMEN_FORTRAN_FeS2/sedgem_box_benthic.f90" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" uri="file:/home/dh12423/Documents/GitHub/benthic-model/01_GMD_submission_20112017/OMEN_code/OMEN_FORTRAN_FeS2/sedgem_box_benthic.f90"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="15980" selectionTopPixel="4107"/>
 </editor>
 </editors>
 <views>
@@ -143,6 +148,7 @@
 <navigationHistory>
 <editors>
 <editor factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="org.eclipse.photran.ui.FortranEditor" uri="file:/home/dh12423/Documents/GitHub/benthic-model/FORTRAN_code/cGENIE/sedgem_box_benthic.f90"/>
+<editor factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="org.eclipse.photran.ui.FortranEditor" uri="file:/home/dh12423/Documents/GitHub/benthic-model/01_GMD_submission_20112017/OMEN_code/OMEN_FORTRAN_FeS2/sedgem_box_benthic.f90"/>
 </editors>
 <item historyLabel="sedgem_box_benthic.f90" index="0">
 <position info="not_deleted" x="0" y="0"/>
@@ -159,8 +165,14 @@
 <item historyLabel="sedgem_box_benthic.f90" index="0">
 <position info="not_deleted" x="156465" y="188"/>
 </item>
-<item active="true" historyLabel="sedgem_box_benthic.f90" index="0">
+<item historyLabel="sedgem_box_benthic.f90" index="0">
 <position info="not_deleted" x="156297" y="389"/>
+</item>
+<item historyLabel="sedgem_box_benthic.f90" index="1">
+<position info="not_deleted" x="0" y="0"/>
+</item>
+<item active="true" historyLabel="sedgem_box_benthic.f90" index="1">
+<position info="not_deleted" x="15980" y="0"/>
 </item>
 </navigationHistory>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>
@@ -179,6 +191,9 @@
 </trimLayout>
 </window>
 <mruList>
+<file factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="org.eclipse.photran.ui.FortranEditor" name="sedgem_box_benthic.f90" tooltip="/home/dh12423/Documents/GitHub/benthic-model/01_GMD_submission_20112017/OMEN_code/OMEN_FORTRAN_FeS2/sedgem_box_benthic.f90">
+<persistable uri="file:/home/dh12423/Documents/GitHub/benthic-model/01_GMD_submission_20112017/OMEN_code/OMEN_FORTRAN_FeS2/sedgem_box_benthic.f90"/>
+</file>
 <file factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="org.eclipse.photran.ui.FortranEditor" name="sedgem_box_benthic.f90" tooltip="/home/dh12423/Documents/GitHub/benthic-model/FORTRAN_code/cGENIE/sedgem_box_benthic.f90">
 <persistable uri="file:/home/dh12423/Documents/GitHub/benthic-model/FORTRAN_code/cGENIE/sedgem_box_benthic.f90"/>
 </file>

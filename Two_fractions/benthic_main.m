@@ -14,7 +14,7 @@ classdef benthic_main < handle
         
         tol_const = 1e-18;                      % non-zero constant to avoid numerical errors (e.g. division by zero)
         
-        %sediment characteristics
+        % sediment characteristics
         rho_sed=2.5;                            % sediment density (g/cm3)
         wdepth=1000.0;                           % water depth (m)
         w;                                      % burial velocity  (cm/yr) - calculated by internal fct. sedrate()

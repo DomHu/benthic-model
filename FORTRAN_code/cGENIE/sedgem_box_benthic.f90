@@ -349,14 +349,14 @@ CONTAINS
             end if
 
             ! CHECK if still lower than 4.0e-4 (5.0e-4 for OAE2), than cut there, as OMEN produces positive O2 SWI-fluxes
-            if(loc_sed_burial .LE. 4.0e-4)then
+            if(loc_sed_burial .LE. 5.0e-4)then
 !                                                print*,''
 !                                                print*,'OMEN burial < 5.0e-4 !!!!!!!!!!!!!!!!!!!!!!!!!!'
 !                                                print*,'dum_i, dum_j, dum_D', dum_i, dum_j, dum_D
                 !                print*,'loc_new_sed_vol_OLD =', loc_new_sed_vol
                 !                                print*,'loc_sed_burial_NEW before cut=', loc_sed_burial
                 !                                print*,'1/(1-por)*loc_new_sed(is_det) = ', 1/(1-por)*loc_new_sed(is_det)
-                loc_sed_burial = 5.0e-4
+                loc_sed_burial = 5.0e-4     !(5.0e-4 for OAE2; 4.0e-4 for modern)
             end if
 
             ! DH TODO: some of initialize should be called just once, not for every grid point
