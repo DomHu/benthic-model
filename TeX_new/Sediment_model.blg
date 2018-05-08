@@ -8,47 +8,47 @@ Repeated entry---line 73 of file Sediment_model.bib
  :                                   ,
 I'm skipping whatever remains of this entry
 Warning--string name "amjsci" is undefined
---line 1800 of file Sediment_model.bib
+--line 1837 of file Sediment_model.bib
 Warning--empty journal in berner:91
-You've used 122 entries,
+You've used 124 entries,
             1935 wiz_defined-function locations,
-            1126 strings with 28276 characters,
-and the built_in function-call counts, 54326 in all, are:
-= -- 5319
-> -- 2518
-< -- 68
-+ -- 924
-- -- 868
-* -- 5037
-:= -- 9410
-add.period$ -- 383
-call.type$ -- 122
-change.case$ -- 1031
-chr.to.int$ -- 122
-cite$ -- 123
-duplicate$ -- 1760
-empty$ -- 3631
-format.name$ -- 1052
-if$ -- 10393
+            1135 strings with 28578 characters,
+and the built_in function-call counts, 55075 in all, are:
+= -- 5397
+> -- 2538
+< -- 70
++ -- 930
+- -- 874
+* -- 5103
+:= -- 9538
+add.period$ -- 389
+call.type$ -- 124
+change.case$ -- 1044
+chr.to.int$ -- 124
+cite$ -- 125
+duplicate$ -- 1788
+empty$ -- 3689
+format.name$ -- 1062
+if$ -- 10539
 int.to.chr$ -- 1
 int.to.str$ -- 0
-missing$ -- 130
-newline$ -- 626
-num.names$ -- 374
-pop$ -- 783
+missing$ -- 132
+newline$ -- 636
+num.names$ -- 380
+pop$ -- 790
 preamble$ -- 1
-purify$ -- 1039
+purify$ -- 1052
 quote$ -- 0
-skip$ -- 1336
+skip$ -- 1358
 stack$ -- 0
-substring$ -- 4310
-swap$ -- 164
+substring$ -- 4378
+swap$ -- 166
 text.length$ -- 7
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 716
+type$ -- 728
 warning$ -- 1
-while$ -- 466
+while$ -- 474
 width$ -- 0
-write$ -- 1611
+write$ -- 1637
 (There was 1 error message)

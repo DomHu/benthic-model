@@ -436,7 +436,7 @@ Primary redox reactions &  Degradation of organic matter via aerobic degradation
 Secondary redox reactions &  Oxidation of ammonium and sulfide by oxygen, anaerobic oxidation of methane by sulfate\\
 %& of methane by sulfate\\
 Adsorption/Desorption & Ad-/Desorption of P on/from \chem{Fe(OH)_3}, \chem{NH_4} adsorption, \chem{PO_4} adsorption\\ %\textcolor{red}{Formation of Fe-bound P, reduction of Fe oxides (?correct here)},\\
-Mineral precipitation & Formation of authigenic P \\
+Mineral precipitation & Formation of authigenic P, pyrite precipitation (implicit) \\
 Biogeochemical tracers & Organic matter (2-G or pseudo 3-G), oxygen, nitrate, ammonium, sulfate, sulfide (hydrogen sulfide),\\
 & phosphate, Fe-bound P, DIC, ALK\\
 \hline\hline
@@ -576,7 +576,7 @@ produced in the anoxic zones of the sediment.
 In the oxic zone ($z<z_{ox}$), the aerobic degradation consumes oxygen with a fixed \chem{O_2:C} ratio (\chem{O_2C}, Tab. \ref{table:reaction_parameters}). 
 A predefined fraction, $\gamma_\chem{NH_4}$, of the ammonium produced during the aerobic degradation of OM is nitrified to nitrate, consuming two moles of oxygen per mole of ammonium produced. 
 In addition, OMEN-SED implicitly accounts for the oxygen consumption due to oxidation of reduced species (\chem{NH_4}, \chem{H_2S}) produced below the oxic zone through the flux boundary condition at the dynamically calculated 
-(see section \ref{subsubsec:Stoich_reaction_params} for details) oxygen penetration depth $z_{\mathrm{ox}}$. 
+oxygen penetration depth $z_{\mathrm{ox}}$ (see section \ref{subsubsec:Stoich_reaction_params} for details). 
 %This simplification can be justified as it has been shown that these secondary redox reactions mainly occur at the oxic/anoxic interface \citep{soetaert_model_1996}. 
 All oxygen consumption processes can thus be formulated as a function of organic matter degradation. 
 The conservation equation for oxygen is given by: 
@@ -613,7 +613,7 @@ At the sediment-water interface, OMEN-SED applies a Dirichlet condition (i.e. kn
 The oxygen penetration depth $z_{\mathrm{ox}}$ marks the lower boundary and is dynamically calculated as the depth at which $\chem{O_2}(z)=0$. 
 Therefore, OMEN-SED applies a Dirichlet boundary condition $\chem{O_2}(z_{\mathrm{ox}})=0$. In addition, a flux boundary is applied that implicitly accounts for the oxygen consumption by the partial oxidation 
 of $\chem{NH_4}$ and $\chem{H_2S}$ diffusing into the oxic zone from below (BC 4.2, Table \ref{Tab:BC_O2}). It is assumed that respective fractions ($\gamma_{\chem{NH_4}}$ and $\gamma_{\chem{H_2S}}$) are directly reoxidised 
-at the oxic/anoxic interface and the remaining fraction escapes reoxidation. OMEN-SED iteratively solves for $z_{\mathrm{ox}}$ by first testing if there is oxygen left at $z_\mathrm{max}$ (i.e. $\chem{O_2}(z_\mathrm{max}) > 0$). If that is not the case, it determines the root for the flux 
+at the oxic/anoxic interface and the remaining fraction escapes reoxidation (or is precipitated as pyrite, $\gamma_{\chem{FeS}}$). OMEN-SED iteratively solves for $z_{\mathrm{ox}}$ by first testing if there is oxygen left at $z_\mathrm{max}$ (i.e. $\chem{O_2}(z_\mathrm{max}) > 0$). If that is not the case, it determines the root for the flux 
 boundary condition 4.2 (Table \ref{Tab:BC_O2}). If $z_{\mathrm{ox}}=z_\mathrm{max}$,  a zero diffusive flux boundary condition is applied as lower boundary condition. 
 
 \begin{table}[tbp]
@@ -634,7 +634,7 @@ $z=z_{\mathrm{ox}}$&  \chem{O_2} consumption & 4)&\textbf{IF} $ (\chem{O_2}(z_\m
 & & &\textbf{ELSE} \\
 & ($z_{\mathrm{ox}} < z_\mathrm{max}$) & 4.2) &\quad $  \chem{O_2}(z_{\mathrm{ox}})=0$  \quad and \quad $-D_{ \chem{O_2}} \cdot \frac{\partial  \chem{O_2}}{\partial z}|_{z_{\mathrm{ox}}}=F_{red}(z_\mathrm{ox})$\\
 %$z=z_{\mathrm{ox}}$& & 5) $-D_{ \chem{O_2}} \cdot \frac{\partial  \chem{O_2}}{\partial z}|_{z_{\mathrm{ox}}}=F_{red, z_{\mathrm{ox}}}$\\   
-& with &&$\quad F_{red}(z_\mathrm{ox})=\frac{1-\phi}{\phi} \cdot \int_{\tilde{z}_{\chem{NO_3}}}^{z_\mathrm{max}}  \sum_i \left( 2\gamma_{\chem{NH_4}} \chem{NC_i} + 2\gamma_{\chem{H_2S}} \chem{SO_4C} \right) k_i \chem{POC}_i\ dz$ \\
+& with &&$\quad F_{red}(z_\mathrm{ox})=\frac{1-\phi}{\phi} \cdot \int_{\tilde{z}_{\chem{NO_3}}}^{z_\mathrm{max}}  \sum_i \left( 2\gamma_{\chem{NH_4}} \chem{NC_i} + 2\gamma_{\chem{H_2S}} (1-\gamma_{\chem{FeS}})\chem{SO_4C} \right) k_i \chem{POC}_i\ dz$ \\
 % was from Sandra &with:&$F_{red,z_{\mathrm{ox}}}=\beta \cdot \int_{z_{\mathrm{ox}}}^{\inf}  \sum_i k_i\cdot \chem{POC}_i  dz  + 2\cdot \gamma \cdot \int_{z_{\mathrm{ox}}}^{\inf}  \sum_i k_i\cdot \chem{POC}_i  -  $ \\
 \hline  
 \multicolumn{4}{l}{Note: $\tilde{z}_{\chem{NO_3}} = z_{\mathrm{ox}}$ as upper boundary here, as $z_{\chem{NO_3}}$ is not known at this point.}\\
@@ -1210,7 +1210,8 @@ based on a fitting exercises to a numerical model and showed that the fraction v
 Due to mathematical constraints in OMEN-SED for finding an analytical solution to the model equations these fractions take constant values generally representing oxygenated deep sea conditions. 
 However, when coupled to an ESM $\gamma_{\chem{H_2S}}$ becomes dependent on the bottom water oxygenation state. That is, $\gamma_{\chem{H_2S}} = 1.0$ for oxic bottom waters and a user defined value $\gamma_{\chem{H_2S}} < 1.0$ for anoxic bottom waters. 
 The parameter $\gamma_{\chem{FeS}}$ represents the fraction of sulfide that is precipitated as pyrite in the sulfidic zone. % $\gamma_{\chem{FeS}}$ is an auxiliary parameter used as a quick fix until iron is explicitly represented. 
-If a user does not want to make any assumptions about pyrite precipitation – it can be set to 0 (as in the results presented here).
+The majority of \chem{H_2S} produced by sulfate reduction is reoxidised, but it is estimated that $\sim 10-25\%$ is eventually buried as pyrite \citep{bottrell_reconstruction_2006}. However, this fraction can vary significantly over 
+geological timescales \citep{berner_sedimentary_1984}. If a user does not want to make any assumptions about pyrite precipitation – it can be set to 0 (as in the results presented here).
 % \textbf{SA: they are just build in to allow for the escape of reduced species- see Gypens et al., 2008. there are no reference but evidence that some H2S, NH4 can escape oxidation. We assume an instantaneous re-oxidation at sox, 
 % but reality is that this is a reaction-transport problem. So if reaction timescales< transport timescales (e.g. a lot of competition for O2), some NH4 escapes. so this possibility is build in if wanted, e.g. observed. 
 % This is a parameter that just comes in because of the simplifying assumption of "everything is oxidised at zox"}
@@ -1220,7 +1221,7 @@ authigenic CFA precipitation ($k_a$), as well as the pore water equilibrium conc
 ($\chem{PO_4}^s$, $\chem{PO_4}^a$ ) and the asymptotic concentration for Fe-bound P ($\chem{FeP}^\infty$ ) are taken from  \citet{caroline_p_slomp_key_1996}. 
 See Table \ref{table:reaction_parameters} for a complete summary of the parameters and their values.
 
-%are constrained on the basis of ??. The pore water equilibrium concentrations for P sorption and CFA precipation 
+%are constrained on the basis of ??. The pore water equilibrium concentrations for P sorption and CFA precipitation 
 %($\chem{PO_4}^s$, $\chem{PO_4}^a$ ) and the asymptotic concentration for Fe-bound P ($\chem{FeP}^\infty$ ) are taken from  \citet{palastanga_long_term_2011}. 
 %The phosphorus to carbon ratio represents the composition of organic matter and is chosen as ?? based on ??.\\
 %See Table \ref{table:reaction_parameters} for a complete summary of the parameters and their values.
