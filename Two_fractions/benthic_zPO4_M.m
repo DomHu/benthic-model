@@ -10,15 +10,15 @@ classdef benthic_zPO4_M
         
         KPO4_ox=200.0;              % Adsorption coefficient in oxic layer (-) (was 10-0)
         KPO4_anox=1.3;              % Adsorption coefficient in anoxic layer (-)
-        ksPO4=0.26*365;           	% Rate constant for kinetic P sorption (1/yr) (Palastanga: 3.65;)
+        ksPO4=3.65; %0.26*365;           	% Rate constant for kinetic P sorption (1/yr) (Palastanga: 3.65;)
         kmPO4=0.193;               	% Rate constant for Fe-bound P release upon Fe oxide reduction
-        kaPO4=0.365;             	%Rate constant for authigenic P formation (1/yr)
+        kaPO4=0.37; %0.365;             	%Rate constant for authigenic P formation (1/yr)
         % ksPO4=1e-15;
         %kmPO4= 1e-15 ;
         %kaPO4 = 0.0;
-        PO4s=10.0e-10;              % Equilibrium concentration for P sorption (mol/cm3)       was 1.5e-9; ; Slomp ea 1996
-        PO4a= 3.7e-9;               % Equilibrium concentration for authigenic P formation (mol/cm3) was 0.7e-9
-        Minf=1.99e-10; %2.0e-9; %1.0e-10;       % asymptotic concentration for Fe-bound P (mol/cm3)  (was 5.2e-9;)
+        PO4s=12.0e-9; %10.0e-10;              % Equilibrium concentration for P sorption (mol/cm3)       was 1.5e-9; ; Slomp ea 1996
+        PO4a= 3.7e-9; %3.7e-9;               % Equilibrium concentration for authigenic P formation (mol/cm3) was 0.7e-9
+        Minf=5.2e-9; %1.99e-10; %2.0e-9; %1.0e-10;       % asymptotic concentration for Fe-bound P (mol/cm3)  (was 5.2e-9;)
         %Minf = 0;
         
         % OM reactive terms in oxic layer

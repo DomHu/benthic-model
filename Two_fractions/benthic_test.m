@@ -758,7 +758,8 @@ classdef benthic_test
                 swi.SO40=1/conv_cm3_kg*bc(3);               	%SO4 concentration at SWI (mol/cm^3)
                 swi.H2S0=1/conv_cm3_kg*bc(4);                 	%H2S concentration at SWI (mol/cm^3)
                 swi.PO40=1/conv_cm3_kg*bc(5);                   %PO4 concentration at SWI (mol/cm^3)
-                swi.Mflux0=365*0.2e-10;                         %flux of M to the sediment (mol/(cm2*yr))
+                swi.Mflux0=365*0.2e-10*1/(1-res.bsd.por)*1/res.bsd.w;                         % Flux converted to concentration
+%                swi.Mflux0=365*0.2e-10;                         % Flux input 365*0.2e-10 flux of M to the sediment (mol/(cm2*yr))
                 swi.DIC0=1/conv_cm3_kg*bc(6);               	%DIC concentration at SWI (mol/cm^3)
                 swi.ALK0=1/conv_cm3_kg*bc(7);               	%ALK concentration at SWI (mol/cm^3)
                 
@@ -816,7 +817,7 @@ classdef benthic_test
                 % if anoxic, decrease zbio and use anoxic degradation rate
                 if(swi.O20 < 5.0e-9 )
                     res.bsd.zbio=0.01;
-                    res.zTOC.k2 = 0.001;
+                    res.zTOC.k2 = 0.00001; % modern: 0.001; OAE2: 0.00001
                     %                 switch k_parametr
                     %                     case 'boudreau1997'
                     %                         % use parameterisation of Boudreau 1997 dependent on sediment accumulation rate (w)
@@ -836,6 +837,8 @@ classdef benthic_test
                     %                     error('Error. Unknown k parameterization.')
                     %                 end
                 end
+                
+                
                 
                 %            res.zTOC.k2 = res.zTOC.k1/100;
                 
@@ -858,6 +861,14 @@ classdef benthic_test
                 res.zDIC = benthic_zDIC(res.bsd, res.swi);
                 res.zALK = benthic_zALK(res.bsd, res.swi);
                 
+                % change PO4 related parameters for margins
+                if(res.bsd.wdepth <= 2000)
+                    tesss=1;
+                    res.zPO4_M.ksPO4=36.5;         	% Rate constant for kinetic P sorption (1/yr) (Palastanga: 3.65;)
+                    res.zPO4_M.PO4s=2.0e-9; %10.0e-10;              % Equilibrium concentration for P sorption (mol/cm3)       was 1.5e-9; ; Slomp ea 1996
+                    res.zPO4_M.Minf=5.2e-15; %1.99e-10; %2.0e-9; %1.0e-10;       % asymptotic concentration for Fe-bound P (mol/cm3)  (was 5.2e-9;)
+                end
+
                 
                 % Calculate OMEN profiles and fluxes
                 res = res.zTOC.calc(res.bsd,res.swi, res);
@@ -930,7 +941,7 @@ classdef benthic_test
                 
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 %%%%%%%%%%%%%%%%  MEAN PO4 concentration in bioturbated layer (10cm)  %%%%%%%%%%%%%%%%%%%%
-                calc_PO4=true;
+                calc_PO4=false;
                 if(calc_PO4)
                     zgrid = 0:0.5:10;
                     for i=1:length(zgrid)

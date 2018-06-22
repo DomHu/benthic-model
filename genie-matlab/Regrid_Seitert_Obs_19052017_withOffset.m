@@ -6,6 +6,7 @@
 % run within genie-matlab folder!
 
 load('Seiter_TOC_Obs_03042017.mat');
+% % % % use the asc-file:
 % % % % change -9999 to NaN
 % % % TOC_Seiteretal2004(TOC_Seiteretal2004==-9999)=NaN;
 % % % % ALSO adjust outlier 30100000 in 134, 285 to 0.3
@@ -15,6 +16,7 @@ load('Seiter_TOC_Obs_03042017.mat');
 % % % TOC_NEW = [TOC_NEW, test];
 % % % TOC_NEW = [TOC_NEW; test];
 % % % 
+
 % one column too much: Avg first and last column - omit NaN
 help=horzcat(TOC_NEW(:,1), TOC_NEW(:,end));
 Nmean=nanmean(help,2);
@@ -24,18 +26,20 @@ TOC_NEW(:,1)=Nmean;
 TOC_NEW = TOC_NEW(:,1:end-1);
 TOC_NEW_tr = TOC_NEW.';
 
+% create edges of target resolution:
 [dum_lon, dum_lat] = get_grid_genie_lonlatedges(72,72,-180);
 
 %[dum_lon_orig, dum_lat_orig] = get_grid_genie_lonlatedges(361,181,0);
 % create edges of observations manually:
 long_obs=(-180.5:1:179.5);
 lat_obs=(-90.5:1:90.5);
+% change first and last edge, because...
 lat_obs(1)=-90;
 lat_obs(end)=90;
 
 [zo fao] = make_regrid_2d(long_obs,lat_obs,TOC_NEW_tr,dum_lon,dum_lat,true);
 zo = zo.';
-dlmwrite('zo_Seiter_offset_72x72_0606.txt',zo)    % better copy from matlab, as the txt import deletes some lines
+dlmwrite('zo_Seiter_offset_72x72_0606.txt',zo)    % better copy from matlab, as the txt export deletes some lines
 % was dlmwrite('zo_Seiter_offset1905.txt',zo.')
 % zo or go_z is what I need!
 

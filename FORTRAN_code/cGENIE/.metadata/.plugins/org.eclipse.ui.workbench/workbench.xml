@@ -29,17 +29,22 @@
 <presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
 <part id="0"/>
 <part id="1"/>
+<part id="2"/>
 </presentation>
 </folder>
 </info>
 </editorArea>
-<editor id="org.eclipse.photran.ui.FortranEditor" name="sedgem_box_benthic.f90" partName="sedgem_box_benthic.f90" title="sedgem_box_benthic.f90" tooltip="/home/dh12423/Documents/GitHub/benthic-model/FORTRAN_code/cGENIE/sedgem_box_benthic.f90" workbook="DefaultEditorWorkbook">
+<editor activePart="true" focus="true" id="org.eclipse.photran.ui.FortranEditor" name="sedgem_box_benthic.f90" partName="sedgem_box_benthic.f90" title="sedgem_box_benthic.f90" tooltip="/home/dh12423/Documents/GitHub/benthic-model/FORTRAN_code/cGENIE/sedgem_box_benthic.f90" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" uri="file:/home/dh12423/Documents/GitHub/benthic-model/FORTRAN_code/cGENIE/sedgem_box_benthic.f90"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="21615" selectionTopPixel="472"/>
+<editorState selectionHorizontalPixel="0" selectionLength="14" selectionOffset="60039" selectionTopPixel="17007"/>
 </editor>
-<editor activePart="true" focus="true" id="org.eclipse.photran.ui.FortranEditor" name="sedgem_box_benthic.f90" partName="sedgem_box_benthic.f90" title="sedgem_box_benthic.f90" tooltip="/home/dh12423/Documents/GitHub/benthic-model/01_GMD_submission_20112017/OMEN_code/OMEN_FORTRAN_FeS2/sedgem_box_benthic.f90" workbook="DefaultEditorWorkbook">
+<editor id="org.eclipse.photran.ui.FortranEditor" name="sedgem_box_benthic.f90" partName="sedgem_box_benthic.f90" title="sedgem_box_benthic.f90" tooltip="/home/dh12423/Documents/GitHub/benthic-model/01_GMD_submission_20112017/OMEN_code/OMEN_FORTRAN_FeS2/sedgem_box_benthic.f90" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" uri="file:/home/dh12423/Documents/GitHub/benthic-model/01_GMD_submission_20112017/OMEN_code/OMEN_FORTRAN_FeS2/sedgem_box_benthic.f90"/>
 <editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="15980" selectionTopPixel="4107"/>
+</editor>
+<editor id="org.eclipse.photran.ui.FortranEditor" name="biogem_box.f90" partName="biogem_box.f90" title="biogem_box.f90" tooltip="/home/dh12423/Documents/GitHub/benthic-model/FORTRAN_code/cGENIE/biogem_box.f90" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" uri="file:/home/dh12423/Documents/GitHub/benthic-model/FORTRAN_code/cGENIE/biogem_box.f90"/>
+<editorState selectionHorizontalPixel="0" selectionLength="9" selectionOffset="4557" selectionTopPixel="1343"/>
 </editor>
 </editors>
 <views>
@@ -149,6 +154,10 @@
 <editors>
 <editor factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="org.eclipse.photran.ui.FortranEditor" uri="file:/home/dh12423/Documents/GitHub/benthic-model/FORTRAN_code/cGENIE/sedgem_box_benthic.f90"/>
 <editor factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="org.eclipse.photran.ui.FortranEditor" uri="file:/home/dh12423/Documents/GitHub/benthic-model/01_GMD_submission_20112017/OMEN_code/OMEN_FORTRAN_FeS2/sedgem_box_benthic.f90"/>
+<editor factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="org.eclipse.photran.ui.FortranEditor" uri="file:/home/dh12423/Documents/GitHub/benthic-model/FORTRAN_code/cGENIE/sedgem_box_benthic.f90"/>
+<editor factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="org.eclipse.photran.ui.FortranEditor" uri="file:/home/dh12423/Documents/GitHub/benthic-model/FORTRAN_code/cGENIE/biogem_box.f90"/>
+<editor factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="org.eclipse.photran.ui.FortranEditor" uri="file:/home/dh12423/Documents/GitHub/benthic-model/01_GMD_submission_20112017/OMEN_code/OMEN_FORTRAN_FeS2/sedgem_box_benthic.f90"/>
+<editor factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="org.eclipse.photran.ui.FortranEditor" uri="file:/home/dh12423/Documents/GitHub/benthic-model/FORTRAN_code/cGENIE/sedgem_box_benthic.f90"/>
 </editors>
 <item historyLabel="sedgem_box_benthic.f90" index="0">
 <position info="not_deleted" x="0" y="0"/>
@@ -171,8 +180,32 @@
 <item historyLabel="sedgem_box_benthic.f90" index="1">
 <position info="not_deleted" x="0" y="0"/>
 </item>
-<item active="true" historyLabel="sedgem_box_benthic.f90" index="1">
+<item historyLabel="sedgem_box_benthic.f90" index="1">
 <position info="not_deleted" x="15980" y="0"/>
+</item>
+<item historyLabel="sedgem_box_benthic.f90" index="2">
+<position info="not_deleted" x="21615" y="0"/>
+</item>
+<item historyLabel="sedgem_box_benthic.f90" index="1">
+<position info="not_deleted" x="15980" y="0"/>
+</item>
+<item historyLabel="sedgem_box_benthic.f90" index="2">
+<position info="not_deleted" x="21615" y="0"/>
+</item>
+<item historyLabel="biogem_box.f90" index="3">
+<position info="not_deleted" x="0" y="0"/>
+</item>
+<item historyLabel="sedgem_box_benthic.f90" index="4">
+<position info="not_deleted" x="15980" y="0"/>
+</item>
+<item historyLabel="sedgem_box_benthic.f90" index="5">
+<position info="not_deleted" x="21615" y="0"/>
+</item>
+<item historyLabel="sedgem_box_benthic.f90" index="4">
+<position info="not_deleted" x="15980" y="0"/>
+</item>
+<item active="true" historyLabel="sedgem_box_benthic.f90" index="5">
+<position info="not_deleted" x="21615" y="0"/>
 </item>
 </navigationHistory>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>
@@ -191,6 +224,9 @@
 </trimLayout>
 </window>
 <mruList>
+<file factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="org.eclipse.photran.ui.FortranEditor" name="biogem_box.f90" tooltip="/home/dh12423/Documents/GitHub/benthic-model/FORTRAN_code/cGENIE/biogem_box.f90">
+<persistable uri="file:/home/dh12423/Documents/GitHub/benthic-model/FORTRAN_code/cGENIE/biogem_box.f90"/>
+</file>
 <file factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="org.eclipse.photran.ui.FortranEditor" name="sedgem_box_benthic.f90" tooltip="/home/dh12423/Documents/GitHub/benthic-model/01_GMD_submission_20112017/OMEN_code/OMEN_FORTRAN_FeS2/sedgem_box_benthic.f90">
 <persistable uri="file:/home/dh12423/Documents/GitHub/benthic-model/01_GMD_submission_20112017/OMEN_code/OMEN_FORTRAN_FeS2/sedgem_box_benthic.f90"/>
 </file>
