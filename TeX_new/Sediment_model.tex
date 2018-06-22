@@ -102,7 +102,7 @@
 
 %\linenumbers
 
-\title{OMEN-SED 0.9: A novel, numerically efficient organic matter sediment diagenesis module for coupling to Earth system models}
+\title{OMEN-SED 1.0: A novel, numerically efficient organic matter sediment diagenesis module for coupling to Earth system models}
 
 
 % \Author[affil]{given_name}{surname}
@@ -717,7 +717,7 @@ Below the denitrification zone ($z>z_{\chem{NO_3}}$), organic matter degradation
 In addition, the anaerobic oxidation of upward diffusing methane (AOM) produced below the sulfate penetration and the associated consumption of sulfate and production of sulfide; as well as the production of sulfate and 
 consumption of sulfide through sulfide oxidation are implicitly accounted for through the boundary conditions (Table \ref{Tab:BC_SO4+H2S}). 
 In the sulfidic zone a defined fraction of sulfide, $\gamma_\chem{FeS}$, can be precipitated as pyrite (in the presented simulations $\gamma_\chem{FeS} = 0.0$ as we do not want to make any assumptions about pyrite precipitation). 
-It can be safely assume that almost all \chem{CH_4} is oxidized anaerobically in the sediments \citep[e.g.][suggests up to 90\%]{reeburgh_oceanic_2007} - except for active (very localized) sites and slope failure, which can, in theory, 
+It can be safely assumed that almost all \chem{CH_4} is oxidized anaerobically in the sediments \citep[e.g.][suggests up to 90\%]{reeburgh_oceanic_2007} - except for active (very localized) sites and slope failure, which can, in theory, 
 be accounted for through the $\gamma_\chem{CH_4}$ term. 
 The conservation equations for sulfate and sulfide are thus given by:
 
@@ -1801,7 +1801,7 @@ Thus defining appropriate OM degradation rate constants is a major challenge and
 for global applications, they are related to a single, readily available characteristic (or master variable) of the local environmental conditions. 
 For instance, considerable effort has been expended to relate the apparent rate constant for oxic and 
 anoxic OM degradation to sedimentation rate ($w$) and various empirical relations have been proposed \citep{toth_organic_1977, tromp_global_1995, boudreau1997diagenetic}. 
-\citet{stolpovsky_toward_2015, stolpovsky_new_2017} suggested empirically derived approaches to constrain degradation rate constants in a 2G model on a global scale. These approaches are derived from present-day observations and might help 
+\citet{stolpovsky_toward_2015, stolpovsky_new_2018} suggested empirically derived approaches to constrain degradation rate constants in a 2G model on a global scale. These approaches are derived from present-day observations and might help 
 constrain parameters for present-day applications. However, the problem of constraining 2G degradation model parameters remains for largely different environmental conditions encountered in the past that could also prevail in the future \citep{arndt_quantifying_2013}.
 %Nevertheless, these relationships are generally based and/or tested on limited data sets and their global applicability, especially under past or projected future environmental conditions is questionable \citep{arndt_quantifying_2013}. 
 We hence test several alternative schemes in the coupled OMEN-cGENIE framework. 
@@ -1973,7 +1973,7 @@ sediments \citep{palastanga_long_term_2011}.
 \subsection{Modelled fluxes and sediment characteristics}\label{subsec:fluxes_sed_charac}
 \begin{figure}[htbp]
 \begin{center}
-	\includegraphics[width=0.85\textwidth]{figures/OMEN-GENIE-Exp/0_2908_Boudreau_Depth_SED_PROPS_AND_FLUXES_1009_LINES.pdf}
+	\includegraphics[width=0.85\textwidth]{figures/OMEN-GENIE-Exp/0_2908_Boudreau_Depth_SED_PROPS_AND_FLUXES_1009_LINES_updateO2scale.pdf}
 	\caption{Sediment characteristics related to POC degradation and oxygen consumption for the depth dependent paramaterisation after \citet{boudreau1997diagenetic} with $k_1 = x(\mathrm{SFD}) \cdot k_2$.
 	Total \chem{POC_{degr}} rate and fraction of aerobic \chem{POC_{degr}} are the respective values for the first 5cm in the sediments. 
 	%Results of OMEN-cGENIE coupling using the OM degradation rate constants which produce the best fit to the \citet{seiter_organic_2004} 	observations (i.e. $k_1 = 0.015,\ k_2 = 0.005$). 
@@ -2170,8 +2170,9 @@ results.}
 % We thank Claire Reimers and Filip Meysman for supplying the dataset from the Santa Barbara Basin, as well as Martin Thullner and Jack Middelburg for making the BRNS results and observations 
 % included in Section \ref{subsec:globalhypsometry} available. We are also grateful to Andy Dale for providing the global flux database used in Section \ref{subsec:SA} and 
 % acknowledge the British Oceanographic Data Centre for the OMEXDIA dataset used in Section \ref{subsec:SedProfiles}.
-We thank Claire Reimers, Filip Meysman, Martin Thullner, Jack Middelburg, Andy Dale, Katherina Seiter, Christof Meile, Ronnie Glud and the British Oceanographic Data Centre for supplying the datasets and model results used in 
-Sections \ref{subsec:SA}, \ref{subsec:SedProfiles},  \ref{subsec:globalhypsometry} and \ref{sec:ESM_coupling}. 
+We would like to thank two anonymous reviewers and Klaus Wallmann for their constructive critiques and insightful comments.
+We thank C. Reimers, F. Meysman, M. Thullner, J. Middelburg, A. Dale, K. Seiter, C. Meile, R. Glud and the British Oceanographic Data Centre for supplying the datasets and model results used in this study.
+%Sections \ref{subsec:SA}, \ref{subsec:SedProfiles},  \ref{subsec:globalhypsometry} and \ref{sec:ESM_coupling}. 
 We are also grateful to Francesca Pianosi for helpful insights into sensitivity analysis. 
 DH was supported by a graduate teaching studentship by the University of Bristol and a Heising–Simons Foundation award. SA acknowledges funding from the UK Natural Environmental Research Council (NERC) grant no. NE/I021322/1 and 
 SD from the grants NERC JET (NE/N018508/1) and NERC BETR (NE/P013651/1). 

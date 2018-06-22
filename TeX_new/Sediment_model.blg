@@ -3,33 +3,29 @@ Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: Sediment_model.aux
 The style file: apalike.bst
 Database file #1: Sediment_model.bib
-Repeated entry---line 73 of file Sediment_model.bib
- : @article{regnier_quantitative_2011
- :                                   ,
-I'm skipping whatever remains of this entry
 Warning--string name "amjsci" is undefined
---line 1837 of file Sediment_model.bib
+--line 1615 of file Sediment_model.bib
 Warning--empty journal in berner:91
 You've used 124 entries,
             1935 wiz_defined-function locations,
-            1135 strings with 28578 characters,
-and the built_in function-call counts, 55075 in all, are:
-= -- 5397
+            1138 strings with 28663 characters,
+and the built_in function-call counts, 55125 in all, are:
+= -- 5402
 > -- 2538
 < -- 70
 + -- 930
 - -- 874
-* -- 5103
-:= -- 9538
+* -- 5111
+:= -- 9543
 add.period$ -- 389
 call.type$ -- 124
 change.case$ -- 1044
 chr.to.int$ -- 124
 cite$ -- 125
 duplicate$ -- 1788
-empty$ -- 3689
+empty$ -- 3695
 format.name$ -- 1062
-if$ -- 10539
+if$ -- 10550
 int.to.chr$ -- 1
 int.to.str$ -- 0
 missing$ -- 132
@@ -41,7 +37,7 @@ purify$ -- 1052
 quote$ -- 0
 skip$ -- 1358
 stack$ -- 0
-substring$ -- 4378
+substring$ -- 4393
 swap$ -- 166
 text.length$ -- 7
 text.prefix$ -- 0
@@ -51,4 +47,4 @@ warning$ -- 1
 while$ -- 474
 width$ -- 0
 write$ -- 1637
-(There was 1 error message)
+(There were 2 warnings)
