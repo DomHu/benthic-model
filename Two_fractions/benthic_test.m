@@ -26,20 +26,20 @@ classdef benthic_test
             bsd = benthic_main();
             %bottom water concentrations
             swi.T = 8.0;                                        % temperature (degree C)
-            swi.C01_nonbio= 1.0*1e-2/12*bsd.rho_sed;            % TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-            swi.C02_nonbio= 1.0*1e-2/12*bsd.rho_sed;            % TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+            swi.C01_nonbio= 1.01*1e-2/12*bsd.rho_sed;            % TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+            swi.C02_nonbio= 1.01*1e-2/12*bsd.rho_sed;            % TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
             swi.Fnonbio1 = swi.C01_nonbio*(1-bsd.por)*bsd.w;    % calculate flux [mol/(cm2 yr)] according non-bioturbated flux
             swi.Fnonbio2 = swi.C02_nonbio*(1-bsd.por)*bsd.w;    % calculate flux [mol/(cm2 yr)] according non-bioturbated flux
             swi.C01 = swi.C01_nonbio;                           % resulting bioturbated SWI-concentration, to be calculated in benthic_zTOC.m
             swi.C02 = swi.C02_nonbio;                           % resulting bioturbated SWI-concentration, to be calculated in benthic_zTOC.m
-            swi.O20=300.0E-009;                                 % O2  concentration at SWI (mol/cm^3)
+            swi.O20=0.0E-009;                                 % O2  concentration at SWI (mol/cm^3)
             swi.NO30=40.0e-9;                                   % NO3 concentration at SWI (mol/cm^3)
             swi.Nitrogen=true;                                  % calculate N (true/false)
             swi.NH40=10.0e-9;                                 	% NH4 concentration at SWI (mol/cm^3)
             swi.SO40=2.8E-005;                                	% SO4 concentration at SWI (mol/cm^3)
             swi.H2S0=0.0;                                       % H2S concentration at SWI (mol/cm^3)
-            swi.PO40=40.0e-9;                                   % PO4 concentration at SWI (mol/cm^3)
-            swi.Mflux0=365*0.2e-10*1/(1-bsd.por)*1/bsd.w;       % actually CONCENTRATION of M at the sediment [mol/cm3] : from flux input  365*0.2e-10 (mol/(cm2*yr))
+            swi.PO40=4.0e-9;                                   % PO4 concentration at SWI (mol/cm^3)
+            swi.Mflux0=365*0.2e-10; %*1/(1-bsd.por)*1/bsd.w;       % actually CONCENTRATION of M at the sediment [mol/cm3] : from flux input  365*0.2e-10 (mol/(cm2*yr))
             swi.DIC0=2.4E-006;                                 	% DIC concentration at SWI (mol/cm^3)
             swi.ALK0=2.4E-006;                                 	% ALK concentration at SWI (mol/cm^3)
             swi.S0=35;                                         	% Salinity at SWI (not used at the moment)
@@ -55,7 +55,7 @@ classdef benthic_test
             %            str_date = datestr(now,'ddmmyy_HH_MM_SS');
             res=benthic_test.test_benthic(1,swi);
             toc;
-            benthic_test.plot_column(res, false, swi, 'FULL_OMEN')
+            benthic_test.plot_column(res, false, swi, '0E-9_O2_2wtpcCorg')
             
             % calculate depth integrated OM degradation rates
             Cox_rate.Cox_total = res.zTOC.calcReac(0.0, res.bsd.zinf, 1, 1, res.bsd, swi, res);
@@ -72,6 +72,40 @@ classdef benthic_test
             Mean_OM = 1/x * 100*12/res.bsd.rho_sed*res.zTOC.calcOM(0.0, x, 1, 1, res.bsd, swi, res)
         end
         
+        function run_PO4flux_SA_OMEN()
+            % make PO4-SWI flux SA for changing boundary conditions in Corg and O2
+            clear
+
+            swi=benthic_test.default_swi()
+            %            % set date-time
+            %            str_date = datestr(now,'ddmmyy_HH_MM_SS');
+            for i=1:51
+                swi.C01 = (0.01+(i-1)*0.02)*1e-2/12*2.5;     % 2.5 is rho_sed                      % resulting bioturbated SWI-concentration, to be calculated in benthic_zTOC.m
+                swi.C02 = swi.C01;
+                Corg(i)=2*(0.01+(i-1)*0.02);
+                for j=1:51                
+                    swi.O20=(j-1)*3.0E-009;                                 % O2  concentration at SWI (mol/cm^3)
+                    res=benthic_test.test_benthic(1,swi);
+                    SWI_PO4(i,j)=res.flxswi_P;
+                    O20(j)=(j-1)*3.0E-009;
+                if(i==1 && j==45)
+                    benthic_test.plot_column(res, false, swi, '0E-9_O2_i1_j45')
+                end
+                end                
+            end
+            
+            figure;
+            hold on
+            [C,h] = contourf(Corg,O20,SWI_PO4);
+            clabel(C,h,'FontSize',16);
+            colorbar();
+            box on
+            hold off
+            xlabel ({'Corg'}); %;'(\mumol cm^{-2}yr^{-1})'})
+            ylabel('Ocean O_2')    
+            print('-depsc', 'PO4_SWI-flux_SA_2606_4PO4_00100001_lowtohighCorg_150O2_3000m');
+        
+        end
         
         function res = test_benthic( ncl, swi )
             
