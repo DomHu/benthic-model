@@ -36,7 +36,7 @@
 </editorArea>
 <editor activePart="true" focus="true" id="org.eclipse.photran.ui.FortranEditor" name="sedgem_box_benthic.f90" partName="sedgem_box_benthic.f90" title="sedgem_box_benthic.f90" tooltip="/home/dh12423/Documents/GitHub/benthic-model/FORTRAN_code/cGENIE/sedgem_box_benthic.f90" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" uri="file:/home/dh12423/Documents/GitHub/benthic-model/FORTRAN_code/cGENIE/sedgem_box_benthic.f90"/>
-<editorState selectionHorizontalPixel="0" selectionLength="14" selectionOffset="60039" selectionTopPixel="17007"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="143398" selectionTopPixel="28252"/>
 </editor>
 <editor id="org.eclipse.photran.ui.FortranEditor" name="sedgem_box_benthic.f90" partName="sedgem_box_benthic.f90" title="sedgem_box_benthic.f90" tooltip="/home/dh12423/Documents/GitHub/benthic-model/01_GMD_submission_20112017/OMEN_code/OMEN_FORTRAN_FeS2/sedgem_box_benthic.f90" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" uri="file:/home/dh12423/Documents/GitHub/benthic-model/01_GMD_submission_20112017/OMEN_code/OMEN_FORTRAN_FeS2/sedgem_box_benthic.f90"/>
@@ -127,7 +127,7 @@
 </folder>
 </info>
 <info part="org.eclipse.ui.editorss" ratio="0.25940594" ratioLeft="262" ratioRight="748" relationship="2" relative="topLeft"/>
-<info folder="true" part="bottomRight" ratio="0.6596386" ratioLeft="438" ratioRight="226" relationship="4" relative="org.eclipse.ui.editorss">
+<info folder="true" part="bottomRight" ratio="0.8903904" ratioLeft="593" ratioRight="73" relationship="4" relative="org.eclipse.ui.editorss">
 <folder activePageID="org.eclipse.ui.views.TaskList" appearance="2" expanded="2">
 <page content="org.eclipse.ui.views.TaskList" label="Tasks"/>
 <page content="org.eclipse.team.ui.GenericHistoryView" label="LabelNotFound"/>

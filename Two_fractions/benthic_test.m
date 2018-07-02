@@ -989,9 +989,11 @@ classdef benthic_test
                 %%%%%%%%%%%%%%%%  TEST PROFILES  %%%%%%%%%%%%%%%%%%%%
                 
                 
-                %   if(bsd.wdepth < 500)
-                %               benthic_test.plot_column(res, false, res.swi, '_shallow_2804_GENIEw')
-                %   end
+%                   if(bsd.wdepth < 500)
+                   if(res.flxswi_P > 0.0)
+                        res.bsd.wdepth
+                        benthic_test.plot_column(res, false, res.swi, '_SWI_P')
+                   end
             end
             
         end

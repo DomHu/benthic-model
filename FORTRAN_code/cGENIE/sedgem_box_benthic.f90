@@ -1004,8 +1004,8 @@ CONTAINS
         KPO4_ox = 200.0   ! 0.0                 ! Adsorption coefficient in oxic layer (-)
         KPO4_anox = 1.3   ! 0.0                ! Adsorption coefficient in anoxic layer (-)
 
-        !        dum_swiflux_M = 365*0.2e-10 ! Flux input 365*0.2e-10 flux of M to the sediment (mol/(cm2*yr))
-        dum_swiflux_M = 365.0*0.2e-10*1/(1-por)*1/w ! Flux converted to concentration
+        dum_swiflux_M = 365*0.2e-10     ! Flux input 365*0.2e-10 flux of M to the sediment (mol/(cm2*yr)) - this needs to equal advective flux in sediment z=0
+        ! dum_swiflux_M = 365.0*0.2e-10*1/(1-por)*1/w ! Flux converted to concentration (NOT NEEDED!!!)
 
         !       WAS BEFORE:
         !        ksPO4 = 1.0       ! 0.0  !          ! Rate constant for kinetic P sorption (1/yr)
