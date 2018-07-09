@@ -10,15 +10,15 @@ classdef benthic_zPO4_M
         
         KPO4_ox=200.0;              % Adsorption coefficient in oxic layer (-) (was 10-0)
         KPO4_anox=1.3;              % Adsorption coefficient in anoxic layer (-)
-        ksPO4=3.65; %0.26*365;           	% Rate constant for kinetic P sorption (1/yr) (Palastanga: 3.65;)
-%        kmPO4=0.193;               	% Rate constant for Fe-bound P release upon Fe oxide reduction
-%        kaPO4=0.37; %0.365;             	%Rate constant for authigenic P formation (1/yr)
+        ksPO4=3.65; %7.3; % 3.65 0.26*365;           	% Rate constant for kinetic P sorption (1/yr) (Palastanga: 3.65;)
+        kmPO4=0.193;               	% Rate constant for Fe-bound P release upon Fe oxide reduction
+        kaPO4=0.37; %0.365;             	%Rate constant for authigenic P formation (1/yr)
 %        ksPO4=1e-15;
-        kmPO4= 1e-15 ;
-        kaPO4 = 0.0;
-        PO4s=12.0e-9; %10.0e-10;              % Equilibrium concentration for P sorption (mol/cm3)       was 1.5e-9; ; Slomp ea 1996
-        PO4a= 3.7e-9; %3.7e-9;               % Equilibrium concentration for authigenic P formation (mol/cm3) was 0.7e-9
-        Minf=0.0; % 5.2e-9; %1.99e-10; %2.0e-9; %1.0e-10;       % asymptotic concentration for Fe-bound P (mol/cm3)  (was 5.2e-9;)
+%        kmPO4= 1e-15 ;
+%        kaPO4 = 0.0;
+        PO4s=2.0e-9; %12.0e-9; % 10.0e-10;              % Equilibrium concentration for P sorption (mol/cm3)       was 1.5e-9; ; Slomp ea 1996
+        PO4a= 3.7e-9; % 3.7e-9;                % Equilibrium concentration for authigenic P formation (mol/cm3) was 0.7e-9
+        Minf=5.2e-9; % 0.0; 5.2e-9; %1.99e-10; %2.0e-9; %1.0e-10;       % asymptotic concentration for Fe-bound P (mol/cm3)  (was 5.2e-9;)
         %Minf = 0;
         
         % OM reactive terms in oxic layer
@@ -44,11 +44,24 @@ classdef benthic_zPO4_M
         
         function r = calc(obj, bsd, swi, r)
             
-            %             if(r.zox == bsd.zinf)
-            %                 obj.Minf=1.0e-10; %1.99e-6;       % asymptotic concentration for Fe-bound P (mol/cm3)      TODO/CHECK: good value? is from Slomp et al. 1996 Dom was 1.99e-6
-            %             else
-            %                 obj.Minf=1.0e-10;       % asymptotic concentration in anoxic conditions
-            %             end
+%         if(r.zox == bsd.zinf)
+% %            obj.Minf=1.0e-10; %1.99e-6;       % asymptotic concentration for Fe-bound P (mol/cm3)      TODO/CHECK: good value? is from Slomp et al. 1996 Dom was 1.99e-6
+%             rPO4_M.ls1 = r.zTOC.prepfg_l12_PO4_M(bsd, swi, r, obj.reac1_ox, obj.reac2_ox, obj.ksPO4/(1+obj.KPO4_ox), obj.PO4s*obj.ksPO4/(1+obj.KPO4_ox),0, r.zox, obj.DPO41/(1+obj.KPO4_ox), obj.DPO42/(1+obj.KPO4_ox), 0, ...
+%                 0, 0, bsd.Dbio, 0, (1/bsd.SD)*obj.ksPO4);
+% 
+%             % Solution at swi, top of layer 1
+%             [ e1_0_P, dedz1_0_P, f1_0_P, dfdz1_0_P, g1_0_P, dgdz1_0_P, p1_0_P, dpdz1_0_P, q1_0_P, dqdz1_0_P, ...
+%                 e1_0_M, dedz1_0_M, f1_0_M, dfdz1_0_M, g1_0_M, dgdz1_0_M, p1_0_M, dpdz1_0_M, q1_0_M, dqdz1_0_M]...
+%                 = r.zTOC.calcfg_l12_PO4_M(0, bsd, swi, r, obj.reac1_ox, obj.reac2_ox, obj.ksPO4/(1+obj.KPO4_ox), obj.PO4s*obj.ksPO4/(1+obj.KPO4_ox), 0,  rPO4_M.ls1, 0, 0, (1/bsd.SD)*obj.ksPO4);
+% 
+%             % Basis functions at bottom of layer 2 zinf
+%             [ e2_zinf_P, dedz2_zinf_P, f2_zinf_P, dfdz2_zinf_P, g2_zinf_P, dgdz2_zinf_P, p2_zinf_P, dpdz2_zinf_P, q2_zinf_P, dqdz2_zinf_P, ...
+%                 e2_zinf_M, dedz2_zinf_M, f2_zinf_M, dfdz2_zinf_M, g2_zinf_M, dgdz2_zinf_M, p2_zinf_M, dpdz2_zinf_M, q2_zinf_M, dqdz2_zinf_M] ...
+%                 = r.zTOC.calcfg_l12_PO4_M(bsd.zinf, bsd, swi, r, obj.reac1_anox, obj.reac2_anox, obj.kaPO4/(1+obj.KPO4_anox), obj.PO4a*obj.kaPO4/(1+obj.KPO4_anox), bsd.SD*obj.kmPO4/(1+obj.KPO4_anox), rPO4_M.ls2, obj.kmPO4, obj.kmPO4.*obj.Minf, 0);
+% 
+%         else
+%            obj.Minf=1.0e-10;       % asymptotic concentration in anoxic conditions
+%        end
             
             % Preparation: for each layer, sort out solution-matching across bioturbation boundary if necessary
             
@@ -219,7 +232,7 @@ classdef benthic_zPO4_M
             
             
             r.rPO4_M = rPO4_M;
-            
+%        end
         end
         
         
