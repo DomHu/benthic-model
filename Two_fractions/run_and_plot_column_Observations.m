@@ -42,19 +42,20 @@
 % %         PO4a= 1.5e-8; % %Equilibrium concentration for authigenic P formation (mol/cm3) was 0.7e-9
 % %         Minf=1.0e-10;       % asymptotic concentration for Fe-bound P (mol/cm3)      TODO/CHECK: good value? is from Slomp et al. 1996 Dom was 1.99e-6
 
-                        bsd.rho_sed=2.6; %was 2.5                           % sediment density (g/cm3)
-                        bsd.wdepth=108.0;     % Dom was 600.0                       % water depth (m)
-                        bsd.zbio=1.0;                              % bioturbation depth (cm)
-                        bsd.zinf=50;                               %Inifinity (cm)
-                        bsd.Dbio=0.02; %5.2*(10.0^(0.7624-0.0003972*bsd.wdepth)); %0.5;
-                        bsd.w = 10.0.^(-0.87478367-0.00043512*bsd.wdepth)*3.3; % or check 0.42 for Reimers et al. 1996 as stated in the paper
+                        res.bsd.rho_sed=2.6; %was 2.5                           % sediment density (g/cm3)
+                        res.bsd.wdepth=108.0;     % Dom was 600.0                       % water depth (m)
+                        res.bsd.zbio=1.0;                              % bioturbation depth (cm)
+                        res.bsd.zinf=50;                               %Inifinity (cm)
+                        res.bsd.Dbio=0.02; %5.2*(10.0^(0.7624-0.0003972*bsd.wdepth)); %0.5;
+                        res.bsd.w = 10.0.^(-0.87478367-0.00043512*res.bsd.wdepth)*3.3; % or check 0.42 for Reimers et al. 1996 as stated in the paper
 
+                        res.bsd.por=0.85;
                         %bottom water concentrations
                         swi.T=12.5; %20.0;                         %temperature (degree C)
-                        swi.C01_nonbio= 2.64*1e-2/12*bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*bsd.rho_sed; %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-                        swi.C02_nonbio= 1.8*1e-2/12*bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-                     	swi.Fnonbio1 = swi.C01_nonbio*(1-bsd.por)*bsd.w;    % [mol/(cm2 yr)] according non-bioturbated flux
-                        swi.Fnonbio2 = swi.C02_nonbio*(1-bsd.por)*bsd.w;
+                        swi.C01_nonbio= 2.64*1e-2/12*res.bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*bsd.rho_sed; %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+                        swi.C02_nonbio= 1.8*1e-2/12*res.bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+                     	swi.Fnonbio1 = swi.C01_nonbio*(1-res.bsd.por)*res.bsd.w;    % [mol/(cm2 yr)] according non-bioturbated flux
+                        swi.Fnonbio2 = swi.C02_nonbio*(1-res.bsd.por)*res.bsd.w;
                         swi.C01 = swi.C01_nonbio; %0.0;  % resulting bioturbated SWI-concentration, to be calculated in benthic_zTOC.m
                         swi.C02 = swi.C02_nonbio; %0.0;
                         swi.O20=210.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
@@ -346,6 +347,7 @@
             res.swi = swi;
             
             % calculate 
+            res.zTOC = benthic_zTOC(res.bsd);
             res.zO2 = benthic_zO2(res.bsd, res.swi);           
             res.zNO3 = benthic_zNO3(res.bsd, res.swi);
             res.zSO4 = benthic_zSO4(res.bsd, res.swi);
@@ -414,7 +416,7 @@
                         data.NO3=xlsread('../Observations/OMEXDIA/5_PE138_99-06_108m.xlsx','NO3','C2:D25'); 
                         data.NH4=xlsread('../Observations/OMEXDIA/5_PE138_99-06_108m.xlsx','NH4','C2:D25');
                         data.PO4=xlsread('../Observations/OMEXDIA/5_PE138_99-06_108m.xlsx','PO4','C2:D25');
-                        data.DIC=xlsread('../Observations/OMEXDIA/5_PE138_99-06_108m.xlsx','PO4','C2:D25');
+                        data.DIC=xlsread('../Observations/OMEXDIA/5_PE138_99-06_108m.xlsx','DIC','C2:D25');
             %            data.H2S=PW_data(:,[1 11]);
                         
                     case 2 % OMEXDIA_2809_2213m
