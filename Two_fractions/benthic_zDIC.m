@@ -77,8 +77,6 @@ classdef benthic_zDIC
             % flux at swi - DO include por so this is per cm^2 water column area
             % DH: added advective flux 28.05.2016
             r.flxswiDIC = bsd.por.*(obj.DDIC1.*(rDIC.A2.*dedz1_0+rDIC.B2.*dfdz1_0 + dgdz1_0) - bsd.w.*(swi.DIC0 - r.conczinfDIC));   % NB: use A2, B2 as these are _xformed_ layer 1 basis functions
-            r.flxswiDIC_noadfzinf = bsd.por.*(obj.DDIC1.*(rDIC.A2.*dedz1_0+rDIC.B2.*dfdz1_0 + dgdz1_0) - bsd.w.*(swi.DIC0));   % NB: use A2, B2 as these are _xformed_ layer 1 basis functions
-            r.flxswiDIC_diff = bsd.por.*(obj.DDIC1.*(rDIC.A2.*dedz1_0+rDIC.B2.*dfdz1_0 + dgdz1_0));   % NB: use A2, B2 as these are _xformed_ layer 1 basis functions
 
             % save coeffs for layers 1
             rDIC.A1 = zso4.a.*rDIC.A2 + zso4.b.*rDIC.B2 + zso4.e;
