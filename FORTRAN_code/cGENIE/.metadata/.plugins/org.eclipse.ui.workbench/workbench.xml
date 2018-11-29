@@ -36,7 +36,7 @@
 </editorArea>
 <editor activePart="true" focus="true" id="org.eclipse.photran.ui.FortranEditor" name="sedgem_box_benthic.f90" partName="sedgem_box_benthic.f90" title="sedgem_box_benthic.f90" tooltip="/home/dh12423/Documents/GitHub/benthic-model/FORTRAN_code/cGENIE/sedgem_box_benthic.f90" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" uri="file:/home/dh12423/Documents/GitHub/benthic-model/FORTRAN_code/cGENIE/sedgem_box_benthic.f90"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="143398" selectionTopPixel="28252"/>
+<editorState selectionHorizontalPixel="0" selectionLength="14" selectionOffset="15092" selectionTopPixel="3468"/>
 </editor>
 <editor id="org.eclipse.photran.ui.FortranEditor" name="sedgem_box_benthic.f90" partName="sedgem_box_benthic.f90" title="sedgem_box_benthic.f90" tooltip="/home/dh12423/Documents/GitHub/benthic-model/01_GMD_submission_20112017/OMEN_code/OMEN_FORTRAN_FeS2/sedgem_box_benthic.f90" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" uri="file:/home/dh12423/Documents/GitHub/benthic-model/01_GMD_submission_20112017/OMEN_code/OMEN_FORTRAN_FeS2/sedgem_box_benthic.f90"/>
@@ -53,7 +53,7 @@
 </view>
 <view id="org.eclipse.ui.views.TaskList" partName="Tasks">
 <viewState PRIMARY_SORT_FIELD="org.eclipse.ui.ide.completionField" categoryGroup="none" markerContentGenerator="org.eclipse.ui.ide.tasksGenerator" partName="Tasks">
-<columnWidths org.eclipse.ui.ide.completionField="40" org.eclipse.ui.ide.descriptionField="350" org.eclipse.ui.ide.locationField="105" org.eclipse.ui.ide.markerType="866" org.eclipse.ui.ide.pathField="140" org.eclipse.ui.ide.priorityField="35" org.eclipse.ui.ide.resourceField="105"/>
+<columnWidths org.eclipse.ui.ide.completionField="40" org.eclipse.ui.ide.descriptionField="350" org.eclipse.ui.ide.locationField="105" org.eclipse.ui.ide.markerType="974" org.eclipse.ui.ide.pathField="140" org.eclipse.ui.ide.priorityField="35" org.eclipse.ui.ide.resourceField="105"/>
 <visible IMemento.internal.id="org.eclipse.ui.ide.completionField"/>
 <visible IMemento.internal.id="org.eclipse.ui.ide.priorityField"/>
 <visible IMemento.internal.id="org.eclipse.ui.ide.descriptionField"/>
@@ -126,7 +126,7 @@
 <presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory"/>
 </folder>
 </info>
-<info part="org.eclipse.ui.editorss" ratio="0.25940594" ratioLeft="262" ratioRight="748" relationship="2" relative="topLeft"/>
+<info part="org.eclipse.ui.editorss" ratio="0.11365314" ratioLeft="154" ratioRight="1201" relationship="2" relative="topLeft"/>
 <info folder="true" part="bottomRight" ratio="0.8903904" ratioLeft="593" ratioRight="73" relationship="4" relative="org.eclipse.ui.editorss">
 <folder activePageID="org.eclipse.ui.views.TaskList" appearance="2" expanded="2">
 <page content="org.eclipse.ui.views.TaskList" label="Tasks"/>

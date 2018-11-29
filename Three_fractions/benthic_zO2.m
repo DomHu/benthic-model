@@ -69,7 +69,10 @@ classdef benthic_zO2
             r.conczox = conczox;
             r.flxswiO2 = flxswiO2;
             
-            % OUTPUT FOR FLUX of reduxed substances at z_ox        
+            % Dominik for Philip: define zno3 for NH4 calculation
+            % for plotting
+            r.zno3=r.zox;
+          % OUTPUT FOR FLUX of reduxed substances at z_ox        
             fprintf('zox = %g Approx F_O2 flux (mol cm^{-2} yr^{-1}) %g \n',  r.zox, obj.calcFO2(r.zox,bsd, swi, r));
            
         end

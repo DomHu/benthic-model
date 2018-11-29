@@ -26,16 +26,25 @@ classdef benthic_test
             bsd = benthic_main();
             %bottom water concentrations
             swi.T = 8.0;                                        % temperature (degree C)
-            swi.C01_nonbio= 0.01*1e-2/12*bsd.rho_sed;            % TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-            swi.C02_nonbio= 0.01*1e-2/12*bsd.rho_sed;            % TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-            swi.Fnonbio1 = swi.C01_nonbio*(1-bsd.por)*bsd.w;    % calculate flux [mol/(cm2 yr)] according non-bioturbated flux
-            swi.Fnonbio2 = swi.C02_nonbio*(1-bsd.por)*bsd.w;    % calculate flux [mol/(cm2 yr)] according non-bioturbated flux
-            swi.C01 = swi.C01_nonbio;                           % resulting bioturbated SWI-concentration, to be calculated in benthic_zTOC.m
-            swi.C02 = swi.C02_nonbio;                           % resulting bioturbated SWI-concentration, to be calculated in benthic_zTOC.m
+% WITH TOC CONCENTRATION
+%             swi.C01_nonbio= 1.0*1e-2/12*bsd.rho_sed;            % TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+%             swi.C02_nonbio= 1.0*1e-2/12*bsd.rho_sed;            % TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+%             swi.Fnonbio1 = swi.C01_nonbio*(1-bsd.por)*bsd.w;    % calculate flux [mol/(cm2 yr)] according non-bioturbated flux
+%             swi.Fnonbio2 = swi.C02_nonbio*(1-bsd.por)*bsd.w;    % calculate flux [mol/(cm2 yr)] according non-bioturbated flux
+%             swi.C01 = swi.C01_nonbio;                           % resulting bioturbated SWI-concentration, to be calculated in benthic_zTOC.m
+%             swi.C02 = swi.C02_nonbio;                           % resulting bioturbated SWI-concentration, to be calculated in benthic_zTOC.m
+% WITH TOC FLUX
+            swi.Fnonbio1 = 6.06555103954379172E-005;    % calculate flux [mol/(cm2 yr)] according non-bioturbated flux
+            swi.Fnonbio2 = 2.82289864827018898E-006;    % calculate flux [mol/(cm2 yr)] according non-bioturbated flux
+            swi.C01nonbio = swi.Fnonbio1/((1-bsd.por)*bsd.w);
+            swi.C02nonbio = swi.Fnonbio2/((1-bsd.por)*bsd.w);
+%            swi.C01 = swi.C01nonbio;                           % resulting bioturbated SWI-concentration, to be calculated in benthic_zTOC.m
+%            swi.C02 = swi.C02nonbio;                           % resulting bioturbated SWI-concentration, to be calculated in benthic_zTOC.m
+
             swi.O20=15.0E-009;                                 % O2  concentration at SWI (mol/cm^3)
             swi.NO30=40.0e-9;                                   % NO3 concentration at SWI (mol/cm^3)
             swi.Nitrogen=true;                                  % calculate N (true/false)
-            swi.NH40=10.0e-9;                                 	% NH4 concentration at SWI (mol/cm^3)
+            swi.NH40=0.0e-9;                                 	% NH4 concentration at SWI (mol/cm^3)
             swi.SO40=2.8E-005;                                	% SO4 concentration at SWI (mol/cm^3)
             swi.H2S0=0.0;                                       % H2S concentration at SWI (mol/cm^3)
             swi.PO40=4.0e-9;                                   % PO4 concentration at SWI (mol/cm^3)
@@ -79,15 +88,15 @@ classdef benthic_test
             swi=benthic_test.default_swi()
             %            % set date-time
             %            str_date = datestr(now,'ddmmyy_HH_MM_SS');
-            for i=1:101
-                swi.C01 = (0.01+(i-1)*0.02)*1e-2/12*2.5;     % 2.5 is rho_sed                      % resulting bioturbated SWI-concentration, to be calculated in benthic_zTOC.m
+            for i=1:51
+                swi.C01 = (0.1+(i-1)*0.15)*1e-2/12*2.5;     % 2.5 is rho_sed                      % resulting bioturbated SWI-concentration, to be calculated in benthic_zTOC.m
                 swi.C02 = swi.C01;
-                Corg(i)=2*(0.01+(i-1)*0.02);
-                for j=1:101                
-                    swi.O20=(j-1)*1.5E-009;                                 % O2  concentration at SWI (mol/cm^3)
+                Corg(i)=2*(0.1+(i-1)*0.15);
+                for j=1:51                
+                    swi.O20=(j-1)*3.0E-009;                                 % O2  concentration at SWI (mol/cm^3)                    
                     res=benthic_test.test_benthic(1,swi);
                     SWI_PO4(i,j)=res.flxswi_P;
-                    O20(j)=(j-1)*1.5E-009;
+                    O20(j)=(j-1)*3.0E-009;
 %                 if(i==10 && j>=10)
 %                     benthic_test.plot_column(res, false, swi, '0E-9_O2_i1_j45')
 %                 end
@@ -103,7 +112,7 @@ classdef benthic_test
             hold off
             xlabel('Ocean O_2')    
             ylabel ({'Corg'}); %;'(\mumol cm^{-2}yr^{-1})'})
-            print('-depsc', 'PO4_SWI-flux_SA_0207_4PO4_00100001_4Corg_150O2_3000m_ks');
+            print('-depsc', 'PO4_SWI-flux_SA_0907_4PO4_006500001_15Corg_150O2_3000m_ksfast');
         
         end
         
@@ -128,6 +137,9 @@ classdef benthic_test
                 end
             end
             
+%             if(swi.O20 <= 6.0E-009)
+%                res.bsd.zbio=0.001; 
+%             end
             res.swi = swi;
             
             % calculate
@@ -142,6 +154,11 @@ classdef benthic_test
             res.zALK = benthic_zALK(res.bsd, res.swi);
             
             %            tic;
+         	if(swi.O20 <= res.bsd.loc_BW_O2_anoxia)
+                res.bsd.zbio=0.01;
+               res.zTOC.k2=0.00001; 
+            end
+            
             res = res.zTOC.calc(res.bsd,res.swi, res);
             % check O2 demand using O2 to C ratio and (convert POC concentr. to flux analog to fortran)
             % POC_flux*OC = POC_conc * w * 1/(1 - por) * OC
@@ -174,17 +191,31 @@ classdef benthic_test
             %            toc;
             
             %%%%% WRITE OUTPUT:
+            res.swi.C0nonbio = res.swi.C01nonbio+res.swi.C02nonbio;
             answ = res
             [Cinf, C1inf, C2inf] = res.zTOC.calcC( 100, res.bsd, res.swi, res);
             [Cswi, C1swi, C2swi] = res.zTOC.calcC( 0, res.bsd, res.swi, res);
             fprintf('frac1 concentration at zinf %g \n',  C1inf);
             fprintf('frac2 concentration at zinf %g \n',  C2inf);
             fprintf('both concentration at zinf %g \n',  Cinf);
-            fprintf('frac1 concentration at swi %g \n',  C1swi);
-            fprintf('frac2 concentration at swi %g \n',  C2swi);
-            fprintf('both concentration at swi %g \n',  Cswi);
+            fprintf(' \n');
+
+            fprintf('frac1 concentration at swi nonbio %g \n',  res.swi.C01nonbio);
+            fprintf('frac2 concentration at swi nonbio %g \n',  res.swi.C02nonbio);
+            fprintf('both concentration at swi nonbio %g \n',  res.swi.C0nonbio);
             
+            fprintf('sed preservation of POC %g \n',  Cinf/res.swi.C0nonbio);
+            fprintf('DIC_SWI %.12g \n',  (1-Cinf/res.swi.C0nonbio)*res.Fswi_TOC );
+           
+            fprintf(' \n');
+            fprintf(' Calc with bioturbated [TOC] at SWI \n');
+         	fprintf('frac1 concentration at swi bio %g \n',  C1swi);
+            fprintf('frac2 concentration at swi bio %g \n',  C2swi);
+            fprintf('both concentration at swi bio %g \n',  Cswi);
             fprintf('sed preservation of POC %g \n',  Cinf/Cswi);
+            fprintf('wrong DIC_SWI %.12g \n',  (1-Cinf/Cswi)*res.Fswi_TOC );
+            fprintf(' \n');
+
             %             %%% WRITE EXACT FLUX
             %             FO2_exact=res.zO2.calcFO2_exact(res.zox,res.bsd, res.swi, res);
             %             fprintf('exact F_O2 flux (mol cm^{-2} yr^{-1}) %g \n',  FO2_exact);
@@ -771,8 +802,8 @@ classdef benthic_test
                 if(res.bsd.w<=bc(9))
                     res.bsd.w=bc(9);
                 end
-                if(res.bsd.w<=4.0e-4) % 5.0e-4 OAE2; 4.0e-4 modern
-                    res.bsd.w=4.0e-4;
+                if(res.bsd.w<=5.0e-4) % 5.0e-4 OAE2; 4.0e-4 modern
+                    res.bsd.w=5.0e-4;
                 end
                 %bottom water concentrations
                 swi.T = bc(11); %20.0;                         %temperature (degree C)
@@ -792,7 +823,7 @@ classdef benthic_test
                 swi.SO40=1/conv_cm3_kg*bc(3);               	%SO4 concentration at SWI (mol/cm^3)
                 swi.H2S0=1/conv_cm3_kg*bc(4);                 	%H2S concentration at SWI (mol/cm^3)
                 swi.PO40=1/conv_cm3_kg*bc(5);                   %PO4 concentration at SWI (mol/cm^3)
-                swi.Mflux0=365*0.2e-10*1/(1-res.bsd.por)*1/res.bsd.w;                         % Flux converted to concentration
+                swi.Mflux0=365*0.2e-10;     % *1/(1-res.bsd.por)*1/res.bsd.w;                         % Flux converted to concentration
 %                swi.Mflux0=365*0.2e-10;                         % Flux input 365*0.2e-10 flux of M to the sediment (mol/(cm2*yr))
                 swi.DIC0=1/conv_cm3_kg*bc(6);               	%DIC concentration at SWI (mol/cm^3)
                 swi.ALK0=1/conv_cm3_kg*bc(7);               	%ALK concentration at SWI (mol/cm^3)
@@ -836,7 +867,7 @@ classdef benthic_test
 %                        OMEN_result(j,i) = test.Cox_rate_total;
                     case 'invariant'
                         res.zTOC.k1=0.0065;
-                        res.zTOC.k2=0.005;
+                        res.zTOC.k2=0.001;
                     otherwise
                         error('Error. Unknown k parameterization.')
                 end
@@ -990,10 +1021,10 @@ classdef benthic_test
                 
                 
 %                   if(bsd.wdepth < 500)
-                   if(res.flxswi_P > 0.0)
-                        res.bsd.wdepth
-                        benthic_test.plot_column(res, false, res.swi, '_SWI_P')
-                   end
+%                    if(res.flxswi_P > 0.0)
+%                         res.bsd.wdepth
+%                         benthic_test.plot_column(res, false, res.swi, '_SWI_P')
+%                    end
             end
             
         end

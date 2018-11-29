@@ -23,7 +23,7 @@ classdef benthic_test
             swi.O20=200.0e-9;   %was    300.0e-9                            %O2  concentration at SWI (mol/cm3)
 %            swi.SO40=28000.0e-9;                                            %SO4 concentration at SWI (mol/cm3)
             swi.NO30=20.0e-9;                                               %NO3 concentration at SWI (mol/cm3)
-            swi.NH40=1.0e-9;                                                %NH4 concentration at SWI (mol/cm3)
+            swi.NH40=0.0e-9;                                                %NH4 concentration at SWI (mol/cm3)
             swi.SO40 = 2800e-9;
             swi.H2S0=1.0e-9;         %was 0.0e-9                            %H2S concentration at SWI (mol/cm3)
             swi.PO40=1e-9;                                                  %PO4 concentration at SWI (mol/cm3)
@@ -69,29 +69,29 @@ classdef benthic_test
             % calculate 
             res.zTOC = benthic_zTOC(res.bsd);
             res.zO2 = benthic_zO2(res.bsd, res.swi);           
-            res.zNO3 = benthic_zNO3(res.bsd, res.swi);
-            res.zSO4 = benthic_zSO4(res.bsd, res.swi);
+%             res.zNO3 = benthic_zNO3(res.bsd, res.swi);
+%             res.zSO4 = benthic_zSO4(res.bsd, res.swi);
             res.zNH4 = benthic_zNH4(res.bsd, res.swi);
-            res.zH2S = benthic_zH2S(res.bsd, res.swi);
-%            res.zH2S = benthic_zH2S(res.bsd, res.swi);
-            res.zPO4_M = benthic_zPO4_M(res.bsd, res.swi);
+%             res.zH2S = benthic_zH2S(res.bsd, res.swi);
+% %            res.zH2S = benthic_zH2S(res.bsd, res.swi);
+%             res.zPO4_M = benthic_zPO4_M(res.bsd, res.swi);
    
             tic;
             res = res.zTOC.calc(res.bsd,res.swi, res);
             res = res.zO2.calc(res.bsd, res.swi, res);
-            res = res.zNO3.calc(res.bsd, res.swi, res);
-            res = res.zSO4.calc(res.bsd, res.swi, res);
-            res = res.zNH4.calc(res.bsd, res.swi, res);
-            res = res.zH2S.calc(res.bsd, res.swi, res);
-            res = res.zPO4_M.calc(res.bsd, res.swi, res);
+%             res = res.zNO3.calc(res.bsd, res.swi, res);
+%             res = res.zSO4.calc(res.bsd, res.swi, res);
+             res = res.zNH4.calc(res.bsd, res.swi, res);
+%             res = res.zH2S.calc(res.bsd, res.swi, res);
+%             res = res.zPO4_M.calc(res.bsd, res.swi, res);
             toc;
             
             %%%%% WRITE OUTPUT:
             answ = res
             
             %%% WRITE EXACT FLUX
-            FO2_exact=res.zO2.calcFO2_exact(res.zox,res.bsd, res.swi, res);
-            fprintf('exact F_O2 flux (mol cm^{-2} yr^{-1}) %g \n',  FO2_exact);
+%             FO2_exact=res.zO2.calcFO2_exact(res.zox,res.bsd, res.swi, res);
+%             fprintf('exact F_O2 flux (mol cm^{-2} yr^{-1}) %g \n',  FO2_exact);
             
         end
 
@@ -136,7 +136,7 @@ classdef benthic_test
             
             bsd = res.bsd;
             zgrid = 0:0.1:bsd.zinf;
-            
+    if(false)            
             figure
             % PO4
             subplot(1,2,1)
@@ -172,7 +172,8 @@ classdef benthic_test
             xlabel ('Fe-bound P (mol/cm3)')
             ylabel('Sediment Depth (cm)')
             title ('Fe-bound P (mol/cm3)')
-            
+    end
+    
 	if(true)      
        % JUST CONCENTRATION
 	set(0,'defaultLineLineWidth', 2)
@@ -195,7 +196,7 @@ classdef benthic_test
             plot([0,t(1,2)], [-bsd.zbio,-bsd.zbio], 'k--')     
             plot([0,t(1,2)], [-res.zox,-res.zox], 'b--')     
             plot([0,t(1,2)], [-res.zno3,-res.zno3], 'g--')     
-            plot([0,t(1,2)], [-res.zso4,-res.zso4], 'r--')  
+%            plot([0,t(1,2)], [-res.zso4,-res.zso4], 'r--')  
 
 %            plot([0,(res.swi.C01+res.swi.C02)*12/bsd.rho_sed ], [-bsd.zbio,-bsd.zbio], 'k--')
             hold off
@@ -214,28 +215,28 @@ classdef benthic_test
             plot([0,t(1,2)], [-bsd.zbio,-bsd.zbio], 'k--')     
             plot([0,t(1,2)], [-res.zox,-res.zox], 'b--')     
             plot([0,t(1,2)], [-res.zno3,-res.zno3], 'g--')     
-            plot([0,t(1,2)], [-res.zso4,-res.zso4], 'r--')               
+%            plot([0,t(1,2)], [-res.zso4,-res.zso4], 'r--')               
             xlabel ('O_2 (mol/cm3)')
             ylabel('Sediment Depth (cm)')
 %            title ('O2 (mol/cm3)')
 
             % NO3
             
-            for i=1:length(zgrid)
-                [NO3(i), flxNO3(i)] = res.zNO3.calcNO3(zgrid(i), bsd, res.swi, res);
-            end
-            subplot(3,2,5)
-            plot(NO3, -zgrid, 'b')
-            hold on
-            t=xlim;         % to draw penetration depths the correct lengths
-            plot([0,t(1,2)], [-bsd.zbio,-bsd.zbio], 'k--')     
-            plot([0,t(1,2)], [-res.zox,-res.zox], 'b--')     
-            plot([0,t(1,2)], [-res.zno3,-res.zno3], 'g--')     
-            plot([0,t(1,2)], [-res.zso4,-res.zso4], 'r--')             
-            xlabel ('NO_3 (mol/cm3)')
-            ylabel('Sediment Depth (cm)')
-%            title ('NO3 (mol/cm3)')
-            
+%             for i=1:length(zgrid)
+%                 [NO3(i), flxNO3(i)] = res.zNO3.calcNO3(zgrid(i), bsd, res.swi, res);
+%             end
+%             subplot(3,2,5)
+%             plot(NO3, -zgrid, 'b')
+%             hold on
+%             t=xlim;         % to draw penetration depths the correct lengths
+%             plot([0,t(1,2)], [-bsd.zbio,-bsd.zbio], 'k--')     
+%             plot([0,t(1,2)], [-res.zox,-res.zox], 'b--')     
+%             plot([0,t(1,2)], [-res.zno3,-res.zno3], 'g--')     
+%             plot([0,t(1,2)], [-res.zso4,-res.zso4], 'r--')             
+%             xlabel ('NO_3 (mol/cm3)')
+%             ylabel('Sediment Depth (cm)')
+% %            title ('NO3 (mol/cm3)')
+%             
             
             for i=1:length(zgrid)
                 [NH4(i), flxNH4(i)] = res.zNH4.calcNH4(zgrid(i), bsd, res.swi, res);
@@ -247,43 +248,43 @@ classdef benthic_test
             plot([0,t(1,2)], [-bsd.zbio,-bsd.zbio], 'k--')     
             plot([0,t(1,2)], [-res.zox,-res.zox], 'b--')     
             plot([0,t(1,2)], [-res.zno3,-res.zno3], 'g--')     
-            plot([0,t(1,2)], [-res.zso4,-res.zso4], 'r--')     
+%            plot([0,t(1,2)], [-res.zso4,-res.zso4], 'r--')     
             hold off
             xlabel ('NH_4 (mol/cm3)')
             ylabel('Sediment Depth (cm)')
 %            title ('NH4 (mol/cm3)')
             
-            subplot(3,2,2)
-            for i=1:length(zgrid)
-                [SO4(i), flxSO4(i)] = res.zSO4.calcSO4(zgrid(i), bsd, res.swi, res);
-            end
-            plot(SO4, -zgrid, 'b')
-            hold on
-            t=xlim;         % to draw penetration depths the correct lengths
-            plot([0,t(1,2)], [-bsd.zbio,-bsd.zbio], 'k--')     
-            plot([0,t(1,2)], [-res.zox,-res.zox], 'b--')     
-            plot([0,t(1,2)], [-res.zno3,-res.zno3], 'g--')     
-            plot([0,t(1,2)], [-res.zso4,-res.zso4], 'r--')     
-            hold off
-            %xlim([0 SO40])
-            xlabel ('SO_4 (mol/cm3)')
-            ylabel('Sediment Depth (cm)')
-%            title ('SO4 (mol/cm3)')
-
-            subplot(3,2,6)
-            for i=1:length(zgrid)
-                [H2S(i), flxH2S(i)] = res.zH2S.calcH2S(zgrid(i), bsd, res.swi, res);
-            end
-            plot(H2S, -zgrid, 'b')
-            hold on
-            t=xlim;         % to draw penetration depths the correct lengths
-            plot([0,t(1,2)], [-bsd.zbio,-bsd.zbio], 'k--')     
-            plot([0,t(1,2)], [-res.zox,-res.zox], 'b--')     
-            plot([0,t(1,2)], [-res.zno3,-res.zno3], 'g--')     
-            plot([0,t(1,2)], [-res.zso4,-res.zso4], 'r--')          
-            xlabel ('H_2S (mol/cm3)')
-            ylabel('Sediment Depth (cm)')
-%            title ('H2S (mol/cm3)')
+%             subplot(3,2,2)
+%             for i=1:length(zgrid)
+%                 [SO4(i), flxSO4(i)] = res.zSO4.calcSO4(zgrid(i), bsd, res.swi, res);
+%             end
+%             plot(SO4, -zgrid, 'b')
+%             hold on
+%             t=xlim;         % to draw penetration depths the correct lengths
+%             plot([0,t(1,2)], [-bsd.zbio,-bsd.zbio], 'k--')     
+%             plot([0,t(1,2)], [-res.zox,-res.zox], 'b--')     
+%             plot([0,t(1,2)], [-res.zno3,-res.zno3], 'g--')     
+%             plot([0,t(1,2)], [-res.zso4,-res.zso4], 'r--')     
+%             hold off
+%             %xlim([0 SO40])
+%             xlabel ('SO_4 (mol/cm3)')
+%             ylabel('Sediment Depth (cm)')
+% %            title ('SO4 (mol/cm3)')
+% 
+%             subplot(3,2,6)
+%             for i=1:length(zgrid)
+%                 [H2S(i), flxH2S(i)] = res.zH2S.calcH2S(zgrid(i), bsd, res.swi, res);
+%             end
+%             plot(H2S, -zgrid, 'b')
+%             hold on
+%             t=xlim;         % to draw penetration depths the correct lengths
+%             plot([0,t(1,2)], [-bsd.zbio,-bsd.zbio], 'k--')     
+%             plot([0,t(1,2)], [-res.zox,-res.zox], 'b--')     
+%             plot([0,t(1,2)], [-res.zno3,-res.zno3], 'g--')     
+%             plot([0,t(1,2)], [-res.zso4,-res.zso4], 'r--')          
+%             xlabel ('H_2S (mol/cm3)')
+%             ylabel('Sediment Depth (cm)')
+% %            title ('H2S (mol/cm3)')
 	end
 
             

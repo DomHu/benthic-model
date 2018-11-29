@@ -9,8 +9,8 @@ classdef benthic_zTOC < handle
     properties
         DC1;                                % TOC diffusion coefficient (cm2/yr)
         
-        k1= 0.001;                            % TOC degradation rate constnat (1/yr)
-        k2= 0.00001;                            % TOC degradation rate constant (1/yr)
+        k1= 0.0001;                            % TOC degradation rate constnat (1/yr)
+        k2= 0.00001;  %0.005;                            % TOC degradation rate constant (1/yr)
         
     end
     
@@ -31,9 +31,10 @@ classdef benthic_zTOC < handle
             % calculate bioturbated SWI
             % comment C01 calculation for calculating observed profiles &
             % sensitivity analysis (as we have concentrations C0i for this)
-%             swi.C01 = (swi.Fnonbio1*(-rTOC.a11*exp(rTOC.a11*bsd.zbio)+rTOC.b11*exp(rTOC.b11*bsd.zbio)))/(-obj.DC1*rTOC.b11*rTOC.a11*exp(rTOC.b11*bsd.zbio) + obj.DC1*rTOC.b11*rTOC.a11*exp(rTOC.a11*bsd.zbio) + ...
-%                 obj.DC1*rTOC.b11*rTOC.a11*bsd.por*exp(rTOC.b11*bsd.zbio) - obj.DC1*rTOC.b11*rTOC.a11*bsd.por*exp(rTOC.a11*bsd.zbio) - bsd.w*rTOC.a11*exp(rTOC.a11*bsd.zbio) + bsd.w*rTOC.b11*exp(rTOC.b11*bsd.zbio) + ...
-%                 bsd.w*bsd.por*rTOC.a11*exp(rTOC.a11*bsd.zbio) - bsd.w*bsd.por*rTOC.b11*exp(rTOC.b11*bsd.zbio));
+            swi.C01 = (swi.Fnonbio1*(-rTOC.a11*exp(rTOC.a11*bsd.zbio)+rTOC.b11*exp(rTOC.b11*bsd.zbio)))/(-obj.DC1*rTOC.b11*rTOC.a11*exp(rTOC.b11*bsd.zbio) + obj.DC1*rTOC.b11*rTOC.a11*exp(rTOC.a11*bsd.zbio) + ...
+                obj.DC1*rTOC.b11*rTOC.a11*bsd.por*exp(rTOC.b11*bsd.zbio) - obj.DC1*rTOC.b11*rTOC.a11*bsd.por*exp(rTOC.a11*bsd.zbio) - bsd.w*rTOC.a11*exp(rTOC.a11*bsd.zbio) + bsd.w*rTOC.b11*exp(rTOC.b11*bsd.zbio) + ...
+                bsd.w*bsd.por*rTOC.a11*exp(rTOC.a11*bsd.zbio) - bsd.w*bsd.por*rTOC.b11*exp(rTOC.b11*bsd.zbio));
+%            swi.C01 = swi.Fnonbio1/((1-bsd.por)*bsd.w);
             res.swi.C01 = swi.C01;
             
             rTOC.A11=-(swi.C01.*rTOC.b11.*exp(rTOC.b11.*bsd.zbio))./(rTOC.a11.*exp(rTOC.a11.*bsd.zbio)-rTOC.b11.*exp(rTOC.b11.*bsd.zbio)+bsd.tol_const);
@@ -44,9 +45,10 @@ classdef benthic_zTOC < handle
             rTOC.a22=(-obj.k2./bsd.w);
             % calculate bioturbated SWI
             % comment C02 calculation for sensitivity analysis (as we have concentrations C0i for this)
-%             swi.C02 = (swi.Fnonbio2*(-rTOC.a12*exp(rTOC.a12*bsd.zbio)+rTOC.b12*exp(rTOC.b12*bsd.zbio)))/(-obj.DC1*rTOC.b12*rTOC.a12*exp(rTOC.b12*bsd.zbio) + obj.DC1*rTOC.b12*rTOC.a12*exp(rTOC.a12*bsd.zbio) + ...
-%                 obj.DC1*rTOC.b12*rTOC.a12*bsd.por*exp(rTOC.b12*bsd.zbio) - obj.DC1*rTOC.b12*rTOC.a12*bsd.por*exp(rTOC.a12*bsd.zbio) - bsd.w*rTOC.a12*exp(rTOC.a12*bsd.zbio) + bsd.w*rTOC.b12*exp(rTOC.b12*bsd.zbio) + ...
-%                 bsd.w*bsd.por*rTOC.a12*exp(rTOC.a12*bsd.zbio) - bsd.w*bsd.por*rTOC.b12*exp(rTOC.b12*bsd.zbio));
+            swi.C02 = (swi.Fnonbio2*(-rTOC.a12*exp(rTOC.a12*bsd.zbio)+rTOC.b12*exp(rTOC.b12*bsd.zbio)))/(-obj.DC1*rTOC.b12*rTOC.a12*exp(rTOC.b12*bsd.zbio) + obj.DC1*rTOC.b12*rTOC.a12*exp(rTOC.a12*bsd.zbio) + ...
+                obj.DC1*rTOC.b12*rTOC.a12*bsd.por*exp(rTOC.b12*bsd.zbio) - obj.DC1*rTOC.b12*rTOC.a12*bsd.por*exp(rTOC.a12*bsd.zbio) - bsd.w*rTOC.a12*exp(rTOC.a12*bsd.zbio) + bsd.w*rTOC.b12*exp(rTOC.b12*bsd.zbio) + ...
+                bsd.w*bsd.por*rTOC.a12*exp(rTOC.a12*bsd.zbio) - bsd.w*bsd.por*rTOC.b12*exp(rTOC.b12*bsd.zbio));
+%             swi.C02 = swi.Fnonbio2/((1-bsd.por)*bsd.w);
             res.swi.C02 = swi.C02;
             
             rTOC.A12=-(swi.C02.*rTOC.b12.*exp(rTOC.b12.*bsd.zbio))./(rTOC.a12.*exp(rTOC.a12.*bsd.zbio)-rTOC.b12.*exp(rTOC.b12.*bsd.zbio)+bsd.tol_const);
@@ -341,9 +343,9 @@ classdef benthic_zTOC < handle
             reacf2=res.zTOC.k2.*reac2;
             
             FReac1 =-reacf1.*(r.A11.*(exp(r.a11.*zU).*r.b11 - exp(r.b11.*zU).*r.a11 - exp(r.a11.*zL).*r.b11 + exp(r.b11.*zL).*r.a11)...
-                +swi.C01.*exp(r.b11.*zU).*r.a11 -swi.C01.*exp(r.b11.*zL).*r.a11)./(r.a11.*r.b11) ...
+                +res.swi.C01.*exp(r.b11.*zU).*r.a11 -res.swi.C01.*exp(r.b11.*zL).*r.a11)./(r.a11.*r.b11) ...
                 -reacf2.*(r.A12.*(exp(r.a12.*zU).*r.b12 - exp(r.b12.*zU).*r.a12 - exp(r.a12.*zL).*r.b12 + exp(r.b12.*zL).*r.a12) ...
-                +swi.C02.*exp(r.b12.*zU).*r.a12 -swi.C02.*exp(r.b12.*zL).*r.a12)./(r.a12.*r.b12);
+                +res.swi.C02.*exp(r.b12.*zU).*r.a12 -res.swi.C02.*exp(r.b12.*zL).*r.a12)./(r.a12.*r.b12);
         end
         
         function FReac2 = calcReac_l2(obj, zU, zL, reac1, reac2, bsd, swi, res)
@@ -384,9 +386,9 @@ classdef benthic_zTOC < handle
             reacf2=reac2;
             
             FOM1 =-reacf1.*(r.A11.*(exp(r.a11.*zU).*r.b11 - exp(r.b11.*zU).*r.a11 - exp(r.a11.*zL).*r.b11 + exp(r.b11.*zL).*r.a11)...
-                +swi.C01.*exp(r.b11.*zU).*r.a11 -swi.C01.*exp(r.b11.*zL).*r.a11)./(r.a11.*r.b11) ...
+                +res.swi.C01.*exp(r.b11.*zU).*r.a11 -res.swi.C01.*exp(r.b11.*zL).*r.a11)./(r.a11.*r.b11) ...
                 -reacf2.*(r.A12.*(exp(r.a12.*zU).*r.b12 - exp(r.b12.*zU).*r.a12 - exp(r.a12.*zL).*r.b12 + exp(r.b12.*zL).*r.a12) ...
-                +swi.C02.*exp(r.b12.*zU).*r.a12 -swi.C02.*exp(r.b12.*zL).*r.a12)./(r.a12.*r.b12);
+                +res.swi.C02.*exp(r.b12.*zU).*r.a12 -res.swi.C02.*exp(r.b12.*zL).*r.a12)./(r.a12.*r.b12);
         end
         
         function FOM2 = calcOM_l2(obj, zU, zL, reac1, reac2, bsd, swi, res)

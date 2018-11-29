@@ -27,7 +27,7 @@ k2scaling = PK2SCALING;
 % run_and_plot_OMEN_with_GENIE_data(exp_1,'','O2_SWI-flux_until100','',0.0,0.0,0,'',1e-6,0.0,-100.0,20,'','','',11, k_parametr, k2scaling)
 % run_and_plot_OMEN_with_GENIE_data(exp_1,'','SO4_SWI-flux_until5','',0.0,0.0,0,'',1e-6,0.0,-5.0,20,'','','',12, k_parametr, k2scaling)
 % run_and_plot_OMEN_with_GENIE_data(exp_1,'','H2S_SWI-flux_until5','',0.0,0.0,0,'',1e-6,0.0,5.0,20,'','','',13, k_parametr, k2scaling)
-run_and_plot_OMEN_with_GENIE_data(exp_1,'','PO4_SWI-flux_Palast_Mconce_until1000_margin_P','',0.0,0.0,0,'',1e-9,0.0,1000.0,20,'','','',14, k_parametr, k2scaling)
+run_and_plot_OMEN_with_GENIE_data(exp_1,'','PO4_SWI','',0.0,0.0,0,'',1e-9,-20.0,20.0,20,'','','',14, k_parametr, k2scaling)
 
 % run_and_plot_OMEN_with_GENIE_data(exp_1,'','Mean_PO4_biot_layer','',0.0,0.0,0,'',1e-9,0.0,1,20,'','','',20, k_parametr, k2scaling)
 %run_and_plot_OMEN_with_GENIE_data(exp_1,'','Mean_FeP_biot_layer','',0.0,0.0,0,'',1e-5,0.0,10,20,'','','',21, k_parametr, k2scaling)

@@ -12,16 +12,16 @@ classdef benthic_main < handle
         ncl;                                    % number of sediment columns
         usescalarcode = true;                   % use scalar code
         
-        tol_const = 1e-18;                      % non-zero constant to avoid numerical errors (e.g. division by zero)
+        tol_const = 0.0; %1e-18;                      % non-zero constant to avoid numerical errors (e.g. division by zero)
         
         % sediment characteristics
         rho_sed=2.5;                            % sediment density (g/cm3)
-        wdepth=3000.0;                           % water depth (m)
+        wdepth=174.75;                           % water depth (m)
         w;                                      % burial velocity  (cm/yr) - calculated by internal fct. sedrate()
         z0  = 0;                                % surface
         zbio=10.0;                              % bioturbation depth (cm)
         zinf=100;                               %Inifinity (cm)
-        
+        loc_BW_O2_anoxia=10E-009;
         Dbio;                                   % bioturbation coefficient (cm2/yr) - calculated by internal fct. biorate()
         %        Dunbio=0.01;                          	% used for a version with 2 diffusion coefficents
         por=0.85;                               % porosity (-)
@@ -133,6 +133,7 @@ classdef benthic_main < handle
         function w = sedrate(wdepth)
             % sedimentation rate, cm/yr (after Middelburg et al. (1997)) 
             w = 10.0.^(-0.87478367-0.00043512*wdepth)*3.3;
+%            w = 5.75561601959823175E-003;
         end
         
         function Dbio = biorate(wdepth)
