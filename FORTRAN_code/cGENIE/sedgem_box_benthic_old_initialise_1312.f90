@@ -296,12 +296,20 @@ CONTAINS
 !	print*,'loc_sed_burial ', loc_sed_burial
         !        ! Model crashed for low sediment accumulation rates, therefore:
         !        ! OLD version with sedimentation rate instead burial rate
+                if(loc_sed_burial .LE. const_real_nullsmall)then
+			print*,' '
+			print*,'zero loc_sed_burial ', loc_sed_burial, dum_D, dum_i, dum_j
+			print*,'loc_fPOC ', loc_fPOC, dum_D, dum_i, dum_j
+			print*,'PC1, SD, DICC1, ALKROX ', PC1, SD, DICC1, ALKROX
+			STOP
+
+                end if
 
         ! Check for no detrital flux -> Remineralize everything manually
         if(loc_new_sed(is_det) .LE. const_real_nullsmall)then
             !!! Remineralize everything manually
-!                                    print*,' '
-!                                    print*,'no detrital/burial flux !!!!!!', loc_sed_burial
+                                    print*,' '
+                                    print*,'no detrital/burial flux !!!!!!', loc_sed_burial
             !                        print*,'dum_D, loc_fPOC ', dum_D, loc_fPOC
             !            print*,'loc_sed_burial_NEW =', loc_sed_burial
             !            print*,'1/(1-por)*loc_new_sed(is_det) = ', 1/(1-por)*loc_new_sed(is_det)
@@ -531,7 +539,7 @@ CONTAINS
 !                end if
                 if((dum_sed_pres_fracC .NE. dum_sed_pres_fracC) .OR. (dum_sed_pres_fracC .LE. 0.0) .OR. (dum_sed_pres_fracC > 1.0))then
 !                    print*,' '
-!                    print*,'weird dum_sed_pres_fracC ', dum_sed_pres_fracC, dum_D, dum_i, dum_j
+                    print*,'weird dum_sed_pres_fracC ', dum_sed_pres_fracC, dum_D, dum_i, dum_j
                     !                print*,'dum_D, dum_i, dum_j', dum_D, dum_i, dum_j
                     !                print*,'loc_sed_burial', loc_sed_burial
                 
@@ -580,7 +588,7 @@ CONTAINS
                         !                    print*,'OMEN loc_O2_swiflux = ', loc_O2_swiflux
                         if(loc_O2_swiflux .GE. 0.0)then
 !                            print*,' '
-                            print*,'---------- loc_O2_swiflux positiv ----------', loc_O2_swiflux, dum_i, dum_j, dum_D
+                            print*,'---------- loc_O2_swiflux positiv ----------', loc_O2_swiflux
 				loc_O2_swiflux_pos = .true.
 !                            print*,'dum_i, dum_j, dum_D', dum_i, dum_j, dum_D
 !                            print*,'sedimentation flux =', loc_new_sed_vol

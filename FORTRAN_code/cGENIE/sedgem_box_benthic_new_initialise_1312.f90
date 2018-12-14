@@ -293,18 +293,21 @@ CONTAINS
         ! w from GENIE
         loc_new_sed_vol = 1/(1-por)*fun_calc_sed_vol(loc_new_sed(:))            ! using sedimentation rate (OLD)
         loc_sed_burial = 1/(1-por)*dum_sed_OM_bur                               ! new actual burial rate: (Andy mail 11.07.2017)
-!	print*,'loc_sed_burial ', loc_sed_burial
-        !        ! Model crashed for low sediment accumulation rates, therefore:
-        !        ! OLD version with sedimentation rate instead burial rate
 
-        ! Check for no detrital flux -> Remineralize everything manually
-        if(loc_new_sed(is_det) .LE. const_real_nullsmall)then
+	! DH TODO: some of initialize should be called just once, not for every grid point
+	call sub_huelseetal2016_initialize(dum_D, loc_T, loc_sed_burial/dum_dtyr)
+	! OLD with settling flux
+	!        call sub_huelseetal2016_initialize(dum_D, loc_T, loc_new_sed_vol/dum_dtyr)
+
+
+        ! Model crashed for low sediment accumulation rates, therefore:
+        ! Check for no detrital flux .OR. No burial rate from previous time-step -> Remineralize everything manually
+        if((loc_new_sed(is_det) .LE. const_real_nullsmall) .OR. (loc_sed_burial .LE. const_real_nullsmall))then
             !!! Remineralize everything manually
-!                                    print*,' '
-!                                    print*,'no detrital/burial flux !!!!!!', loc_sed_burial
-            !                        print*,'dum_D, loc_fPOC ', dum_D, loc_fPOC
-            !            print*,'loc_sed_burial_NEW =', loc_sed_burial
-            !            print*,'1/(1-por)*loc_new_sed(is_det) = ', 1/(1-por)*loc_new_sed(is_det)
+            !                        print*,' '
+            !                        print*,'no detrital/burial flux ', loc_new_sed(is_det), dum_D, dum_i, dum_j
+            !            	     print*,'loc_sed_burial ', loc_sed_burial, dum_D, dum_i, dum_j
+            !            	     print*,'1/(1-por)*loc_new_sed(is_det) = ', 1/(1-por)*loc_new_sed(is_det)
 
             dum_sed_pres_fracC = 0.0        ! sed POC preservation to zero
             dum_sed_OM_wtpc_bot = 0.0
@@ -355,11 +358,12 @@ CONTAINS
                 loc_sed_burial = 5.0e-4     !(5.0e-4 for OAE2; 4.0e-4 for modern)
             end if
 
-            ! DH TODO: some of initialize should be called just once, not for every grid point
-            call sub_huelseetal2016_initialize(dum_D, loc_T, loc_sed_burial/dum_dtyr)
-            ! OLD with settling flux
-            !        call sub_huelseetal2016_initialize(dum_D, loc_T, loc_new_sed_vol/dum_dtyr)
-        
+!	Dom: Old position of initialize:
+!            ! DH TODO: some of initialize should be called just once, not for every grid point
+!            call sub_huelseetal2016_initialize(dum_D, loc_T, loc_sed_burial/dum_dtyr)
+		! Now just update w:
+		w = loc_sed_burial/dum_dtyr
+
              !  NEW version: using TOC-flux, convert units from cm3 to mol
             ! JUST TWO FRACTIONS:
             !            loc_POC1_flux_swi = conv_POC_cm3_mol*(1-dum_is_POC_frac2)*loc_fPOC
@@ -580,7 +584,7 @@ CONTAINS
                         !                    print*,'OMEN loc_O2_swiflux = ', loc_O2_swiflux
                         if(loc_O2_swiflux .GE. 0.0)then
 !                            print*,' '
-                            print*,'---------- loc_O2_swiflux positiv ----------', loc_O2_swiflux, dum_i, dum_j, dum_D
+                            print*,'---------- loc_O2_swiflux positiv ----------', loc_O2_swiflux
 				loc_O2_swiflux_pos = .true.
 !                            print*,'dum_i, dum_j, dum_D', dum_i, dum_j, dum_D
 !                            print*,'sedimentation flux =', loc_new_sed_vol
