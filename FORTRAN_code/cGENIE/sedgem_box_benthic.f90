@@ -613,7 +613,6 @@ CONTAINS
 !                                print*,' '
                                 print*,'---------- loc_SO4_swiflux positiv ----------', loc_SO4_swiflux
                                 print*,'dum_i, dum_j, dum_D', dum_i, dum_j, dum_D
-                                print*,'sedimentation flux =', loc_new_sed_vol
                                 print*,'loc_sed_burial_NEW =', loc_sed_burial
                                 print*,'1/(1-por)*loc_new_sed(is_det) = ', 1/(1-por)*loc_new_sed(is_det)
                                 loc_SO4_swiflux = 0.0
@@ -727,6 +726,16 @@ CONTAINS
                     else    ! use ALK hack
 !                        print*,'ALK HACK '
                         loc_ALK_swiflux = 2.0*loc_H2S_swiflux + loc_new_sed(is_POC)*conv_POC_cm3_mol*ALKROX/SD  !16/106 !NC1
+
+        ! We decided to bury the H2S and 'remove' just the associated ALK (Email POC-S 05.09.2017)
+                    	if(loc_new_sed(is_POM_S) .GE. const_real_nullsmall)then
+                                loc_POM_S_H2S_swiflux = loc_new_sed(is_POM_S)*conv_POC_cm3_mol*1.0
+                                loc_ALK_swiflux = loc_ALK_swiflux - 2*loc_POM_S_H2S_swiflux
+!                                print*,'loc_POM_S_H2S_swiflux ', loc_POM_S_H2S_swiflux
+!                                print*,'NEW loc_ALK_swiflux ', loc_ALK_swiflux
+!                                print*,' '
+                      	end if
+
                     end if      ! calc_ALK
 
                 end if  ! dum_sed_pres_fracC <> NaN
@@ -787,18 +796,17 @@ CONTAINS
         if(loc_print_results) then
             !            if(dum_D < 1000.0)then
             !            if(loc_O2_swiflux > 0.0)then
-            print*,'dum_D = ', dum_D
-            !                print*,' grid point (i,j) = ', dum_i, dum_j
+!            print*,'dum_D = ', dum_D
+!            print*,' grid point (i,j) = ', dum_i, dum_j
             print*,'Temp C =', dum_sfcsumocn(io_T) - 273.15
             print*,'loc_POC1_flux_swi = ', loc_POC1_flux_swi
             print*,'loc_POC2_flux_swi = ', loc_POC2_flux_swi
-            print*,'loc_sed_burial (burial rate) (cm3 cm-2 yr-1) = ', loc_sed_burial/dum_dtyr
-            print*,'loc_new_sed_vol (deposition rate) (cm3 cm-2 yr-1) = ', loc_new_sed_vol/dum_dtyr
-            !            print*,'loc_new_sed(is_CaCO3)= ', loc_new_sed(is_CaCO3)
-            !            print*,'loc_new_sed(is_opal)= ', loc_new_sed(is_opal)
-            !            print*,'loc_wtpct = ', loc_wtpct
-            !            print*,'SWI wt% POC frac 1 = ', loc_POC1_wtpct_swi
-            !            print*,'SWI wt% POC frac 2 = ', loc_POC2_wtpct_swi
+	    print*,'loc_POC3_flux_swi = ', loc_POC3_flux_swi
+	    print*,'TOTAL POC3_flux   = ', loc_POC1_flux_swi+loc_POC2_flux_swi+loc_POC3_flux_swi
+            print*,'Fraction POC-pres =' , dum_sed_pres_fracC
+            print*,'(1-presC)*POCin   = ', (1-dum_sed_pres_fracC)*(loc_POC1_flux_swi+loc_POC2_flux_swi+loc_POC3_flux_swi)
+            print*,'FINAL DIC SWI flx = ', dum_new_swifluxes(io_DIC)
+            print*,'loc_sed_burial    = ', loc_sed_burial/dum_dtyr
             print*,'dum_swiconc_O2 = ', dum_swiconc_O2
             print*,'dum_swiconc_SO4 = ', dum_swiconc_SO4
             print*,'dum_swiconc_H2S = ', dum_swiconc_H2S
@@ -822,6 +830,12 @@ CONTAINS
             print*,'FINAL ALK SWI flux = ', loc_ALK_swiflux
             print*,'Fraction POC-preserved/POC-deposited =' , dum_sed_pres_fracC
             print*,' '
+
+            !            print*,'loc_new_sed(is_CaCO3)= ', loc_new_sed(is_CaCO3)
+            !            print*,'loc_new_sed(is_opal)= ', loc_new_sed(is_opal)
+            !            print*,'loc_wtpct = ', loc_wtpct
+            !            print*,'SWI wt% POC frac 1 = ', loc_POC1_wtpct_swi
+            !            print*,'SWI wt% POC frac 2 = ', loc_POC2_wtpct_swi
         !                STOP
             !            print*,' '
             
@@ -929,10 +943,10 @@ CONTAINS
         Y_N=16.0                                                  ! Nitrogen Redfield stoichiometry
         Z_P=1.0                                                   ! Phosphorous Redfield stoichiometry
 
-        ALKROX= -((Y_N)/X_C)*SD                 ! Aerobic degradation
+        ALKROX= -((Y_N)/X_C)*SD                 ! Aerobic degradation -16/106*SD
         ALKRNIT=0.0                             ! Nitrification explicit -2.0
-        ALKRDEN=0.0                             ! Denitrification   explicit: (4*X_C+3*Y_N-10*Z_P)/(5*X_C)*SD
-        ALKRSUL= ((X_C+Y_N)/X_C)*SD !           ! Sulfate reduction explicit: ((X_C+Y_N-2*Z_P)/X_C)*SD !
+        ALKRDEN=0.0                             ! Denitrification explicit: (4*X_C+3*Y_N-10*Z_P)/(5*X_C)*SD
+        ALKRSUL= ((X_C+Y_N-2*Z_P)/X_C)*SD       ! ((X_C+Y_N)/X_C)*SD = +122/106*SD!,  Sulfate reduction (N explicit: ((X_C+Y_N-2*Z_P)/X_C)*SD = +120/106*SD)
         ALKRH2S= -2.0                           ! H2S oxydation
         !        ALKRH2S= 0.0       ! no secondary redox!
         ALKRMET= -((Y_N)/X_C)*SD   !0.0    ! Methanogenesis explicitly: ((Y_N-2*Z_P)/X_C)*SD
