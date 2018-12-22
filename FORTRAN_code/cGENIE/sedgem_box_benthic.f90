@@ -293,17 +293,22 @@ CONTAINS
         ! w from GENIE
         loc_new_sed_vol = 1/(1-por)*fun_calc_sed_vol(loc_new_sed(:))            ! using sedimentation rate (OLD)
         loc_sed_burial = 1/(1-por)*dum_sed_OM_bur                               ! new actual burial rate: (Andy mail 11.07.2017)
-!	print*,'loc_sed_burial ', loc_sed_burial
-        !        ! Model crashed for low sediment accumulation rates, therefore:
-        !        ! OLD version with sedimentation rate instead burial rate
 
-        ! Check for no detrital flux -> Remineralize everything manually
-        if(loc_new_sed(is_det) .LE. const_real_nullsmall)then
+	! DH TODO: some of initialize should be called just once, not for every grid point
+	call sub_huelseetal2016_initialize(dum_D, loc_T, loc_sed_burial/dum_dtyr)
+	! OLD with settling flux
+	!        call sub_huelseetal2016_initialize(dum_D, loc_T, loc_new_sed_vol/dum_dtyr)
+
+
+        !	Model crashed for low sediment accumulation rates, therefore:
+	! 	Check for no detrital flux .OR. No burial rate from previous time-step -> Remineralize everything manually
+
+        if((loc_new_sed(is_det) .LE. const_real_nullsmall) .OR. (loc_sed_burial .LE. const_real_nullsmall))then
             !!! Remineralize everything manually
-!                                    print*,' '
-!                                    print*,'no detrital/burial flux !!!!!!', loc_sed_burial
-            !                        print*,'dum_D, loc_fPOC ', dum_D, loc_fPOC
-            !            print*,'loc_sed_burial_NEW =', loc_sed_burial
+!                                print*,' '
+!                                print*,'no detrital/burial flux !!!!!!', loc_new_sed(is_det)
+!            			print*,'dum_D, loc_fPOC ', dum_D, loc_fPOC
+!            			print*,'initial?? SD, OC, PC1, DICC1, ALKROX', SD, OC, PC1, DICC1, ALKROX
             !            print*,'1/(1-por)*loc_new_sed(is_det) = ', 1/(1-por)*loc_new_sed(is_det)
 
             dum_sed_pres_fracC = 0.0        ! sed POC preservation to zero
@@ -355,10 +360,11 @@ CONTAINS
                 loc_sed_burial = 5.0e-4     !(5.0e-4 for OAE2; 4.0e-4 for modern)
             end if
 
-            ! DH TODO: some of initialize should be called just once, not for every grid point
-            call sub_huelseetal2016_initialize(dum_D, loc_T, loc_sed_burial/dum_dtyr)
-            ! OLD with settling flux
-            !        call sub_huelseetal2016_initialize(dum_D, loc_T, loc_new_sed_vol/dum_dtyr)
+!	Dom: Old position of initialize:
+!            ! DH TODO: some of initialize should be called just once, not for every grid point
+!            call sub_huelseetal2016_initialize(dum_D, loc_T, loc_sed_burial/dum_dtyr)
+		! Now just update w:
+		w = loc_sed_burial/dum_dtyr
         
              !  NEW version: using TOC-flux, convert units from cm3 to mol
             ! JUST TWO FRACTIONS:
@@ -659,8 +665,8 @@ CONTAINS
 !                            print*,' '                            
                         else
                             ! PO4 hack: remineralise all POC and calculate PO4 return flux
-                            loc_PO4_swiflux = loc_fPOC*conv_POC_cm3_mol*1.0/106.0
-!		 		print*,'all PO4 = ', loc_PO4_swiflux
+                            loc_PO4_swiflux = loc_fPOC*conv_POC_cm3_mol*PC1/SD
+!				print*,'all PO4 = ', loc_PO4_swiflux
 			    ! PO4 hack: remineralise just the non-sulfurised POC and calculate PO4 return flux
 !                            loc_PO4_swiflux = (loc_POC1_flux_swi+loc_POC2_flux_swi)*1.0/106.0
 !                            print*,'nsulf PO4 = ', loc_PO4_swiflux
@@ -946,7 +952,7 @@ CONTAINS
         ALKROX= -((Y_N)/X_C)*SD                 ! Aerobic degradation -16/106*SD
         ALKRNIT=0.0                             ! Nitrification explicit -2.0
         ALKRDEN=0.0                             ! Denitrification explicit: (4*X_C+3*Y_N-10*Z_P)/(5*X_C)*SD
-        ALKRSUL= ((X_C+Y_N-2*Z_P)/X_C)*SD       ! ((X_C+Y_N)/X_C)*SD = +122/106*SD!,  Sulfate reduction (N explicit: ((X_C+Y_N-2*Z_P)/X_C)*SD = +120/106*SD)
+        ALKRSUL= ((X_C+Y_N)/X_C)*SD       ! ((X_C+Y_N)/X_C)*SD = +122/106*SD!,  Sulfate reduction (N explicit: ((X_C+Y_N-2*Z_P)/X_C)*SD = +120/106*SD)
         ALKRH2S= -2.0                           ! H2S oxydation
         !        ALKRH2S= 0.0       ! no secondary redox!
         ALKRMET= -((Y_N)/X_C)*SD   !0.0    ! Methanogenesis explicitly: ((Y_N-2*Z_P)/X_C)*SD
