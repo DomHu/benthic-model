@@ -83,19 +83,21 @@
 %         PO4s=1.0e-9;        %Equilibrium concentration for P sorption (mol/cm3)       was 1.5e-9; ; Slomp ea 1996
 %         PO4a= 0.5e-8; %47e-9;  %was 3.7e-9      %Equilibrium concentration for authigenic P formation (mol/cm3) was 0.7e-9
 
-                        bsd.rho_sed=2.6; %was 2.5                           % sediment density (g/cm3)
-                        bsd.wdepth=2213.0;     % Dom was 600.0                       % water depth (m)
-                        bsd.zbio=10.0;                              % bioturbation depth (cm)
-                        bsd.zinf=50;                               %Inifinity (cm)
-                        bsd.Dbio=0.17; %5.2*(10.0^(0.7624-0.0003972*bsd.wdepth)); %0.5;
-                        bsd.w = 10.0.^(-0.87478367-0.00043512*bsd.wdepth)*3.3; % or check 0.42 for Reimers et al. 1996 as stated in the paper
+                        res.bsd.rho_sed=2.6; %was 2.5                           % sediment density (g/cm3)
+                        res.bsd.wdepth=2213.0;     % Dom was 600.0                       % water depth (m)
+                        res.bsd.zbio=10.0;                              % bioturbation depth (cm)
+                        res.bsd.zinf=50;                               %Inifinity (cm)
+                        res.bsd.Dbio=0.17; %5.2*(10.0^(0.7624-0.0003972*res.bsd.wdepth)); %0.5;
+                        res.bsd.w = 10.0.^(-0.87478367-0.00043512*res.bsd.wdepth)*3.3; % or check 0.42 for Reimers et al. 1996 as stated in the paper
 
                         %bottom water concentrations
                         swi.T=3.2; %20.0;                         %temperature (degree C)
-                        swi.C01= 0.45*1e-2/12*bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*bsd.rho_sed; %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-                        swi.C02= 0.6*1e-2/12*bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-                        %swi.C01=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-                        %swi.C02=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+                        swi.C01_nonbio = 0.45*1e-2/12*res.bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*res.bsd.rho_sed; %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+                        swi.C02_nonbio = 0.5*1e-2/12*res.bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*res.bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+                     	swi.Fnonbio1 = swi.C01_nonbio*(1-res.bsd.por)*res.bsd.w;    % [mol/(cm2 yr)] according non-bioturbated flux
+                        swi.Fnonbio2 = swi.C02_nonbio*(1-res.bsd.por)*res.bsd.w;
+                        swi.C01 = swi.C01_nonbio; %0.0;  % resulting bioturbated SWI-concentration, to be calculated in benthic_zTOC.m
+                        swi.C02 = swi.C02_nonbio; %0.0;2*res.bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
                         swi.O20=250.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
                         swi.NO30=25.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
                         swi.Nitrogen=true;
@@ -112,19 +114,19 @@
                     case 3  % OMEXDIA_2809_3097m
 %        k1= 0.13;                                                %TOC degradation rate constnat (1/yr)
 %        k2=0.0008;     
-                        bsd.rho_sed=2.6; %was 2.5                           % sediment density (g/cm3)
-                        bsd.wdepth=3097.0;     % Dom was 600.0                       % water depth (m)
-                        bsd.zbio=10.0;                              % bioturbation depth (cm)
-                        bsd.zinf=50;                               %Inifinity (cm)
-                        bsd.Dbio=5.2*(10.0^(0.7624-0.0003972*bsd.wdepth)); %0.5;
-                        bsd.w = 10.0.^(-0.87478367-0.00043512*bsd.wdepth)*3.3; % or check 0.42 for Reimers et al. 1996 as stated in the paper
+                        res.bsd.rho_sed=2.6; %was 2.5                           % sediment density (g/cm3)
+                        res.bsd.wdepth=3097.0;     % Dom was 600.0                       % water depth (m)
+                        res.bsd.zbio=10.0;                              % bioturbation depth (cm)
+                        res.bsd.zinf=50;                               %Inifinity (cm)
+                        res.bsd.Dbio=5.2*(10.0^(0.7624-0.0003972*res.bsd.wdepth)); %0.5;
+                        res.bsd.w = 10.0.^(-0.87478367-0.00043512*res.bsd.wdepth)*3.3; % or check 0.42 for Reimers et al. 1996 as stated in the paper
 
                         %bottom water concentrations
                         swi.T= 2.6; %20.0;                         %temperature (degree C)
-                        swi.C01= 2.0*1e-2/12*bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*bsd.rho_sed; %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-                        swi.C02= 1.8*1e-2/12*bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-                        %swi.C01=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-                        %swi.C02=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+                        swi.C01= 2.0*1e-2/12*res.bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*res.bsd.rho_sed; %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+                        swi.C02= 1.8*1e-2/12*res.bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*res.bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+                        %swi.C01=0.0005*1e-2*res.bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+                        %swi.C02=0.0005*1e-2*res.bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
                         swi.O20=243.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
                         swi.NO30=21.3e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
                         swi.Nitrogen=true;
@@ -141,19 +143,19 @@
                     case 4  % OMEXDIA_3371m
 %        k1= 0.13;                                                %TOC degradation rate constnat (1/yr)
 %        k2=0.0008;     
-                        bsd.rho_sed=2.6; %was 2.5                           % sediment density (g/cm3)
-                        bsd.wdepth=3371.0;     % Dom was 600.0                       % water depth (m)
-                        bsd.zbio=5.0;                              % bioturbation depth (cm)
-                        bsd.zinf=50;                               %Inifinity (cm)
-                        bsd.Dbio=0.11; %5.2*(10.0^(0.7624-0.0003972*bsd.wdepth)); %0.5;
-                        bsd.w = 10.0.^(-0.87478367-0.00043512*bsd.wdepth)*3.3; % or check 0.42 for Reimers et al. 1996 as stated in the paper
+                        res.bsd.rho_sed=2.6; %was 2.5                           % sediment density (g/cm3)
+                        res.bsd.wdepth=3371.0;     % Dom was 600.0                       % water depth (m)
+                        res.bsd.zbio=5.0;                              % bioturbation depth (cm)
+                        res.bsd.zinf=50;                               %Inifinity (cm)
+                        res.bsd.Dbio=0.11; %5.2*(10.0^(0.7624-0.0003972*res.bsd.wdepth)); %0.5;
+                        res.bsd.w = 10.0.^(-0.87478367-0.00043512*res.bsd.wdepth)*3.3; % or check 0.42 for Reimers et al. 1996 as stated in the paper
 
                         %bottom water concentrations
                         swi.T= 3.1; %20.0;                         %temperature (degree C)
-                        swi.C01= 0.55*1e-2/12*bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*bsd.rho_sed; %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-                        swi.C02= 0.6*1e-2/12*bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-                        %swi.C01=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-                        %swi.C02=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+                        swi.C01= 0.55*1e-2/12*res.bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*res.bsd.rho_sed; %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+                        swi.C02= 0.6*1e-2/12*res.bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*res.bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+                        %swi.C01=0.0005*1e-2*res.bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+                        %swi.C02=0.0005*1e-2*res.bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
                         swi.O20=245.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
                         swi.NO30=22.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
                         swi.Nitrogen=true;
@@ -170,19 +172,19 @@
                     case 5  % OMEXDIA_4941m
 %        k1= 0.13;                                                %TOC degradation rate constnat (1/yr)
 %        k2=0.0008;     
-                        bsd.rho_sed=2.6; %was 2.5                           % sediment density (g/cm3)
-                        bsd.wdepth=4941.0;     % Dom was 600.0                       % water depth (m)
-                        bsd.zbio=10.0;                              % bioturbation depth (cm)
-                        bsd.zinf=50;                               %Inifinity (cm)
-                        bsd.Dbio=0.44; %5.2*(10.0^(0.7624-0.0003972*bsd.wdepth)); %0.5;
-                        bsd.w = 10.0.^(-0.87478367-0.00043512*bsd.wdepth)*3.3; % or check 0.42 for Reimers et al. 1996 as stated in the paper
+                        res.bsd.rho_sed=2.6; %was 2.5                           % sediment density (g/cm3)
+                        res.bsd.wdepth=4941.0;     % Dom was 600.0                       % water depth (m)
+                        res.bsd.zbio=10.0;                              % bioturbation depth (cm)
+                        res.bsd.zinf=50;                               %Inifinity (cm)
+                        res.bsd.Dbio=0.44; %5.2*(10.0^(0.7624-0.0003972*res.bsd.wdepth)); %0.5;
+                        res.bsd.w = 10.0.^(-0.87478367-0.00043512*res.bsd.wdepth)*3.3; % or check 0.42 for Reimers et al. 1996 as stated in the paper
 
                         %bottom water concentrations
                         swi.T= 2.5; %20.0;                         %temperature (degree C)
-                        swi.C01= 0.25*1e-2/12*bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*bsd.rho_sed; %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-                        swi.C02= 0.3*1e-2/12*bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-                        %swi.C01=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-                        %swi.C02=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+                        swi.C01= 0.25*1e-2/12*res.bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*res.bsd.rho_sed; %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+                        swi.C02= 0.3*1e-2/12*res.bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*res.bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+                        %swi.C01=0.0005*1e-2*res.bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+                        %swi.C02=0.0005*1e-2*res.bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
                         swi.O20=230.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
                         swi.NO30=28.0e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
                         swi.Nitrogen=true;
@@ -208,19 +210,19 @@
 % %         PO4a= 9.0e-8; % %Equilibrium concentration for authigenic P formation (mol/cm3) was 0.7e-9
 % %         Minf=1.0e-10;       % asymptotic concentration for Fe-bound P (mol/cm3)      TODO/CHECK: good value? is from Slomp et al. 1996 Dom was 1.99e-6
 
-                        bsd.rho_sed=2.6; %was 2.5                           % sediment density (g/cm3)
-                        bsd.wdepth=585.0;     % Dom was 600.0                       % water depth (m)
-                        bsd.zbio=0.01;                              % bioturbation depth (cm)
-                        bsd.zinf=50;                               %Inifinity (cm)
-                        bsd.Dbio=0.02; %5.2*(10.0^(0.7624-0.0003972*bsd.wdepth)); %0.5;
-                        bsd.w = 0.42; % 10.0.^(-0.87478367-0.00043512*bsd.wdepth)*3.3; % or check 0.42 for Reimers et al. 1996 as stated in the paper
+                        res.bsd.rho_sed=2.6; %was 2.5                           % sediment density (g/cm3)
+                        res.bsd.wdepth=585.0;     % Dom was 600.0                       % water depth (m)
+                        res.bsd.zbio=0.01;                              % bioturbation depth (cm)
+                        res.bsd.zinf=50;                               %Inifinity (cm)
+                        res.bsd.Dbio=0.02; %5.2*(10.0^(0.7624-0.0003972*res.bsd.wdepth)); %0.5;
+                        res.bsd.w = 0.42; % 10.0.^(-0.87478367-0.00043512*res.bsd.wdepth)*3.3; % or check 0.42 for Reimers et al. 1996 as stated in the paper
 
                         %bottom water concentrations
                         swi.T=5.85; %20.0;                         %temperature (degree C)
-                        swi.C01= 2.0*1e-2/12*bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*bsd.rho_sed; %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-                        swi.C02= 3.5*1e-2/12*bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-                        %swi.C01=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-                        %swi.C02=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+                        swi.C01= 2.0*1e-2/12*res.bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*res.bsd.rho_sed; %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+                        swi.C02= 3.5*1e-2/12*res.bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*res.bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+                        %swi.C01=0.0005*1e-2*res.bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+                        %swi.C02=0.0005*1e-2*res.bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
                         swi.O20=10.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
                         swi.NO30=25e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
                         swi.Nitrogen=true;
@@ -237,19 +239,19 @@
                     case 7  % OMEXDIA_4908m - Obs not so nice
 %        k1= 0.13;                                                %TOC degradation rate constnat (1/yr)
 %        k2=0.0008;     
-                        bsd.rho_sed=2.6; %was 2.5                           % sediment density (g/cm3)
-                        bsd.wdepth=4908.0;     % Dom was 600.0                       % water depth (m)
-                        bsd.zbio=10.0;                              % bioturbation depth (cm)
-                        bsd.zinf=50;                               %Inifinity (cm)
-                        bsd.Dbio=0.15; %5.2*(10.0^(0.7624-0.0003972*bsd.wdepth)); %0.5;
-                        bsd.w = 10.0.^(-0.87478367-0.00043512*bsd.wdepth)*3.3; % or check 0.42 for Reimers et al. 1996 as stated in the paper
+                        res.bsd.rho_sed=2.6; %was 2.5                           % sediment density (g/cm3)
+                        res.bsd.wdepth=4908.0;     % Dom was 600.0                       % water depth (m)
+                        res.bsd.zbio=10.0;                              % bioturbation depth (cm)
+                        res.bsd.zinf=50;                               %Inifinity (cm)
+                        res.bsd.Dbio=0.15; %5.2*(10.0^(0.7624-0.0003972*res.bsd.wdepth)); %0.5;
+                        res.bsd.w = 10.0.^(-0.87478367-0.00043512*res.bsd.wdepth)*3.3; % or check 0.42 for Reimers et al. 1996 as stated in the paper
 
                         %bottom water concentrations
                         swi.T= 3.1; %20.0;                         %temperature (degree C)
-                        swi.C01= 0.72*1e-2/12*bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*bsd.rho_sed; %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-                        swi.C02= 0.2*1e-2/12*bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-                        %swi.C01=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-                        %swi.C02=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+                        swi.C01= 0.72*1e-2/12*res.bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*res.bsd.rho_sed; %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+                        swi.C02= 0.2*1e-2/12*res.bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*res.bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+                        %swi.C01=0.0005*1e-2*res.bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+                        %swi.C02=0.0005*1e-2*res.bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
                         swi.O20=245.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
                         swi.NO30=22.7e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
                         swi.Nitrogen=true;
@@ -266,19 +268,19 @@
                     case 8  % OMEXDIA_2809_343m all solutes in Micromoles/litre
 %        k1= 0.15;                                                %TOC degradation rate constnat (1/yr)
 %        k2=0.0009;     
-                        bsd.rho_sed=2.6; %was 2.5                           % sediment density (g/cm3)
-                        bsd.wdepth=343.0;     % Dom was 600.0                       % water depth (m)
-                        bsd.zbio=5.0;                              % bioturbation depth (cm)
-                        bsd.zinf=50;                               %Inifinity (cm)
-                        bsd.Dbio=0.08; % 5.2*(10.0^(0.7624-0.0003972*bsd.wdepth)); %0.5;
-                        bsd.w = 10.0.^(-0.87478367-0.00043512*bsd.wdepth)*3.3; % or check 0.42 for Reimers et al. 1996 as stated in the paper
+                        res.bsd.rho_sed=2.6; %was 2.5                           % sediment density (g/cm3)
+                        res.bsd.wdepth=343.0;     % Dom was 600.0                       % water depth (m)
+                        res.bsd.zbio=5.0;                              % bioturbation depth (cm)
+                        res.bsd.zinf=50;                               %Inifinity (cm)
+                        res.bsd.Dbio=0.08; % 5.2*(10.0^(0.7624-0.0003972*res.bsd.wdepth)); %0.5;
+                        res.bsd.w = 10.0.^(-0.87478367-0.00043512*res.bsd.wdepth)*3.3; % or check 0.42 for Reimers et al. 1996 as stated in the paper
 
                         %bottom water concentrations
                         swi.T=2.3; %20.0;                         %temperature (degree C)
-                        swi.C01= 1.7*1e-2/12*bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*bsd.rho_sed; %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-                        swi.C02= 1.9*1e-2/12*bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-                        %swi.C01=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
-                        %swi.C02=0.0005*1e-2*bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+                        swi.C01= 1.7*1e-2/12*res.bsd.rho_sed; % adjusted Test 2+4: 1.45* Test5: 35* Dom was 0.06*1e-2/12*res.bsd.rho_sed; %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+                        swi.C02= 1.9*1e-2/12*res.bsd.rho_sed; % adjusted Test2+4: 6.5* Test5: 190* Dom was 0.06*1e-2/12*res.bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+                        %swi.C01=0.0005*1e-2*res.bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
+                        %swi.C02=0.0005*1e-2*res.bsd.rho_sed;                                %TOC concentration at SWI (wt%) -> (mol/cm^3 bulk phase)
                         swi.O20=206.0e-9;   %was    300.0e-9  20              %O2  concentration at SWI (mol/cm^3)
                         swi.NO30=11.4e-9;             % was 20.0e-9      %NO3 concentration at SWI (mol/cm^3)
                         swi.Nitrogen=true;
@@ -549,6 +551,17 @@
                 plot(100*C1*12/bsd.rho_sed, -zgrid, 'r--')
                 plot(100*C2*12/bsd.rho_sed, -zgrid, 'g--')
                 plot(100*C*12/bsd.rho_sed, -zgrid, 'b')
+                switch Obs
+                    case 1  % 108m
+                        xlim([0 5])
+                    case 2  % 2213m
+                        xlim([0 2])
+                    case 6  % 585m
+                        xlim([0 10])
+                    otherwise 
+                        
+                end
+                        
                 t=xlim;         % to draw penetration depths the correct lengths
                 plot([0,t(1,2)], [-bsd.zbio,-bsd.zbio], 'k--')     
                 plot([0,t(1,2)], [-res.zox,-res.zox], 'b--')     
@@ -570,12 +583,24 @@
                 scatter(data.O2(:,2).*1e-9, -data.O2(:,1),'k','filled')
                 hold on
                 plot(O2, -zgrid, 'b')
+                ylim([-10 0.0])
+                switch Obs
+                    case 1  % 108m
+                        xlim([0 400e-9])
+                        ylim([-5 0.0])
+                    case 2  % 2213m
+                        xlim([0 400e-9])
+                    case 6  % 585m
+                        xlim([0 20e-9])
+                        ylim([-5 0.0])
+                    otherwise
+                        
+                end
                 t=xlim;         % to draw penetration depths the correct lengths
                 plot([0,t(1,2)], [-bsd.zbio,-bsd.zbio], 'k--')     
                 plot([0,t(1,2)], [-res.zox,-res.zox], 'b--')     
                 plot([0,t(1,2)], [-res.zno3,-res.zno3], 'g--')     
                 plot([0,t(1,2)], [-res.zso4,-res.zso4], 'r--')               
-                ylim([-5 0.0])
                 box on;
                 xlabel ('O_2 (mol/cm^3)')
     %            ylabel('Depth (cm)')
@@ -590,12 +615,25 @@
                 scatter(data.NO3(:,2).*1e-9, -data.NO3(:,1),'k','filled')
                 hold on
                 plot(NO3, -zgrid, 'b')
+                switch Obs
+                    case 1  % 108m
+                        xlim([0 20e-9])
+                     	ylim([-10.0 0.0])
+                    case 2  % 2213m
+                        xlim([0 40e-9])
+                     	ylim([-50.0 0.0])
+                    case 6  % 585m
+                        xlim([0 100e-9])
+                    case 10  % 4295m
+                        ylim([-50 0])
+                    otherwise
+                        
+                end
                 t=xlim;         % to draw penetration depths the correct lengths
                 plot([0,t(1,2)], [-bsd.zbio,-bsd.zbio], 'k--')     
                 plot([0,t(1,2)], [-res.zox,-res.zox], 'b--')     
                 plot([0,t(1,2)], [-res.zno3,-res.zno3], 'g--')     
                 plot([0,t(1,2)], [-res.zso4,-res.zso4], 'r--')             
-                ylim([-50.0 0.0])
                 xlabel ('NO_3 (mol/cm^3)')
     %            ylabel('Depth (cm)')
                 box on;
@@ -609,7 +647,16 @@
                 scatter(data.NH4(:,2).*1e-9, -data.NH4(:,1),'k','filled')
                 hold on
                 plot(NH4, -zgrid, 'b')
-                xlim([0.0 2000e-9])     
+                switch Obs
+                    case 1  % 108m
+                        xlim([0.0 500e-9])    
+                    case 2  % 2213m
+                        xlim([0.0 50e-9])    
+                    case 6  % 585m
+                        xlim([0.0 2000e-9])    
+                    otherwise
+                        
+                end 
                 box on;
                 t=xlim;         % to draw penetration depths the correct lengths
                 plot([0,t(1,2)], [-bsd.zbio,-bsd.zbio], 'k--')     
@@ -754,7 +801,7 @@
         %            title ('ALK (mol/cm^3)')
 
     
-           print('-depsc2', ['eps_output/' str_date 'PROFILES.eps']);
+           print('-depsc2', ['eps_output/' str_date 'PROFILES_2020.eps']);
 
 % %            
 % %             figure
